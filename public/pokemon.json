@@ -361,17 +361,6 @@
     "evolutionTrigger": "Evolved by Level"
   },
   {
-    "id": 20,
-    "name": "Raticate totem alola",
-    "types": [
-      "Dark",
-      "Normal"
-    ],
-    "region": "Alola",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
-  },
-  {
     "id": 21,
     "name": "Spearow",
     "types": [
