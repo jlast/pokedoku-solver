@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { REGION_BY_ID, STARTER_IDS, ULTRA_BEASTS, FOSSIL_IDS, PARADOX_POKEMON, IGNORED_FORM_IDS, IGNORED_FORMS, CANT_EVOLVE_FORMS } from './ids';
+import { REGION_BY_ID, STARTER_IDS, ULTRA_BEASTS, FOSSIL_IDS, PARADOX_POKEMON, IGNORED_FORM_IDS, IGNORED_FORMS, CANT_EVOLVE_FORMS, IGNORE_SPECIAL_FORMS } from './ids';
 import { fetchWithRetry } from './lib';
 import type { EvolutionMethod, Pokemon, PokemonType } from '../src/types';
 import { CUSTOM_POKEMON } from './custom_pokemon';
@@ -394,14 +394,17 @@ async function main() {
     const species = loadSpecies(speciesId);
     if (!species) continue;
     
-    if (added.has(id)) continue;
-    added.add(id);
+    if (added.has(id) && IGNORE_SPECIAL_FORMS.has(species.name)) continue;
+      added.add(id);
+
+    let name = IGNORE_SPECIAL_FORMS.has(species.name) ? species.name : form.name;
+    name = name.replace('Floette red', 'Floette'); // Special case for Floette which has a unique form name for the base form
     
     const types = pokemon.types.sort((a, b) => a.slot - b.slot).map(t => t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1)) as [PokemonType, PokemonType?] | [PokemonType];
-    
+
     const entry: Pokemon = {
       id: species.id,
-      name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1).replace(/-/g, ' '),
+      name: name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, ' '),
       types,
       region: REGION_BY_ID[speciesId] || 'Unknown',
     };
@@ -448,17 +451,11 @@ async function main() {
   output.push(...CUSTOM_POKEMON);
   output.sort((a, b) => a.id - b.id);
   
-  // Known true branched: Eevee and Kirlia (multiple evolutions in same game)
-  // Known NOT branched: form variants have regional-specific evolutions
-  const knownBranched = ['Eevee', 'Kirlia'].join('|');
-  const knownNotBranched = ['Meowth', 'Slowpoke', 'Wooper', 'Sneasel', 'Tyrogue', 'Wurmple', 'Nincada'].join('|');
+  const knownNotBranched = ['Meowth', 'Wooper', 'Sneasel'].join('|');
   output.forEach(function(p) {
     if (p.evolutionStage === 'First Stage') {
       if (p.isBranched && knownNotBranched.includes(p.name.split(' ')[0])) {
         p.isBranched = false;
-      }
-      if (!p.isBranched && knownBranched.includes(p.name.split(' ')[0])) {
-        p.isBranched = true;
       }
     }
   });

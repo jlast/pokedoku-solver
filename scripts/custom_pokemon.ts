@@ -9,5 +9,5 @@ export const CUSTOM_POKEMON: Pokemon[] = [
     ],
     "region": "Kanto",
     "evolutionStage": "First Stage"
-  }
+  }, 
 ]

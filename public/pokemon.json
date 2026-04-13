@@ -1216,7 +1216,7 @@
     ],
     "region": "Kanto",
     "evolutionStage": "First Stage",
-    "isBranched": false
+    "isBranched": true
   },
   {
     "id": 79,
@@ -1226,7 +1226,7 @@
     ],
     "region": "Galar",
     "evolutionStage": "First Stage",
-    "isBranched": false
+    "isBranched": true
   },
   {
     "id": 80,
@@ -2548,6 +2548,16 @@
     "evolutionStage": "First Stage"
   },
   {
+    "id": 172,
+    "name": "Pichu spiky eared",
+    "types": [
+      "Electric"
+    ],
+    "region": "Johto",
+    "category": "Baby",
+    "evolutionStage": "First Stage"
+  },
+  {
     "id": 173,
     "name": "Cleffa",
     "types": [
@@ -3309,7 +3319,7 @@
     "region": "Johto",
     "category": "Baby",
     "evolutionStage": "First Stage",
-    "isBranched": false
+    "isBranched": true
   },
   {
     "id": 237,
@@ -3677,7 +3687,7 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "First Stage",
-    "isBranched": false
+    "isBranched": true
   },
   {
     "id": 266,
@@ -3949,7 +3959,7 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "First Stage",
-    "isBranched": false
+    "isBranched": true
   },
   {
     "id": 291,
@@ -5468,7 +5478,27 @@
   },
   {
     "id": 412,
-    "name": "Burmy",
+    "name": "Burmy plant",
+    "types": [
+      "Bug"
+    ],
+    "region": "Sinnoh",
+    "evolutionStage": "First Stage",
+    "isBranched": true
+  },
+  {
+    "id": 412,
+    "name": "Burmy sandy",
+    "types": [
+      "Bug"
+    ],
+    "region": "Sinnoh",
+    "evolutionStage": "First Stage",
+    "isBranched": true
+  },
+  {
+    "id": 412,
+    "name": "Burmy trash",
     "types": [
       "Bug"
     ],
@@ -5511,7 +5541,29 @@
   },
   {
     "id": 414,
-    "name": "Mothim",
+    "name": "Mothim plant",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "region": "Sinnoh",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": "Evolved by Level"
+  },
+  {
+    "id": 414,
+    "name": "Mothim sandy",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "region": "Sinnoh",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": "Evolved by Level"
+  },
+  {
+    "id": 414,
+    "name": "Mothim trash",
     "types": [
       "Bug",
       "Flying"
@@ -5580,7 +5632,17 @@
   },
   {
     "id": 421,
-    "name": "Cherrim",
+    "name": "Cherrim overcast",
+    "types": [
+      "Grass"
+    ],
+    "region": "Sinnoh",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": "Evolved by Level"
+  },
+  {
+    "id": 421,
+    "name": "Cherrim sunshine",
     "types": [
       "Grass"
     ],
@@ -5590,7 +5652,16 @@
   },
   {
     "id": 422,
-    "name": "Shellos",
+    "name": "Shellos west",
+    "types": [
+      "Water"
+    ],
+    "region": "Sinnoh",
+    "evolutionStage": "First Stage"
+  },
+  {
+    "id": 422,
+    "name": "Shellos east",
     "types": [
       "Water"
     ],
@@ -5599,7 +5670,18 @@
   },
   {
     "id": 423,
-    "name": "Gastrodon",
+    "name": "Gastrodon west",
+    "types": [
+      "Water",
+      "Ground"
+    ],
+    "region": "Sinnoh",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": "Evolved by Level"
+  },
+  {
+    "id": 423,
+    "name": "Gastrodon east",
     "types": [
       "Water",
       "Ground"
@@ -7632,7 +7714,37 @@
   },
   {
     "id": 585,
-    "name": "Deerling",
+    "name": "Deerling spring",
+    "types": [
+      "Normal",
+      "Grass"
+    ],
+    "region": "Unova",
+    "evolutionStage": "First Stage"
+  },
+  {
+    "id": 585,
+    "name": "Deerling summer",
+    "types": [
+      "Normal",
+      "Grass"
+    ],
+    "region": "Unova",
+    "evolutionStage": "First Stage"
+  },
+  {
+    "id": 585,
+    "name": "Deerling autumn",
+    "types": [
+      "Normal",
+      "Grass"
+    ],
+    "region": "Unova",
+    "evolutionStage": "First Stage"
+  },
+  {
+    "id": 585,
+    "name": "Deerling winter",
     "types": [
       "Normal",
       "Grass"
@@ -7642,7 +7754,40 @@
   },
   {
     "id": 586,
-    "name": "Sawsbuck",
+    "name": "Sawsbuck spring",
+    "types": [
+      "Normal",
+      "Grass"
+    ],
+    "region": "Unova",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": "Evolved by Level"
+  },
+  {
+    "id": 586,
+    "name": "Sawsbuck summer",
+    "types": [
+      "Normal",
+      "Grass"
+    ],
+    "region": "Unova",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": "Evolved by Level"
+  },
+  {
+    "id": 586,
+    "name": "Sawsbuck autumn",
+    "types": [
+      "Normal",
+      "Grass"
+    ],
+    "region": "Unova",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": "Evolved by Level"
+  },
+  {
+    "id": 586,
+    "name": "Sawsbuck winter",
     "types": [
       "Normal",
       "Grass"
@@ -7713,8 +7858,29 @@
     "evolutionStage": "First Stage"
   },
   {
+    "id": 592,
+    "name": "Frillish female",
+    "types": [
+      "Water",
+      "Ghost"
+    ],
+    "region": "Unova",
+    "evolutionStage": "First Stage"
+  },
+  {
     "id": 593,
     "name": "Jellicent male",
+    "types": [
+      "Water",
+      "Ghost"
+    ],
+    "region": "Unova",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": "Evolved by Level"
+  },
+  {
+    "id": 593,
+    "name": "Jellicent female",
     "types": [
       "Water",
       "Ghost"
@@ -8357,17 +8523,6 @@
     "evolutionStage": "No Evolution Line"
   },
   {
-    "id": 646,
-    "name": "Kyurem white",
-    "types": [
-      "Dragon",
-      "Ice"
-    ],
-    "region": "Unova",
-    "category": "Legendary",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
     "id": 647,
     "name": "Keldeo ordinary",
     "types": [
@@ -8691,6 +8846,17 @@
     "specialForm": "Mega Evolution"
   },
   {
+    "id": 668,
+    "name": "Pyroar female",
+    "types": [
+      "Fire",
+      "Normal"
+    ],
+    "region": "Kalos",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": "Evolved by Level"
+  },
+  {
     "id": 669,
     "name": "Flabebe",
     "types": [
@@ -8701,7 +8867,7 @@
   },
   {
     "id": 670,
-    "name": "Floette",
+    "name": "Floette red",
     "types": [
       "Fairy"
     ],
@@ -10219,37 +10385,7 @@
   },
   {
     "id": 774,
-    "name": "Minior orange",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 774,
-    "name": "Minior yellow",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 774,
     "name": "Minior green",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 774,
-    "name": "Minior blue",
     "types": [
       "Rock",
       "Flying"
@@ -11582,7 +11718,7 @@
   },
   {
     "id": 869,
-    "name": "Alcremie gmax",
+    "name": "Alcremie",
     "types": [
       "Fairy"
     ],
@@ -13264,7 +13400,7 @@
   },
   {
     "id": 999,
-    "name": "Gimmighoul",
+    "name": "Gimmighoul chest",
     "types": [
       "Ghost"
     ],

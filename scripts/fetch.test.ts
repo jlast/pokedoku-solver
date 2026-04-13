@@ -124,6 +124,20 @@ describe('pokemon.json', () => {
     expect(mew!.category).toBe('Mythical');
   });
 
+  it('Shellos west and east should exist', () => {
+    const shellos = data.filter(p => p.name.includes('Shellos'));
+    expect(shellos.length).toBe(2);
+    expect(shellos.some(p => p.name === 'Shellos west')).toBe(true);
+    expect(shellos.some(p => p.name === 'Shellos east')).toBe(true);
+  });
+
+  it('Gastrodon west and east should exist', () => {
+    const gastrodon = data.filter(p => p.name.includes('Gastrodon'));
+    expect(gastrodon.length).toBe(2);
+    expect(gastrodon.some(p => p.name === 'Gastrodon west')).toBe(true);
+    expect(gastrodon.some(p => p.name === 'Gastrodon east')).toBe(true);
+  });
+
   it('has Mega Evolution forms', () => {
     const megas = data.filter(p => p.specialForm === 'Mega Evolution');
     expect(megas.length).toBeGreaterThan(0);
