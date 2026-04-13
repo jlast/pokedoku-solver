@@ -264,7 +264,7 @@ async function main() {
     const types = pokemon.types.sort((a, b) => a.slot - b.slot).map(t => t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1)) as [PokemonType, PokemonType?] | [PokemonType];
     
     const entry: Pokemon = {
-      id,
+      id: species.id,
       name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1).replace(/-/g, ' '),
       types,
       region: REGION_BY_ID[speciesId] || 'Unknown',
@@ -304,8 +304,8 @@ async function main() {
   }
 
   
-  output.sort((a, b) => a.id - b.id);
   output.push(...CUSTOM_POKEMON);
+  output.sort((a, b) => a.id - b.id);
   console.log(`Total: ${output.length} Pokemon`);
   
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));

@@ -33,6 +33,28 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 3,
+    "name": "Venusaur mega",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 3,
+    "name": "Venusaur gmax",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 4,
     "name": "Charmander",
     "types": [
@@ -62,6 +84,39 @@
     "region": "Kanto",
     "category": "Starter",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 6,
+    "name": "Charizard mega x",
+    "types": [
+      "Fire",
+      "Dragon"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 6,
+    "name": "Charizard mega y",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 6,
+    "name": "Charizard gmax",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 7,
@@ -94,8 +149,37 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 9,
+    "name": "Blastoise mega",
+    "types": [
+      "Water"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 9,
+    "name": "Blastoise gmax",
+    "types": [
+      "Water"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 10,
     "name": "Caterpie",
+    "types": [
+      "Bug"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 10,
+    "name": "Caterpie cowboy hat",
     "types": [
       "Bug"
     ],
@@ -120,6 +204,17 @@
     ],
     "region": "Kanto",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 12,
+    "name": "Butterfree gmax",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 13,
@@ -152,6 +247,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 15,
+    "name": "Beedrill mega",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 16,
     "name": "Pidgey",
     "types": [
@@ -182,6 +288,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 18,
+    "name": "Pidgeot mega",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 19,
     "name": "Rattata",
     "types": [
@@ -191,12 +308,42 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 19,
+    "name": "Rattata alola",
+    "types": [
+      "Dark",
+      "Normal"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 20,
     "name": "Raticate",
     "types": [
       "Normal"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 20,
+    "name": "Raticate alola",
+    "types": [
+      "Dark",
+      "Normal"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 20,
+    "name": "Raticate totem alola",
+    "types": [
+      "Dark",
+      "Normal"
+    ],
+    "region": "Alola",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -248,6 +395,151 @@
     "evolutionMethod": "Middle Stage"
   },
   {
+    "id": 25,
+    "name": "Pikachu rock star",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu belle",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu pop star",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu phd",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu libre",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu cosplay",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu original cap",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu hoenn cap",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu sinnoh cap",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu unova cap",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu kalos cap",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu alola cap",
+    "types": [
+      "Electric"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu partner cap",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu starter",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu world cap",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu gmax",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Middle Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 26,
     "name": "Raichu",
     "types": [
@@ -255,6 +547,36 @@
     ],
     "region": "Kanto",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 26,
+    "name": "Raichu alola",
+    "types": [
+      "Electric",
+      "Psychic"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 26,
+    "name": "Raichu mega x",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 26,
+    "name": "Raichu mega y",
+    "types": [
+      "Electric"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 27,
@@ -266,12 +588,32 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 27,
+    "name": "Sandshrew alola",
+    "types": [
+      "Ice",
+      "Steel"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 28,
     "name": "Sandslash",
     "types": [
       "Ground"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 28,
+    "name": "Sandslash alola",
+    "types": [
+      "Ice",
+      "Steel"
+    ],
+    "region": "Alola",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -349,6 +691,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 36,
+    "name": "Clefable mega",
+    "types": [
+      "Fairy",
+      "Flying"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 37,
     "name": "Vulpix",
     "types": [
@@ -358,12 +711,31 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 37,
+    "name": "Vulpix alola",
+    "types": [
+      "Ice"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 38,
     "name": "Ninetales",
     "types": [
       "Fire"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 38,
+    "name": "Ninetales alola",
+    "types": [
+      "Ice",
+      "Fairy"
+    ],
+    "region": "Alola",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -486,12 +858,32 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 50,
+    "name": "Diglett alola",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 51,
     "name": "Dugtrio",
     "types": [
       "Ground"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 51,
+    "name": "Dugtrio alola",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
+    "region": "Alola",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -504,12 +896,49 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 52,
+    "name": "Meowth alola",
+    "types": [
+      "Dark"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 52,
+    "name": "Meowth galar",
+    "types": [
+      "Steel"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 52,
+    "name": "Meowth gmax",
+    "types": [
+      "Normal"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "First Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 53,
     "name": "Persian",
     "types": [
       "Normal"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 53,
+    "name": "Persian alola",
+    "types": [
+      "Dark"
+    ],
+    "region": "Alola",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -558,12 +987,32 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 58,
+    "name": "Growlithe hisui",
+    "types": [
+      "Fire",
+      "Rock"
+    ],
+    "region": "Hisui",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 59,
     "name": "Arcanine",
     "types": [
       "Fire"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 59,
+    "name": "Arcanine hisui",
+    "types": [
+      "Fire",
+      "Rock"
+    ],
+    "region": "Hisui",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -622,6 +1071,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 65,
+    "name": "Alakazam mega",
+    "types": [
+      "Psychic"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 66,
     "name": "Machop",
     "types": [
@@ -647,6 +1106,16 @@
     ],
     "region": "Kanto",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 68,
+    "name": "Machamp gmax",
+    "types": [
+      "Fighting"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 69,
@@ -679,6 +1148,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 71,
+    "name": "Victreebel mega",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 72,
     "name": "Tentacool",
     "types": [
@@ -709,6 +1189,16 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 74,
+    "name": "Geodude alola",
+    "types": [
+      "Rock",
+      "Electric"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 75,
     "name": "Graveler",
     "types": [
@@ -716,6 +1206,16 @@
       "Ground"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 75,
+    "name": "Graveler alola",
+    "types": [
+      "Rock",
+      "Electric"
+    ],
+    "region": "Alola",
     "evolutionMethod": "Middle Stage"
   },
   {
@@ -729,6 +1229,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 76,
+    "name": "Golem alola",
+    "types": [
+      "Rock",
+      "Electric"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "Final Stage"
+  },
+  {
     "id": 77,
     "name": "Ponyta",
     "types": [
@@ -738,12 +1248,31 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 77,
+    "name": "Ponyta galar",
+    "types": [
+      "Psychic"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 78,
     "name": "Rapidash",
     "types": [
       "Fire"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 78,
+    "name": "Rapidash galar",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
+    "region": "Galar",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -757,6 +1286,15 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 79,
+    "name": "Slowpoke galar",
+    "types": [
+      "Psychic"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 80,
     "name": "Slowbro",
     "types": [
@@ -764,6 +1302,27 @@
       "Psychic"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 80,
+    "name": "Slowbro mega",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 80,
+    "name": "Slowbro galar",
+    "types": [
+      "Poison",
+      "Psychic"
+    ],
+    "region": "Galar",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -794,6 +1353,15 @@
       "Flying"
     ],
     "region": "Kanto",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 83,
+    "name": "Farfetchd galar",
+    "types": [
+      "Fighting"
+    ],
+    "region": "Galar",
     "evolutionMethod": "First Stage"
   },
   {
@@ -845,12 +1413,32 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 88,
+    "name": "Grimer alola",
+    "types": [
+      "Poison",
+      "Dark"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 89,
     "name": "Muk",
     "types": [
       "Poison"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 89,
+    "name": "Muk alola",
+    "types": [
+      "Poison",
+      "Dark"
+    ],
+    "region": "Alola",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -903,6 +1491,28 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 94,
+    "name": "Gengar mega",
+    "types": [
+      "Ghost",
+      "Poison"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 94,
+    "name": "Gengar gmax",
+    "types": [
+      "Ghost",
+      "Poison"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 95,
     "name": "Onix",
     "types": [
@@ -949,6 +1559,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 99,
+    "name": "Kingler gmax",
+    "types": [
+      "Water"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 100,
     "name": "Voltorb",
     "types": [
@@ -958,12 +1578,32 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 100,
+    "name": "Voltorb hisui",
+    "types": [
+      "Electric",
+      "Grass"
+    ],
+    "region": "Hisui",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 101,
     "name": "Electrode",
     "types": [
       "Electric"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 101,
+    "name": "Electrode hisui",
+    "types": [
+      "Electric",
+      "Grass"
+    ],
+    "region": "Hisui",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -987,6 +1627,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 103,
+    "name": "Exeggutor alola",
+    "types": [
+      "Grass",
+      "Dragon"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "Final Stage"
+  },
+  {
     "id": 104,
     "name": "Cubone",
     "types": [
@@ -1002,6 +1652,16 @@
       "Ground"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 105,
+    "name": "Marowak alola",
+    "types": [
+      "Fire",
+      "Ghost"
+    ],
+    "region": "Alola",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -1050,6 +1710,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 110,
+    "name": "Weezing galar",
+    "types": [
+      "Poison",
+      "Fairy"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage"
+  },
+  {
     "id": 111,
     "name": "Rhyhorn",
     "types": [
@@ -1095,6 +1765,16 @@
     ],
     "region": "Kanto",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 115,
+    "name": "Kangaskhan mega",
+    "types": [
+      "Normal"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 116,
@@ -1152,6 +1832,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 121,
+    "name": "Starmie mega",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 122,
     "name": "Mr mime",
     "types": [
@@ -1159,6 +1850,16 @@
       "Fairy"
     ],
     "region": "Kanto",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 122,
+    "name": "Mr mime galar",
+    "types": [
+      "Ice",
+      "Psychic"
+    ],
+    "region": "Galar",
     "evolutionMethod": "Middle Stage"
   },
   {
@@ -1209,12 +1910,52 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 127,
+    "name": "Pinsir mega",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 128,
     "name": "Tauros",
     "types": [
       "Normal"
     ],
     "region": "Kanto",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 128,
+    "name": "Tauros paldea combat breed",
+    "types": [
+      "Fighting"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 128,
+    "name": "Tauros paldea blaze breed",
+    "types": [
+      "Fighting",
+      "Fire"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 128,
+    "name": "Tauros paldea aqua breed",
+    "types": [
+      "Fighting",
+      "Water"
+    ],
+    "region": "Paldea",
     "evolutionMethod": "No Evolution Line"
   },
   {
@@ -1237,6 +1978,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 130,
+    "name": "Gyarados mega",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 131,
     "name": "Lapras",
     "types": [
@@ -1245,6 +1997,17 @@
     ],
     "region": "Kanto",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 131,
+    "name": "Lapras gmax",
+    "types": [
+      "Water",
+      "Ice"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 132,
@@ -1264,6 +2027,25 @@
     "region": "Kanto",
     "category": "Starter",
     "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 133,
+    "name": "Eevee starter",
+    "types": [
+      "Normal"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 133,
+    "name": "Eevee gmax",
+    "types": [
+      "Normal"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "First Stage",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 134,
@@ -1357,6 +2139,17 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 142,
+    "name": "Aerodactyl mega",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 143,
     "name": "Snorlax",
     "types": [
@@ -1366,6 +2159,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 143,
+    "name": "Snorlax gmax",
+    "types": [
+      "Normal"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 144,
     "name": "Articuno",
     "types": [
@@ -1373,6 +2176,17 @@
       "Flying"
     ],
     "region": "Kanto",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 144,
+    "name": "Articuno galar",
+    "types": [
+      "Psychic",
+      "Flying"
+    ],
+    "region": "Galar",
     "category": "Legendary",
     "evolutionMethod": "No Evolution Line"
   },
@@ -1388,6 +2202,17 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 145,
+    "name": "Zapdos galar",
+    "types": [
+      "Fighting",
+      "Flying"
+    ],
+    "region": "Galar",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 146,
     "name": "Moltres",
     "types": [
@@ -1395,6 +2220,17 @@
       "Flying"
     ],
     "region": "Kanto",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 146,
+    "name": "Moltres galar",
+    "types": [
+      "Dark",
+      "Flying"
+    ],
+    "region": "Galar",
     "category": "Legendary",
     "evolutionMethod": "No Evolution Line"
   },
@@ -1427,6 +2263,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 149,
+    "name": "Dragonite mega",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
+    "region": "Kanto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 150,
     "name": "Mewtwo",
     "types": [
@@ -1435,6 +2282,29 @@
     "region": "Kanto",
     "category": "Legendary",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 150,
+    "name": "Mewtwo mega x",
+    "types": [
+      "Psychic",
+      "Fighting"
+    ],
+    "region": "Kanto",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 150,
+    "name": "Mewtwo mega y",
+    "types": [
+      "Psychic"
+    ],
+    "region": "Kanto",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 151,
@@ -1477,6 +2347,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 154,
+    "name": "Meganium mega",
+    "types": [
+      "Grass",
+      "Fairy"
+    ],
+    "region": "Johto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 155,
     "name": "Cyndaquil",
     "types": [
@@ -1504,6 +2385,16 @@
     ],
     "region": "Johto",
     "category": "Starter",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 157,
+    "name": "Typhlosion hisui",
+    "types": [
+      "Fire",
+      "Ghost"
+    ],
+    "region": "Hisui",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -1535,6 +2426,17 @@
     "region": "Johto",
     "category": "Starter",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 160,
+    "name": "Feraligatr mega",
+    "types": [
+      "Water",
+      "Dragon"
+    ],
+    "region": "Johto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 161,
@@ -1743,6 +2645,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 181,
+    "name": "Ampharos mega",
+    "types": [
+      "Electric",
+      "Dragon"
+    ],
+    "region": "Johto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 182,
     "name": "Bellossom",
     "types": [
@@ -1867,6 +2780,16 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 194,
+    "name": "Wooper paldea",
+    "types": [
+      "Poison",
+      "Ground"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 195,
     "name": "Quagsire",
     "types": [
@@ -1912,6 +2835,16 @@
       "Psychic"
     ],
     "region": "Johto",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 199,
+    "name": "Slowking galar",
+    "types": [
+      "Poison",
+      "Psychic"
+    ],
+    "region": "Galar",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -2000,6 +2933,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 208,
+    "name": "Steelix mega",
+    "types": [
+      "Steel",
+      "Ground"
+    ],
+    "region": "Johto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 209,
     "name": "Snubbull",
     "types": [
@@ -2028,6 +2972,16 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 211,
+    "name": "Qwilfish hisui",
+    "types": [
+      "Dark",
+      "Poison"
+    ],
+    "region": "Hisui",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 212,
     "name": "Scizor",
     "types": [
@@ -2036,6 +2990,17 @@
     ],
     "region": "Johto",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 212,
+    "name": "Scizor mega",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
+    "region": "Johto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 213,
@@ -2058,6 +3023,17 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 214,
+    "name": "Heracross mega",
+    "types": [
+      "Bug",
+      "Fighting"
+    ],
+    "region": "Johto",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 215,
     "name": "Sneasel",
     "types": [
@@ -2065,6 +3041,16 @@
       "Ice"
     ],
     "region": "Johto",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 215,
+    "name": "Sneasel hisui",
+    "types": [
+      "Fighting",
+      "Poison"
+    ],
+    "region": "Hisui",
     "evolutionMethod": "First Stage"
   },
   {
@@ -2135,6 +3121,15 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 222,
+    "name": "Corsola galar",
+    "types": [
+      "Ghost"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 223,
     "name": "Remoraid",
     "types": [
@@ -2183,6 +3178,17 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 227,
+    "name": "Skarmory mega",
+    "types": [
+      "Steel",
+      "Flying"
+    ],
+    "region": "Johto",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 228,
     "name": "Houndour",
     "types": [
@@ -2201,6 +3207,17 @@
     ],
     "region": "Johto",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 229,
+    "name": "Houndoom mega",
+    "types": [
+      "Dark",
+      "Fire"
+    ],
+    "region": "Johto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 230,
@@ -2386,6 +3403,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 248,
+    "name": "Tyranitar mega",
+    "types": [
+      "Rock",
+      "Dark"
+    ],
+    "region": "Johto",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 249,
     "name": "Lugia",
     "types": [
@@ -2449,6 +3477,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 254,
+    "name": "Sceptile mega",
+    "types": [
+      "Grass",
+      "Dragon"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 255,
     "name": "Torchic",
     "types": [
@@ -2479,6 +3518,17 @@
     "region": "Hoenn",
     "category": "Starter",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 257,
+    "name": "Blaziken mega",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 258,
@@ -2513,6 +3563,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 260,
+    "name": "Swampert mega",
+    "types": [
+      "Water",
+      "Ground"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 261,
     "name": "Poochyena",
     "types": [
@@ -2540,12 +3601,32 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 263,
+    "name": "Zigzagoon galar",
+    "types": [
+      "Dark",
+      "Normal"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 264,
     "name": "Linoone",
     "types": [
       "Normal"
     ],
     "region": "Hoenn",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 264,
+    "name": "Linoone galar",
+    "types": [
+      "Dark",
+      "Normal"
+    ],
+    "region": "Galar",
     "evolutionMethod": "Middle Stage"
   },
   {
@@ -2723,6 +3804,17 @@
     ],
     "region": "Hoenn",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 282,
+    "name": "Gardevoir mega",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 283,
@@ -2914,6 +4006,17 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 302,
+    "name": "Sableye mega",
+    "types": [
+      "Dark",
+      "Ghost"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 303,
     "name": "Mawile",
     "types": [
@@ -2922,6 +4025,17 @@
     ],
     "region": "Hoenn",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 303,
+    "name": "Mawile mega",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 304,
@@ -2954,6 +4068,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 306,
+    "name": "Aggron mega",
+    "types": [
+      "Steel"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 307,
     "name": "Meditite",
     "types": [
@@ -2974,6 +4098,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 308,
+    "name": "Medicham mega",
+    "types": [
+      "Fighting",
+      "Psychic"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 309,
     "name": "Electrike",
     "types": [
@@ -2990,6 +4125,16 @@
     ],
     "region": "Hoenn",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 310,
+    "name": "Manectric mega",
+    "types": [
+      "Electric"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 311,
@@ -3076,6 +4221,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 319,
+    "name": "Sharpedo mega",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 320,
     "name": "Wailmer",
     "types": [
@@ -3112,6 +4268,17 @@
     ],
     "region": "Hoenn",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 323,
+    "name": "Camerupt mega",
+    "types": [
+      "Fire",
+      "Ground"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 324,
@@ -3216,6 +4383,17 @@
     ],
     "region": "Hoenn",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 334,
+    "name": "Altaria mega",
+    "types": [
+      "Dragon",
+      "Fairy"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 335,
@@ -3386,6 +4564,33 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 351,
+    "name": "Castform sunny",
+    "types": [
+      "Fire"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 351,
+    "name": "Castform rainy",
+    "types": [
+      "Water"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 351,
+    "name": "Castform snowy",
+    "types": [
+      "Ice"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 352,
     "name": "Kecleon",
     "types": [
@@ -3411,6 +4616,16 @@
     ],
     "region": "Hoenn",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 354,
+    "name": "Banette mega",
+    "types": [
+      "Ghost"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 355,
@@ -3450,6 +4665,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 358,
+    "name": "Chimecho mega",
+    "types": [
+      "Psychic",
+      "Steel"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 359,
     "name": "Absol",
     "types": [
@@ -3457,6 +4683,27 @@
     ],
     "region": "Hoenn",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 359,
+    "name": "Absol mega",
+    "types": [
+      "Dark"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 359,
+    "name": "Absol mega z",
+    "types": [
+      "Dark",
+      "Ghost"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 360,
@@ -3485,6 +4732,16 @@
     ],
     "region": "Hoenn",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 362,
+    "name": "Glalie mega",
+    "types": [
+      "Ice"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 363,
@@ -3591,6 +4848,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 373,
+    "name": "Salamence mega",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 374,
     "name": "Beldum",
     "types": [
@@ -3619,6 +4887,17 @@
     ],
     "region": "Hoenn",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 376,
+    "name": "Metagross mega",
+    "types": [
+      "Steel",
+      "Psychic"
+    ],
+    "region": "Hoenn",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 377,
@@ -3662,6 +4941,18 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 380,
+    "name": "Latias mega",
+    "types": [
+      "Dragon",
+      "Psychic"
+    ],
+    "region": "Hoenn",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 381,
     "name": "Latios",
     "types": [
@@ -3673,8 +4964,30 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 381,
+    "name": "Latios mega",
+    "types": [
+      "Dragon",
+      "Psychic"
+    ],
+    "region": "Hoenn",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 382,
     "name": "Kyogre",
+    "types": [
+      "Water"
+    ],
+    "region": "Hoenn",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 382,
+    "name": "Kyogre primal",
     "types": [
       "Water"
     ],
@@ -3693,6 +5006,17 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 383,
+    "name": "Groudon primal",
+    "types": [
+      "Ground",
+      "Fire"
+    ],
+    "region": "Hoenn",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 384,
     "name": "Rayquaza",
     "types": [
@@ -3702,6 +5026,18 @@
     "region": "Hoenn",
     "category": "Legendary",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 384,
+    "name": "Rayquaza mega",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
+    "region": "Hoenn",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 385,
@@ -3717,6 +5053,36 @@
   {
     "id": 386,
     "name": "Deoxys normal",
+    "types": [
+      "Psychic"
+    ],
+    "region": "Hoenn",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 386,
+    "name": "Deoxys attack",
+    "types": [
+      "Psychic"
+    ],
+    "region": "Hoenn",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 386,
+    "name": "Deoxys defense",
+    "types": [
+      "Psychic"
+    ],
+    "region": "Hoenn",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 386,
+    "name": "Deoxys speed",
     "types": [
       "Psychic"
     ],
@@ -3847,6 +5213,17 @@
     ],
     "region": "Sinnoh",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 398,
+    "name": "Staraptor mega",
+    "types": [
+      "Fighting",
+      "Flying"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 399,
@@ -3995,6 +5372,26 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 413,
+    "name": "Wormadam sandy",
+    "types": [
+      "Bug",
+      "Ground"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 413,
+    "name": "Wormadam trash",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage"
+  },
+  {
     "id": 414,
     "name": "Mothim",
     "types": [
@@ -4134,6 +5531,17 @@
     ],
     "region": "Sinnoh",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 428,
+    "name": "Lopunny mega",
+    "types": [
+      "Normal",
+      "Fighting"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 429,
@@ -4304,6 +5712,27 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 445,
+    "name": "Garchomp mega",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 445,
+    "name": "Garchomp mega z",
+    "types": [
+      "Dragon"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 446,
     "name": "Munchlax",
     "types": [
@@ -4332,6 +5761,28 @@
     ],
     "region": "Sinnoh",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 448,
+    "name": "Lucario mega",
+    "types": [
+      "Fighting",
+      "Steel"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 448,
+    "name": "Lucario mega z",
+    "types": [
+      "Fighting",
+      "Steel"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 449,
@@ -4448,6 +5899,17 @@
     ],
     "region": "Sinnoh",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 460,
+    "name": "Abomasnow mega",
+    "types": [
+      "Grass",
+      "Ice"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 461,
@@ -4593,6 +6055,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 475,
+    "name": "Gallade mega",
+    "types": [
+      "Psychic",
+      "Fighting"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 476,
     "name": "Probopass",
     "types": [
@@ -4622,11 +6095,72 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 478,
+    "name": "Froslass mega",
+    "types": [
+      "Ice",
+      "Ghost"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 479,
     "name": "Rotom",
     "types": [
       "Electric",
       "Ghost"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 479,
+    "name": "Rotom heat",
+    "types": [
+      "Electric",
+      "Fire"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 479,
+    "name": "Rotom wash",
+    "types": [
+      "Electric",
+      "Water"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 479,
+    "name": "Rotom frost",
+    "types": [
+      "Electric",
+      "Ice"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 479,
+    "name": "Rotom fan",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
+    "region": "Sinnoh",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 479,
+    "name": "Rotom mow",
+    "types": [
+      "Electric",
+      "Grass"
     ],
     "region": "Sinnoh",
     "evolutionMethod": "No Evolution Line"
@@ -4673,8 +6207,30 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 483,
+    "name": "Dialga origin",
+    "types": [
+      "Steel",
+      "Dragon"
+    ],
+    "region": "Sinnoh",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 484,
     "name": "Palkia",
+    "types": [
+      "Water",
+      "Dragon"
+    ],
+    "region": "Sinnoh",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 484,
+    "name": "Palkia origin",
     "types": [
       "Water",
       "Dragon"
@@ -4695,6 +6251,18 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 485,
+    "name": "Heatran mega",
+    "types": [
+      "Fire",
+      "Steel"
+    ],
+    "region": "Sinnoh",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 486,
     "name": "Regigigas",
     "types": [
@@ -4707,6 +6275,17 @@
   {
     "id": 487,
     "name": "Giratina altered",
+    "types": [
+      "Ghost",
+      "Dragon"
+    ],
+    "region": "Sinnoh",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 487,
+    "name": "Giratina origin",
     "types": [
       "Ghost",
       "Dragon"
@@ -4756,10 +6335,32 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 491,
+    "name": "Darkrai mega",
+    "types": [
+      "Dark"
+    ],
+    "region": "Sinnoh",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 492,
     "name": "Shaymin land",
     "types": [
       "Grass"
+    ],
+    "region": "Sinnoh",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 492,
+    "name": "Shaymin sky",
+    "types": [
+      "Grass",
+      "Flying"
     ],
     "region": "Sinnoh",
     "category": "Mythical",
@@ -4849,6 +6450,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 500,
+    "name": "Emboar mega",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 501,
     "name": "Oshawott",
     "types": [
@@ -4876,6 +6488,16 @@
     ],
     "region": "Unova",
     "category": "Starter",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 503,
+    "name": "Samurott hisui",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "region": "Hisui",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -5128,6 +6750,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 530,
+    "name": "Excadrill mega",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 531,
     "name": "Audino",
     "types": [
@@ -5135,6 +6768,17 @@
     ],
     "region": "Unova",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 531,
+    "name": "Audino mega",
+    "types": [
+      "Normal",
+      "Fairy"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 532,
@@ -5271,6 +6915,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 545,
+    "name": "Scolipede mega",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 546,
     "name": "Cottonee",
     "types": [
@@ -5309,8 +6964,36 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 549,
+    "name": "Lilligant hisui",
+    "types": [
+      "Grass",
+      "Fighting"
+    ],
+    "region": "Hisui",
+    "evolutionMethod": "Final Stage"
+  },
+  {
     "id": 550,
     "name": "Basculin red striped",
+    "types": [
+      "Water"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 550,
+    "name": "Basculin blue striped",
+    "types": [
+      "Water"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 550,
+    "name": "Basculin white striped",
     "types": [
       "Water"
     ],
@@ -5357,12 +7040,50 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 554,
+    "name": "Darumaka galar",
+    "types": [
+      "Ice"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 555,
     "name": "Darmanitan standard",
     "types": [
       "Fire"
     ],
     "region": "Unova",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 555,
+    "name": "Darmanitan zen",
+    "types": [
+      "Fire",
+      "Psychic"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 555,
+    "name": "Darmanitan galar standard",
+    "types": [
+      "Ice"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 555,
+    "name": "Darmanitan galar zen",
+    "types": [
+      "Ice",
+      "Fire"
+    ],
+    "region": "Galar",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -5415,6 +7136,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 560,
+    "name": "Scrafty mega",
+    "types": [
+      "Dark",
+      "Fighting"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 561,
     "name": "Sigilyph",
     "types": [
@@ -5431,6 +7163,16 @@
       "Ghost"
     ],
     "region": "Unova",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 562,
+    "name": "Yamask galar",
+    "types": [
+      "Ground",
+      "Ghost"
+    ],
+    "region": "Galar",
     "evolutionMethod": "First Stage"
   },
   {
@@ -5505,6 +7247,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 569,
+    "name": "Garbodor gmax",
+    "types": [
+      "Poison"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 570,
     "name": "Zorua",
     "types": [
@@ -5514,12 +7266,32 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 570,
+    "name": "Zorua hisui",
+    "types": [
+      "Normal",
+      "Ghost"
+    ],
+    "region": "Hisui",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 571,
     "name": "Zoroark",
     "types": [
       "Dark"
     ],
     "region": "Unova",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 571,
+    "name": "Zoroark hisui",
+    "types": [
+      "Normal",
+      "Ghost"
+    ],
+    "region": "Hisui",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -5834,6 +7606,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 604,
+    "name": "Eelektross mega",
+    "types": [
+      "Electric"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 605,
     "name": "Elgyem",
     "types": [
@@ -5880,6 +7662,17 @@
     ],
     "region": "Unova",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 609,
+    "name": "Chandelure mega",
+    "types": [
+      "Ghost",
+      "Fire"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 610,
@@ -5964,6 +7757,16 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 618,
+    "name": "Stunfisk galar",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 619,
     "name": "Mienfoo",
     "types": [
@@ -6009,6 +7812,17 @@
     ],
     "region": "Unova",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 623,
+    "name": "Golurk mega",
+    "types": [
+      "Ground",
+      "Ghost"
+    ],
+    "region": "Unova",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 624,
@@ -6057,6 +7871,16 @@
       "Flying"
     ],
     "region": "Unova",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 628,
+    "name": "Braviary hisui",
+    "types": [
+      "Psychic",
+      "Flying"
+    ],
+    "region": "Hisui",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -6192,8 +8016,29 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 641,
+    "name": "Tornadus therian",
+    "types": [
+      "Flying"
+    ],
+    "region": "Unova",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 642,
     "name": "Thundurus incarnate",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
+    "region": "Unova",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 642,
+    "name": "Thundurus therian",
     "types": [
       "Electric",
       "Flying"
@@ -6236,8 +8081,41 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 645,
+    "name": "Landorus therian",
+    "types": [
+      "Ground",
+      "Flying"
+    ],
+    "region": "Unova",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 646,
     "name": "Kyurem",
+    "types": [
+      "Dragon",
+      "Ice"
+    ],
+    "region": "Unova",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 646,
+    "name": "Kyurem black",
+    "types": [
+      "Dragon",
+      "Ice"
+    ],
+    "region": "Unova",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 646,
+    "name": "Kyurem white",
     "types": [
       "Dragon",
       "Ice"
@@ -6258,11 +8136,33 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 647,
+    "name": "Keldeo resolute",
+    "types": [
+      "Water",
+      "Fighting"
+    ],
+    "region": "Unova",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 648,
     "name": "Meloetta aria",
     "types": [
       "Normal",
       "Psychic"
+    ],
+    "region": "Unova",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 648,
+    "name": "Meloetta pirouette",
+    "types": [
+      "Normal",
+      "Fighting"
     ],
     "region": "Unova",
     "category": "Mythical",
@@ -6311,6 +8211,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 652,
+    "name": "Chesnaught mega",
+    "types": [
+      "Grass",
+      "Fighting"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 653,
     "name": "Fennekin",
     "types": [
@@ -6342,6 +8253,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 655,
+    "name": "Delphox mega",
+    "types": [
+      "Fire",
+      "Psychic"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 656,
     "name": "Froakie",
     "types": [
@@ -6371,6 +8293,37 @@
     "region": "Kalos",
     "category": "Starter",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 658,
+    "name": "Greninja battle bond",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 658,
+    "name": "Greninja ash",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 658,
+    "name": "Greninja mega",
+    "types": [
+      "Water",
+      "Dark"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 659,
@@ -6470,6 +8423,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 668,
+    "name": "Pyroar mega",
+    "types": [
+      "Fire",
+      "Normal"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 669,
     "name": "Flabebe",
     "types": [
@@ -6486,6 +8450,25 @@
     ],
     "region": "Kalos",
     "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 670,
+    "name": "Floette eternal",
+    "types": [
+      "Fairy"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
+    "id": 670,
+    "name": "Floette mega",
+    "types": [
+      "Fairy"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Middle Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 671,
@@ -6561,6 +8544,25 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 678,
+    "name": "Meowstic female",
+    "types": [
+      "Psychic"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 678,
+    "name": "Meowstic mega",
+    "types": [
+      "Psychic"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 679,
     "name": "Honedge",
     "types": [
@@ -6583,6 +8585,16 @@
   {
     "id": 681,
     "name": "Aegislash shield",
+    "types": [
+      "Steel",
+      "Ghost"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 681,
+    "name": "Aegislash blade",
     "types": [
       "Steel",
       "Ghost"
@@ -6647,6 +8659,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 687,
+    "name": "Malamar mega",
+    "types": [
+      "Dark",
+      "Psychic"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 688,
     "name": "Binacle",
     "types": [
@@ -6667,6 +8690,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 689,
+    "name": "Barbaracle mega",
+    "types": [
+      "Rock",
+      "Fighting"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 690,
     "name": "Skrelp",
     "types": [
@@ -6685,6 +8719,17 @@
     ],
     "region": "Kalos",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 691,
+    "name": "Dragalge mega",
+    "types": [
+      "Poison",
+      "Dragon"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 692,
@@ -6788,6 +8833,17 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 701,
+    "name": "Hawlucha mega",
+    "types": [
+      "Fighting",
+      "Flying"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 702,
     "name": "Dedenne",
     "types": [
@@ -6826,12 +8882,32 @@
     "evolutionMethod": "Middle Stage"
   },
   {
+    "id": 705,
+    "name": "Sliggoo hisui",
+    "types": [
+      "Steel",
+      "Dragon"
+    ],
+    "region": "Hisui",
+    "evolutionMethod": "Middle Stage"
+  },
+  {
     "id": 706,
     "name": "Goodra",
     "types": [
       "Dragon"
     ],
     "region": "Kalos",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 706,
+    "name": "Goodra hisui",
+    "types": [
+      "Steel",
+      "Dragon"
+    ],
+    "region": "Hisui",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -6875,8 +8951,68 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 710,
+    "name": "Pumpkaboo small",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 710,
+    "name": "Pumpkaboo large",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 710,
+    "name": "Pumpkaboo super",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 711,
     "name": "Gourgeist average",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 711,
+    "name": "Gourgeist small",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 711,
+    "name": "Gourgeist large",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
+    "region": "Kalos",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 711,
+    "name": "Gourgeist super",
     "types": [
       "Ghost",
       "Grass"
@@ -6900,6 +9036,16 @@
       "Ice"
     ],
     "region": "Kalos",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 713,
+    "name": "Avalugg hisui",
+    "types": [
+      "Ice",
+      "Rock"
+    ],
+    "region": "Hisui",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -6955,6 +9101,62 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 718,
+    "name": "Zygarde 10 power construct",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
+    "region": "Kalos",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 718,
+    "name": "Zygarde 50 power construct",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
+    "region": "Kalos",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 718,
+    "name": "Zygarde complete",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
+    "region": "Kalos",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 718,
+    "name": "Zygarde 10",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
+    "region": "Kalos",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 718,
+    "name": "Zygarde mega",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
+    "region": "Kalos",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 719,
     "name": "Diancie",
     "types": [
@@ -6966,11 +9168,34 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 719,
+    "name": "Diancie mega",
+    "types": [
+      "Rock",
+      "Fairy"
+    ],
+    "region": "Kalos",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 720,
     "name": "Hoopa",
     "types": [
       "Psychic",
       "Ghost"
+    ],
+    "region": "Kalos",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 720,
+    "name": "Hoopa unbound",
+    "types": [
+      "Psychic",
+      "Dark"
     ],
     "region": "Kalos",
     "category": "Mythical",
@@ -7018,6 +9243,16 @@
     ],
     "region": "Alola",
     "category": "Starter",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 724,
+    "name": "Decidueye hisui",
+    "types": [
+      "Grass",
+      "Fighting"
+    ],
+    "region": "Hisui",
     "evolutionMethod": "Final Stage"
   },
   {
@@ -7179,10 +9414,51 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 740,
+    "name": "Crabominable mega",
+    "types": [
+      "Fighting",
+      "Ice"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 741,
     "name": "Oricorio baile",
     "types": [
       "Fire",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 741,
+    "name": "Oricorio pom pom",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 741,
+    "name": "Oricorio pau",
+    "types": [
+      "Psychic",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 741,
+    "name": "Oricorio sensu",
+    "types": [
+      "Ghost",
       "Flying"
     ],
     "region": "Alola",
@@ -7218,6 +9494,15 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 744,
+    "name": "Rockruff own tempo",
+    "types": [
+      "Rock"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "First Stage"
+  },
+  {
     "id": 745,
     "name": "Lycanroc midday",
     "types": [
@@ -7227,8 +9512,35 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 745,
+    "name": "Lycanroc midnight",
+    "types": [
+      "Rock"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 745,
+    "name": "Lycanroc dusk",
+    "types": [
+      "Rock"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "Final Stage"
+  },
+  {
     "id": 746,
     "name": "Wishiwashi solo",
+    "types": [
+      "Water"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 746,
+    "name": "Wishiwashi school",
     "types": [
       "Water"
     ],
@@ -7447,6 +9759,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 768,
+    "name": "Golisopod mega",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 769,
     "name": "Sandygast",
     "types": [
@@ -7506,6 +9829,136 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 774,
+    "name": "Minior orange meteor",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior yellow meteor",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior green meteor",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior blue meteor",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior indigo meteor",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior violet meteor",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior red",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior orange",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior yellow",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior green",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior blue",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior indigo",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior violet",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 775,
     "name": "Komala",
     "types": [
@@ -7545,6 +9998,36 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 778,
+    "name": "Mimikyu busted",
+    "types": [
+      "Ghost",
+      "Fairy"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 778,
+    "name": "Mimikyu totem disguised",
+    "types": [
+      "Ghost",
+      "Fairy"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 778,
+    "name": "Mimikyu totem busted",
+    "types": [
+      "Ghost",
+      "Fairy"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 779,
     "name": "Bruxish",
     "types": [
@@ -7563,6 +10046,17 @@
     ],
     "region": "Alola",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 780,
+    "name": "Drampa mega",
+    "types": [
+      "Normal",
+      "Dragon"
+    ],
+    "region": "Alola",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 781,
@@ -7776,6 +10270,39 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 800,
+    "name": "Necrozma dusk",
+    "types": [
+      "Psychic",
+      "Steel"
+    ],
+    "region": "Alola",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 800,
+    "name": "Necrozma dawn",
+    "types": [
+      "Psychic",
+      "Ghost"
+    ],
+    "region": "Alola",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 800,
+    "name": "Necrozma ultra",
+    "types": [
+      "Psychic",
+      "Dragon"
+    ],
+    "region": "Alola",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 801,
     "name": "Magearna",
     "types": [
@@ -7785,6 +10312,41 @@
     "region": "Alola",
     "category": "Mythical",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 801,
+    "name": "Magearna original",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
+    "region": "Alola",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 801,
+    "name": "Magearna mega",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
+    "region": "Alola",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 801,
+    "name": "Magearna original mega",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
+    "region": "Alola",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 802,
@@ -7851,6 +10413,17 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 807,
+    "name": "Zeraora mega",
+    "types": [
+      "Electric"
+    ],
+    "region": "Alola",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 808,
     "name": "Meltan",
     "types": [
@@ -7869,6 +10442,17 @@
     "region": "Unknown",
     "category": "Mythical",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 809,
+    "name": "Melmetal gmax",
+    "types": [
+      "Steel"
+    ],
+    "region": "Unknown",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 810,
@@ -7901,6 +10485,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 812,
+    "name": "Rillaboom gmax",
+    "types": [
+      "Grass"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 813,
     "name": "Scorbunny",
     "types": [
@@ -7931,6 +10525,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 815,
+    "name": "Cinderace gmax",
+    "types": [
+      "Fire"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 816,
     "name": "Sobble",
     "types": [
@@ -7959,6 +10563,16 @@
     "region": "Galar",
     "category": "Starter",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 818,
+    "name": "Inteleon gmax",
+    "types": [
+      "Water"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 819,
@@ -8007,6 +10621,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 823,
+    "name": "Corviknight gmax",
+    "types": [
+      "Flying",
+      "Steel"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 824,
     "name": "Blipbug",
     "types": [
@@ -8034,6 +10659,17 @@
     ],
     "region": "Galar",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 826,
+    "name": "Orbeetle gmax",
+    "types": [
+      "Bug",
+      "Psychic"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 827,
@@ -8109,6 +10745,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 834,
+    "name": "Drednaw gmax",
+    "types": [
+      "Water",
+      "Rock"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 835,
     "name": "Yamper",
     "types": [
@@ -8156,6 +10803,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 839,
+    "name": "Coalossal gmax",
+    "types": [
+      "Rock",
+      "Fire"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 840,
     "name": "Applin",
     "types": [
@@ -8176,6 +10834,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 841,
+    "name": "Flapple gmax",
+    "types": [
+      "Grass",
+      "Dragon"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 842,
     "name": "Appletun",
     "types": [
@@ -8184,6 +10853,17 @@
     ],
     "region": "Galar",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 842,
+    "name": "Appletun gmax",
+    "types": [
+      "Grass",
+      "Dragon"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 843,
@@ -8204,8 +10884,38 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 844,
+    "name": "Sandaconda gmax",
+    "types": [
+      "Ground"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 845,
     "name": "Cramorant",
+    "types": [
+      "Flying",
+      "Water"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 845,
+    "name": "Cramorant gulping",
+    "types": [
+      "Flying",
+      "Water"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 845,
+    "name": "Cramorant gorging",
     "types": [
       "Flying",
       "Water"
@@ -8253,6 +10963,38 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 849,
+    "name": "Toxtricity low key",
+    "types": [
+      "Electric",
+      "Poison"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 849,
+    "name": "Toxtricity amped gmax",
+    "types": [
+      "Electric",
+      "Poison"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
+    "id": 849,
+    "name": "Toxtricity low key gmax",
+    "types": [
+      "Electric",
+      "Poison"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 850,
     "name": "Sizzlipede",
     "types": [
@@ -8271,6 +11013,17 @@
     ],
     "region": "Galar",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 851,
+    "name": "Centiskorch gmax",
+    "types": [
+      "Fire",
+      "Bug"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 852,
@@ -8337,6 +11090,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 858,
+    "name": "Hatterene gmax",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 859,
     "name": "Impidimp",
     "types": [
@@ -8365,6 +11129,17 @@
     ],
     "region": "Galar",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 861,
+    "name": "Grimmsnarl gmax",
+    "types": [
+      "Dark",
+      "Fairy"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 862,
@@ -8442,6 +11217,16 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 869,
+    "name": "Alcremie gmax",
+    "types": [
+      "Fairy"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 870,
     "name": "Falinks",
     "types": [
@@ -8449,6 +11234,16 @@
     ],
     "region": "Galar",
     "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 870,
+    "name": "Falinks mega",
+    "types": [
+      "Fighting"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 871,
@@ -8498,6 +11293,15 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 875,
+    "name": "Eiscue noice",
+    "types": [
+      "Ice"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 876,
     "name": "Indeedee male",
     "types": [
@@ -8508,8 +11312,28 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 876,
+    "name": "Indeedee female",
+    "types": [
+      "Psychic",
+      "Normal"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 877,
     "name": "Morpeko full belly",
+    "types": [
+      "Electric",
+      "Dark"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 877,
+    "name": "Morpeko hangry",
     "types": [
       "Electric",
       "Dark"
@@ -8534,6 +11358,16 @@
     ],
     "region": "Galar",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 879,
+    "name": "Copperajah gmax",
+    "types": [
+      "Steel"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
   },
   {
     "id": 880,
@@ -8590,6 +11424,17 @@
     "evolutionMethod": "First Stage"
   },
   {
+    "id": 884,
+    "name": "Duraludon gmax",
+    "types": [
+      "Steel",
+      "Dragon"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "First Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 885,
     "name": "Dreepy",
     "types": [
@@ -8630,6 +11475,17 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 888,
+    "name": "Zacian crowned",
+    "types": [
+      "Fairy",
+      "Steel"
+    ],
+    "region": "Galar",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 889,
     "name": "Zamazenta",
     "types": [
@@ -8640,8 +11496,30 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 889,
+    "name": "Zamazenta crowned",
+    "types": [
+      "Fighting",
+      "Steel"
+    ],
+    "region": "Galar",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 890,
     "name": "Eternatus",
+    "types": [
+      "Poison",
+      "Dragon"
+    ],
+    "region": "Galar",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 890,
+    "name": "Eternatus eternamax",
     "types": [
       "Poison",
       "Dragon"
@@ -8672,8 +11550,54 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 892,
+    "name": "Urshifu rapid strike",
+    "types": [
+      "Fighting",
+      "Water"
+    ],
+    "region": "Galar",
+    "category": "Legendary",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 892,
+    "name": "Urshifu single strike gmax",
+    "types": [
+      "Fighting",
+      "Dark"
+    ],
+    "region": "Galar",
+    "category": "Legendary",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
+    "id": 892,
+    "name": "Urshifu rapid strike gmax",
+    "types": [
+      "Fighting",
+      "Water"
+    ],
+    "region": "Galar",
+    "category": "Legendary",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Gigantamax"
+  },
+  {
     "id": 893,
     "name": "Zarude",
+    "types": [
+      "Dark",
+      "Grass"
+    ],
+    "region": "Galar",
+    "category": "Mythical",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 893,
+    "name": "Zarude dada",
     "types": [
       "Dark",
       "Grass"
@@ -8734,6 +11658,28 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 898,
+    "name": "Calyrex ice",
+    "types": [
+      "Psychic",
+      "Ice"
+    ],
+    "region": "Galar",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 898,
+    "name": "Calyrex shadow",
+    "types": [
+      "Psychic",
+      "Ghost"
+    ],
+    "region": "Galar",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 899,
     "name": "Wyrdeer",
     "types": [
@@ -8764,8 +11710,28 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 901,
+    "name": "Ursaluna bloodmoon",
+    "types": [
+      "Ground",
+      "Normal"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage"
+  },
+  {
     "id": 902,
     "name": "Basculegion male",
+    "types": [
+      "Water",
+      "Ghost"
+    ],
+    "region": "Galar",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 902,
+    "name": "Basculegion female",
     "types": [
       "Water",
       "Ghost"
@@ -8796,6 +11762,17 @@
   {
     "id": 905,
     "name": "Enamorus incarnate",
+    "types": [
+      "Fairy",
+      "Flying"
+    ],
+    "region": "Galar",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 905,
+    "name": "Enamorus therian",
     "types": [
       "Fairy",
       "Flying"
@@ -8916,6 +11893,15 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 916,
+    "name": "Oinkologne female",
+    "types": [
+      "Normal"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "Final Stage"
+  },
+  {
     "id": 917,
     "name": "Tarountula",
     "types": [
@@ -9000,6 +11986,15 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 925,
+    "name": "Maushold family of three",
+    "types": [
+      "Normal"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "Final Stage"
+  },
+  {
     "id": 926,
     "name": "Fidough",
     "types": [
@@ -9050,6 +12045,36 @@
   {
     "id": 931,
     "name": "Squawkabilly green plumage",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 931,
+    "name": "Squawkabilly blue plumage",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 931,
+    "name": "Squawkabilly yellow plumage",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 931,
+    "name": "Squawkabilly white plumage",
     "types": [
       "Normal",
       "Flying"
@@ -9258,6 +12283,17 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 952,
+    "name": "Scovillain mega",
+    "types": [
+      "Grass",
+      "Fire"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 953,
     "name": "Rellor",
     "types": [
@@ -9371,6 +12407,15 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 964,
+    "name": "Palafin hero",
+    "types": [
+      "Water"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "Final Stage"
+  },
+  {
     "id": 965,
     "name": "Varoom",
     "types": [
@@ -9428,6 +12473,17 @@
     ],
     "region": "Paldea",
     "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 970,
+    "name": "Glimmora mega",
+    "types": [
+      "Rock",
+      "Poison"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
   },
   {
     "id": 971,
@@ -9505,6 +12561,59 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 978,
+    "name": "Tatsugiri droopy",
+    "types": [
+      "Dragon",
+      "Water"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 978,
+    "name": "Tatsugiri stretchy",
+    "types": [
+      "Dragon",
+      "Water"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 978,
+    "name": "Tatsugiri curly mega",
+    "types": [
+      "Dragon",
+      "Water"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 978,
+    "name": "Tatsugiri droopy mega",
+    "types": [
+      "Dragon",
+      "Water"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
+    "id": 978,
+    "name": "Tatsugiri stretchy mega",
+    "types": [
+      "Dragon",
+      "Water"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "No Evolution Line",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 979,
     "name": "Annihilape",
     "types": [
@@ -9537,6 +12646,15 @@
   {
     "id": 982,
     "name": "Dudunsparce two segment",
+    "types": [
+      "Normal"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "Final Stage"
+  },
+  {
+    "id": 982,
+    "name": "Dudunsparce three segment",
     "types": [
       "Normal"
     ],
@@ -9716,8 +12834,28 @@
     "evolutionMethod": "Final Stage"
   },
   {
+    "id": 998,
+    "name": "Baxcalibur mega",
+    "types": [
+      "Dragon",
+      "Ice"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "Final Stage",
+    "specialForm": "Mega Evolution"
+  },
+  {
     "id": 999,
     "name": "Gimmighoul",
+    "types": [
+      "Ghost"
+    ],
+    "region": "Paldea",
+    "evolutionMethod": "First Stage"
+  },
+  {
+    "id": 999,
+    "name": "Gimmighoul roaming",
     "types": [
       "Ghost"
     ],
@@ -9918,6 +13056,39 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
+    "id": 1017,
+    "name": "Ogerpon wellspring mask",
+    "types": [
+      "Grass",
+      "Water"
+    ],
+    "region": "Paldea",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 1017,
+    "name": "Ogerpon hearthflame mask",
+    "types": [
+      "Grass",
+      "Fire"
+    ],
+    "region": "Paldea",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
+    "id": 1017,
+    "name": "Ogerpon cornerstone mask",
+    "types": [
+      "Grass",
+      "Rock"
+    ],
+    "region": "Paldea",
+    "category": "Legendary",
+    "evolutionMethod": "No Evolution Line"
+  },
+  {
     "id": 1018,
     "name": "Archaludon",
     "types": [
@@ -9992,2655 +13163,7 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
-    "id": 1025,
-    "name": "Pecharunt",
-    "types": [
-      "Poison",
-      "Ghost"
-    ],
-    "region": "Paldea",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10001,
-    "name": "Deoxys attack",
-    "types": [
-      "Psychic"
-    ],
-    "region": "Hoenn",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10002,
-    "name": "Deoxys defense",
-    "types": [
-      "Psychic"
-    ],
-    "region": "Hoenn",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10003,
-    "name": "Deoxys speed",
-    "types": [
-      "Psychic"
-    ],
-    "region": "Hoenn",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10004,
-    "name": "Wormadam sandy",
-    "types": [
-      "Bug",
-      "Ground"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10005,
-    "name": "Wormadam trash",
-    "types": [
-      "Bug",
-      "Steel"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10006,
-    "name": "Shaymin sky",
-    "types": [
-      "Grass",
-      "Flying"
-    ],
-    "region": "Sinnoh",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10007,
-    "name": "Giratina origin",
-    "types": [
-      "Ghost",
-      "Dragon"
-    ],
-    "region": "Sinnoh",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10008,
-    "name": "Rotom heat",
-    "types": [
-      "Electric",
-      "Fire"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10009,
-    "name": "Rotom wash",
-    "types": [
-      "Electric",
-      "Water"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10010,
-    "name": "Rotom frost",
-    "types": [
-      "Electric",
-      "Ice"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10011,
-    "name": "Rotom fan",
-    "types": [
-      "Electric",
-      "Flying"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10012,
-    "name": "Rotom mow",
-    "types": [
-      "Electric",
-      "Grass"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10013,
-    "name": "Castform sunny",
-    "types": [
-      "Fire"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10014,
-    "name": "Castform rainy",
-    "types": [
-      "Water"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10015,
-    "name": "Castform snowy",
-    "types": [
-      "Ice"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10016,
-    "name": "Basculin blue striped",
-    "types": [
-      "Water"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10017,
-    "name": "Darmanitan zen",
-    "types": [
-      "Fire",
-      "Psychic"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10018,
-    "name": "Meloetta pirouette",
-    "types": [
-      "Normal",
-      "Fighting"
-    ],
-    "region": "Unova",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10019,
-    "name": "Tornadus therian",
-    "types": [
-      "Flying"
-    ],
-    "region": "Unova",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10020,
-    "name": "Thundurus therian",
-    "types": [
-      "Electric",
-      "Flying"
-    ],
-    "region": "Unova",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10021,
-    "name": "Landorus therian",
-    "types": [
-      "Ground",
-      "Flying"
-    ],
-    "region": "Unova",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10022,
-    "name": "Kyurem black",
-    "types": [
-      "Dragon",
-      "Ice"
-    ],
-    "region": "Unova",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10023,
-    "name": "Kyurem white",
-    "types": [
-      "Dragon",
-      "Ice"
-    ],
-    "region": "Unova",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10024,
-    "name": "Keldeo resolute",
-    "types": [
-      "Water",
-      "Fighting"
-    ],
-    "region": "Unova",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10025,
-    "name": "Meowstic female",
-    "types": [
-      "Psychic"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10026,
-    "name": "Aegislash blade",
-    "types": [
-      "Steel",
-      "Ghost"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10027,
-    "name": "Pumpkaboo small",
-    "types": [
-      "Ghost",
-      "Grass"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10028,
-    "name": "Pumpkaboo large",
-    "types": [
-      "Ghost",
-      "Grass"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10029,
-    "name": "Pumpkaboo super",
-    "types": [
-      "Ghost",
-      "Grass"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10030,
-    "name": "Gourgeist small",
-    "types": [
-      "Ghost",
-      "Grass"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10031,
-    "name": "Gourgeist large",
-    "types": [
-      "Ghost",
-      "Grass"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10032,
-    "name": "Gourgeist super",
-    "types": [
-      "Ghost",
-      "Grass"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10033,
-    "name": "Venusaur mega",
-    "types": [
-      "Grass",
-      "Poison"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10034,
-    "name": "Charizard mega x",
-    "types": [
-      "Fire",
-      "Dragon"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10035,
-    "name": "Charizard mega y",
-    "types": [
-      "Fire",
-      "Flying"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10036,
-    "name": "Blastoise mega",
-    "types": [
-      "Water"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10037,
-    "name": "Alakazam mega",
-    "types": [
-      "Psychic"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10038,
-    "name": "Gengar mega",
-    "types": [
-      "Ghost",
-      "Poison"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10039,
-    "name": "Kangaskhan mega",
-    "types": [
-      "Normal"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10040,
-    "name": "Pinsir mega",
-    "types": [
-      "Bug",
-      "Flying"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10041,
-    "name": "Gyarados mega",
-    "types": [
-      "Water",
-      "Dark"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10042,
-    "name": "Aerodactyl mega",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10043,
-    "name": "Mewtwo mega x",
-    "types": [
-      "Psychic",
-      "Fighting"
-    ],
-    "region": "Kanto",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10044,
-    "name": "Mewtwo mega y",
-    "types": [
-      "Psychic"
-    ],
-    "region": "Kanto",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10045,
-    "name": "Ampharos mega",
-    "types": [
-      "Electric",
-      "Dragon"
-    ],
-    "region": "Johto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10046,
-    "name": "Scizor mega",
-    "types": [
-      "Bug",
-      "Steel"
-    ],
-    "region": "Johto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10047,
-    "name": "Heracross mega",
-    "types": [
-      "Bug",
-      "Fighting"
-    ],
-    "region": "Johto",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10048,
-    "name": "Houndoom mega",
-    "types": [
-      "Dark",
-      "Fire"
-    ],
-    "region": "Johto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10049,
-    "name": "Tyranitar mega",
-    "types": [
-      "Rock",
-      "Dark"
-    ],
-    "region": "Johto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10050,
-    "name": "Blaziken mega",
-    "types": [
-      "Fire",
-      "Fighting"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10051,
-    "name": "Gardevoir mega",
-    "types": [
-      "Psychic",
-      "Fairy"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10052,
-    "name": "Mawile mega",
-    "types": [
-      "Steel",
-      "Fairy"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10053,
-    "name": "Aggron mega",
-    "types": [
-      "Steel"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10054,
-    "name": "Medicham mega",
-    "types": [
-      "Fighting",
-      "Psychic"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10055,
-    "name": "Manectric mega",
-    "types": [
-      "Electric"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10056,
-    "name": "Banette mega",
-    "types": [
-      "Ghost"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10057,
-    "name": "Absol mega",
-    "types": [
-      "Dark"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10058,
-    "name": "Garchomp mega",
-    "types": [
-      "Dragon",
-      "Ground"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10059,
-    "name": "Lucario mega",
-    "types": [
-      "Fighting",
-      "Steel"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10060,
-    "name": "Abomasnow mega",
-    "types": [
-      "Grass",
-      "Ice"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10061,
-    "name": "Floette eternal",
-    "types": [
-      "Fairy"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10062,
-    "name": "Latias mega",
-    "types": [
-      "Dragon",
-      "Psychic"
-    ],
-    "region": "Hoenn",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10063,
-    "name": "Latios mega",
-    "types": [
-      "Dragon",
-      "Psychic"
-    ],
-    "region": "Hoenn",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10064,
-    "name": "Swampert mega",
-    "types": [
-      "Water",
-      "Ground"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10065,
-    "name": "Sceptile mega",
-    "types": [
-      "Grass",
-      "Dragon"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10066,
-    "name": "Sableye mega",
-    "types": [
-      "Dark",
-      "Ghost"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10067,
-    "name": "Altaria mega",
-    "types": [
-      "Dragon",
-      "Fairy"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10068,
-    "name": "Gallade mega",
-    "types": [
-      "Psychic",
-      "Fighting"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10069,
-    "name": "Audino mega",
-    "types": [
-      "Normal",
-      "Fairy"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10070,
-    "name": "Sharpedo mega",
-    "types": [
-      "Water",
-      "Dark"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10071,
-    "name": "Slowbro mega",
-    "types": [
-      "Water",
-      "Psychic"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10072,
-    "name": "Steelix mega",
-    "types": [
-      "Steel",
-      "Ground"
-    ],
-    "region": "Johto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10073,
-    "name": "Pidgeot mega",
-    "types": [
-      "Normal",
-      "Flying"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10074,
-    "name": "Glalie mega",
-    "types": [
-      "Ice"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10075,
-    "name": "Diancie mega",
-    "types": [
-      "Rock",
-      "Fairy"
-    ],
-    "region": "Kalos",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10076,
-    "name": "Metagross mega",
-    "types": [
-      "Steel",
-      "Psychic"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10077,
-    "name": "Kyogre primal",
-    "types": [
-      "Water"
-    ],
-    "region": "Hoenn",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10078,
-    "name": "Groudon primal",
-    "types": [
-      "Ground",
-      "Fire"
-    ],
-    "region": "Hoenn",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10079,
-    "name": "Rayquaza mega",
-    "types": [
-      "Dragon",
-      "Flying"
-    ],
-    "region": "Hoenn",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10080,
-    "name": "Pikachu rock star",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10081,
-    "name": "Pikachu belle",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10082,
-    "name": "Pikachu pop star",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10083,
-    "name": "Pikachu phd",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10084,
-    "name": "Pikachu libre",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10085,
-    "name": "Pikachu cosplay",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10086,
-    "name": "Hoopa unbound",
-    "types": [
-      "Psychic",
-      "Dark"
-    ],
-    "region": "Kalos",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10087,
-    "name": "Camerupt mega",
-    "types": [
-      "Fire",
-      "Ground"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10088,
-    "name": "Lopunny mega",
-    "types": [
-      "Normal",
-      "Fighting"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10089,
-    "name": "Salamence mega",
-    "types": [
-      "Dragon",
-      "Flying"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10090,
-    "name": "Beedrill mega",
-    "types": [
-      "Bug",
-      "Poison"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10091,
-    "name": "Rattata alola",
-    "types": [
-      "Dark",
-      "Normal"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10092,
-    "name": "Raticate alola",
-    "types": [
-      "Dark",
-      "Normal"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10093,
-    "name": "Raticate totem alola",
-    "types": [
-      "Dark",
-      "Normal"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10094,
-    "name": "Pikachu original cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10095,
-    "name": "Pikachu hoenn cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10096,
-    "name": "Pikachu sinnoh cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10097,
-    "name": "Pikachu unova cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10098,
-    "name": "Pikachu kalos cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10099,
-    "name": "Pikachu alola cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10100,
-    "name": "Raichu alola",
-    "types": [
-      "Electric",
-      "Psychic"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10101,
-    "name": "Sandshrew alola",
-    "types": [
-      "Ice",
-      "Steel"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10102,
-    "name": "Sandslash alola",
-    "types": [
-      "Ice",
-      "Steel"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10103,
-    "name": "Vulpix alola",
-    "types": [
-      "Ice"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10104,
-    "name": "Ninetales alola",
-    "types": [
-      "Ice",
-      "Fairy"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10105,
-    "name": "Diglett alola",
-    "types": [
-      "Ground",
-      "Steel"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10106,
-    "name": "Dugtrio alola",
-    "types": [
-      "Ground",
-      "Steel"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10107,
-    "name": "Meowth alola",
-    "types": [
-      "Dark"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10108,
-    "name": "Persian alola",
-    "types": [
-      "Dark"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10109,
-    "name": "Geodude alola",
-    "types": [
-      "Rock",
-      "Electric"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10110,
-    "name": "Graveler alola",
-    "types": [
-      "Rock",
-      "Electric"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10111,
-    "name": "Golem alola",
-    "types": [
-      "Rock",
-      "Electric"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10112,
-    "name": "Grimer alola",
-    "types": [
-      "Poison",
-      "Dark"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10113,
-    "name": "Muk alola",
-    "types": [
-      "Poison",
-      "Dark"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10114,
-    "name": "Exeggutor alola",
-    "types": [
-      "Grass",
-      "Dragon"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10115,
-    "name": "Marowak alola",
-    "types": [
-      "Fire",
-      "Ghost"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10116,
-    "name": "Greninja battle bond",
-    "types": [
-      "Water",
-      "Dark"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10117,
-    "name": "Greninja ash",
-    "types": [
-      "Water",
-      "Dark"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10118,
-    "name": "Zygarde 10 power construct",
-    "types": [
-      "Dragon",
-      "Ground"
-    ],
-    "region": "Kalos",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10119,
-    "name": "Zygarde 50 power construct",
-    "types": [
-      "Dragon",
-      "Ground"
-    ],
-    "region": "Kalos",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10120,
-    "name": "Zygarde complete",
-    "types": [
-      "Dragon",
-      "Ground"
-    ],
-    "region": "Kalos",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10123,
-    "name": "Oricorio pom pom",
-    "types": [
-      "Electric",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10124,
-    "name": "Oricorio pau",
-    "types": [
-      "Psychic",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10125,
-    "name": "Oricorio sensu",
-    "types": [
-      "Ghost",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10126,
-    "name": "Lycanroc midnight",
-    "types": [
-      "Rock"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10127,
-    "name": "Wishiwashi school",
-    "types": [
-      "Water"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10130,
-    "name": "Minior orange meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10131,
-    "name": "Minior yellow meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10132,
-    "name": "Minior green meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10133,
-    "name": "Minior blue meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10134,
-    "name": "Minior indigo meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10135,
-    "name": "Minior violet meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10136,
-    "name": "Minior red",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10137,
-    "name": "Minior orange",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10138,
-    "name": "Minior yellow",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10139,
-    "name": "Minior green",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10140,
-    "name": "Minior blue",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10141,
-    "name": "Minior indigo",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10142,
-    "name": "Minior violet",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10143,
-    "name": "Mimikyu busted",
-    "types": [
-      "Ghost",
-      "Fairy"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10144,
-    "name": "Mimikyu totem disguised",
-    "types": [
-      "Ghost",
-      "Fairy"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10145,
-    "name": "Mimikyu totem busted",
-    "types": [
-      "Ghost",
-      "Fairy"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10147,
-    "name": "Magearna original",
-    "types": [
-      "Steel",
-      "Fairy"
-    ],
-    "region": "Alola",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10148,
-    "name": "Pikachu partner cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10151,
-    "name": "Rockruff own tempo",
-    "types": [
-      "Rock"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10152,
-    "name": "Lycanroc dusk",
-    "types": [
-      "Rock"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10155,
-    "name": "Necrozma dusk",
-    "types": [
-      "Psychic",
-      "Steel"
-    ],
-    "region": "Alola",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10156,
-    "name": "Necrozma dawn",
-    "types": [
-      "Psychic",
-      "Ghost"
-    ],
-    "region": "Alola",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10157,
-    "name": "Necrozma ultra",
-    "types": [
-      "Psychic",
-      "Dragon"
-    ],
-    "region": "Alola",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10158,
-    "name": "Pikachu starter",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10159,
-    "name": "Eevee starter",
-    "types": [
-      "Normal"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10160,
-    "name": "Pikachu world cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10161,
-    "name": "Meowth galar",
-    "types": [
-      "Steel"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10162,
-    "name": "Ponyta galar",
-    "types": [
-      "Psychic"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10163,
-    "name": "Rapidash galar",
-    "types": [
-      "Psychic",
-      "Fairy"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10164,
-    "name": "Slowpoke galar",
-    "types": [
-      "Psychic"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10165,
-    "name": "Slowbro galar",
-    "types": [
-      "Poison",
-      "Psychic"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10166,
-    "name": "Farfetchd galar",
-    "types": [
-      "Fighting"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10167,
-    "name": "Weezing galar",
-    "types": [
-      "Poison",
-      "Fairy"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10168,
-    "name": "Mr mime galar",
-    "types": [
-      "Ice",
-      "Psychic"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10169,
-    "name": "Articuno galar",
-    "types": [
-      "Psychic",
-      "Flying"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10170,
-    "name": "Zapdos galar",
-    "types": [
-      "Fighting",
-      "Flying"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10171,
-    "name": "Moltres galar",
-    "types": [
-      "Dark",
-      "Flying"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10172,
-    "name": "Slowking galar",
-    "types": [
-      "Poison",
-      "Psychic"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10173,
-    "name": "Corsola galar",
-    "types": [
-      "Ghost"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10174,
-    "name": "Zigzagoon galar",
-    "types": [
-      "Dark",
-      "Normal"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10175,
-    "name": "Linoone galar",
-    "types": [
-      "Dark",
-      "Normal"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10176,
-    "name": "Darumaka galar",
-    "types": [
-      "Ice"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10177,
-    "name": "Darmanitan galar standard",
-    "types": [
-      "Ice"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10178,
-    "name": "Darmanitan galar zen",
-    "types": [
-      "Ice",
-      "Fire"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10179,
-    "name": "Yamask galar",
-    "types": [
-      "Ground",
-      "Ghost"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10180,
-    "name": "Stunfisk galar",
-    "types": [
-      "Ground",
-      "Steel"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10181,
-    "name": "Zygarde 10",
-    "types": [
-      "Dragon",
-      "Ground"
-    ],
-    "region": "Kalos",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10182,
-    "name": "Cramorant gulping",
-    "types": [
-      "Flying",
-      "Water"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10183,
-    "name": "Cramorant gorging",
-    "types": [
-      "Flying",
-      "Water"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10184,
-    "name": "Toxtricity low key",
-    "types": [
-      "Electric",
-      "Poison"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10185,
-    "name": "Eiscue noice",
-    "types": [
-      "Ice"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10186,
-    "name": "Indeedee female",
-    "types": [
-      "Psychic",
-      "Normal"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10187,
-    "name": "Morpeko hangry",
-    "types": [
-      "Electric",
-      "Dark"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10188,
-    "name": "Zacian crowned",
-    "types": [
-      "Fairy",
-      "Steel"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10189,
-    "name": "Zamazenta crowned",
-    "types": [
-      "Fighting",
-      "Steel"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10190,
-    "name": "Eternatus eternamax",
-    "types": [
-      "Poison",
-      "Dragon"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10191,
-    "name": "Urshifu rapid strike",
-    "types": [
-      "Fighting",
-      "Water"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10192,
-    "name": "Zarude dada",
-    "types": [
-      "Dark",
-      "Grass"
-    ],
-    "region": "Galar",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10193,
-    "name": "Calyrex ice",
-    "types": [
-      "Psychic",
-      "Ice"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10194,
-    "name": "Calyrex shadow",
-    "types": [
-      "Psychic",
-      "Ghost"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10195,
-    "name": "Venusaur gmax",
-    "types": [
-      "Grass",
-      "Poison"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10196,
-    "name": "Charizard gmax",
-    "types": [
-      "Fire",
-      "Flying"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10197,
-    "name": "Blastoise gmax",
-    "types": [
-      "Water"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10198,
-    "name": "Butterfree gmax",
-    "types": [
-      "Bug",
-      "Flying"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10199,
-    "name": "Pikachu gmax",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Middle Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10200,
-    "name": "Meowth gmax",
-    "types": [
-      "Normal"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "First Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10201,
-    "name": "Machamp gmax",
-    "types": [
-      "Fighting"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10202,
-    "name": "Gengar gmax",
-    "types": [
-      "Ghost",
-      "Poison"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10203,
-    "name": "Kingler gmax",
-    "types": [
-      "Water"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10204,
-    "name": "Lapras gmax",
-    "types": [
-      "Water",
-      "Ice"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10205,
-    "name": "Eevee gmax",
-    "types": [
-      "Normal"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "First Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10206,
-    "name": "Snorlax gmax",
-    "types": [
-      "Normal"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10207,
-    "name": "Garbodor gmax",
-    "types": [
-      "Poison"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10208,
-    "name": "Melmetal gmax",
-    "types": [
-      "Steel"
-    ],
-    "region": "Unknown",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10209,
-    "name": "Rillaboom gmax",
-    "types": [
-      "Grass"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10210,
-    "name": "Cinderace gmax",
-    "types": [
-      "Fire"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10211,
-    "name": "Inteleon gmax",
-    "types": [
-      "Water"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10212,
-    "name": "Corviknight gmax",
-    "types": [
-      "Flying",
-      "Steel"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10213,
-    "name": "Orbeetle gmax",
-    "types": [
-      "Bug",
-      "Psychic"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10214,
-    "name": "Drednaw gmax",
-    "types": [
-      "Water",
-      "Rock"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10215,
-    "name": "Coalossal gmax",
-    "types": [
-      "Rock",
-      "Fire"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10216,
-    "name": "Flapple gmax",
-    "types": [
-      "Grass",
-      "Dragon"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10217,
-    "name": "Appletun gmax",
-    "types": [
-      "Grass",
-      "Dragon"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10218,
-    "name": "Sandaconda gmax",
-    "types": [
-      "Ground"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10219,
-    "name": "Toxtricity amped gmax",
-    "types": [
-      "Electric",
-      "Poison"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10220,
-    "name": "Centiskorch gmax",
-    "types": [
-      "Fire",
-      "Bug"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10221,
-    "name": "Hatterene gmax",
-    "types": [
-      "Psychic",
-      "Fairy"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10222,
-    "name": "Grimmsnarl gmax",
-    "types": [
-      "Dark",
-      "Fairy"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10223,
-    "name": "Alcremie gmax",
-    "types": [
-      "Fairy"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10224,
-    "name": "Copperajah gmax",
-    "types": [
-      "Steel"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10225,
-    "name": "Duraludon gmax",
-    "types": [
-      "Steel",
-      "Dragon"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "First Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10226,
-    "name": "Urshifu single strike gmax",
-    "types": [
-      "Fighting",
-      "Dark"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10227,
-    "name": "Urshifu rapid strike gmax",
-    "types": [
-      "Fighting",
-      "Water"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10228,
-    "name": "Toxtricity low key gmax",
-    "types": [
-      "Electric",
-      "Poison"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Gigantamax"
-  },
-  {
-    "id": 10229,
-    "name": "Growlithe hisui",
-    "types": [
-      "Fire",
-      "Rock"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10230,
-    "name": "Arcanine hisui",
-    "types": [
-      "Fire",
-      "Rock"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10231,
-    "name": "Voltorb hisui",
-    "types": [
-      "Electric",
-      "Grass"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10232,
-    "name": "Electrode hisui",
-    "types": [
-      "Electric",
-      "Grass"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10233,
-    "name": "Typhlosion hisui",
-    "types": [
-      "Fire",
-      "Ghost"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10234,
-    "name": "Qwilfish hisui",
-    "types": [
-      "Dark",
-      "Poison"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10235,
-    "name": "Sneasel hisui",
-    "types": [
-      "Fighting",
-      "Poison"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10236,
-    "name": "Samurott hisui",
-    "types": [
-      "Water",
-      "Dark"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10237,
-    "name": "Lilligant hisui",
-    "types": [
-      "Grass",
-      "Fighting"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10238,
-    "name": "Zorua hisui",
-    "types": [
-      "Normal",
-      "Ghost"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10239,
-    "name": "Zoroark hisui",
-    "types": [
-      "Normal",
-      "Ghost"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10240,
-    "name": "Braviary hisui",
-    "types": [
-      "Psychic",
-      "Flying"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10241,
-    "name": "Sliggoo hisui",
-    "types": [
-      "Steel",
-      "Dragon"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Middle Stage"
-  },
-  {
-    "id": 10242,
-    "name": "Goodra hisui",
-    "types": [
-      "Steel",
-      "Dragon"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10243,
-    "name": "Avalugg hisui",
-    "types": [
-      "Ice",
-      "Rock"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10244,
-    "name": "Decidueye hisui",
-    "types": [
-      "Grass",
-      "Fighting"
-    ],
-    "region": "Hisui",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10245,
-    "name": "Dialga origin",
-    "types": [
-      "Steel",
-      "Dragon"
-    ],
-    "region": "Sinnoh",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10246,
-    "name": "Palkia origin",
-    "types": [
-      "Water",
-      "Dragon"
-    ],
-    "region": "Sinnoh",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10247,
-    "name": "Basculin white striped",
-    "types": [
-      "Water"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10248,
-    "name": "Basculegion female",
-    "types": [
-      "Water",
-      "Ghost"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10249,
-    "name": "Enamorus therian",
-    "types": [
-      "Fairy",
-      "Flying"
-    ],
-    "region": "Galar",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10250,
-    "name": "Tauros paldea combat breed",
-    "types": [
-      "Fighting"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10251,
-    "name": "Tauros paldea blaze breed",
-    "types": [
-      "Fighting",
-      "Fire"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10252,
-    "name": "Tauros paldea aqua breed",
-    "types": [
-      "Fighting",
-      "Water"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10253,
-    "name": "Wooper paldea",
-    "types": [
-      "Poison",
-      "Ground"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10254,
-    "name": "Oinkologne female",
-    "types": [
-      "Normal"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10255,
-    "name": "Dudunsparce three segment",
-    "types": [
-      "Normal"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10256,
-    "name": "Palafin hero",
-    "types": [
-      "Water"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10257,
-    "name": "Maushold family of three",
-    "types": [
-      "Normal"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10258,
-    "name": "Tatsugiri droopy",
-    "types": [
-      "Dragon",
-      "Water"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10259,
-    "name": "Tatsugiri stretchy",
-    "types": [
-      "Dragon",
-      "Water"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10260,
-    "name": "Squawkabilly blue plumage",
-    "types": [
-      "Normal",
-      "Flying"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10261,
-    "name": "Squawkabilly yellow plumage",
-    "types": [
-      "Normal",
-      "Flying"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10262,
-    "name": "Squawkabilly white plumage",
-    "types": [
-      "Normal",
-      "Flying"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10263,
-    "name": "Gimmighoul roaming",
-    "types": [
-      "Ghost"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "First Stage"
-  },
-  {
-    "id": 10272,
-    "name": "Ursaluna bloodmoon",
-    "types": [
-      "Ground",
-      "Normal"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "Final Stage"
-  },
-  {
-    "id": 10273,
-    "name": "Ogerpon wellspring mask",
-    "types": [
-      "Grass",
-      "Water"
-    ],
-    "region": "Paldea",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10274,
-    "name": "Ogerpon hearthflame mask",
-    "types": [
-      "Grass",
-      "Fire"
-    ],
-    "region": "Paldea",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10275,
-    "name": "Ogerpon cornerstone mask",
-    "types": [
-      "Grass",
-      "Rock"
-    ],
-    "region": "Paldea",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line"
-  },
-  {
-    "id": 10276,
+    "id": 1024,
     "name": "Terapagos terastal",
     "types": [
       "Normal"
@@ -12650,7 +13173,7 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
-    "id": 10277,
+    "id": 1024,
     "name": "Terapagos stellar",
     "types": [
       "Normal"
@@ -12660,537 +13183,14 @@
     "evolutionMethod": "No Evolution Line"
   },
   {
-    "id": 10278,
-    "name": "Clefable mega",
-    "types": [
-      "Fairy",
-      "Flying"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10279,
-    "name": "Victreebel mega",
-    "types": [
-      "Grass",
-      "Poison"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10280,
-    "name": "Starmie mega",
-    "types": [
-      "Water",
-      "Psychic"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10281,
-    "name": "Dragonite mega",
-    "types": [
-      "Dragon",
-      "Flying"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10282,
-    "name": "Meganium mega",
-    "types": [
-      "Grass",
-      "Fairy"
-    ],
-    "region": "Johto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10283,
-    "name": "Feraligatr mega",
-    "types": [
-      "Water",
-      "Dragon"
-    ],
-    "region": "Johto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10284,
-    "name": "Skarmory mega",
-    "types": [
-      "Steel",
-      "Flying"
-    ],
-    "region": "Johto",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10285,
-    "name": "Froslass mega",
-    "types": [
-      "Ice",
-      "Ghost"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10286,
-    "name": "Emboar mega",
-    "types": [
-      "Fire",
-      "Fighting"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10287,
-    "name": "Excadrill mega",
-    "types": [
-      "Ground",
-      "Steel"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10288,
-    "name": "Scolipede mega",
-    "types": [
-      "Bug",
-      "Poison"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10289,
-    "name": "Scrafty mega",
-    "types": [
-      "Dark",
-      "Fighting"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10290,
-    "name": "Eelektross mega",
-    "types": [
-      "Electric"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10291,
-    "name": "Chandelure mega",
-    "types": [
-      "Ghost",
-      "Fire"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10292,
-    "name": "Chesnaught mega",
-    "types": [
-      "Grass",
-      "Fighting"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10293,
-    "name": "Delphox mega",
-    "types": [
-      "Fire",
-      "Psychic"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10294,
-    "name": "Greninja mega",
-    "types": [
-      "Water",
-      "Dark"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10295,
-    "name": "Pyroar mega",
-    "types": [
-      "Fire",
-      "Normal"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10296,
-    "name": "Floette mega",
-    "types": [
-      "Fairy"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Middle Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10297,
-    "name": "Malamar mega",
-    "types": [
-      "Dark",
-      "Psychic"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10298,
-    "name": "Barbaracle mega",
-    "types": [
-      "Rock",
-      "Fighting"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10299,
-    "name": "Dragalge mega",
+    "id": 1025,
+    "name": "Pecharunt",
     "types": [
       "Poison",
-      "Dragon"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10300,
-    "name": "Hawlucha mega",
-    "types": [
-      "Fighting",
-      "Flying"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10301,
-    "name": "Zygarde mega",
-    "types": [
-      "Dragon",
-      "Ground"
-    ],
-    "region": "Kalos",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10302,
-    "name": "Drampa mega",
-    "types": [
-      "Normal",
-      "Dragon"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10303,
-    "name": "Falinks mega",
-    "types": [
-      "Fighting"
-    ],
-    "region": "Galar",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10304,
-    "name": "Raichu mega x",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10305,
-    "name": "Raichu mega y",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10306,
-    "name": "Chimecho mega",
-    "types": [
-      "Psychic",
-      "Steel"
-    ],
-    "region": "Hoenn",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10307,
-    "name": "Absol mega z",
-    "types": [
-      "Dark",
       "Ghost"
     ],
-    "region": "Hoenn",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10308,
-    "name": "Staraptor mega",
-    "types": [
-      "Fighting",
-      "Flying"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10309,
-    "name": "Garchomp mega z",
-    "types": [
-      "Dragon"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10310,
-    "name": "Lucario mega z",
-    "types": [
-      "Fighting",
-      "Steel"
-    ],
-    "region": "Sinnoh",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10311,
-    "name": "Heatran mega",
-    "types": [
-      "Fire",
-      "Steel"
-    ],
-    "region": "Sinnoh",
-    "category": "Legendary",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10312,
-    "name": "Darkrai mega",
-    "types": [
-      "Dark"
-    ],
-    "region": "Sinnoh",
+    "region": "Paldea",
     "category": "Mythical",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10313,
-    "name": "Golurk mega",
-    "types": [
-      "Ground",
-      "Ghost"
-    ],
-    "region": "Unova",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10314,
-    "name": "Meowstic mega",
-    "types": [
-      "Psychic"
-    ],
-    "region": "Kalos",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10315,
-    "name": "Crabominable mega",
-    "types": [
-      "Fighting",
-      "Ice"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10316,
-    "name": "Golisopod mega",
-    "types": [
-      "Bug",
-      "Steel"
-    ],
-    "region": "Alola",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10317,
-    "name": "Magearna mega",
-    "types": [
-      "Steel",
-      "Fairy"
-    ],
-    "region": "Alola",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10318,
-    "name": "Magearna original mega",
-    "types": [
-      "Steel",
-      "Fairy"
-    ],
-    "region": "Alola",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10319,
-    "name": "Zeraora mega",
-    "types": [
-      "Electric"
-    ],
-    "region": "Alola",
-    "category": "Mythical",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10320,
-    "name": "Scovillain mega",
-    "types": [
-      "Grass",
-      "Fire"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10321,
-    "name": "Glimmora mega",
-    "types": [
-      "Rock",
-      "Poison"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10322,
-    "name": "Tatsugiri curly mega",
-    "types": [
-      "Dragon",
-      "Water"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10323,
-    "name": "Tatsugiri droopy mega",
-    "types": [
-      "Dragon",
-      "Water"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10324,
-    "name": "Tatsugiri stretchy mega",
-    "types": [
-      "Dragon",
-      "Water"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "No Evolution Line",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10325,
-    "name": "Baxcalibur mega",
-    "types": [
-      "Dragon",
-      "Ice"
-    ],
-    "region": "Paldea",
-    "evolutionMethod": "Final Stage",
-    "specialForm": "Mega Evolution"
-  },
-  {
-    "id": 10,
-    "name": "Caterpie cowboy hat",
-    "types": [
-      "Bug"
-    ],
-    "region": "Kanto",
-    "evolutionMethod": "First Stage"
+    "evolutionMethod": "No Evolution Line"
   }
 ]
