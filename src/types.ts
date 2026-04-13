@@ -17,16 +17,19 @@ export const EVOLUTION_METHODS = [
   'Middle Stage', 
   'Final Stage',
   'No Evolution Line',
-  'Evolved by Level',
-  'Evolved by Item',
-  'Evolved by Trade',
-  'Evolved by Friendship',
-  'Is Branched',
   'Monotype',
   'Dualtype'
 ] as const;
 
+export const EVOLUTION_TRIGGERS = [
+  'Evolved by Level',
+  'Evolved by Item',
+  'Evolved by Trade',
+  'Evolved by Friendship',
+] as const;
+
 export type EvolutionMethod = typeof EVOLUTION_METHODS[number];
+export type EvolutionTrigger = typeof EVOLUTION_TRIGGERS[number];
 
 export const SPECIAL_FORMS = ['Gigantamax', 'Mega Evolution'] as const;
 
@@ -43,7 +46,9 @@ export interface Pokemon {
   name: string;
   types: [PokemonType, PokemonType?] | [PokemonType];
   region?: PokemonRegion;
-  evolutionMethod?: EvolutionMethod;
+  evolutionStage?: EvolutionMethod;
+  evolutionTrigger?: EvolutionTrigger;
+  isBranched?: boolean;
   specialForm?: SpecialForm;
   category?: PokemonCategory;
 }

@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import type { Pokemon, PokemonType } from './types';
-import { POKEMON_TYPES, POKEMON_REGIONS, EVOLUTION_METHODS, SPECIAL_FORMS, POKEMON_CATEGORIES } from './types';
+import { POKEMON_TYPES, POKEMON_REGIONS, EVOLUTION_METHODS, EVOLUTION_TRIGGERS, SPECIAL_FORMS, POKEMON_CATEGORIES } from './types';
 import './App.css';
 import './index.css';
 
@@ -8,7 +8,7 @@ type CellValue = Pokemon | null;
 
 interface Constraint {
   value: string;
-  category: 'type' | 'region' | 'evolution' | 'form' | 'category';
+  category: 'type' | 'region' | 'evolution' | 'branched' | 'trigger' | 'form' | 'category';
 }
 
 interface GridState {
@@ -87,13 +87,15 @@ const CATEGORY_COLORS: Record<string, string> = {
 interface ConstraintOption {
   value: string;
   label: string;
-  category: 'type' | 'region' | 'evolution' | 'form' | 'category';
+  category: 'type' | 'region' | 'evolution' | 'branched' | 'trigger' | 'form' | 'category';
 }
 
 const CONSTRAINT_OPTIONS: { label: string; options: ConstraintOption[] }[] = [
   { label: 'Types', options: POKEMON_TYPES.map(t => ({ value: t, label: t, category: 'type' as const })) },
   { label: 'Regions', options: POKEMON_REGIONS.map(r => ({ value: r, label: r, category: 'region' as const })) },
   { label: 'Evolution', options: EVOLUTION_METHODS.map(s => ({ value: s, label: s, category: 'evolution' as const })) },
+  { label: 'Branched', options: [{ value: 'Yes', label: 'Branched (Yes)', category: 'branched' as const }] },
+  { label: 'Evolution Triggers', options: EVOLUTION_TRIGGERS.map(t => ({ value: t, label: t, category: 'trigger' as const })) },
   { label: 'Forms', options: SPECIAL_FORMS.map(f => ({ value: f, label: f, category: 'form' as const })) },
   { label: 'Categories', options: POKEMON_CATEGORIES.map(c => ({ value: c, label: c, category: 'category' as const })) },
 ];
@@ -153,7 +155,12 @@ function App() {
                 if (p.types.length !== 1) return false;
               } else if (rowConstraint.value === 'Dualtype') {
                 if (p.types.length !== 2) return false;
-              } else if (p.evolutionMethod !== rowConstraint.value) return false;
+              } else if (p.evolutionStage !== rowConstraint.value) return false;
+            } else if (rowConstraint.category === 'trigger') {
+              if (p.evolutionTrigger !== rowConstraint.value) return false;
+            } else if (rowConstraint.category === 'branched') {
+              if (rowConstraint.value === 'Yes' && !p.isBranched) return false;
+              if (rowConstraint.value === 'No' && p.isBranched) return false;
             } else if (rowConstraint.category === 'form') {
               if (p.specialForm !== rowConstraint.value) return false;
             } else if (rowConstraint.category === 'category') {
@@ -171,7 +178,12 @@ function App() {
                 if (p.types.length !== 1) return false;
               } else if (colConstraint.value === 'Dualtype') {
                 if (p.types.length !== 2) return false;
-              } else if (p.evolutionMethod !== colConstraint.value) return false;
+              } else if (p.evolutionStage !== colConstraint.value) return false;
+            } else if (colConstraint.category === 'trigger') {
+              if (p.evolutionTrigger !== colConstraint.value) return false;
+            } else if (colConstraint.category === 'branched') {
+              if (colConstraint.value === 'Yes' && !p.isBranched) return false;
+              if (colConstraint.value === 'No' && p.isBranched) return false;
             } else if (colConstraint.category === 'form') {
               if (p.specialForm !== colConstraint.value) return false;
             } else if (colConstraint.category === 'category') {
@@ -260,6 +272,8 @@ function App() {
       case 'type': return 'T';
       case 'region': return 'R';
       case 'evolution': return 'E';
+      case 'trigger': return 'Et';
+      case 'branched': return 'B';
       case 'form': return 'F';
       case 'category': return 'C';
       default: return '?';
@@ -382,9 +396,14 @@ function App() {
                                 {cell.category}
                               </span>
                             )}
-                            {cell.evolutionMethod && (
-                              <span className="evolution-badge" style={{ backgroundColor: EVOLUTION_COLORS[cell.evolutionMethod] }}>
-                                {cell.evolutionMethod}
+                            {cell.evolutionStage && (
+                              <span className="evolution-badge" style={{ backgroundColor: EVOLUTION_COLORS[cell.evolutionStage] }}>
+                                {cell.evolutionStage}
+                              </span>
+                            )}
+                            {cell.evolutionTrigger && (
+                              <span className="evolution-badge" style={{ backgroundColor: EVOLUTION_COLORS[cell.evolutionTrigger] || '#888' }}>
+                                {cell.evolutionTrigger}
                               </span>
                             )}
                             {cell.specialForm && (
@@ -431,7 +450,7 @@ function App() {
               {selectedCellPossible.length > 0 ? (
                 selectedCellPossible.map(p => (
                   <button
-                    key={p.id}
+                    key={`${p.id}-${p.name}`}
                     className="pokemon-item"
                     onClick={() => handlePokemonSelect(p)}
                   >
