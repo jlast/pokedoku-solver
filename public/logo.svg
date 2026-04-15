@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 50">
+  <circle cx="25" cy="25" r="23" fill="#ff0000"/>
+  <path d="M2 25h46v4H2z" fill="#fff"/>
+  <circle cx="25" cy="25" r="14" fill="#fff"/>
+  <circle cx="25" cy="25" r="9" fill="#000"/>
+  <circle cx="25" cy="16" r="3" fill="#fff"/>
+  <text x="60" y="35" font-family="system-ui, sans-serif" font-size="24" font-weight="bold" fill="#333">Pokedoku Helper</text>
+</svg>

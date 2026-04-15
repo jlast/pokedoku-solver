@@ -51,4 +51,5 @@ export interface Pokemon {
   isBranched?: boolean;
   specialForm?: SpecialForm;
   category?: PokemonCategory;
+  sprite?: string;
 }

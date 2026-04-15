@@ -46,6 +46,9 @@ interface PokeAPIForm {
     url: string;
     name: string;
   };
+  sprites: {
+    front_default: string | null;
+  }
   id: number;
   name: string;
 is_mega: boolean;
@@ -212,23 +215,26 @@ function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: 
         if (details.trigger) {
           const triggerName = details.trigger.name;
           if (triggerName === 'level-up') {
-            if (details.item || details.held_item) return 'Evolved by Item';
-            if (details.min_affection !== null || details.min_happiness !== null) return 'Evolved by Friendship';
-            return 'Evolved by Level';
+            if (details.item || details.held_item) return 'Evolved by Item' as const;
+            if (details.min_affection !== null || details.min_happiness !== null) return 'Evolved by Friendship' as const;
+            return 'Evolved by Level' as const;
           }
-          if (triggerName === 'trade') return 'Evolved by Trade';
-          if (triggerName === 'use-item') return 'Evolved by Item';
-          if (triggerName === 'shed') return 'Evolved by Item';
-          if (triggerName === 'aggression') return 'Evolved by Friendship';
-          if (triggerName === 'spin') return 'Evolved by Level';
-          if (triggerName === 'tower-of-darkness') return 'Evolved by Item';
-          if (triggerName === 'tower-of-waters') return 'Evolved by Item';
-          if (triggerName === 'three-critical-hits') return 'Evolved by Level';
-          if (triggerName === 'trade-s') return 'Evolved by Trade';
-          if (triggerName === 'get-gift') return 'Evolved by Item';
-          if (triggerName === 'get-gmail') return 'Evolved by Item';
+          if (triggerName === 'trade') return 'Evolved by Trade' as const;
+          if (triggerName === 'use-item') return 'Evolved by Item' as const;
+          if (triggerName === 'shed') return 'Evolved by Item' as const;
+          if (triggerName === 'aggression') return 'Evolved by Friendship' as const;
+          if (triggerName === 'spin') return 'Evolved by Level' as const;
+          if (triggerName === 'tower-of-darkness') return 'Evolved by Item' as const;
+          if (triggerName === 'tower-of-waters') return 'Evolved by Item' as const;
+          if (triggerName === 'three-critical-hits') return 'Evolved by Level' as const;
+          if (triggerName === 'recoil-high-damage') return 'Evolved by Level' as const;
+          if (triggerName === 'recoil-med-damage') return 'Evolved by Level' as const;
+          if (triggerName === 'mechanical-arm') return 'Evolved by Item' as const;
+          if (triggerName === 'take-damage-accuracy') return 'Evolved by Level' as const;
+          if (triggerName === 'other') return 'Evolved by Level' as const;
         }
-      }))];
+        return undefined;
+      }).filter((t): t is EvolutionTrigger => t !== undefined))];
     }
     return [];
   }
@@ -239,7 +245,7 @@ function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: 
   const ancestors = getAncestors(chain, speciesName);
   const hasFrom = ancestors.length > 0;
   
-  let trigger: EvolutionTrigger[] | null = null;
+  let trigger: EvolutionTrigger[] = [];
   
   // Check for trigger-based evolution
   if (hasFrom || hasTo) {
@@ -256,7 +262,7 @@ function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: 
   let stage: EvolutionMethod;
   let branched = false;
   if (!hasFrom && !hasTo) {
-    return { stage: 'No Evolution Line', trigger: null, branched: false };
+    return { stage: 'No Evolution Line', trigger: [], branched: false };
   }
   else if (!hasFrom && hasTo) {
     // Set branched if more than 1 evolution target
@@ -399,6 +405,7 @@ function getEntry(formId: number, added: Set<number>): Pokemon|undefined {
       name: name,
       types,
       region: REGION_BY_ID[speciesId] || 'Unknown',
+      sprite: form.sprites.front_default || undefined,
     };
     
     if (ULTRA_BEASTS.has(id)) entry.category = 'Ultra Beast';
