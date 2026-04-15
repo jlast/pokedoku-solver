@@ -47,7 +47,7 @@ export interface Pokemon {
   types: [PokemonType, PokemonType?] | [PokemonType];
   region?: PokemonRegion;
   evolutionStage?: EvolutionMethod;
-  evolutionTrigger?: EvolutionTrigger;
+  evolutionTrigger?: EvolutionTrigger[];
   isBranched?: boolean;
   specialForm?: SpecialForm;
   category?: PokemonCategory;

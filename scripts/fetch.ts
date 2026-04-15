@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { REGION_BY_ID, STARTER_IDS, ULTRA_BEASTS, FOSSIL_IDS, PARADOX_POKEMON, IGNORED_FORM_IDS, IGNORED_FORMS, CANT_EVOLVE_FORMS, IGNORE_SPECIAL_FORMS } from './ids';
+import { REGION_BY_ID, STARTER_IDS, ULTRA_BEASTS, FOSSIL_IDS, PARADOX_POKEMON, IGNORED_FORM_IDS, IGNORED_FORMS, CANT_EVOLVE_FORMS, IGNORE_SPECIAL_FORMS, NAME_REPLACEMENTS, IGNORE_EVOLVE_FORMS } from './ids';
 import { fetchWithRetry } from './lib';
-import type { EvolutionMethod, Pokemon, PokemonType } from '../src/types';
+import type { EvolutionMethod, EvolutionTrigger, Pokemon, PokemonType } from '../src/types';
 import { CUSTOM_POKEMON } from './custom_pokemon';
 
 const NO_CACHE = process.argv.includes('--no-cache');
@@ -64,6 +64,7 @@ interface PokeAPISpecies {
 interface EvolutionDetail {
   trigger: { name: string; url: string };
   item?: { name: string; url: string } | null;
+  held_item?: { name: string; url: string } | null;
   min_level?: number | null;
   min_affection?: number | null;
   min_happiness?: number | null;
@@ -181,7 +182,7 @@ function saveFormsList(data: { count: number; results: { url: string; }[]; }) {
   fs.writeFileSync(FORMS_LIST_FILE, JSON.stringify(data));
 }
 
-function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: EvolutionMethod; trigger: string | null; branched: boolean } {
+function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: EvolutionMethod; trigger: EvolutionTrigger[]; branched: boolean } {
   function findNode(node: EvolutionNode, name: string): EvolutionNode | null {
     if (node.species.name === name) return node;
     for (const n of node.evolves_to) {
@@ -204,40 +205,41 @@ function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: 
     return ancestors;
   }
   
-  function getTriggerMethod(node: EvolutionNode): string | null {
+  function getTriggerMethods(node: EvolutionNode): EvolutionTrigger[] {
     // Check if node has evolution_details with trigger info
     if (node.evolution_details && node.evolution_details.length > 0) {
-      const details = node.evolution_details[0];
-      if (details.trigger) {
-        const triggerName = details.trigger.name;
-        if (triggerName === 'level-up') {
-          if (details.item) return 'Evolved by Item';
-          if (details.min_affection !== null || details.min_happiness !== null) return 'Evolved by Friendship';
-          return 'Evolved by Level';
+      return [...new Set(node.evolution_details.map(details => {
+        if (details.trigger) {
+          const triggerName = details.trigger.name;
+          if (triggerName === 'level-up') {
+            if (details.item || details.held_item) return 'Evolved by Item';
+            if (details.min_affection !== null || details.min_happiness !== null) return 'Evolved by Friendship';
+            return 'Evolved by Level';
+          }
+          if (triggerName === 'trade') return 'Evolved by Trade';
+          if (triggerName === 'use-item') return 'Evolved by Item';
+          if (triggerName === 'shed') return 'Evolved by Item';
+          if (triggerName === 'aggression') return 'Evolved by Friendship';
+          if (triggerName === 'spin') return 'Evolved by Level';
+          if (triggerName === 'tower-of-darkness') return 'Evolved by Item';
+          if (triggerName === 'tower-of-waters') return 'Evolved by Item';
+          if (triggerName === 'three-critical-hits') return 'Evolved by Level';
+          if (triggerName === 'trade-s') return 'Evolved by Trade';
+          if (triggerName === 'get-gift') return 'Evolved by Item';
+          if (triggerName === 'get-gmail') return 'Evolved by Item';
         }
-        if (triggerName === 'trade') return 'Evolved by Trade';
-        if (triggerName === 'use-item') return 'Evolved by Item';
-        if (triggerName === 'shed') return 'Evolved by Item';
-        if (triggerName === 'aggression') return 'Evolved by Friendship';
-        if (triggerName === 'spin') return 'Evolved by Level';
-        if (triggerName === 'tower-of-darkness') return 'Evolved by Item';
-        if (triggerName === 'tower-of-waters') return 'Evolved by Item';
-        if (triggerName === 'three-critical-hits') return 'Evolved by Level';
-        if (triggerName === 'trade-s') return 'Evolved by Trade';
-        if (triggerName === 'get-gift') return 'Evolved by Item';
-        if (triggerName === 'get-gmail') return 'Evolved by Item';
-      }
+      }))];
     }
-    return null;
+    return [];
   }
   
   const node = findNode(chain, speciesName);
-  if (!node) return { stage: 'No Evolution Line', trigger: null, branched: false };
+  if (!node) return { stage: 'No Evolution Line', trigger: [], branched: false };
   const hasTo = node.evolves_to.length > 0;
   const ancestors = getAncestors(chain, speciesName);
   const hasFrom = ancestors.length > 0;
   
-  let trigger: string | null = null;
+  let trigger: EvolutionTrigger[] | null = null;
   
   // Check for trigger-based evolution
   if (hasFrom || hasTo) {
@@ -245,7 +247,7 @@ function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: 
     for (const anc of ancestors) {
       for (const evo of anc.evolves_to) {
         if (evo.species.name === speciesName && evo.evolution_details && evo.evolution_details.length > 0) {
-          trigger = getTriggerMethod(evo);
+          trigger = getTriggerMethods(evo);
         }
       }
     }
@@ -387,13 +389,14 @@ function getEntry(formId: number, added: Set<number>): Pokemon|undefined {
     if (added.has(id) && IGNORE_SPECIAL_FORMS.has(species.name)) return;
 
     let name = IGNORE_SPECIAL_FORMS.has(species.name) ? species.name : form.name;
-    name = name.replace('Floette red', 'Floette'); // Special case for Floette which has a unique form name for the base form
+    name = name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, ' ');
+    name = NAME_REPLACEMENTS[name] || name;
     
     const types = pokemon.types.sort((a, b) => a.slot - b.slot).map(t => t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1)) as [PokemonType, PokemonType?] | [PokemonType];
 
     const entry: Pokemon = {
       id: species.id,
-      name: name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, ' '),
+      name: name,
       types,
       region: REGION_BY_ID[speciesId] || 'Unknown',
     };
@@ -407,7 +410,7 @@ function getEntry(formId: number, added: Set<number>): Pokemon|undefined {
       if (species.is_mythical) entry.category = 'Mythical';
       if (species.is_baby) entry.category = 'Baby';
       
-      if (!CANT_EVOLVE_FORMS.has(form.form_name) && species.evolution_chain?.url) {
+      if (!CANT_EVOLVE_FORMS.has(form.form_name) && !IGNORE_EVOLVE_FORMS.has(form.form_name) && species.evolution_chain?.url) {
         const cm = species.evolution_chain.url.match(/\/evolution-chain\/(\d+)\/$/);
         if (cm) {
           const chainId = parseInt(cm[1]);
@@ -415,11 +418,11 @@ function getEntry(formId: number, added: Set<number>): Pokemon|undefined {
           if (chain && species.name) {
             const result = getEvolutionStage(chain, species.name);
             entry.evolutionStage = result.stage;
-            if (result.trigger) entry.evolutionTrigger = result.trigger as any;
+            if (result.trigger) entry.evolutionTrigger = result.trigger;
             if (result.branched) entry.isBranched = true;
           }
         }
-      } else {
+      } else if(!IGNORE_EVOLVE_FORMS.has(form.form_name)) {
         entry.evolutionStage = 'No Evolution Line';
       }
     }
