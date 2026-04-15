@@ -1,4 +1,4 @@
-import type { PokemonRegion } from "../src/types";
+import type { EvolutionTrigger, PokemonRegion } from "../src/types";
 
 
 export const REGION_BY_ID: Record<number, PokemonRegion> = {};
@@ -79,4 +79,10 @@ export const NAME_REPLACEMENTS: Record<string, string> = {
   'Florges red': 'Florges',
   'Minior red meteor': 'Minior meteor',
   'Mimikyu disguised': 'Mimikyu',
+}
+
+export const EVOLUTION_METHOD_REPLACEMENTS: Record<string, EvolutionTrigger[]> = {
+  1013: ['Evolved by Item'],
+  1018: ['Evolved by Item'],
+  1019: ['Evolved by Level'],
 }

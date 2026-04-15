@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { REGION_BY_ID, STARTER_IDS, ULTRA_BEASTS, FOSSIL_IDS, PARADOX_POKEMON, IGNORED_FORM_IDS, IGNORED_FORMS, CANT_EVOLVE_FORMS, IGNORE_SPECIAL_FORMS, NAME_REPLACEMENTS, IGNORE_EVOLVE_FORMS } from './ids';
+import { REGION_BY_ID, STARTER_IDS, ULTRA_BEASTS, FOSSIL_IDS, PARADOX_POKEMON, IGNORED_FORM_IDS, IGNORED_FORMS, CANT_EVOLVE_FORMS, IGNORE_SPECIAL_FORMS, NAME_REPLACEMENTS, IGNORE_EVOLVE_FORMS, EVOLUTION_METHOD_REPLACEMENTS } from './ids';
 import { fetchWithRetry } from './lib';
 import type { EvolutionMethod, EvolutionTrigger, Pokemon, PokemonType } from '../src/types';
 import { CUSTOM_POKEMON } from './custom_pokemon';
@@ -210,39 +210,41 @@ function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: 
   
   function getTriggerMethods(node: EvolutionNode): EvolutionTrigger[] {
     // Check if node has evolution_details with trigger info
-    if (node.evolution_details && node.evolution_details.length > 0) {
-      return [...new Set(node.evolution_details.map(details => {
-        if (details.trigger) {
-          const triggerName = details.trigger.name;
-          if (triggerName === 'level-up') {
-            if (details.item || details.held_item) return ['Evolved by Item'] as const;
-            if (details.min_affection !== null || details.min_happiness !== null) return ['Evolved by Friendship'] as const;
-            return ['Evolved by Level'] as const;
-          }
-          if (triggerName === 'trade') {
-            if(details.held_item) {
-              return ['Evolved by Item', 'Evolved by Trade']
-            }
-            return ['Evolved by Trade'] as const;
-          }
-          if (triggerName === 'use-item') return ['Evolved by Item'] as const;
-          if (triggerName === 'shed') return ['Evolved by Item'] as const;
-          if (triggerName === 'aggression') return ['Evolved by Friendship'] as const;
-          if (triggerName === 'spin') return ['Evolved by Level'] as const;
-          if (triggerName === 'tower-of-darkness') return ['Evolved by Item'] as const;
-          if (triggerName === 'tower-of-waters') return ['Evolved by Item'] as const;
-          if (triggerName === 'three-critical-hits') return ['Evolved by Level'] as const;
-          if (triggerName === 'recoil-high-damage') return ['Evolved by Level']as const;
-          if (triggerName === 'recoil-med-damage') return ['Evolved by Level'] as const;
-          if (triggerName === 'mechanical-arm') return ['Evolved by Item'] as const;
-          if (triggerName === 'take-damage-accuracy') return ['Evolved by Level'] as const;
-          if (triggerName === 'other') return ['Evolved by Level'] as const;
-          return ['Evolved by Level']
-        }
-        return undefined;
-      }).reduce((t, prev) => [...prev, ...t], []).filter((t): t is EvolutionTrigger => t !== undefined))];
+    if (!node.evolution_details || node.evolution_details.length === 0) {
+      return [];
     }
-    return [];
+    
+    const triggers: EvolutionTrigger[] = [];
+    for (const details of node.evolution_details) {
+      if (details?.trigger) {
+        const triggerName = details.trigger.name;
+        if (triggerName === 'level-up') {
+          if (details.item || details.held_item) {
+            triggers.push('Evolved by Item');
+          } else if (details.min_affection !== null || details.min_happiness !== null) {
+            triggers.push('Evolved by Friendship');
+          } else {
+            triggers.push('Evolved by Level');
+          }
+        } else if (triggerName === 'trade') {
+          if (details.held_item) {
+            triggers.push('Evolved by Item');
+            triggers.push('Evolved by Trade');
+          } else {
+            triggers.push('Evolved by Trade');
+          }
+        } else if (triggerName === 'use-item' || triggerName === 'shed') {
+          triggers.push('Evolved by Item');
+        } else if (triggerName === 'aggression') {
+          triggers.push('Evolved by Friendship');
+        } else if (triggerName === 'spin' || triggerName === 'three-critical-hits' || triggerName === 'recoil-high-damage' || triggerName === 'recoil-med-damage' || triggerName === 'take-damage-accuracy' || triggerName === 'other') {
+          triggers.push('Evolved by Level');
+        } else if (triggerName === 'tower-of-darkness' || triggerName === 'tower-of-waters' || triggerName === 'mechanical-arm') {
+          triggers.push('Evolved by Item');
+        }
+      }
+    }
+    return [...new Set(triggers)];
   }
   
   const node = findNode(chain, speciesName);
@@ -434,6 +436,9 @@ function getEntry(formId: number, added: Set<number>): Pokemon|undefined {
             if (result.trigger) entry.evolutionTrigger = result.trigger.length > 0 ? result.trigger : undefined;
             if (result.branched) entry.isBranched = true;
           }
+        }
+        if(EVOLUTION_METHOD_REPLACEMENTS[id]) {
+          entry.evolutionTrigger = EVOLUTION_METHOD_REPLACEMENTS[id];
         }
       } else if(!IGNORE_EVOLVE_FORMS.has(form.form_name)) {
         entry.evolutionStage = 'No Evolution Line';
