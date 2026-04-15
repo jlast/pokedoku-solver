@@ -321,7 +321,7 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1><img src="/logo.svg" alt="Pokedoku Helper" className="logo" /></h1>
+        <h1><img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" /></h1>
         <p>Set row/column constraints, then click a cell to place a Pokemon.</p>
       </header>
 
