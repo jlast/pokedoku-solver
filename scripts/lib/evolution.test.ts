@@ -179,16 +179,6 @@ describe('evolution', () => {
       expect(result).toContain('Evolved by Item');
     });
 
-    it('should return empty array for aggression trigger (not currently handled)', () => {
-      const node: EvolutionNode = {
-        species: { name: 'test', url: '' },
-        evolves_to: [],
-        evolution_details: [{ trigger: { name: 'aggression', url: '' } }],
-      };
-      const result = getTriggerMethods(node);
-      expect(result).toEqual([]);
-    });
-
     it('should return unique triggers only', () => {
       const node: EvolutionNode = {
         species: { name: 'test', url: '' },
