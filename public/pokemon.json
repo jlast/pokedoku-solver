@@ -1176,7 +1176,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Trade"
+      "Evolved by Trade",
+      "Evolved by Item"
     ]
   },
   {
@@ -1222,7 +1223,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Trade"
+      "Evolved by Trade",
+      "Evolved by Item"
     ]
   },
   {
@@ -1371,7 +1373,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Trade"
+      "Evolved by Trade",
+      "Evolved by Item"
     ]
   },
   {
@@ -1702,7 +1705,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Trade"
+      "Evolved by Trade",
+      "Evolved by Item"
     ]
   },
   {
@@ -2504,6 +2508,7 @@
     ],
     "region": "Kanto",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10042.png",
+    "category": "Fossil",
     "specialForm": "Mega Evolution"
   },
   {
@@ -6491,39 +6496,13 @@
   },
   {
     "id": 414,
-    "name": "Mothim plant",
+    "name": "Mothim",
     "types": [
       "Bug",
       "Flying"
     ],
     "region": "Sinnoh",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/414.png",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": [
-      "Evolved by Level"
-    ]
-  },
-  {
-    "id": 414,
-    "name": "Mothim sandy",
-    "types": [
-      "Bug",
-      "Flying"
-    ],
-    "region": "Sinnoh",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": [
-      "Evolved by Level"
-    ]
-  },
-  {
-    "id": 414,
-    "name": "Mothim trash",
-    "types": [
-      "Bug",
-      "Flying"
-    ],
-    "region": "Sinnoh",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
       "Evolved by Level"
@@ -7580,7 +7559,7 @@
       "Steel",
       "Dragon"
     ],
-    "region": "Sinnoh",
+    "region": "Hisui",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10245.png",
     "category": "Legendary",
     "evolutionStage": "No Evolution Line"
@@ -7604,7 +7583,7 @@
       "Water",
       "Dragon"
     ],
-    "region": "Sinnoh",
+    "region": "Hisui",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10246.png",
     "category": "Legendary",
     "evolutionStage": "No Evolution Line"
@@ -8533,7 +8512,7 @@
     "types": [
       "Water"
     ],
-    "region": "Unova",
+    "region": "Hisui",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10247.png",
     "evolutionStage": "First Stage"
   },
@@ -13249,28 +13228,6 @@
     ],
     "region": "Galar",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/845.png",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 845,
-    "name": "Cramorant gulping",
-    "types": [
-      "Flying",
-      "Water"
-    ],
-    "region": "Galar",
-    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10182.png",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 845,
-    "name": "Cramorant gorging",
-    "types": [
-      "Flying",
-      "Water"
-    ],
-    "region": "Galar",
-    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10183.png",
     "evolutionStage": "No Evolution Line"
   },
   {
