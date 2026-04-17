@@ -147,6 +147,18 @@ describe('pokemon.json', () => {
     const gmax = data.filter(p => p.specialForm === 'Gigantamax');
     expect(gmax.length).toBeGreaterThan(0);
   });
+
+  it('should get a big list for ghost type and dual type', () => { 
+    const expected = ['Absol Mega Z', 'Aegislash Blade', 'Aegislash Shield', 'Annihilape', 'Basculegion Female', 'Basculegion Male', 'Blacephalon', 'Brambleghast', 'Bramblin', 'Calyrex Shadow', 'Ceruledge', 'Chandelure', 'Chandelure Mega', 'Decidueye', 'Dhelmise', 'Doublade', 'Dragapult', 'Drakloak', 'Dreepy', 'Drifblim', 'Drifloon', 'Flutter Mane', 'Frillish Female', 'Frillish Male', 'Froslass', 'Froslass Mega', 'Gastly', 'Gengar', 'Gengar Gmax', 'Gengar Mega', 'Gholdengo', 'Giratina Altered', 'Giratina Origin', 'Golett', 'Golurk', 'Golurk Mega', 'Gourgeist Average', 'Gourgeist Large', 'Gourgeist Small', 'Gourgeist Super', 'Haunter', 'Honedge', 'Hoopa', 'Jellicent Female', 'Jellicent Male', 'Lampent', 'Litwick', 'Lunala', 'Marowak Alola', 'Marshadow', 'Mimikyu Busted', 'Mimikyu Disguised', 'Necrozma Dawn', 'Oricorio Sensu', 'Palossand', 'Pecharunt', 'Phantump', 'Poltchageist', 'Pumpkaboo Average', 'Pumpkaboo Large', 'Pumpkaboo Small', 'Pumpkaboo Super', 'Rotom', 'Runerigus', 'Sableye', 'Sableye Mega', 'Sandygast', 'Shedinja', 'Sinistcha', 'Skeledirge', 'Spiritomb', 'Trevenant', 'Typhlosion Hisui', 'Yamask Galar', 'Zoroark Hisui', 'Zorua Hisui'];
+    const received = data.filter(p => p.types.includes('Ghost') && p.types.length > 1).map(p => p.name);
+    expect(received.sort().map((name) => name.toLowerCase())).toEqual(expected.sort().map((name) => name.toLowerCase()));
+  })
+
+  it('should get a big list for legendary and dual type', () => {
+    const expected = ['Koraidon', 'Lugia', 'Rayquaza', 'Ho Oh', 'Zapdos', 'Groudon Primal', 'Miraidon', 'Mewtwo Mega X', 'Dialga', 'Zapdos Galar', 'Yveltal', 'Articuno Galar', 'Articuno', 'Zekrom', 'Palkia', 'Rayquaza Mega', 'Moltres Galar', 'Moltres', 'Reshiram', 'Lunala', 'Giratina Origin', 'Calyrex Ice', 'Ogerpon Cornerstone Mask', 'Thundurus Therian', 'Palkia Origin', 'Heatran Mega', 'Giratina Altered', 'Thundurus Incarnate', 'Solgaleo', 'Dialga Origin', 'Kyurem White', 'Heatran', 'Ogerpon Hearthflame Mask', 'Zygarde Complete', 'Zacian Crowned', 'Zygarde 10%', 'Zamazenta Crowned', 'Virizion', 'Chien Pao', 'Kyurem Black', 'Ogerpon Wellspring Mask', 'Necrozma Ultra', 'Eternatus Eternamax', 'Necrozma Dusk', 'Cobalion', 'Chi Yu', 'Necrozma Dawn', 'Ting Lu', 'Fezandipiti', 'Kyurem', 'Calyrex Shadow', 'Urshifu Rapid Strike Gmax', 'Terrakion', 'Eternatus', 'Munkidori', 'Landorus Therian', 'Latias', 'Wo Chien', 'Okidogi', 'Latias Mega', 'Latios Mega', 'Calyrex', 'Latios', 'Tapu Lele', 'Tapu Bulu', 'Urshifu Single Strike Gmax', 'Zygarde Mega', 'Zygarde 50%', 'Urshifu Rapid Strike', 'Enamorus Therian', 'Tapu Fini', 'Enamorus Incarnate', 'Landorus Incarnate', 'Tapu Koko', 'Urshifu Single Strike']
+    const received = data.filter(p => p.category === 'Legendary' && p.types.length > 1).map(p => p.name);
+    expect(received.sort().map((name) => name.toLowerCase())).toEqual(expected.sort().map((name) => name.toLowerCase()));
+  });
 });
 
 describe('evolution triggers', () => {

@@ -64,11 +64,12 @@ export const IGNORED_FORM_IDS = new Set([
   10182, 10183, 10184, 10185, 10186, 10187, 10196, 10197, 10198, 10199, 10200, 10201, 10267, 10319, // All pikachu costumes
   10103, 10104, 10105, 10106, 10107, 10108, 10109, 10110, 10111, 10112, 10113, 10114, // Flabebe, Floette and Florges special forms
   10249, 10250, 10251, 10252, 10253, 10254, // Minior meteor
-  10341, 10342 // Cramorant
+  10341, 10342, // Cramorant
+  10220, 10221, // Zygarde 10% and 50% power constructs 
 ])
 
 export const IGNORED_FORMS = new Set([
-  'totem', 'totem-alola', 'totem-disguised', 'totem-busted', 'busted'
+  'totem', 'totem-alola', 'totem-disguised', 'totem-busted'
 ]);
 
 export const IGNORE_SPECIAL_FORMS = new Set([
@@ -80,7 +81,8 @@ export const NAME_REPLACEMENTS: Record<string, string> = {
   'Floette red': 'Floette',
   'Florges red': 'Florges',
   'Minior red meteor': 'Minior meteor',
-  'Mimikyu disguised': 'Mimikyu',
+  'Zygarde 10': 'Zygarde 10%',
+  'Zygarde 50': 'Zygarde 50%',
 }
 
 export interface PokemonOverride {
