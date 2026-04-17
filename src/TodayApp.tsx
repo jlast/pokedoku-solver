@@ -1,12 +1,23 @@
 import { useState, useMemo, useEffect } from 'react';
 import type { Pokemon } from './types';
 import { GRID_SIZE, type Constraint } from './constants';
-import { matchesConstraint, parseConstraintFromParam } from './utils';
+import { matchesConstraint, formatDate } from './utils';
 import { trackEvent } from './analytics';
 import { Grid } from './components/Grid';
 import { SuggestionsPanel } from './components/SuggestionsPanel';
 import './App.css';
 import './index.css';
+
+interface TodayPuzzle {
+  date: string;
+  type: string;
+  rowConstraints: Constraint[];
+  colConstraints: Constraint[];
+}
+
+interface TodayAppProps {
+  puzzle: TodayPuzzle;
+}
 
 interface GridState {
   cells: (Pokemon | null)[][];
@@ -15,26 +26,15 @@ interface GridState {
   selectedCell: [number, number] | null;
 }
 
-function App() {
+export function TodayApp({ puzzle }: TodayAppProps) {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
-  const [grid, setGrid] = useState<GridState>(() => {
-    const params = new URLSearchParams(window.location.search);
-    const parseConstraints = (key: string): (Constraint | null)[] => {
-      const values = params.get(key)?.split(',').slice(0, GRID_SIZE) || [];
-      return values.map(val => parseConstraintFromParam(val));
-    };
-    const rowConstraints = parseConstraints('rows');
-    const colConstraints = parseConstraints('cols');
-    while (rowConstraints.length < GRID_SIZE) rowConstraints.push(null);
-    while (colConstraints.length < GRID_SIZE) colConstraints.push(null);
-    return {
-      cells: Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null)),
-      rowConstraints,
-      colConstraints,
-      selectedCell: null,
-    };
-  });
+  const [grid, setGrid] = useState<GridState>(() => ({
+    cells: Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null)),
+    rowConstraints: [...puzzle.rowConstraints],
+    colConstraints: [...puzzle.colConstraints],
+    selectedCell: null,
+  }));
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}pokemon.json`)
@@ -48,20 +48,6 @@ function App() {
         setLoading(false);
       });
   }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const toQueryString = (constraints: (Constraint | null)[]): string =>
-      constraints.map(c => c?.value || '').filter(Boolean).join(',');
-    const rowsStr = toQueryString(grid.rowConstraints);
-    const colsStr = toQueryString(grid.colConstraints);
-    if (rowsStr) params.set('rows', rowsStr);
-    else params.delete('rows');
-    if (colsStr) params.set('cols', colsStr);
-    else params.delete('cols');
-    const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
-    window.history.replaceState({}, '', newUrl);
-  }, [grid.rowConstraints, grid.colConstraints]);
 
   const possiblePokemon = useMemo(() => {
     const result: Pokemon[][][] = Array(GRID_SIZE).fill(null).map(() =>
@@ -121,23 +107,13 @@ function App() {
     }));
   };
 
-  const handleConstraintChange = (index: number, isRow: boolean, option: { value: string; category: string } | null) => {
-    const constraint = option ? { value: option.value, category: option.category } : null;
+  const clearCells = () => {
+    trackEvent('click_clear_all');
     setGrid(prev => ({
       ...prev,
-      [isRow ? 'rowConstraints' : 'colConstraints']: 
-        prev[isRow ? 'rowConstraints' : 'colConstraints'].map((c, i) => i === index ? constraint : c),
-    }));
-  };
-
-  const clearGrid = () => {
-    trackEvent('click_clear_all');
-    setGrid({
       cells: Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null)),
-      rowConstraints: [null, null, null],
-      colConstraints: [null, null, null],
       selectedCell: null,
-    });
+    }));
   };
 
   const selectedCellPossible = grid.selectedCell 
@@ -156,12 +132,12 @@ function App() {
     <div className="app">
       <header>
         <h1><img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" /></h1>
-        <p>Set row/column constraints, then click a cell to see the list of possible Pokémon.</p>
+        <p>Today&apos;s puzzle - {formatDate(puzzle.date)}</p>
       </header>
 
       <div className="controls">
-        <a href={`${import.meta.env.BASE_URL}today/`} onClick={() => trackEvent('click_today', { url: 'today' })} className="today-btn">Today</a>
-        <button onClick={clearGrid} className="clear-btn">Clear All</button>
+        <a href={import.meta.env.BASE_URL} onClick={() => trackEvent('click_back_to_editor', { url: '/' })} className="today-btn">Back to Editor</a>
+        <button onClick={clearCells} className="clear-btn">Clear All</button>
       </div>
 
       <div className="main-content">
@@ -171,8 +147,9 @@ function App() {
           colConstraints={grid.colConstraints}
           possiblePokemon={possiblePokemon}
           selectedCell={grid.selectedCell}
+          editable={false}
           onCellClick={handleCellClick}
-          onConstraintChange={handleConstraintChange}
+          onConstraintChange={() => {}}
         />
 
         <SuggestionsPanel
@@ -200,5 +177,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

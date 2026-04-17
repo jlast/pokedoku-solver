@@ -66,6 +66,22 @@ header .pokemon-count {
   background: #c0392b;
 }
 
+.today-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #3498db;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+
+.today-btn:hover {
+  background: #2980b9;
+}
+
 .main-content {
   display: flex;
   gap: 24px;
@@ -103,7 +119,8 @@ header .pokemon-count {
 
 .constraint-selector {
   display: flex;
-  width: 100px;
+  align-items: stretch;
+  width: 102px;
 }
 
 .constraint-select {
@@ -128,6 +145,21 @@ header .pokemon-count {
   font-style: normal;
 }
 
+.constraint-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 12px;
+  text-align: center;
+  font-weight: 500;
+}
+
 .grid-with-row-labels {
   display: flex;
   gap: 4px;
@@ -140,10 +172,15 @@ header .pokemon-count {
 }
 
 .type-labels-left .constraint-selector {
-  height: 100px;
+  height: 102px;
+  width:  100px;
 }
 
 .type-labels-left .constraint-select {
+  height: 100%;
+}
+
+.type-labels-left .constraint-display {
   height: 100%;
 }
 
@@ -166,13 +203,15 @@ header .pokemon-count {
   height: 100px;
   background: #ecf0f1;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
   cursor: pointer;
   transition: all 0.15s;
   position: relative;
   border-radius: 4px;
   border: 2px solid transparent;
+  overflow: hidden;
 }
 
 .cell:hover {
@@ -196,13 +235,28 @@ header .pokemon-count {
   border-color: var(--constraint-color, #bdc3c7);
 }
 
+.cell-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 .cell-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 1px;
   padding: 4px;
   text-align: center;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.9);
+  width: 100%;
+}
+
+.cell-content .pokemon-sprite {
+  transform: translateY(25%);
 }
 
 .pokemon-id {
