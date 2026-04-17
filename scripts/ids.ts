@@ -39,7 +39,7 @@ export const CANT_EVOLVE_FORMS = new Set([
 ]);
 
 export const IGNORE_EVOLVE_FORMS = new Set([
-  'gmax', 'mega'
+  'gmax', 'mega', 'mega-x', 'mega-y'
 ]);
 
 export const ULTRA_BEASTS = new Set([793, 794, 795, 796, 797, 798, 799, 803, 804, 805, 806]);
@@ -110,8 +110,14 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   76: { // Golem, linking cord fix
     evolutionTrigger: ['Evolved by Trade', 'Evolved by Item']
   },
+  80: { // Slowbro, galarian form evolution trigger fix
+    evolutionTrigger: ['Evolved by Level']
+  },
   94: { // Gengar, linking cord fix
     evolutionTrigger: ['Evolved by Trade', 'Evolved by Item']
+  },
+  869: { // Alcremie, evolved by sweet item fix
+    evolutionTrigger: ['Evolved by Item']
   },
   1013: { // sinistcha
     evolutionTrigger: ['Evolved by Item']
