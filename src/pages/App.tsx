@@ -1,12 +1,12 @@
 import { useState, useMemo, useEffect } from 'react';
-import type { Pokemon } from './types';
-import { GRID_SIZE, type Constraint } from './constants';
-import { matchesConstraint, parseConstraintFromParam } from './utils';
-import { trackEvent } from './analytics';
-import { Grid } from './components/Grid';
-import { SuggestionsPanel } from './components/SuggestionsPanel';
+import type { Pokemon } from '../utils/types';
+import { GRID_SIZE, type Constraint } from '../utils/constants';
+import { matchesConstraint, parseConstraintFromParam } from '../utils/utils';
+import { trackEvent } from '../utils/analytics';
+import { Grid } from '../components/Grid';
+import { SuggestionsPanel } from '../components/SuggestionsPanel';
 import './App.css';
-import './index.css';
+import '../index.css';
 
 interface GridState {
   cells: (Pokemon | null)[][];
@@ -160,7 +160,7 @@ function App() {
       </header>
 
       <div className="controls">
-        <a href={`${import.meta.env.BASE_URL}today/`} onClick={() => trackEvent('click_today', { url: 'today' })} className="today-btn">Today</a>
+        <a href={`${import.meta.env.BASE_URL}today/`} onClick={() => trackEvent('click_today', { url: 'today' })} className="today-btn">Today's puzzle</a>
         <button onClick={clearGrid} className="clear-btn">Clear All</button>
       </div>
 

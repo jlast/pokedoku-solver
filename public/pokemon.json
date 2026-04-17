@@ -1481,7 +1481,6 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
       "Evolved by Item"
     ]
   },
@@ -4662,7 +4661,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/292.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Item"
+      "Evolved by Level"
     ]
   },
   {
@@ -13523,10 +13522,7 @@
     ],
     "region": "Galar",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/865.png",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": [
-      "Evolved by Level"
-    ]
+    "evolutionStage": "Final Stage"
   },
   {
     "id": 866,
@@ -14157,7 +14153,10 @@
     ],
     "region": "Hisui",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/902.png",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 902,
@@ -14168,7 +14167,10 @@
     ],
     "region": "Hisui",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10248.png",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 903,
@@ -15257,7 +15259,10 @@
     ],
     "region": "Paldea",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/979.png",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 980,
@@ -15322,7 +15327,10 @@
     ],
     "region": "Paldea",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/983.png",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 984,
@@ -15546,7 +15554,10 @@
     ],
     "region": "Paldea",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1000.png",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 1001,

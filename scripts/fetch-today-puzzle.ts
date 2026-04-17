@@ -1,12 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import type { ConstraintCategory } from '../src/types';
+import type { ConstraintCategory } from '../src/utils/types';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'today-puzzle.json');
-const TODAY_HTML_TEMPLATE = path.join(__dirname, '..', 'today', 'index.html');
-const TODAY_HTML_OUTPUT = path.join(__dirname, '..', 'today', 'index.html');
 
 const GENERATION_MAP: Record<string, string> = {
   'generation-i': 'Kanto',
@@ -171,14 +169,6 @@ async function fetchPuzzle(): Promise<void> {
 
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));
   console.log(`Puzzle saved to ${OUTPUT_FILE}`);
-
-  let todayHtml = fs.readFileSync(TODAY_HTML_TEMPLATE, 'utf8');
-  todayHtml = todayHtml.replaceAll(
-    '__PUZZLE_VALUE__',
-    JSON.stringify(output)
-  );
-  fs.writeFileSync(TODAY_HTML_OUTPUT, todayHtml);
-  console.log(`Today HTML updated with puzzle data`);
 
   console.log(`Row constraints: ${rowConstraints.map(c => `${c!.category}:${c!.value}`).join(', ')}`);
   console.log(`Col constraints: ${colConstraints.map(c => `${c!.category}:${c!.value}`).join(', ')}`);

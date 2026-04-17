@@ -214,6 +214,16 @@ header .pokemon-count {
   overflow: hidden;
 }
 
+.cell .pokemon-sprite {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 0;
+}
+
 .cell:hover {
   background: #d5dbdb;
 }
@@ -243,20 +253,17 @@ header .pokemon-count {
 }
 
 .cell-content {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
   gap: 1px;
-  padding: 4px;
+  padding: 4px 8px;
+  margin: 4px;
+  border-radius: 6px;
   text-align: center;
   position: relative;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.9);
-  width: 100%;
-}
-
-.cell-content .pokemon-sprite {
-  transform: translateY(25%);
+  background: rgba(128, 128, 128, 0.8);
 }
 
 .pokemon-id {
@@ -503,6 +510,11 @@ footer {
   padding-top: 16px;
   border-top: 1px solid #eee;
   color: #666;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 footer a {

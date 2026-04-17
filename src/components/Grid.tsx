@@ -1,7 +1,7 @@
-import type { Pokemon } from '../types';
-import type { Constraint } from '../constants';
-import { TYPE_COLORS, CATEGORY_COLORS, CONSTRAINT_OPTIONS, findConstraintOption } from '../constants';
-import { trackEvent } from '../analytics';
+import type { Pokemon } from '../utils/types';
+import type { Constraint } from '../utils/constants';
+import { TYPE_COLORS, CATEGORY_COLORS, CONSTRAINT_OPTIONS, findConstraintOption } from '../utils/constants';
+import { trackEvent } from '../utils/analytics';
 
 interface GridProps {
   cells: (Pokemon | null)[][];
@@ -140,11 +140,12 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                     } as React.CSSProperties}
                   >
                     {cell ? (
-                      <div className="cell-content">
+                      <>
                         {cell.sprite && <img src={cell.sprite} alt="" className="pokemon-sprite" />}
-                        <span className="pokemon-id">#{cell.id.toString().padStart(4, '0')}</span>
-                        <span className="pokemon-name">{cell.name}</span>
-                      </div>
+                        <div className="cell-content">
+                          <span className="pokemon-name">{cell.name}</span>
+                        </div>
+                      </>
                     ) : (
                       <div className="cell-count">
                         <span className="possible-count">{possible.length}</span>
