@@ -194,7 +194,7 @@ function App() {
           onCellClick={handleCellClick}
           onConstraintChange={handleConstraintChange}
         />
-<div ref={suggestionsRef}
+<div ref={suggestionsRef}>
         <SuggestionsPanel
           selectedCell={grid.selectedCell}
           rowConstraints={grid.rowConstraints}
