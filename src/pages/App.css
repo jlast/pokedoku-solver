@@ -84,7 +84,7 @@ header .pokemon-count {
 
 .main-content {
   display: flex;
-  gap: 24px;
+  gap: 4px;
   justify-content: center;
   align-items: flex-start;
   flex-wrap: wrap;
@@ -371,6 +371,7 @@ header .pokemon-count {
   max-width: 340px;
   max-height: 500px;
   overflow-y: auto;
+  margin-top: 20px;
 }
 
 .suggestions-panel h3 {
