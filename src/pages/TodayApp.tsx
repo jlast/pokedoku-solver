@@ -141,12 +141,8 @@ export function TodayApp({ puzzle }: TodayAppProps) {
       Pokémon for each square.
     </p>
 
-    <p>
-      Click any cell to view matching Pokémon for the current row and column
-      combination. Use it as a hint tool, a learning aid, or a quick way to
-      understand today&apos;s puzzle layout.
-    </p>
-        <p>Today&apos;s puzzle - {formatDate(puzzle.date)}</p>
+
+        <p>Today&apos;s puzzle for <b>{formatDate(puzzle.date)}</b></p>
       </header>
 
       <div className="controls">
@@ -155,6 +151,9 @@ export function TodayApp({ puzzle }: TodayAppProps) {
       </div>
 
       <div className="main-content">
+        <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
+          Tap a square to begin
+        </p>
         <Grid
           cells={grid.cells}
           rowConstraints={grid.rowConstraints}
