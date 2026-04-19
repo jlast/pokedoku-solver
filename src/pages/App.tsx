@@ -37,7 +37,7 @@ function App() {
   });
 
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}pokemon.json`)
+    fetch(`${import.meta.env.BASE_URL}pokemon.json?t=${Date.now()}`)
       .then(res => res.json())
       .then(data => {
         setPokemon(data);
