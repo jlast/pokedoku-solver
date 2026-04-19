@@ -209,7 +209,7 @@ function App() {
 
     <h2>Why use this Pokedoku helper?</h2>
 
-    <p
+    <p>
       Some squares have lots of possible answers, while others are much more
       restrictive than they look. This helper shows valid Pokémon for each
       combination so you can learn new options, avoid invalid guesses, and make
