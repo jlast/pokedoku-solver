@@ -159,16 +159,9 @@ function App() {
         
 
         <h1>Pokedoku Helper</h1>
-
-    <p className="lead">
-      Explore possible Pokémon for any Pokedoku square. Set the row and column
-      constraints, then click a cell to see which Pokémon match both conditions.
-    </p>
-
-    <p>
-      Use it to understand tricky combinations, learn the Pokédex, or ge
-      unstuck on today’s puzzle without guessing blindly.
-    </p>
+        <p className="lead">
+          Explore all valid Pokémon for any Pokedoku square. Set constraints and click a cell to see matching Pokémon.
+        </p>
       </header>
 
       <div className="controls">
