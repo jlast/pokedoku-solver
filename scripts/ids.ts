@@ -40,9 +40,11 @@ export const CANT_EVOLVE_FORMS = new Set(["starter"]);
 
 export const IGNORE_EVOLVE_FORMS = new Set([
   "gmax",
+  "eternamax",
   "mega",
   "mega-x",
   "mega-y",
+  "mega-z",
 ]);
 
 export const ULTRA_BEASTS = new Set([
