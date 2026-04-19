@@ -155,8 +155,20 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1><img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" /></h1>
-        <p>Set row/column constraints, then click a cell to see the list of possible Pokémon.</p>
+        <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" />
+        
+
+        <h1>Pokedoku Helper</h1>
+
+    <p className="lead">
+      Explore possible Pokémon for any Pokedoku square. Set the row and column
+      constraints, then click a cell to see which Pokémon match both conditions.
+    </p>
+
+    <p>
+      Use it to understand tricky combinations, learn the Pokédex, or ge
+      unstuck on today’s puzzle without guessing blindly.
+    </p>
       </header>
 
       <div className="controls">
@@ -184,6 +196,72 @@ function App() {
         />
       </div>
 
+   <section className="content-section">
+
+    <h2>How it works</h2>
+
+    <p>
+
+      Choose a constraint for each row and column, then click a square to view
+      matching Pokémon. You can load today’s puzzle or create your own
+      combinations to explore different possibilities.
+    </p>
+
+    <h2>Why use this Pokedoku helper?</h2>
+
+    <p
+      Some squares have lots of possible answers, while others are much more
+      restrictive than they look. This helper shows valid Pokémon for each
+      combination so you can learn new options, avoid invalid guesses, and make
+      better choices in the daily puzzle.
+    </p>
+
+    <h2>Use it with today’s Pokedoku</h2>
+
+    <p>
+
+      Tap <strong>Today&apos;s puzzle</strong> to load the current grid, then
+      inspect each square to see which Pokémon fit. You can use it as a hint
+      tool, a learning aid, or a quick way to understand difficult categories.
+    </p>
+
+  </section>
+
+  <section className="content-section faq">
+
+    <h2>FAQ</h2>
+
+    <h3>What is Pokedoku?</h3>
+
+    <p>
+      Pokedoku is a daily puzzle where each square must be filled with a Pokémon
+      that matches both the row and column categories.
+    </p>
+
+    <h3>What does this helper do?</h3>
+
+    <p>
+      It shows Pokémon that match the selected row and column constraints for a
+      square, making it easier to explore valid options.
+    </p>
+
+    <h3>Can I use it for the daily puzzle?</h3>
+
+    <p>
+      Yes. You can load the current puzzle and view possible matches for each
+      square.
+    </p>
+
+    <h3>What kinds of constraints can I explore?</h3>
+
+    <p>
+      Depending on the puzzle, you can check combinations involving types,
+      regions, generations, evolution lines, legendary status, and other common
+      Pokedoku categories.
+    </p>
+
+  </section>
+      
       <footer>
         <a href="https://pokedoku.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('click_pokedoku', { url: 'https://pokedoku.com' })}>Play Pokedoku</a>
         <span>•</span>
