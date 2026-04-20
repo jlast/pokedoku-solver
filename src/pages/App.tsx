@@ -4,6 +4,7 @@ import { GRID_SIZE, type Constraint } from '../utils/constants';
 import { matchesConstraint, parseConstraintFromParam } from '../utils/utils';
 import { trackEvent } from '../utils/analytics';
 import { Grid } from '../components/Grid';
+import { Header } from '../components/Header';
 import { SuggestionsPanel } from '../components/SuggestionsPanel';
 import './App.css';
 import '../index.css';
@@ -174,15 +175,10 @@ function App() {
 
   return (
     <div className="app">
-      <header>
-        <div className="title">
-          <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" />
-          <h1>Pokedoku Helper</h1>
-        </div>
-        <p className="lead">
-          Explore all valid Pokémon for any Pokedoku square. Set constraints and click a cell to see matching Pokémon.
-        </p>
-      </header>
+      <Header
+        title="Pokedoku Helper"
+        subtitle="Explore all valid Pokémon for any Pokedoku square. Set constraints and click a cell to see matching Pokémon."
+      />
 
       <div className="controls">
         <a href={`${import.meta.env.BASE_URL}today/`} onClick={() => trackEvent('click_today', { url: 'today' })} className="today-btn">Today's puzzle</a>
