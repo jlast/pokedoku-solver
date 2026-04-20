@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { matchesConstraint, parseConstraintFromParam, findConstraintOption, formatDate } from './utils';
-import type { Pokemon } from './types';
+import type { EvolutionMethod, Pokemon } from './types';
 
 const mockPokemon: Pokemon = {
   id: 6,
@@ -110,6 +110,28 @@ describe('matchesConstraint', () => {
     it('should match First Stage for branched Pokemon', () => {
       const constraint = { value: 'First Stage', category: 'evolution' as const };
       expect(matchesConstraint(mockBranchedPokemon, constraint)).toBe(true);
+    });
+
+    it('should match Not Fully Evolved for First Stage Pokemon', () => {
+      const constraint = { value: 'Not Fully Evolved', category: 'evolution' as const };
+      expect(matchesConstraint(mockBranchedPokemon, constraint)).toBe(true);
+    });
+
+    it('should match Not Fully Evolved for Middle Stage Pokemon', () => {
+      const middleStagePokemon = { ...mockPokemon, evolutionStage: 'Middle Stage' as EvolutionMethod };
+      const constraint = { value: 'Not Fully Evolved', category: 'evolution' as const };
+      expect(matchesConstraint(middleStagePokemon, constraint)).toBe(true);
+    });
+
+    it('should not match Not Fully Evolved for Final Stage Pokemon', () => {
+      const constraint = { value: 'Not Fully Evolved', category: 'evolution' as const };
+      expect(matchesConstraint(mockPokemon, constraint)).toBe(false);
+    });
+
+    it('should not match Not Fully Evolved for Pokemon with No Evolution Line', () => {
+      const noEvolutionPokemon = { ...mockPokemon, evolutionStage: 'No Evolution Line' as EvolutionMethod };
+      const constraint = { value: 'Not Fully Evolved', category: 'evolution' as const };
+      expect(matchesConstraint(noEvolutionPokemon, constraint)).toBe(false);
     });
   });
 

@@ -13,6 +13,9 @@ export function matchesConstraint(p: Pokemon, constraint: Constraint | null): bo
   } else if (constraint.category === 'region') {
     return p.region === constraint.value;
   } else if (constraint.category === 'evolution') {
+    if (constraint.value === 'Not Fully Evolved') {
+      return p.evolutionStage === 'First Stage' || p.evolutionStage === 'Middle Stage';
+    }
     return p.evolutionStage === constraint.value;
   } else if (constraint.category === 'trigger') {
     return p.evolutionTrigger?.includes(constraint.value as EvolutionTrigger) ?? false;

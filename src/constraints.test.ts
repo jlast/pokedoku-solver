@@ -247,6 +247,27 @@ describe('constraint filtering', () => {
       const ditto = noEvolution.find(p => p.name === 'Ditto');
       expect(ditto).toBeDefined();
     });
+
+    it('should filter Not Fully Evolved (First Stage)', () => {
+      const notFullyEvolved = data.filter(p => p.evolutionStage === 'First Stage' || p.evolutionStage === 'Middle Stage');
+      expect(notFullyEvolved.length).toBeGreaterThan(50);
+      const eevee = notFullyEvolved.find(p => p.name === 'Eevee');
+      expect(eevee).toBeDefined();
+      const gloom = notFullyEvolved.find(p => p.name === 'Gloom');
+      expect(gloom).toBeDefined();
+    });
+
+    it('should filter Not Fully Evolved excludes Final Stage', () => {
+      const notFullyEvolved = data.filter(p => p.evolutionStage === 'First Stage' || p.evolutionStage === 'Middle Stage');
+      const charizard = notFullyEvolved.find(p => p.name === 'Charizard');
+      expect(charizard).toBeUndefined();
+    });
+
+    it('should filter Not Fully Evolved excludes No Evolution Line', () => {
+      const notFullyEvolved = data.filter(p => p.evolutionStage === 'First Stage' || p.evolutionStage === 'Middle Stage');
+      const ditto = notFullyEvolved.find(p => p.name === 'Ditto');
+      expect(ditto).toBeUndefined();
+    });
   });
 
   describe('branched evolutions', () => {

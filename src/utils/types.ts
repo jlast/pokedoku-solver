@@ -18,7 +18,8 @@ export const EVOLUTION_METHODS = [
   'First Stage',
   'Middle Stage', 
   'Final Stage',
-  'No Evolution Line'
+  'No Evolution Line',
+  'Not Fully Evolved'
 ] as const;
 
 export const EVOLUTION_TRIGGERS = [
