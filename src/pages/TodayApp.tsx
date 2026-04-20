@@ -153,18 +153,15 @@ useEffect(() => {
   return (
     <div className="app">
       <header>
-        <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" />
-        
-
-    <h1>Today&apos;s Pokedoku Helper</h1>
-
-    <p className="lead">
-      See the categories for today&apos;s Pokedoku puzzle and explore possible
-      Pokémon for each square.
-    </p>
-
-
-        <p>Today&apos;s puzzle for <b>{formatDate(puzzle.date)}</b></p>
+        <div className="title">
+          <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" />
+          <h1>Today's Pokedoku Helper</h1>
+        </div>
+        <p className="lead">
+          See the categories for today's Pokedoku puzzle and explore possible
+          Pokémon for each square.
+        </p>
+        <p>Today's puzzle for <b>{formatDate(puzzle.date)}</b></p>
       </header>
 
       <div className="controls">
