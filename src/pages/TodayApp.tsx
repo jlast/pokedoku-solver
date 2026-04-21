@@ -161,6 +161,7 @@ useEffect(() => {
 
       <div className="controls">
         <a href={import.meta.env.BASE_URL} onClick={() => trackEvent('click_back_to_editor', { url: '/' })} className="today-btn">Back to Editor</a>
+        <a href={`${import.meta.env.BASE_URL}tips/`} onClick={() => trackEvent('click_tips', { url: 'tips' })} className="today-btn">Tips & Strategies</a>
         <button onClick={clearCells} className="clear-btn">Clear All</button>
       </div>
 

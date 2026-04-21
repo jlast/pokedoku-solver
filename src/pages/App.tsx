@@ -182,6 +182,7 @@ function App() {
 
       <div className="controls">
         <a href={`${import.meta.env.BASE_URL}today/`} onClick={() => trackEvent('click_today', { url: 'today' })} className="today-btn">Today's puzzle</a>
+        <a href={`${import.meta.env.BASE_URL}tips/`} onClick={() => trackEvent('click_tips', { url: 'tips' })} className="today-btn">Tips & Strategies</a>
         <button onClick={clearGrid} className="clear-btn">Clear All</button>
       </div>
 
