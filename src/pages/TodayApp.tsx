@@ -40,22 +40,9 @@ export function TodayApp({ puzzle }: TodayAppProps) {
 
 useEffect(() => {
   if (!grid.selectedCell || !suggestionsRef.current) return;
-
-  const el = suggestionsRef.current;
-  const rect = el.getBoundingClientRect();
-
-  const isInView =
-    rect.top >= 0 &&
-    rect.bottom <= window.innerHeight;
-
-  if (!isInView) {
-    setTimeout(() => {
-      el.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }, 50);
-  }
+  setTimeout(() => {
+    suggestionsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
 }, [grid.selectedCell]);
   
   useEffect(() => {
@@ -181,8 +168,6 @@ useEffect(() => {
         <div ref={suggestionsRef}>
          <SuggestionsPanel
           selectedCell={grid.selectedCell}
-          rowConstraints={grid.rowConstraints}
-          colConstraints={grid.colConstraints}
           possiblePokemon={selectedCellPossible}
           onSelect={handlePokemonSelect}
          />
@@ -226,6 +211,15 @@ useEffect(() => {
     <p>
       Yes. Use the back button to return to the editor and set your own row and
       column combinations.
+    </p>
+
+    <h3>What is Dex Difficulty?</h3>
+
+    <p>
+      Dex Difficulty shows how hard it is to use a Pokémon in Pokedoku.  
+      <strong>Nightmare</strong> = few valid spots, lots of competition.  
+      <strong>Easy</strong> = more options or less competition.  
+      Helps you see which answers are more logical to prioritize for dex completion.
     </p>
 
   </section>

@@ -36,26 +36,18 @@ function App() {
       selectedCell: null,
     };
   });
- const suggestionsRef = useRef<HTMLDivElement | null>(null);
+const suggestionsRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-  if (!grid.selectedCell || !suggestionsRef.current) return;
+    if (!grid.selectedCell || !suggestionsRef.current) return;
 
-  const el = suggestionsRef.current;
-  const rect = el.getBoundingClientRect();
-
-  const isInView =
-    rect.top >= 0 &&
-    rect.bottom <= window.innerHeight;
-
-  if (!isInView) {
+    const el = suggestionsRef.current;
     setTimeout(() => {
       el.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
     }, 50);
-  }
-}, [grid.selectedCell]);
+  }, [grid.selectedCell]);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}pokemon.json?t=${Date.now()}`)
@@ -201,8 +193,6 @@ function App() {
 <div ref={suggestionsRef}>
         <SuggestionsPanel
           selectedCell={grid.selectedCell}
-          rowConstraints={grid.rowConstraints}
-          colConstraints={grid.colConstraints}
           possiblePokemon={selectedCellPossible}
           onSelect={handlePokemonSelect}
         />
@@ -256,6 +246,15 @@ function App() {
     <p>
       It shows Pokémon that match the selected row and column constraints for a
       square, making it easier to explore valid options.
+    </p>
+
+    <h3>What is Dex Difficulty?</h3>
+
+    <p>
+      Dex Difficulty shows how hard it is to use a Pokémon in Pokedoku.  
+      <strong>Nightmare</strong> = few valid spots, lots of competition.  
+      <strong>Easy</strong> = more options or less competition.  
+      Helps you see which answers are more logical to prioritize for dex completion.
     </p>
 
     <h3>Can I use it for the daily puzzle?</h3>
