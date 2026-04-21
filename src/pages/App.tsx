@@ -36,17 +36,26 @@ function App() {
       selectedCell: null,
     };
   });
-const suggestionsRef = useRef<HTMLDivElement | null>(null);
+  
+  const suggestionsRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!grid.selectedCell || !suggestionsRef.current) return;
 
-    const el = suggestionsRef.current;
+  const el = suggestionsRef.current;
+  const rect = el.getBoundingClientRect();
+
+  const isInView =
+    rect.top >= 0 &&
+    rect.bottom <= window.innerHeight;
+
+  if (!isInView) {
     setTimeout(() => {
       el.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
     }, 50);
+  }
   }, [grid.selectedCell]);
 
   useEffect(() => {
