@@ -5606,7 +5606,6 @@
       "Ghost"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -6915,10 +6914,6 @@
       "Dragon"
     ],
     "region": "Sinnoh",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": [
-      "Evolved by Level"
-    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -6976,10 +6971,6 @@
       "Steel"
     ],
     "region": "Sinnoh",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": [
-      "Evolved by Friendship"
-    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -11199,7 +11190,7 @@
       "Dragon",
       "Ground"
     ],
-    "region": "Kalos",
+    "region": "Alola",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10120.png",
     "category": "Legendary",
     "evolutionStage": "No Evolution Line"
@@ -13919,8 +13910,7 @@
     ],
     "region": "Galar",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10190.png",
-    "category": "Legendary",
-    "evolutionStage": "No Evolution Line"
+    "category": "Legendary"
   },
   {
     "id": 891,
