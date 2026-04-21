@@ -151,6 +151,21 @@ export function TodayApp({ puzzle }: TodayAppProps) {
     }));
   };
 
+  const hasGridData = grid.cells.some(row => row.some(cell => cell !== null));
+
+  const handleNavigate = (url: string, clearState?: () => void) => {
+    if (clearState) {
+      clearState();
+    }
+    trackEvent("click_navigate", { url });
+    window.location.href = `${import.meta.env.BASE_URL}${url}`;
+  };
+
+  const handleClearAndNavigate = () => {
+    handleNavigate('', clearCells);
+    window.location.href = import.meta.env.BASE_URL || '/';
+  };
+
   const selectedCellPossible = grid.selectedCell
     ? possiblePokemon[grid.selectedCell[0]][grid.selectedCell[1]]
     : [];
@@ -172,16 +187,15 @@ export function TodayApp({ puzzle }: TodayAppProps) {
       />
 
       <div className="controls">
-        <a
-          href={import.meta.env.BASE_URL}
-          onClick={() => trackEvent("click_back_to_editor", { url: "/" })}
-          className="today-btn"
-        >
-          Back to Editor
-        </a>
-        <button onClick={clearCells} className="clear-btn">
-          Clear All
+        <button onClick={handleClearAndNavigate} className="nav-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          Editor
         </button>
+        <button onClick={() => handleNavigate('pokemon-list/')} className="nav-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z"/></svg>
+          All Pokemon
+        </button>
+        <button onClick={clearCells} className="clear-btn" disabled={!hasGridData}>Clear All</button>
       </div>
 
       <div className="main-content">
@@ -198,6 +212,9 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           onCellClick={handleCellClick}
           onConstraintChange={() => {}}
         />
+        <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
+          Numbers show how many Pokémon match each combination.
+        </p>
         <div ref={suggestionsRef}>
           <SuggestionsPanel
             selectedCell={grid.selectedCell}

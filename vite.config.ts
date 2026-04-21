@@ -9,6 +9,7 @@ export default defineConfig({
       input: {
         main: './index.html',
         today: './today/index.html',
+        pokemonList: './pokemon-list/index.html',
       },
     },
   },
