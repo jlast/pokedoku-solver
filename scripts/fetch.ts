@@ -42,9 +42,9 @@ function getAllCategories(pokemon: Pokemon): string[] {
   
   if (pokemon.region) categories.push(pokemon.region);
   if (pokemon.evolutionStage) categories.push(pokemon.evolutionStage);
+  if (pokemon.evolutionStage === 'First Stage' || pokemon.evolutionStage === 'Middle Stage') categories.push('not fully evolved');
   if (pokemon.evolutionTrigger) categories.push(...pokemon.evolutionTrigger);
-  if (pokemon.isBranched) categories.push('Yes');
-  else categories.push('No');
+  if (pokemon.isBranched) categories.push('branched');
   if (pokemon.specialForm) categories.push(pokemon.specialForm);
   if (pokemon.category) categories.push(pokemon.category);
   
