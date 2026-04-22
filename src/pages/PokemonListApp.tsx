@@ -174,9 +174,16 @@ function PokemonListApp() {
   const handleCardClick = (p: Pokemon) => {
     if (flippedCardId === p.id) {
       setFlippedCardId(null);
+      trackEvent('select_pokemon', { name: p.name, action: 'unflip' });
     } else {
+      const categoryCount = getPokemonCategories(p).length;
       setFlippedCardId(p.id);
-      trackEvent('select_pokemon', { name: p.name, id: p.id, types: p.types.join(',') });
+      trackEvent('select_pokemon', { 
+        name: p.name, 
+        id: p.id, 
+        action: 'flip',
+        category_count: categoryCount 
+      });
     }
   };
 
