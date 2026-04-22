@@ -19,7 +19,7 @@ export async function fetchWithRetry<T>(url: string, retries: number = 3): Promi
   return null;
 }
 
-export function loadJson(dir: string, id: number): any {
+export function loadJson<T>(dir: string, id: number): T | null {
   const f = path.join(dir, `${id}.json`);
   if (fs.existsSync(f)) {
     try { return JSON.parse(fs.readFileSync(f, 'utf-8')); } catch {}
@@ -27,7 +27,7 @@ export function loadJson(dir: string, id: number): any {
   return null;
 }
 
-export function saveJson(dir: string, id: number, data: any) {
+export function saveJson<T>(dir: string, id: number, data: T) {
   ensureDir(dir);
   fs.writeFileSync(path.join(dir, `${id}.json`), JSON.stringify(data));
 }

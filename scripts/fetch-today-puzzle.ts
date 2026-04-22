@@ -22,6 +22,7 @@ const EVOLUTION_MAP: Record<string, string> = {
   'none': 'No Evolution Line',
   'premature': 'Not Fully Evolved',
   'start': 'First Stage',
+  'middle': 'Middle Stage',
   'final': 'Final Stage',
 };
 
@@ -71,15 +72,6 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
 
     case 'MYTHICAL':
       return { category: 'category', value: 'Mythical' };
-
-    case 'FIRST_STAGE':
-      return { category: 'evolution', value: 'First Stage' };
-
-    case 'MIDDLE_STAGE':
-      return { category: 'evolution', value: 'Middle Stage' };
-
-    case 'FINAL_STAGE':
-      return { category: 'evolution', value: 'Final Stage' };
 
     case 'ULTRA_BEAST':
       return { category: 'category', value: 'Ultra Beast' };
