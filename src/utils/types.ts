@@ -4,9 +4,10 @@ export const POKEMON_TYPES = [
   'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'
 ] as const;
 
-export type ConstraintCategory = 'type' | 'typeline' | 'region' | 'evolution' | 'branched' | 'trigger' | 'form' | 'category';
+export const TYPE_LINES = ['Monotype', 'Dualtype'] as const;
 
 export type PokemonType = typeof POKEMON_TYPES[number];
+export type TypeLine = typeof TYPE_LINES[number];
 
 export const POKEMON_REGIONS = [
   'Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Alola', 'Galar', 'Hisui', 'Paldea', 'Unknown'
@@ -19,7 +20,7 @@ export const EVOLUTION_METHODS = [
   'Middle Stage', 
   'Final Stage',
   'No Evolution Line',
-  'Not Fully Evolved'
+  'Not Fully Evolved',
 ] as const;
 
 export const EVOLUTION_TRIGGERS = [
@@ -29,7 +30,10 @@ export const EVOLUTION_TRIGGERS = [
   'Evolved by Friendship',
 ] as const;
 
+export const EVOLUTION_BRANCHED = ['Is Branched'] as const;
+
 export type EvolutionMethod = typeof EVOLUTION_METHODS[number];
+export type EvolutionBranched = typeof EVOLUTION_BRANCHED[number];
 export type EvolutionTrigger = typeof EVOLUTION_TRIGGERS[number];
 
 export const SPECIAL_FORMS = ['Gigantamax', 'Mega Evolution'] as const;
@@ -37,7 +41,7 @@ export const SPECIAL_FORMS = ['Gigantamax', 'Mega Evolution'] as const;
 export type SpecialForm = typeof SPECIAL_FORMS[number];
 
 export const POKEMON_CATEGORIES = [
-  'Legendary', 'Mythical', 'Ultra Beast', 'Paradox', 'Fossil', 'Starter', 'Baby'
+  'Legendary', 'Mythical', 'Ultra Beast', 'Paradox', 'Fossil', 'Starter', 'Baby', 'Gigantamax', 'Mega Evolution'
 ] as const;
 
 export type PokemonCategory = typeof POKEMON_CATEGORIES[number];

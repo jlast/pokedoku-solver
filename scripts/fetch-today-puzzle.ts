@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import type { ConstraintCategory } from '../src/utils/types';
+import type { ConstraintCategory } from '../src/utils/filters';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'today-puzzle.json');
@@ -41,14 +41,14 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
   switch (type) {
     case 'GENERATION':
       if (typeof obj === 'string' && GENERATION_MAP[obj]) {
-        return { category: 'region', value: GENERATION_MAP[obj] };
+        return { category: 'regions', value: GENERATION_MAP[obj] };
       }
       return null;
 
     case 'POKEMON_TYPE':
       if (typeof obj === 'string') {
         const typeName = obj.charAt(0).toUpperCase() + obj.slice(1);
-        return { category: 'type', value: typeName };
+        return { category: 'types', value: typeName };
       }
       return null;
       
@@ -58,17 +58,32 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
       }
       return null;
 
+    case 'EVOLVED_BY-level': 
+      return { category: 'evolution', value: 'Evolved by Level' };
+
+    case 'EVOLVED_BY-item': 
+      return { category: 'evolution', value: 'Evolved by Item' };
+
+    case 'EVOLVED_BY-trade': 
+      return { category: 'evolution', value: 'Evolved by Trade' };
+
+    case 'EVOLVED_BY-friendship': 
+      return { category: 'evolution', value: 'Evolved by Friendship' };
+
     case 'MONOTYPE':
-      return { category: 'typeline', value: 'Monotype' };
+      return { category: 'types', value: 'Monotype' };
 
     case 'DUAL_TYPE':
-      return { category: 'typeline', value: 'Dualtype' };
+      return { category: 'types', value: 'Dualtype' };
 
     case 'LEGENDARY':
       return { category: 'category', value: 'Legendary' };
 
+    case 'GMAX':
+      return { category: 'category', value: 'Gigantamax' };
+
     case 'MEGA':
-      return { category: 'form', value: 'Mega Evolution' };
+      return { category: 'category', value: 'Mega Evolution' };
 
     case 'MYTHICAL':
       return { category: 'category', value: 'Mythical' };
@@ -85,11 +100,11 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
     case 'PARADOX':
       return { category: 'category', value: 'Paradox' };
 
-    case 'BRANCHED':
-      if (obj === true) {
-        return { category: 'branched', value: 'Yes' };
-      }
-      return null;
+    case 'FIRST_PARTNER':
+      return { category: 'category', value: 'Starter' };
+
+    case 'EVOLUTION_BRANCHED':
+      return { category: 'category', value: 'Is Branched' };
 
     default:
       console.warn(`Unknown constraint type: ${type}, value: ${obj}`);

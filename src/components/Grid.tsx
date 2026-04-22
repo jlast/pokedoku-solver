@@ -1,6 +1,6 @@
 import type { Pokemon } from '../utils/types';
-import type { Constraint } from '../utils/constants';
-import { TYPE_COLORS, CATEGORY_COLORS, CONSTRAINT_OPTIONS, findConstraintOption } from '../utils/constants';
+import { TYPE_COLORS, CATEGORY_COLORS } from '../utils/constants';
+import { FILTER_CATEGORIES, findConstraintOption, type Constraint } from '../utils/filters';
 import { trackEvent } from '../utils/analytics';
 
 interface GridProps {
@@ -31,6 +31,38 @@ function getConstraintColor(constraint: Constraint | null): string | undefined {
   return undefined;
 }
 
+function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: Constraint | null; index: number; isRow: boolean; onChange: GridProps['onConstraintChange'] }) {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const option = findConstraintOption(e.target.value);
+    onChange(index, isRow, option);
+    if (option) {
+      trackEvent(isRow ? 'change_row_constraint' : 'change_col_constraint', {
+        position: `${isRow ? 'row' : 'col'}_${index}`,
+        category: option.category,
+        value: option.value,
+      });
+    }
+  };
+
+  return (
+    <select
+      className="constraint-select"
+      value={constraint?.value || ''}
+      onChange={handleChange}
+      style={{ borderColor: getConstraintColor(constraint) }}
+    >
+      <option value="">-</option>
+      {FILTER_CATEGORIES.map(cat => (
+        <optgroup key={cat.key} label={cat.label}>
+          {cat.options.map(opt => (
+            <option key={opt.name} value={opt.name}>{opt.name}</option>
+          ))}
+        </optgroup>
+      ))}
+    </select>
+  );
+}
+
 export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, selectedCell, editable = true, onCellClick, onConstraintChange }: GridProps) {
   return (
     <div className="grid-wrapper">
@@ -40,31 +72,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
         {colConstraints.map((constraint, colIndex) => (
           <div key={colIndex} className="constraint-selector">
             {editable ? (
-              <select
-                className="constraint-select"
-                value={constraint?.value || ''}
-                onChange={(e) => {
-                  const option = findConstraintOption(e.target.value);
-                  onConstraintChange(colIndex, false, option);
-                  if (option) {
-                    trackEvent('change_col_constraint', {
-                      position: `col_${colIndex}`,
-                      category: option.category,
-                      value: option.value,
-                    });
-                  }
-                }}
-                style={{ borderColor: getConstraintColor(constraint) }}
-              >
-                <option value="">-</option>
-                {CONSTRAINT_OPTIONS.map(group => (
-                  <optgroup key={group.label} label={group.label}>
-                    {group.options.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
+              <ConstraintSelect constraint={constraint} index={colIndex} isRow={false} onChange={onConstraintChange} />
             ) : (
               <div className="constraint-display" style={{ borderColor: getConstraintColor(constraint) }}>
                 {constraint?.value || '-'}
@@ -79,31 +87,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
           {rowConstraints.map((constraint, rowIndex) => (
             <div key={rowIndex} className="constraint-selector">
               {editable ? (
-              <select
-                className="constraint-select"
-                value={constraint?.value || ''}
-                onChange={(e) => {
-                  const option = findConstraintOption(e.target.value);
-                  onConstraintChange(rowIndex, true, option);
-                  if (option) {
-                    trackEvent('change_row_constraint', {
-                      position: `row_${rowIndex}`,
-                      category: option.category,
-                      value: option.value,
-                    });
-                  }
-                }}
-                style={{ borderColor: getConstraintColor(constraint) }}
-              >
-                  <option value="">-</option>
-                  {CONSTRAINT_OPTIONS.map(group => (
-                    <optgroup key={group.label} label={group.label}>
-                      {group.options.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
+                <ConstraintSelect constraint={constraint} index={rowIndex} isRow={true} onChange={onConstraintChange} />
               ) : (
                 <div className="constraint-display" style={{ borderColor: getConstraintColor(constraint) }}>
                   {constraint?.value || '-'}
