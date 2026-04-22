@@ -32,11 +32,11 @@ export function SuggestionsPanel({
   });
 
   function sortByColumn(column: "number" | "difficulty") {
-    if (column === "number") {
-      setSortBy(sortBy === "number-asc" ? "number-desc" : "number-asc");
-    } else {
-      setSortBy(sortBy === "difficulty-asc" ? "difficulty-desc" : "difficulty-asc");
-    }
+    const newSort = column === "number"
+      ? (sortBy === "number-asc" ? "number-desc" : "number-asc")
+      : (sortBy === "difficulty-asc" ? "difficulty-desc" : "difficulty-asc");
+    setSortBy(newSort);
+    trackEvent("change_sort", { column, sort: newSort, source: "suggestions" });
   }
   useEffect(() => {
     localStorage.setItem("pokedoku-sort", sortBy);

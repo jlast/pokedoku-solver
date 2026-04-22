@@ -101,6 +101,7 @@ function PokemonListApp() {
       .then(data => {
         setPokemon(data);
         setLoading(false);
+        trackEvent('view_pokemon_list', { count: data.length });
       })
       .catch(err => {
         console.error('Failed to load Pokemon:', err);
@@ -115,7 +116,20 @@ function PokemonListApp() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
+    const totalFilters = filters.types.length + filters.regions.length + 
+      filters.evolution.length + filters.form.length + filters.category.length;
     
+    if (totalFilters > 0) {
+      trackEvent('filter_change', {
+        types: filters.types.length,
+        regions: filters.regions.length,
+        evolution: filters.evolution.length,
+        form: filters.form.length,
+        category: filters.category.length,
+        total: totalFilters,
+      });
+    }
+
     if (filters.types.length > 0) params.set('types', filters.types.join(','));
     else params.delete('types');
     if (filters.regions.length > 0) params.set('regions', filters.regions.join(','));
@@ -136,13 +150,18 @@ function PokemonListApp() {
   const toggleFilter = (category: keyof FilterState, value: string) => {
     setFilters(prev => {
       const arr = prev[category] as string[];
-      if (arr.includes(value)) {
-        return { ...prev, [category]: arr.filter(v => v !== value) };
-      } else {
-        return { ...prev, [category]: [...arr, value] };
-      }
+      const isRemoving = arr.includes(value);
+      const newArr = isRemoving
+        ? arr.filter(v => v !== value)
+        : [...arr, value];
+      trackEvent('toggle_filter', { 
+        category, 
+        value, 
+        action: isRemoving ? 'remove' : 'add',
+        activeCount: newArr.length,
+      });
+      return { ...prev, [category]: newArr };
     });
-    trackEvent('toggle_filter', { category, value });
   };
 
   const toggleFilterExpanded = (key: string) => {
@@ -150,14 +169,18 @@ function PokemonListApp() {
       const next = new Set(prev);
       if (next.has(key)) {
         next.delete(key);
+        trackEvent('collapse_filter', { category: key });
       } else {
         next.add(key);
+        trackEvent('expand_filter', { category: key });
       }
       return next;
     });
   };
 
   const clearFilters = () => {
+    const activeFilters = filters.types.length + filters.regions.length + 
+      filters.evolution.length + filters.form.length + filters.category.length;
     setFilters({
       types: [],
       regions: [],
@@ -168,7 +191,7 @@ function PokemonListApp() {
     if (typeof window !== 'undefined') {
       window.history.replaceState({}, '', window.location.pathname);
     }
-    trackEvent('clear_filters');
+    trackEvent('clear_filters', { count: activeFilters });
   };
 
   const handleNavigate = (url: string, clearFiltersFirst?: boolean) => {
@@ -194,11 +217,11 @@ function PokemonListApp() {
   };
 
   const sortByColumn = (column: 'number' | 'difficulty') => {
-    if (column === 'number') {
-      setSortBy(sortBy === 'number-asc' ? 'number-desc' : 'number-asc');
-    } else {
-      setSortBy(sortBy === 'difficulty-asc' ? 'difficulty-desc' : 'difficulty-asc');
-    }
+    const newSort = column === 'number'
+      ? (sortBy === 'number-asc' ? 'number-desc' : 'number-asc')
+      : (sortBy === 'difficulty-asc' ? 'difficulty-desc' : 'difficulty-asc');
+    setSortBy(newSort as SortOption);
+    trackEvent('change_sort', { column, sort: newSort });
   };
 
   const filteredPokemon = useMemo(() => {
@@ -332,7 +355,11 @@ function PokemonListApp() {
 
       <div className="pokemon-grid">
         {sortedPokemon.map(p => (
-          <div key={`${p.id}-${p.name}`} className="pokemon-card">
+          <div 
+            key={`${p.id}-${p.name}`} 
+            className="pokemon-card"
+            onClick={() => trackEvent('select_pokemon', { name: p.name, id: p.id, types: p.types.join(',') })}
+          >
             {p.sprite ? (
               <img src={p.sprite} alt="" className="pokemon-sprite" />
             ) : (
