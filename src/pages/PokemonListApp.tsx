@@ -22,6 +22,7 @@ function PokemonListApp() {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedFilters, setExpandedFilters] = useState<Set<string>>(new Set([]));
+  const [flippedCardId, setFlippedCardId] = useState<number | null>(null);
 
   const [filters, setFilters] = useState<FilterState>(() => {
     const initial: FilterState = {};
@@ -158,6 +159,27 @@ function PokemonListApp() {
     return applyFilters(pokemon, filters);
   }, [pokemon, filters]);
 
+  const getPokemonCategories = (p: Pokemon): { label: string; name: string; color?: string }[] => {
+    const categories: { label: string; name: string; color?: string }[] = [];
+    for (const cat of FILTER_CATEGORIES) {
+      for (const opt of cat.options) {
+        if (opt.filter(p)) {
+          categories.push({ label: cat.label, name: opt.name, color: opt.color });
+        }
+      }
+    }
+    return categories;
+  };
+
+  const handleCardClick = (p: Pokemon) => {
+    if (flippedCardId === p.id) {
+      setFlippedCardId(null);
+    } else {
+      setFlippedCardId(p.id);
+      trackEvent('select_pokemon', { name: p.name, id: p.id, types: p.types.join(',') });
+    }
+  };
+
   const sortedPokemon = useMemo(() => {
     const copy = [...filteredPokemon];
     if (sortBy === 'number-asc') {
@@ -271,44 +293,65 @@ function PokemonListApp() {
       )}
 
       <div className="pokemon-grid">
-        {sortedPokemon.map(p => (
-          <div
-            key={`${p.id}-${p.name}`}
-            className="pokemon-card"
-            onClick={() => trackEvent('select_pokemon', { name: p.name, id: p.id, types: p.types.join(',') })}
-          >
-            {p.sprite ? (
-              <img src={p.sprite} alt="" className="pokemon-sprite" />
-            ) : (
-              <div className="pokemon-sprite-placeholder" />
-            )}
-            <div className="pokemon-card-info">
-              <div className="pokemon-card-name">{p.name}</div>
-              <div className="pokemon-card-id">#{p.id}</div>
-              <div className="pokemon-types">
-                {p.types.map((type, i) => (
-                  <span
-                    key={i}
-                    className="type-badge"
-                    style={{ backgroundColor: TYPE_COLORS[type!] }}
-                  >
-                    {type}
-                  </span>
-                ))}
-              </div>
-              {p.dexDifficulty && (
-                <span
-                  className="dex-difficulty-badge"
-                  style={{
-                    backgroundColor: DEX_DIFFICULTY_COLORS[p.dexDifficulty],
-                  }}
-                >
-                  {p.dexDifficulty}
-                </span>
+        {sortedPokemon.map(p => {
+          const isFlipped = flippedCardId === p.id;
+          return (
+            <div
+              key={`${p.id}-${p.name}`}
+              className={isFlipped ? 'pokemon-card flipped' : 'pokemon-card'}
+              onClick={() => handleCardClick(p)}
+            >
+              {isFlipped ? (
+                <div className="pokemon-card-back">
+                  <div style={{ fontSize: '0.8rem', textAlign: 'center' }}>
+                    {getPokemonCategories(p).map((cat, i) => (
+                      <span
+                        key={i}
+                        className="category-badge"
+                        style={{ backgroundColor: cat.color, display: 'inline-block', margin: '2px' }}
+                      >
+                        {cat.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {p.sprite ? (
+                    <img src={p.sprite} alt="" className="pokemon-sprite" />
+                  ) : (
+                    <div className="pokemon-sprite-placeholder" />
+                  )}
+                  <div className="pokemon-card-info">
+                    <div className="pokemon-card-name">{p.name}</div>
+                    <div className="pokemon-card-id">#{p.id}</div>
+                    <div className="pokemon-types">
+                      {p.types.map((type, i) => (
+                        <span
+                          key={i}
+                          className="type-badge"
+                          style={{ backgroundColor: TYPE_COLORS[type!] }}
+                        >
+                          {type}
+                        </span>
+                      ))}
+                    </div>
+                    {p.dexDifficulty && (
+                      <span
+                        className="dex-difficulty-badge"
+                        style={{
+                          backgroundColor: DEX_DIFFICULTY_COLORS[p.dexDifficulty],
+                        }}
+                      >
+                        {p.dexDifficulty}
+                      </span>
+                    )}
+                  </div>
+                </>
               )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <footer>
