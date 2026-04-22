@@ -64,7 +64,7 @@ export const FILTER_CATEGORIES: FilterCategory[] = [
         filter: (p: Pokemon) => p.evolutionTrigger?.includes(trigger) ?? false,
         color: EVOLUTION_COLORS[trigger],
       })),
-      { name: 'Is Branched', filter: (p) => p.isBranched === true, color: EVOLUTION_COLORS['Is Branched'] },
+      { name: 'Branched evolution', filter: (p) => p.isBranched === true, color: EVOLUTION_COLORS['Is Branched'] },
     ],
   },
   {
@@ -76,6 +76,7 @@ export const FILTER_CATEGORIES: FilterCategory[] = [
         filter: (p: Pokemon) => {
           if (name === 'Gigantamax') return p.specialForm === 'Gigantamax';
           if (name === 'Mega Evolution') return p.specialForm === 'Mega Evolution';
+          if (name === 'First Partner') return p.category === 'Starter';
           return p.category === name;
         },
         color: CATEGORY_COLORS[name],

@@ -58,7 +58,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
   'Ultra Beast': '#00CED1',
   'Paradox': '#9370DB',
   'Fossil': '#D2691E',
-  'Starter': '#32CD32',
+  'First Partner': '#32CD32',
   'Baby': '#FFB6C1',
   'Gigantamax': '#FF69B4',
   'Mega Evolution': '#FF6347',
