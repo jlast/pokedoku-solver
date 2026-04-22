@@ -20,7 +20,9 @@ const GENERATION_MAP: Record<string, string> = {
 
 const EVOLUTION_MAP: Record<string, string> = {
   'none': 'No Evolution Line',
-  'premature': 'Not Fully Evolved'
+  'premature': 'Not Fully Evolved',
+  'start': 'First Stage',
+  'final': 'Final Stage',
 };
 
 interface ConstraintMapping {
