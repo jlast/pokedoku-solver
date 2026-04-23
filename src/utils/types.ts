@@ -46,7 +46,7 @@ export const POKEMON_CATEGORIES = [
 
 export type PokemonCategory = typeof POKEMON_CATEGORIES[number];
 
-export const DEX_DIFFICULTIES = ['Easy', 'Normal', 'Hard', 'Expert', 'Nightmare'] as const;
+export const DEX_DIFFICULTIES = ['Easy', 'Normal', 'Hard', 'Expert', 'Nightmare', 'Impossible'] as const;
 export type DexDifficulty = typeof DEX_DIFFICULTIES[number];
 
 export interface Pokemon {
