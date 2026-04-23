@@ -1654,3 +1654,31 @@ footer span {
   border-bottom: 1px solid #e2e8f0;
   border-radius: 15px;
 }
+
+.header-date {
+  transform: translateY(-14px);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.nav-btn.active,
+.nav-btn:disabled {
+  background: #64748b;
+  border-color: #64748b;
+  color: white;
+  cursor: default;
+}
+
+.nav-btn.active:hover,
+.nav-btn:disabled:hover {
+  background: #64748b;
+  border-color: #64748b;
+  color: white;
+  transform: none;
+}
