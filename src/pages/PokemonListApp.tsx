@@ -14,6 +14,7 @@ const DEX_DIFFICULTY_COLORS: Record<string, string> = {
   Hard: '#e67e22',
   Expert: '#e74c3c',
   Nightmare: '#9b59b6',
+  Impossible: '#333333',
 };
 
 type SortOption = 'number-asc' | 'number-desc' | 'difficulty-desc' | 'difficulty-asc';
