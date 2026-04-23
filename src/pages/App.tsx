@@ -203,11 +203,6 @@ function App() {
     row.some((cell) => cell !== null),
   );
 
-  const handleNavigate = (url: string) => {
-    trackEvent("click_navigate", { url });
-    window.location.href = `${import.meta.env.BASE_URL}${url}`;
-  };
-
   const selectedCellPossible = grid.selectedCell
     ? possiblePokemon[grid.selectedCell[0]][grid.selectedCell[1]]
     : [];
