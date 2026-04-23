@@ -1692,6 +1692,7 @@ footer span {
   width: auto;
 }
 
+.nav-btn.active,
 .nav-btn.active:hover,
 .nav-btn:disabled:hover {
   background: #64748b;
