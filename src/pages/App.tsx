@@ -225,25 +225,8 @@ function App() {
       <Header
         title="Pokedoku Helper"
         subtitle="Explore all valid Pokémon for any Pokedoku square. Set constraints and click a cell to see matching Pokémon."
+        currentPage="editor"
       />
-
-      <div className="controls">
-        <button onClick={() => handleNavigate("today/")} className="nav-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z" />
-          </svg>
-          Today's Puzzle
-        </button>
-        <button
-          onClick={() => handleNavigate("pokemon-list/")}
-          className="nav-btn"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z" />
-          </svg>
-          All Pokemon
-        </button>
-      </div>
 
       <div className="main-content">
         <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>

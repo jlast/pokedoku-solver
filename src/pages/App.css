@@ -882,6 +882,10 @@ footer span {
   .app .content-section h2 {
     font-size: 1.7rem;
   }
+
+  .app > header p {
+    display: none;
+  }
 }
 
 .suggestions-panel-wrapper{
@@ -1335,4 +1339,318 @@ footer span {
 .no-results p {
   font-size: 1.1rem;
   margin-bottom: 16px;
+}
+.search-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 0.95rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.search-input::placeholder {
+  color: var(--text);
+}
+
+.difficulty-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.difficulty-btn {
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 2px solid;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.difficulty-btn:hover {
+  opacity: 0.8;
+}
+
+
+.filter-toggle-btn {
+  display: none;
+}
+
+.filter-drawer-overlay {
+  display: none;
+}
+
+.filter-drawer {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .filter-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .search-bar,
+  .pokemon-list-filters {
+    display: none;
+  }
+
+  .filter-drawer-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.2s;
+  }
+
+  .filter-drawer {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 85%;
+    max-width: 320px;
+    background: var(--bg);
+    z-index: 1000;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .filter-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+  }
+
+  .filter-drawer-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .filter-drawer-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--text);
+  }
+
+  .filter-drawer-content {
+    padding: 16px;
+  }
+
+  .filter-drawer-content .search-bar {
+    display: block;
+    margin-bottom: 16px;
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  .filter-drawer-content .filter-group {
+    margin-bottom: 16px;
+  }
+
+  .filter-drawer-content .filter-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+  }
+
+  .filter-drawer-content .filter-header:hover {
+    background: var(--accent-bg);
+  }
+
+  .filter-drawer-content .filter-label {
+    font-weight: 600;
+    color: var(--text-h);
+    font-size: 0.9rem;
+    flex: 1;
+  }
+
+  .filter-drawer-content .filter-count {
+    background: var(--accent);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+  }
+
+  .filter-drawer-content .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px;
+  }
+
+  .filter-drawer-content .filter-btn {
+    padding: 6px 12px;
+    border-radius: 16px;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-drawer-content .filter-btn.active {
+    color: white;
+  }
+
+  .filter-drawer-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+}
+
+.filter-clear-btn {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .filter-clear-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 2px solid #64748b;
+    background: transparent;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-clear-btn:hover {
+    background: #f1f5f9;
+    border-color: #475569;
+    color: #334155;
+  }
+}
+
+.filter-controls {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .filter-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+}
+
+.filter-btn-main,
+.filter-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn-main {
+  border: 2px solid #64748b;
+  background: #64748b;
+  color: white;
+}
+
+.filter-btn-main:hover {
+  background: #475569;
+  border-color: #475569;
+}
+
+.filter-btn-main .filter-count {
+  background: white;
+  color: #64748b;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.filter-btn-secondary {
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: #475569;
+}
+
+.filter-btn-secondary:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.header-divider {
+  height: 4px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.08), transparent);
+  margin: 24px 0;
+}
+
+.controls-panel {
+  background: #f8fafc;
+  padding: 16px;
+  margin: 20px 0;
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 15px;
 }

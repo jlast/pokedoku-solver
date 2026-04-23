@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
 import {
   REGION_BY_ID,
   STARTER_IDS,
@@ -14,97 +14,141 @@ import {
   NAME_REPLACEMENTS,
   IGNORE_EVOLVE_FORMS,
   POKEMON_OVERRIDES,
-} from './ids';
-import { fetchWithRetry, delay } from './lib';
-import { loadPokemon, loadForm, loadSpecies, loadChain, loadPokemonList, savePokemonList, loadSpeciesList, saveSpeciesList, loadFormsList, saveFormsList, savePokemon, saveSpecies, saveForm, saveChain } from './lib/cache';
-import { getEvolutionStage } from './lib/evolution';
-import type { PokeAPIPokemon, PokeAPIForm, PokeAPISpecies, EvolutionNode } from './lib/types';
-import type { Pokemon, PokemonType, DexDifficulty } from '../src/utils/types';
-import { CUSTOM_POKEMON } from './custom_pokemon';
+} from "./ids";
+import { fetchWithRetry, delay } from "./lib";
+import {
+  loadPokemon,
+  loadForm,
+  loadSpecies,
+  loadChain,
+  loadPokemonList,
+  savePokemonList,
+  loadSpeciesList,
+  saveSpeciesList,
+  loadFormsList,
+  saveFormsList,
+  savePokemon,
+  saveSpecies,
+  saveForm,
+  saveChain,
+} from "./lib/cache";
+import { getEvolutionStage } from "./lib/evolution";
+import type {
+  PokeAPIPokemon,
+  PokeAPIForm,
+  PokeAPISpecies,
+  EvolutionNode,
+} from "./lib/types";
+import type { Pokemon, PokemonType, DexDifficulty } from "../src/utils/types";
+import { CUSTOM_POKEMON } from "./custom_pokemon";
 
-const NO_CACHE = process.argv.includes('--no-cache');
+const NO_CACHE = process.argv.includes("--no-cache");
 
-const POKEMON_API_BASE = 'https://pokeapi.co/api/v2';
+const POKEMON_API_BASE = "https://pokeapi.co/api/v2";
 const REQUEST_DELAY = 100;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'pokemon.json');
+const OUTPUT_FILE = path.join(__dirname, "..", "public", "pokemon.json");
 
 function getAllCategories(pokemon: Pokemon): string[] {
   const categories: string[] = [];
-  
+
   for (const type of pokemon.types) {
     if (type) categories.push(type);
   }
-  
-  const typeCount = pokemon.types.filter(t => t).length;
-  if (typeCount === 1) categories.push('Monotype');
-  else if (typeCount === 2) categories.push('Dualtype');
-  
-  if (pokemon.region && pokemon.region !== 'Unknown') categories.push(pokemon.region);
+
+  const typeCount = pokemon.types.filter((t) => t).length;
+  if (typeCount === 1) categories.push("Monotype");
+  else if (typeCount === 2) categories.push("Dualtype");
+
+  if (pokemon.region && pokemon.region !== "Unknown")
+    categories.push(pokemon.region);
   if (pokemon.evolutionStage) categories.push(pokemon.evolutionStage);
-  if (pokemon.evolutionStage === 'First Stage' || pokemon.evolutionStage === 'Middle Stage') categories.push('not fully evolved');
+  if (
+    pokemon.evolutionStage === "First Stage" ||
+    pokemon.evolutionStage === "Middle Stage"
+  )
+    categories.push("not fully evolved");
   if (pokemon.evolutionTrigger) categories.push(...pokemon.evolutionTrigger);
-  if (pokemon.isBranched) categories.push('branched');
+  if (pokemon.isBranched) categories.push("branched");
   if (pokemon.specialForm) categories.push(pokemon.specialForm);
   if (pokemon.category) categories.push(pokemon.category);
-  
+
   return categories;
 }
 
 function calculateDexDifficulties(pokemonList: Pokemon[]): void {
-  const categoryCounts: Record<string, number> = {};
-  
+  const combinationCounts: Record<string, number> = {};
+
   for (const pokemon of pokemonList) {
-    const possible = getAllCategories(pokemon);
-    for (const value of possible) {
-      categoryCounts[value] = (categoryCounts[value] || 0) + 1;
+    const categories = getAllCategories(pokemon);
+    const pairs = getCategoryPairs(categories);
+    for (const pair of pairs) {
+      combinationCounts[pair] = (combinationCounts[pair] || 0) + 1;
     }
   }
-  
-  const scores: { pokemon: Pokemon; score: number }[] = [];
-  
-  for (const pokemon of pokemonList) {
-    const possible = getAllCategories(pokemon);
-    let totalCompetition = 0;
-    
-    for (const value of possible) {
-      totalCompetition += categoryCounts[value] || 1;
+
+  for (const key of Object.keys(combinationCounts)) {
+    if (combinationCounts[key] <= 1) {
+      delete combinationCounts[key];
     }
-    
-    const averageCompetition = possible.length > 0 ? totalCompetition / possible.length : 1;
-    const rawScore = possible.length / averageCompetition;
+  }
+
+  const scores: { pokemon: Pokemon; score: number }[] = [];
+
+  for (const pokemon of pokemonList) {
+    const categories = getAllCategories(pokemon);
+    const pairs = getCategoryPairs(categories);
+
+    let totalCompetition = 0;
+    for (const pair of pairs) {
+      const count = combinationCounts[pair] || 1;
+      totalCompetition += count;
+    }
+
+    const rawScore = totalCompetition;
+
     scores.push({ pokemon, score: rawScore });
   }
-  
+
   scores.sort((a, b) => b.score - a.score);
-  
+
   const total = scores.length;
   for (let i = 0; i < total; i++) {
     const percentile = i / total;
     let grade: DexDifficulty;
-    if (percentile < 0.4) grade = 'Easy';
-    else if (percentile < 0.7) grade = 'Normal';
-    else if (percentile < 0.9) grade = 'Hard';
-    else if (percentile < 0.98) grade = 'Expert';
-    else grade = 'Nightmare';
-    
+    if (percentile < 0.4) grade = "Easy";
+    else if (percentile < 0.7) grade = "Normal";
+    else if (percentile < 0.9) grade = "Hard";
+    else if (percentile < 0.98) grade = "Expert";
+    else grade = "Nightmare";
+
     scores[i].pokemon.dexDifficultyPercentile = percentile;
     scores[i].pokemon.dexDifficulty = grade;
   }
 }
 
+function getCategoryPairs(categories: string[]): string[] {
+  const pairs: string[] = [];
+  for (let i = 0; i < categories.length; i++) {
+    for (let j = i + 1; j < categories.length; j++) {
+      pairs.push(`${categories[i]}+${categories[j]}`);
+    }
+  }
+  return pairs;
+}
+
 async function fetchPokemons() {
-  console.log('Fetching Pokemon list...');
+  console.log("Fetching Pokemon list...");
   let list = loadPokemonList();
   if (!list) {
     list = await fetchWithRetry<{ count: number; results: { url: string }[] }>(
       `${POKEMON_API_BASE}/pokemon?limit=100000&offset=0`,
     );
-    if (!list) throw new Error('Failed to fetch list');
+    if (!list) throw new Error("Failed to fetch list");
     savePokemonList(list);
   }
 
-  const urls = list.results.map(r => r.url);
+  const urls = list.results.map((r) => r.url);
   console.log(`Found ${urls.length} entries\n`);
 
   for (const url of urls) {
@@ -114,8 +158,11 @@ async function fetchPokemons() {
 
     if (NO_CACHE || !loadPokemon(id)) {
       const p = await fetchWithRetry<PokeAPIPokemon>(url, 2);
-      if (p) { savePokemon(id, p); console.log(`  ${id}: ${p.name}`); }
-      else { console.log(`  ${id}: failed`); }
+      if (p) {
+        savePokemon(id, p);
+      } else {
+        console.log(`  ${id}: failed`);
+      }
       await delay(REQUEST_DELAY);
     }
   }
@@ -124,14 +171,15 @@ async function fetchPokemons() {
 async function fetchSpecies() {
   let speciesList = loadSpeciesList();
   if (!speciesList) {
-    speciesList = await fetchWithRetry<{ count: number; results: { url: string }[] }>(
-      `${POKEMON_API_BASE}/pokemon-species?limit=100000&offset=0`,
-    );
-    if (!speciesList) throw new Error('Failed to fetch species list');
+    speciesList = await fetchWithRetry<{
+      count: number;
+      results: { url: string }[];
+    }>(`${POKEMON_API_BASE}/pokemon-species?limit=100000&offset=0`);
+    if (!speciesList) throw new Error("Failed to fetch species list");
     saveSpeciesList(speciesList);
   }
 
-  const speciesUrls = speciesList.results.map(r => r.url);
+  const speciesUrls = speciesList.results.map((r) => r.url);
   console.log(`Found ${speciesUrls.length} species entries\n`);
 
   for (const url of speciesUrls) {
@@ -143,15 +191,19 @@ async function fetchSpecies() {
       const s = await fetchWithRetry<PokeAPISpecies>(url, 2);
       if (s) {
         saveSpecies(id, s);
-        console.log(`  species ${id}: ${s.name}`);
 
         if (s.evolution_chain?.url) {
           const cm = s.evolution_chain.url.match(/\/evolution-chain\/(\d+)\/$/);
           if (cm) {
             const chainId = parseInt(cm[1]);
             if (NO_CACHE || !loadChain(chainId)) {
-              const c = await fetchWithRetry<{ chain: EvolutionNode }>(s.evolution_chain.url, 2);
-              if (c) { saveChain(chainId, c.chain); console.log(`    chain ${chainId}`); }
+              const c = await fetchWithRetry<{ chain: EvolutionNode }>(
+                s.evolution_chain.url,
+                2,
+              );
+              if (c) {
+                saveChain(chainId, c.chain);
+              }
             }
           }
         }
@@ -162,17 +214,17 @@ async function fetchSpecies() {
 }
 
 async function fetchForms() {
-  console.log('Fetching Pokemon forms...');
+  console.log("Fetching Pokemon forms...");
   let list = loadFormsList();
   if (!list) {
     list = await fetchWithRetry<{ count: number; results: { url: string }[] }>(
       `${POKEMON_API_BASE}/pokemon-form?limit=100000&offset=0`,
     );
-    if (!list) throw new Error('Failed to fetch list');
+    if (!list) throw new Error("Failed to fetch list");
     saveFormsList(list);
   }
 
-  const urls = list.results.map(r => r.url);
+  const urls = list.results.map((r) => r.url);
   console.log(`Found ${urls.length} forms\n`);
 
   for (const url of urls) {
@@ -182,8 +234,11 @@ async function fetchForms() {
 
     if (NO_CACHE || !loadForm(id)) {
       const p = await fetchWithRetry<PokeAPIForm>(url, 2);
-      if (p) { saveForm(id, p); console.log(`  ${id}: ${p.name}`); }
-      else { console.log(`  ${id}: failed`); }
+      if (p) {
+        saveForm(id, p);
+      } else {
+        console.log(`  ${id}: failed`);
+      }
       await delay(REQUEST_DELAY);
     }
   }
@@ -201,7 +256,9 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
   const pokemon = loadPokemon(id);
   if (!pokemon) return;
 
-  const speciesIdMatch = pokemon.species.url.match(/\/pokemon-species\/(\d+)\/$/);
+  const speciesIdMatch = pokemon.species.url.match(
+    /\/pokemon-species\/(\d+)\/$/,
+  );
   if (!speciesIdMatch) return;
   const speciesId = parseInt(speciesIdMatch[1]);
   const species = loadSpecies(speciesId);
@@ -210,67 +267,79 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
   if (added.has(id) && IGNORE_SPECIAL_FORMS.has(species.name)) return;
 
   let name = IGNORE_SPECIAL_FORMS.has(species.name) ? species.name : form.name;
-  name = name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, ' ');
+  name = name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, " ");
   name = NAME_REPLACEMENTS[name] || name;
 
   const types = pokemon.types
     .sort((a, b) => a.slot - b.slot)
-    .map(t => t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1)) as [PokemonType, PokemonType?] | [PokemonType];
+    .map((t) => t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1)) as
+    | [PokemonType, PokemonType?]
+    | [PokemonType];
 
   const entry: Pokemon = {
     id: species.id,
     name,
     types,
-    region: REGION_BY_ID[speciesId] || 'Unknown',
+    region: REGION_BY_ID[speciesId] || "Unknown",
     sprite: form.sprites.front_default || undefined,
   };
 
-  if (ULTRA_BEASTS.has(id)) entry.category = 'Ultra Beast';
-  else if (FOSSIL_IDS.has(id)) entry.category = 'Fossil';
-  else if (STARTER_IDS.has(formId)) entry.category = 'Starter';
-  else if (PARADOX_POKEMON.has(id)) entry.category = 'Paradox';
+  if (ULTRA_BEASTS.has(id)) entry.category = "Ultra Beast";
+  else if (FOSSIL_IDS.has(id)) entry.category = "Fossil";
+  else if (STARTER_IDS.has(formId)) entry.category = "Starter";
+  else if (PARADOX_POKEMON.has(id)) entry.category = "Paradox";
   if (species) {
-    if (species.is_legendary) entry.category = 'Legendary';
-    if (species.is_mythical) entry.category = 'Mythical';
-    if (species.is_baby) entry.category = 'Baby';
+    if (species.is_legendary) entry.category = "Legendary";
+    if (species.is_mythical) entry.category = "Mythical";
+    if (species.is_baby) entry.category = "Baby";
 
-    if (!CANT_EVOLVE_FORMS.has(form.form_name) && !IGNORE_EVOLVE_FORMS.has(form.form_name) && species.evolution_chain?.url) {
-      const cm = species.evolution_chain.url.match(/\/evolution-chain\/(\d+)\/$/);
+    if (
+      !CANT_EVOLVE_FORMS.has(form.form_name) &&
+      !IGNORE_EVOLVE_FORMS.has(form.form_name) &&
+      species.evolution_chain?.url
+    ) {
+      const cm = species.evolution_chain.url.match(
+        /\/evolution-chain\/(\d+)\/$/,
+      );
       if (cm) {
         const chainId = parseInt(cm[1]);
         const chain = loadChain(chainId);
         if (chain && species.name) {
           const result = getEvolutionStage(chain, species.name);
           entry.evolutionStage = result.stage;
-          if (result.trigger) entry.evolutionTrigger = result.trigger.length > 0 ? result.trigger : undefined;
+          if (result.trigger)
+            entry.evolutionTrigger =
+              result.trigger.length > 0 ? result.trigger : undefined;
           if (result.branched) entry.isBranched = true;
         }
       }
     } else if (!IGNORE_EVOLVE_FORMS.has(form.form_name)) {
-      entry.evolutionStage = 'No Evolution Line';
+      entry.evolutionStage = "No Evolution Line";
     }
   }
 
-  if (form.is_mega) entry.specialForm = 'Mega Evolution';
-  if (form.form_name === 'gmax') entry.specialForm = 'Gigantamax';
-  if (form.form_name.includes('alola')) entry.region = 'Alola';
-  if (form.form_name.includes('galar')) entry.region = 'Galar';
-  if (form.form_name.includes('hisui')) entry.region = 'Hisui';
-  if (form.form_name.includes('paldea')) entry.region = 'Paldea';
+  if (form.is_mega) entry.specialForm = "Mega Evolution";
+  if (form.form_name === "gmax") entry.specialForm = "Gigantamax";
+  if (form.form_name.includes("alola")) entry.region = "Alola";
+  if (form.form_name.includes("galar")) entry.region = "Galar";
+  if (form.form_name.includes("hisui")) entry.region = "Hisui";
+  if (form.form_name.includes("paldea")) entry.region = "Paldea";
 
   const formOverride = POKEMON_OVERRIDES[formId];
   if (formOverride) {
     if (formOverride.types) entry.types = formOverride.types;
     if (formOverride.region) entry.region = formOverride.region;
-    if (formOverride.evolutionStage) entry.evolutionStage = formOverride.evolutionStage;
-    if (formOverride.evolutionTrigger) entry.evolutionTrigger = formOverride.evolutionTrigger;
-    if (formOverride.isBranched !== undefined) entry.isBranched = formOverride.isBranched;
+    if (formOverride.evolutionStage)
+      entry.evolutionStage = formOverride.evolutionStage;
+    if (formOverride.evolutionTrigger)
+      entry.evolutionTrigger = formOverride.evolutionTrigger;
+    if (formOverride.isBranched !== undefined)
+      entry.isBranched = formOverride.isBranched;
     if (formOverride.specialForm) entry.specialForm = formOverride.specialForm;
     if (formOverride.category) entry.category = formOverride.category;
     if (formOverride.sprite) entry.sprite = formOverride.sprite;
   }
 
-  console.log(entry.id, entry.name);
   return entry;
 }
 
@@ -279,7 +348,7 @@ async function main() {
   await fetchSpecies();
   await fetchForms();
 
-  console.log('\nProcessing...');
+  console.log("\nProcessing...");
   const output: Pokemon[] = [];
   const added = new Set<number>();
 
@@ -294,15 +363,15 @@ async function main() {
   output.push(...CUSTOM_POKEMON);
   output.sort((a, b) => a.id - b.id);
 
-  console.log('Calculating Dex difficulties...');
+  console.log("Calculating Dex difficulties...");
   calculateDexDifficulties(output);
 
-  const pokemon = output.find(p => p.name === 'Sandaconda gmax');
+  const pokemon = output.find((p) => p.name === "Sandaconda gmax");
 
-if (pokemon) {
-  pokemon.dexDifficultyPercentile = 1;
-  pokemon.dexDifficulty = 'Impossible';
-}
+  if (pokemon) {
+    pokemon.dexDifficultyPercentile = 1;
+    pokemon.dexDifficulty = "Impossible";
+  }
 
   console.log(`Total: ${output.length} Pokemon`);
 
