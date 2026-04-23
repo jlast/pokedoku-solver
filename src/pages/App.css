@@ -56,6 +56,7 @@ header .pokemon-count {
   justify-content: center;
   gap: 16px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
 .clear-btn {
@@ -1675,12 +1676,20 @@ footer span {
   color: #64748b;
 }
 
-.nav-btn.active,
-.nav-btn:disabled {
-  background: #64748b;
-  border-color: #64748b;
-  color: white;
-  cursor: default;
+.support-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.support-btn .support-desktop {
+  height: 32px;
+  width: auto;
+}
+
+.support-btn .support-mobile {
+  display: none;
+  height: 32px;
+  width: auto;
 }
 
 .nav-btn.active:hover,

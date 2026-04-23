@@ -38,6 +38,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
         )}
 
         <div className="controls">
+
           {NAV_BUTTONS.map((btn) => {
             const isActive = 
               (btn.url === "" && currentPage === "editor") ||
@@ -63,6 +64,24 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
               </button>
             );
           })}
+          <a
+            href="https://buymeacoffee.com/jeroenvande"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="support-btn"
+            aria-label="Support me on Buy Me a Coffee"
+          >
+            <img
+              src="https://cdn.buymeacoffee.com/uploads/project_updates/2023/12/08f1cf468ace518fc8cc9e352a2e613f.png"
+              alt="Support me on Buy Me a Coffee"
+              className="support-desktop"
+            />
+            <img
+              src="https://s3-eu-west-1.amazonaws.com/tpd/logos/5c58570cfdd26f0001068f06/0x0.png"
+              alt="Support me on Buy Me a Coffee"
+              className="support-mobile"
+            />
+          </a>
         </div>
         {subtitle && <p className="lead">{subtitle}</p>}
       </header>
