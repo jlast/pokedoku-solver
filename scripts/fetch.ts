@@ -297,6 +297,13 @@ async function main() {
   console.log('Calculating Dex difficulties...');
   calculateDexDifficulties(output);
 
+  const pokemon = output.find(p => p.name === 'Sandaconda gmax');
+
+if (pokemon) {
+  pokemon.dexDifficultyPercentile = 1;
+  pokemon.dexDifficulty = 'Impossible';
+}
+
   console.log(`Total: ${output.length} Pokemon`);
 
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));
