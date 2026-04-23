@@ -51,7 +51,7 @@ function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: 
       onChange={handleChange}
       style={{ borderColor: getConstraintColor(constraint) }}
     >
-      <option value="">-</option>
+      <option value="">Category…</option>
       {FILTER_CATEGORIES.map(cat => (
         <optgroup key={cat.key} label={cat.label}>
           {cat.options.map(opt => (
@@ -133,6 +133,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                     ) : (
                       <div className="cell-count">
                         <span className="possible-count">{possible.length}</span>
+                        <span className="tap-hint">Tap to explore</span>
                       </div>
                     )}
                   </div>

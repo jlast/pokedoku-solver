@@ -7,6 +7,7 @@ import { Grid } from "../components/Grid";
 import { Header } from "../components/Header";
 import { SuggestionsPanel } from "../components/SuggestionsPanel";
 import { Footer } from "../components/Footer";
+import { InfoBox } from "../components/InfoBox";
 import "./App.css";
 import "../index.css";
 import { matchesConstraint, type Constraint } from "../utils/filters";
@@ -190,9 +191,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           onCellClick={handleCellClick}
           onConstraintChange={() => {}}
         />
-        <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
-          <i>Numbers show how many Pokémon match each combination.</i>
-        </p>
+        <InfoBox>Numbers show how many Pokémon match each combination.</InfoBox>
         <div ref={suggestionsRef}>
           <SuggestionsPanel
             selectedCell={grid.selectedCell}
