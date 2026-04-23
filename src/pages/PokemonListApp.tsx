@@ -150,21 +150,6 @@ function PokemonListApp() {
     trackEvent("clear_filters", { count: activeFilters });
   };
 
-  const handleNavigate = (url: string, clearFiltersFirst?: boolean) => {
-    if (clearFiltersFirst) {
-      const cleared: FilterState = {};
-      FILTER_CATEGORIES.forEach((cat) => {
-        cleared[cat.key] = [];
-      });
-      setFilters(cleared);
-      if (typeof window !== "undefined") {
-        window.history.replaceState({}, "", window.location.pathname);
-      }
-    }
-    trackEvent("click_navigate", { url });
-    window.location.href = `${import.meta.env.BASE_URL}${url}`;
-  };
-
   const sortByColumn = (column: "number" | "difficulty") => {
     const newSort =
       column === "number"
