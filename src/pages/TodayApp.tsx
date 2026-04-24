@@ -42,15 +42,22 @@ export function TodayApp({ puzzle }: TodayAppProps) {
     selectedCell: null,
   }));
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     if (!grid.selectedCell || !suggestionsRef.current) return;
-    setTimeout(() => {
-      suggestionsRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 50);
+
+    const el = suggestionsRef.current;
+    const rect = el.getBoundingClientRect();
+
+    const isPartiallyInView = rect.bottom > 0 && rect.top < window.innerHeight;
+
+    if (!isPartiallyInView) {
+      setTimeout(() => {
+        el.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 50);
+    }
   }, [grid.selectedCell]);
 
   useEffect(() => {
@@ -200,7 +207,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           />
         </div>
 
-        <button onClick={clearCells} className="clear-btn" disabled={!hasGridData}>Clear All</button>
+        <button onClick={clearCells} className="clear-btn" disabled={!hasGridData}>Clear selected Pokémon</button>
       </div>
 
       <section className="content-section">
