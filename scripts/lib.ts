@@ -34,11 +34,12 @@ export function saveJson<T>(dir: string, id: number, data: T) {
   fs.writeFileSync(path.join(dir, `${id}.json`), JSON.stringify(data));
 }
 
-export async function ensureFileExists(dir: string, fileName: string, fileDownloadUrl: string) {
+export async function ensureFileExists(dir: string, fileName: string, fileDownloadUrl: string | null) {
   const filePath = path.join(dir, fileName);
   if(fs.existsSync(filePath) || !fileDownloadUrl) { return; }
   ensureDir(dir);
   const response = await fetch(fileDownloadUrl);
+  if(!response.body) return;
   const stream = fs.createWriteStream(filePath);
   await finished(Readable.fromWeb(response.body).pipe(stream));
 }
