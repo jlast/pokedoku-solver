@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import type { Pokemon } from "../utils/types";
 import { TYPE_COLORS, DEX_DIFFICULTY_COLORS } from "../utils/constants";
 import {
@@ -21,6 +21,9 @@ type SortOption =
   | "difficulty-desc"
   | "difficulty-asc";
 
+const INITIAL_RENDER_COUNT = 120;
+const RENDER_BATCH_SIZE = 80;
+
 function PokemonListApp() {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,6 +34,8 @@ function PokemonListApp() {
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState<string[]>([]);
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_RENDER_COUNT);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const [filters, setFilters] = useState<FilterState>(() => {
     const initial: FilterState = {};
@@ -233,6 +238,35 @@ function PokemonListApp() {
     return copy;
   }, [filteredPokemon, sortBy]);
 
+  const visiblePokemon = useMemo(
+    () => sortedPokemon.slice(0, visibleCount),
+    [sortedPokemon, visibleCount],
+  );
+
+  useEffect(() => {
+    setVisibleCount(INITIAL_RENDER_COUNT);
+  }, [sortedPokemon]);
+
+  useEffect(() => {
+    if (!loadMoreRef.current || visibleCount >= sortedPokemon.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0]?.isIntersecting) return;
+        setVisibleCount((prev) =>
+          Math.min(prev + RENDER_BATCH_SIZE, sortedPokemon.length),
+        );
+      },
+      {
+        rootMargin: "300px 0px",
+      },
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
+  }, [sortedPokemon.length, visibleCount]);
+
   if (loading) {
     return (
       <div className="app loading">
@@ -417,7 +451,7 @@ function PokemonListApp() {
       )}
 
       <div className="pokemon-grid">
-        {sortedPokemon.map((p) => {
+        {visiblePokemon.map((p) => {
           const isFlipped = flippedCardId === `${p.id}-${p.name}`;
           return (
             <div
@@ -446,7 +480,14 @@ function PokemonListApp() {
               ) : (
                 <>
                   {p.sprite ? (
-                    <img src={p.sprite} alt="" className="pokemon-sprite" />
+                    <img
+                      src={p.sprite}
+                      alt=""
+                      className="pokemon-sprite"
+                      loading="lazy"
+                      decoding="async"
+                      fetchPriority="low"
+                    />
                   ) : (
                     <div className="pokemon-sprite-placeholder" />
                   )}
@@ -482,6 +523,8 @@ function PokemonListApp() {
           );
         })}
       </div>
+
+      {visibleCount < sortedPokemon.length && <div ref={loadMoreRef} aria-hidden="true" />}
 
       <Footer />
 
