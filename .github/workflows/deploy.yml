@@ -94,6 +94,9 @@ jobs:
           aws s3 cp dist-lambda/daily-puzzle-fetcher.zip s3://${{ secrets.S3_BUCKET_NAME }}/${LAMBDA_KEY}
           echo "LAMBDA_KEY=${LAMBDA_KEY}" >> $GITHUB_ENV
 
+      - name: Validate CloudFormation template
+        run: aws cloudformation validate-template --template-body file://terraform/cloudformation.yaml
+
       - name: Deploy CloudFormation stack
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
@@ -119,7 +122,7 @@ jobs:
           STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
           aws cloudformation describe-stack-events \
             --stack-name ${STACK_NAME} \
-            --max-items 20
+            --max-items 100
 
       - name: Dump CloudFormation changeset failures
         if: failure()
@@ -131,8 +134,7 @@ jobs:
           if [ -n "${CHANGE_SET_ID}" ] && [ "${CHANGE_SET_ID}" != "None" ]; then
             aws cloudformation describe-change-set \
               --change-set-name ${CHANGE_SET_ID} \
-              --stack-name ${STACK_NAME} \
-              --query '{Status:Status,StatusReason:StatusReason,CreationTime:CreationTime,Changes:Changes[].ResourceChange.{Action:Action,LogicalId:LogicalResourceId,Type:ResourceType}}'
+              --stack-name ${STACK_NAME}
           else
             echo "No change set found for stack ${STACK_NAME}"
           fi
