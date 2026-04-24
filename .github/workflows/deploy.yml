@@ -89,15 +89,18 @@ jobs:
       - name: Deploy CloudFormation stack
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+          DAILY_PUZZLE_ALERT_EMAIL: ${{ secrets.DAILY_PUZZLE_ALERT_EMAIL }}
         run: |
           STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
+          PARAM_OVERRIDES="DailyPuzzleFetcherCodeS3Bucket=${{ secrets.S3_BUCKET_NAME }} DailyPuzzleFetcherCodeS3Key=${LAMBDA_KEY}"
+          if [ -n "${DAILY_PUZZLE_ALERT_EMAIL}" ]; then
+            PARAM_OVERRIDES="${PARAM_OVERRIDES} DailyPuzzleAlertEmail=${DAILY_PUZZLE_ALERT_EMAIL}"
+          fi
           aws cloudformation deploy \
             --template-file terraform/cloudformation.yaml \
             --stack-name ${STACK_NAME} \
             --capabilities CAPABILITY_IAM \
-            --parameter-overrides \
-              DailyPuzzleFetcherCodeS3Bucket=${{ secrets.S3_BUCKET_NAME }} \
-              DailyPuzzleFetcherCodeS3Key=${LAMBDA_KEY}
+            --parameter-overrides ${PARAM_OVERRIDES}
 
       - name: Sync to S3
         run: |
