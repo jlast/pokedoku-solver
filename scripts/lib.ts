@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { Readable } from 'stream';
+import { finished } from 'stream/promises';
 
 export function ensureDir(dir: string) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -30,4 +32,13 @@ export function loadJson<T>(dir: string, id: number): T | null {
 export function saveJson<T>(dir: string, id: number, data: T) {
   ensureDir(dir);
   fs.writeFileSync(path.join(dir, `${id}.json`), JSON.stringify(data));
+}
+
+export async function ensureFileExists(dir: string, fileName: string, fileDownloadUrl: string) {
+  const filePath = path.join(dir, fileName);
+  if(fs.existsSync(filePath) || !fileDownloadUrl) { return; }
+  ensureDir(dir);
+  const response = await fetch(fileDownloadUrl);
+  const stream = fs.createWriteStream(filePath);
+  await finished(Readable.fromWeb(response.body).pipe(stream));
 }
