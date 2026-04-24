@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import type { Pokemon } from "../utils/types";
-import { TYPE_COLORS } from "../utils/constants";
+import { TYPE_COLORS, DEX_DIFFICULTY_COLORS } from "../utils/constants";
 import { trackEvent } from "../utils/analytics";
 
 interface SuggestionsPanelProps {
@@ -8,14 +8,6 @@ interface SuggestionsPanelProps {
   possiblePokemon: Pokemon[];
   onSelect: (pokemon: Pokemon) => void;
 }
-
-const DEX_DIFFICULTY_COLORS: Record<string, string> = {
-  Easy: "#27ae60",
-  Normal: "#3498db",
-  Hard: "#e67e22",
-  Expert: "#e74c3c",
-  Nightmare: "#9b59b6",
-};
 
 export function SuggestionsPanel({
   selectedCell,

@@ -64,6 +64,15 @@ export const CATEGORY_COLORS: Record<string, string> = {
   'Mega Evolution': '#FF6347',
 };
 
+export const DEX_DIFFICULTY_COLORS: Record<string, string> = {
+  Easy: "#27ae60",
+  Normal: "#3498db",
+  Hard: "#e67e22",
+  Expert: "#e74c3c",
+  Nightmare: "#9b59b6",
+  Impossible: "#333333",
+};
+
 export interface ConstraintOption {
   value: string;
   label: string;
