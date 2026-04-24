@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run fetch-pokemon && npm run fetch-today-puzzle && tsc -b && vite build",
+    "build": "npm run fetch-pokemon && tsc -b && vite build",
+    "build:daily-puzzle-lambda": "mkdir -p dist-lambda && npx esbuild terraform/lambda/daily-puzzle-fetcher.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile=dist-lambda/daily-puzzle-fetcher.js",
+    "package:daily-puzzle-lambda": "npm run build:daily-puzzle-lambda && zip -j dist-lambda/daily-puzzle-fetcher.zip dist-lambda/daily-puzzle-fetcher.js",
     "fetch-today-puzzle": "tsx scripts/fetch-today-puzzle.ts",
     "lint": "eslint .",
     "preview": "vite preview",

@@ -7,6 +7,14 @@ Parameters:
     Default: "pokedoku-helper.com"
     Description: "Domain name to register"
 
+  DailyPuzzleFetcherCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing the daily puzzle Lambda zip"
+
+  DailyPuzzleFetcherCodeS3Key:
+    Type: String
+    Description: "S3 key for the daily puzzle Lambda zip"
+
 Resources:
   # S3 Bucket for website content
   WebsiteBucket:
@@ -38,6 +46,62 @@ Resources:
             Principal: "*"
             Action: s3:GetObject
             Resource: !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/*"]]
+
+  PuzzleFetcherRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: PuzzleFetcherS3WritePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource: !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/today-puzzle.json"]]
+
+  DailyPuzzleFetcherFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: daily-puzzle-fetcher.handler
+      Role: !GetAtt PuzzleFetcherRole.Arn
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref WebsiteBucket
+          OBJECT_KEY: today-puzzle.json
+      Code:
+        S3Bucket: !Ref DailyPuzzleFetcherCodeS3Bucket
+        S3Key: !Ref DailyPuzzleFetcherCodeS3Key
+
+  DailyPuzzleSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Fetch and store the daily puzzle in S3
+      ScheduleExpression: cron(5 0 * * ? *)
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt DailyPuzzleFetcherFunction.Arn
+          Id: DailyPuzzleFetcherTarget
+
+  DailyPuzzleScheduleInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref DailyPuzzleFetcherFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt DailyPuzzleSchedule.Arn
 
   # ACM Certificate (must be us-east-1 for CloudFront)
   SSLCertificate:
@@ -154,3 +218,9 @@ Outputs:
     Value: !Ref HostedZone
     Export:
       Name: !Join ["", [!Ref "AWS::StackName", "-HostedZoneID"]]
+
+  DailyPuzzleFetcherFunctionName:
+    Description: "Daily puzzle Lambda function name"
+    Value: !Ref DailyPuzzleFetcherFunction
+    Export:
+      Name: !Join ["", [!Ref "AWS::StackName", "-DailyPuzzleFetcherFunction"]]

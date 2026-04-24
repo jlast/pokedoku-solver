@@ -77,6 +77,28 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_GITHUB_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Package daily puzzle Lambda
+        run: npm run package:daily-puzzle-lambda
+
+      - name: Upload daily puzzle Lambda artifact
+        run: |
+          LAMBDA_KEY=lambda/daily-puzzle-fetcher-${{ github.sha }}.zip
+          aws s3 cp dist-lambda/daily-puzzle-fetcher.zip s3://${{ secrets.S3_BUCKET_NAME }}/${LAMBDA_KEY}
+          echo "LAMBDA_KEY=${LAMBDA_KEY}" >> $GITHUB_ENV
+
+      - name: Deploy CloudFormation stack
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+        run: |
+          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
+          aws cloudformation deploy \
+            --template-file terraform/cloudformation.yaml \
+            --stack-name ${STACK_NAME} \
+            --capabilities CAPABILITY_IAM \
+            --parameter-overrides \
+              DailyPuzzleFetcherCodeS3Bucket=${{ secrets.S3_BUCKET_NAME }} \
+              DailyPuzzleFetcherCodeS3Key=${LAMBDA_KEY}
+
       - name: Sync to S3
         run: |
           aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete
