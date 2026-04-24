@@ -36,7 +36,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
 
   const navigateTo = (url: string) => {
     trackEvent("click_navigate", { url, from: currentPage });
-    window.location.href = `${import.meta.env.BASE_URL}${url}`;
+    window.location.assign(`${import.meta.env.BASE_URL}${url}`);
   };
 
   return (
