@@ -102,6 +102,16 @@ jobs:
             --capabilities CAPABILITY_IAM \
             --parameter-overrides ${PARAM_OVERRIDES}
 
+      - name: Dump CloudFormation failure events
+        if: failure()
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+        run: |
+          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
+          aws cloudformation describe-stack-events \
+            --stack-name ${STACK_NAME} \
+            --max-items 20
+
       - name: Sync to S3
         run: |
           aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete

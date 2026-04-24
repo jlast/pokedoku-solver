@@ -149,11 +149,11 @@ Resources:
     Properties:
       DomainName: !Ref DomainName
       SubjectAlternativeNames:
-        - !Join ["*.", [!Ref DomainName]]
+        - !Sub "*.${DomainName}"
       ValidationMethod: DNS
       DomainValidationOptions:
         - DomainName: !Ref DomainName
-          ValidationDomain: !Ref DomainName
+          HostedZoneId: !Ref HostedZone
 
   # CloudFront Origin Access Control
   CloudFrontOAC:
@@ -181,9 +181,8 @@ Resources:
           AcmCertificateArn: !Ref SSLCertificate
           SslSupportMethod: sni-only
         Origins:
-          - DomainName: !GetAtt WebsiteBucket.WebsiteURL
+          - DomainName: !Select [2, !Split ["/", !GetAtt WebsiteBucket.WebsiteURL]]
             Id: S3Origin
-            OriginAccessControlId: !Ref CloudFrontOAC
             CustomOriginConfig:
               OriginProtocolPolicy: http-only
         DefaultCacheBehavior:
@@ -216,17 +215,6 @@ Resources:
       AliasTarget:
         DNSName: !GetAtt CloudFrontDistribution.DomainName
         HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
-
-  # CNAME Record to verify domain (will be created after ACM validation)
-  ACMValidationRecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !Ref HostedZone
-      Name: !Select [0, !Split ["=", !Select [0, !Split ["=", !Ref SSLCertificate]]]]
-      Type: CNAME
-      TTL: 300
-      ResourceRecords:
-        - !Select [1, !Split ["=", !Select [0, !Split ["=", !Ref SSLCertificate]]]]
 
 Outputs:
   BucketName:
