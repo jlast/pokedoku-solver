@@ -25,6 +25,26 @@ const NAV_BUTTONS: NavButton[] = [
 export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const closeMobileMenu = (source: "overlay" | "button" | "close" | "navigate" | "support") => {
+    trackEvent("mobile_menu_close", { from: currentPage, source });
+    setMobileMenuOpen(false);
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen((prev) => {
+      const next = !prev;
+      trackEvent(next ? "mobile_menu_open" : "mobile_menu_close", {
+        from: currentPage,
+        source: "button",
+      });
+      return next;
+    });
+  };
+
+  const handleSupportClick = (placement: "desktop" | "mobile") => {
+    trackEvent("click_support", { from: currentPage, placement });
+  };
+
   useEffect(() => {
     if (!mobileMenuOpen) return;
     const previousOverflow = document.body.style.overflow;
@@ -79,6 +99,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
               rel="noopener noreferrer"
               className="support-btn desktop-support"
               aria-label="Support me on Buy Me a Coffee"
+              onClick={() => handleSupportClick("desktop")}
             >
               <img
                 src="https://cdn.buymeacoffee.com/uploads/project_updates/2023/12/08f1cf468ace518fc8cc9e352a2e613f.png"
@@ -93,7 +114,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-nav"
               aria-label="Toggle navigation menu"
-              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              onClick={toggleMobileMenu}
             >
               <span />
               <span />
@@ -119,7 +140,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
           <>
             <div
               className="mobile-menu-overlay"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => closeMobileMenu("overlay")}
               aria-hidden="true"
             />
             <div className="mobile-menu-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu">
@@ -128,7 +149,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                 <button
                   className="mobile-menu-close"
                   type="button"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => closeMobileMenu("close")}
                   aria-label="Close navigation menu"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -148,7 +169,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                         onClick={() => {
                           if (isActive) return;
                           navigateTo(btn.url);
-                          setMobileMenuOpen(false);
+                          closeMobileMenu("navigate");
                         }}
                         className={`nav-btn ${isActive ? "active" : ""}`}
                         disabled={isActive}
@@ -168,7 +189,10 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                     rel="noopener noreferrer"
                     className="support-btn mobile-support"
                     aria-label="Support me on Buy Me a Coffee"
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => {
+                      handleSupportClick("mobile");
+                      closeMobileMenu("support");
+                    }}
                   >
                     <img
                       src="https://cdn.buymeacoffee.com/uploads/project_updates/2023/12/08f1cf468ace518fc8cc9e352a2e613f.png"

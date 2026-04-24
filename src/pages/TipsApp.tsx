@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { trackEvent } from "../utils/analytics";
@@ -131,7 +131,14 @@ const LEVELS: { level: TipLevel; title: string; description: string }[] = [
 ];
 
 export default function TipsApp() {
-  const [expanded, setExpanded] = useState<string | null>(TIPS[0].id);
+  const [expanded, setExpanded] = useState<string | null>(() => {
+    if (typeof window === "undefined") return TIPS[0].id;
+    const hashId = window.location.hash.replace("#", "");
+    if (hashId && TIPS.some((tip) => tip.id === hashId)) {
+      return hashId;
+    }
+    return TIPS[0].id;
+  });
   const faqStructuredData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -148,6 +155,16 @@ export default function TipsApp() {
   const toggle = (item: TipItem) => {
     setExpanded((prev) => {
       const next = prev === item.id ? null : item.id;
+
+      if (typeof window !== "undefined") {
+        const base = `${window.location.pathname}${window.location.search}`;
+        if (next) {
+          window.history.replaceState({}, "", `${base}#${item.id}`);
+        } else {
+          window.history.replaceState({}, "", base);
+        }
+      }
+
       trackEvent("toggle_tip", {
         id: item.id,
         level: item.level,
@@ -156,6 +173,29 @@ export default function TipsApp() {
       return next;
     });
   };
+
+  useEffect(() => {
+    trackEvent("view_tips_page", { total_questions: TIPS.length });
+  }, []);
+
+  useEffect(() => {
+    const syncFromHash = () => {
+      const hashId = window.location.hash.replace("#", "");
+      if (!hashId) return;
+      if (!TIPS.some((tip) => tip.id === hashId)) return;
+      setExpanded(hashId);
+      requestAnimationFrame(() => {
+        document.getElementById(hashId)?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+    };
+
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    return () => window.removeEventListener("hashchange", syncFromHash);
+  }, []);
 
   return (
     <div className="app">
@@ -181,8 +221,9 @@ export default function TipsApp() {
               <div className="tips-list">
                 {items.map((item) => {
                   const isOpen = expanded === item.id;
+                  const tipLink = item.link;
                   return (
-                    <article className="tip-card" key={item.id}>
+                    <article className="tip-card" key={item.id} id={item.id}>
                       <button
                         className="tip-question"
                         onClick={() => toggle(item)}
@@ -204,10 +245,19 @@ export default function TipsApp() {
                             ))}
                           </ul>
                         )}
-                        {item.link && (
+                        {tipLink && (
                           <p>
-                            <a href={`${import.meta.env.BASE_URL}${item.link.href.replace(/^\//, "")}`}>
-                              {item.link.label}
+                            <a
+                              href={`${import.meta.env.BASE_URL}${tipLink.href.replace(/^\//, "")}`}
+                              onClick={() =>
+                                trackEvent("click_tip_link", {
+                                  id: item.id,
+                                  level: item.level,
+                                  href: tipLink.href,
+                                })
+                              }
+                            >
+                              {tipLink.label}
                             </a>
                           </p>
                         )}
