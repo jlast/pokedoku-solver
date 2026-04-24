@@ -259,6 +259,10 @@ function PokemonListApp() {
     [sortedPokemon, visibleCount],
   );
 
+  const hasActiveFilters =
+    getActiveFilters(filters) + difficultyFilter.length > 0 ||
+    searchQuery.trim().length > 0;
+
   useEffect(() => {
     if (!loadMoreRef.current || visibleCount >= sortedPokemon.length) return;
 
@@ -312,11 +316,15 @@ function PokemonListApp() {
               </span>
             )}
           </button>
-          <button onClick={clearFilters} className="filter-btn-secondary">
+          <button
+            onClick={clearFilters}
+            className="filter-btn-secondary"
+            disabled={!hasActiveFilters}
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
             </svg>
-            Clear
+            Clear filters
           </button>
         </div>
 

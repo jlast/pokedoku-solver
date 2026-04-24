@@ -4,9 +4,12 @@
     <loc>https://www.pokedoku-helper.com/</loc>
   </url>
   <url>
-    <loc>https://www.pokedoku-helper.com/today/</loc>
+    <loc>https://www.pokedoku-helper.com/custom/</loc>
   </url>
   <url>
     <loc>https://www.pokedoku-helper.com/pokemon-list/</loc>
+  </url>
+  <url>
+    <loc>https://www.pokedoku-helper.com/tips/</loc>
   </url>
 </urlset>

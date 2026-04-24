@@ -7,8 +7,10 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: './index.html',
+        custom: './custom/index.html',
         today: './today/index.html',
         pokemonList: './pokemon-list/index.html',
+        tips: './tips/index.html',
       },
     },
   },
