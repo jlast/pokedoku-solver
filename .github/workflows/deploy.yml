@@ -83,8 +83,8 @@ jobs:
       - name: Verify CloudFormation template revision
         run: |
           echo "Template from commit ${GITHUB_SHA}"
-          if grep -E 'ACMValidationRecord|CloudFrontOAC' terraform/cloudformation.yaml; then
-            echo "Found deprecated resources in template; aborting deploy"
+          if grep -E 'ACMValidationRecord|CloudFrontOAC' terraform/daily-puzzle-stack.yaml; then
+            echo "Found deprecated resources in daily puzzle template; aborting deploy"
             exit 1
           fi
 
@@ -95,7 +95,7 @@ jobs:
           echo "LAMBDA_KEY=${LAMBDA_KEY}" >> $GITHUB_ENV
 
       - name: Validate CloudFormation template
-        run: aws cloudformation validate-template --template-body file://terraform/cloudformation.yaml
+        run: aws cloudformation validate-template --template-body file://terraform/daily-puzzle-stack.yaml
 
       - name: Deploy CloudFormation stack
         env:
@@ -103,13 +103,13 @@ jobs:
           DAILY_PUZZLE_ALERT_EMAIL: ${{ secrets.DAILY_PUZZLE_ALERT_EMAIL }}
         run: |
           echo "Deploying commit ${GITHUB_SHA}"
-          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
-          PARAM_OVERRIDES="DailyPuzzleFetcherCodeS3Bucket=${{ secrets.S3_BUCKET_NAME }} DailyPuzzleFetcherCodeS3Key=${LAMBDA_KEY}"
+          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-daily-puzzle
+          PARAM_OVERRIDES="TargetBucketName=${{ secrets.S3_BUCKET_NAME }} DailyPuzzleFetcherCodeS3Bucket=${{ secrets.S3_BUCKET_NAME }} DailyPuzzleFetcherCodeS3Key=${LAMBDA_KEY}"
           if [ -n "${DAILY_PUZZLE_ALERT_EMAIL}" ]; then
             PARAM_OVERRIDES="${PARAM_OVERRIDES} DailyPuzzleAlertEmail=${DAILY_PUZZLE_ALERT_EMAIL}"
           fi
           aws cloudformation deploy \
-            --template-file terraform/cloudformation.yaml \
+            --template-file terraform/daily-puzzle-stack.yaml \
             --stack-name ${STACK_NAME} \
             --capabilities CAPABILITY_IAM \
             --parameter-overrides ${PARAM_OVERRIDES}
@@ -119,7 +119,7 @@ jobs:
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
         run: |
-          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
+          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-daily-puzzle
           aws cloudformation describe-stack-events \
             --stack-name ${STACK_NAME} \
             --max-items 100
@@ -129,7 +129,7 @@ jobs:
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
         run: |
-          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
+          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-daily-puzzle
           CHANGE_SET_ID=$(aws cloudformation list-change-sets --stack-name ${STACK_NAME} --query 'reverse(sort_by(Summaries,&CreationTime))[0].ChangeSetId' --output text || true)
           if [ -n "${CHANGE_SET_ID}" ] && [ "${CHANGE_SET_ID}" != "None" ]; then
             aws cloudformation describe-change-set \

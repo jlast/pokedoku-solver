@@ -1,0 +1,121 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Pokedoku Helper - Daily puzzle fetcher Lambda"
+
+Parameters:
+  TargetBucketName:
+    Type: String
+    Description: "S3 bucket to store today-puzzle.json"
+
+  DailyPuzzleFetcherCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing the Lambda zip"
+
+  DailyPuzzleFetcherCodeS3Key:
+    Type: String
+    Description: "S3 key for the Lambda zip"
+
+  DailyPuzzleAlertEmail:
+    Type: String
+    Default: ""
+    Description: "Email address to receive Lambda failure alerts"
+
+Conditions:
+  HasDailyPuzzleAlertEmail: !Not [!Equals [!Ref DailyPuzzleAlertEmail, ""]]
+
+Resources:
+  PuzzleFetcherRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: PuzzleFetcherS3WritePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource: !Sub "arn:aws:s3:::${TargetBucketName}/today-puzzle.json"
+
+  DailyPuzzleFetcherFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: daily-puzzle-fetcher.handler
+      Role: !GetAtt PuzzleFetcherRole.Arn
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref TargetBucketName
+          OBJECT_KEY: today-puzzle.json
+      Code:
+        S3Bucket: !Ref DailyPuzzleFetcherCodeS3Bucket
+        S3Key: !Ref DailyPuzzleFetcherCodeS3Key
+
+  DailyPuzzleSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: "Fetch and store the daily puzzle in S3"
+      ScheduleExpression: cron(5 0 * * ? *)
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt DailyPuzzleFetcherFunction.Arn
+          Id: DailyPuzzleFetcherTarget
+
+  DailyPuzzleScheduleInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref DailyPuzzleFetcherFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt DailyPuzzleSchedule.Arn
+
+  DailyPuzzleAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${AWS::StackName}-alerts"
+
+  DailyPuzzleAlertsEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasDailyPuzzleAlertEmail
+    Properties:
+      Protocol: email
+      Endpoint: !Ref DailyPuzzleAlertEmail
+      TopicArn: !Ref DailyPuzzleAlertsTopic
+
+  DailyPuzzleFetcherErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: "Alerts when daily puzzle Lambda reports errors"
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref DailyPuzzleFetcherFunction
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      DatapointsToAlarm: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref DailyPuzzleAlertsTopic
+
+Outputs:
+  DailyPuzzleFetcherFunctionName:
+    Description: "Daily puzzle Lambda function name"
+    Value: !Ref DailyPuzzleFetcherFunction
+
+  DailyPuzzleAlertsTopicArn:
+    Description: "SNS topic ARN for daily puzzle alerts"
+    Value: !Ref DailyPuzzleAlertsTopic
