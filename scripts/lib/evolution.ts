@@ -37,6 +37,7 @@ export function getTriggerMethods(node: EvolutionNode): EvolutionTrigger[] {
           triggers.push('Evolved by Item');
         } else if (details.min_affection !== null || details.min_happiness !== null) {
           triggers.push('Evolved by Friendship');
+          triggers.push('Evolved by Level');
         } else {
           triggers.push('Evolved by Level');
         }
