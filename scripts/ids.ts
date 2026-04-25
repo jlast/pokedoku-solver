@@ -276,6 +276,14 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Corsola   
     evolutionStage: 'No Evolution Line',
   },
+  489: {
+    // Phione
+    evolutionStage: 'No Evolution Line',
+  },
+  490: {
+    // Manaphy
+    evolutionStage: 'No Evolution Line',
+  },
   550: {
     // Basculin
     evolutionStage: 'No Evolution Line',
@@ -334,6 +342,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   }, 
   10441: {
     // Ursaluna bloodmoon
-    region: 'Paldea'
+    region: 'Paldea',
+    evolutionStage: 'No Evolution Line'
   }
 };
