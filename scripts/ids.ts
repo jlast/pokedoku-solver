@@ -274,7 +274,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   10066: {
     // Basculin
-    evolutionStage: 'No Evolution Line
+    evolutionStage: 'No Evolution Line'
   },
   808: {
     // Meltan evolution fix
