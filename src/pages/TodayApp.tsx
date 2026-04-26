@@ -351,7 +351,6 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           onSwapClick={handleCellClick}
           onConstraintChange={() => {}}
         />
-        <InfoBox>Numbers show how many Pokémon match each combination.</InfoBox>
         <div ref={suggestionsRef}>
           <SuggestionsPanel
             selectedCell={grid.selectedCell}

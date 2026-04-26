@@ -568,14 +568,31 @@ header .pokemon-count {
   color: #666;
 }
 
+.sort-select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .sort-select {
+  -webkit-appearance: none;
+  appearance: none;
   font-size: 0.75rem;
-  padding: 4px 8px;
+  padding: 4px 28px 4px 8px;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
   cursor: pointer;
+}
+
+.sort-select-arrow {
+  position: absolute;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  color: #666;
+  pointer-events: none;
 }
 
 .column-headers {
