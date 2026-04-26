@@ -94,8 +94,20 @@ jobs:
           aws s3 cp dist-lambda/daily-puzzle-fetcher.zip s3://${{ secrets.S3_BUCKET_NAME }}/${LAMBDA_KEY}
           echo "LAMBDA_KEY=${LAMBDA_KEY}" >> $GITHUB_ENV
 
+      - name: Package puzzle statistics Lambda
+        run: npm run package:puzzle-statistics-lambda
+
+      - name: Upload puzzle statistics Lambda artifact
+        run: |
+          STATS_LAMBDA_KEY=lambda/puzzle-statistics-${{ github.sha }}.zip
+          aws s3 cp dist-lambda/puzzle-statistics.zip s3://${{ secrets.S3_BUCKET_NAME }}/${STATS_LAMBDA_KEY}
+          echo "STATS_LAMBDA_KEY=${STATS_LAMBDA_KEY}" >> $GITHUB_ENV 
+
       - name: Validate CloudFormation template
         run: aws cloudformation validate-template --template-body file://terraform/daily-puzzle-stack.yaml
+
+      - name: Validate puzzle statistics CloudFormation template
+        run: aws cloudformation validate-template --template-body file://terraform/puzzle-statistics-stack.yaml
 
       - name: Deploy CloudFormation stack
         env:
@@ -113,6 +125,22 @@ jobs:
             --stack-name ${STACK_NAME} \
             --capabilities CAPABILITY_IAM \
             --parameter-overrides ${PARAM_OVERRIDES}
+
+      - name: Deploy puzzle statistics CloudFormation stack
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+        run: |
+          echo "Deploying puzzle statistics commit ${GITHUB_SHA}"
+          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-puzzle-statistics
+          aws cloudformation deploy \
+            --template-file terraform/puzzle-statistics-stack.yaml \
+            --stack-name ${STACK_NAME} \
+            --capabilities CAPABILITY_IAM \
+            --parameter-overrides \
+              TargetBucketName=${{ secrets.S3_BUCKET_NAME }} \
+              PuzzleStatisticsCodeS3Bucket=${{ secrets.S3_BUCKET_NAME }} \
+              PuzzleStatisticsCodeS3Key=${STATS_LAMBDA_KEY} \
+              PuzzleStatisticsOutputKey=data/puzzle-stats.json
 
       - name: Dump CloudFormation failure events
         if: failure()
