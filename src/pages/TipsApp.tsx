@@ -205,49 +205,61 @@ export default function TipsApp() {
         currentPage="tips"
       />
 
-      <section className="content-section tips-content">
+      <section className="content-section flex flex-col gap-7">
         <script type="application/ld+json">
           {JSON.stringify(faqStructuredData)}
         </script>
         {LEVELS.map((section) => {
           const items = TIPS.filter((tip) => tip.level === section.level);
           return (
-            <div className="tips-group" key={section.level}>
-              <div className="tips-group-header">
+            <div
+              className="rounded-[14px] border border-slate-200 bg-slate-50/40 p-4"
+              key={section.level}
+            >
+              <div>
                 <h2>{section.title}</h2>
-                <p>{section.description}</p>
+                <p className="mb-2.5">{section.description}</p>
               </div>
 
-              <div className="tips-list">
+              <div className="flex flex-col gap-2.5">
                 {items.map((item) => {
                   const isOpen = expanded === item.id;
                   const tipLink = item.link;
                   return (
-                    <article className="tip-card" key={item.id} id={item.id}>
+                    <article
+                      className="rounded-[10px] border border-slate-200 bg-white"
+                      key={item.id}
+                      id={item.id}
+                    >
                       <button
-                        className="tip-question"
+                        className="flex w-full cursor-pointer items-center justify-between gap-2 bg-transparent px-3.5 py-3 text-left text-[0.98rem] font-semibold text-slate-800 transition-colors hover:bg-slate-50"
                         onClick={() => toggle(item)}
                         aria-expanded={isOpen}
                       >
                         <span>{item.question}</span>
-                        <span className="tip-toggle">{isOpen ? "-" : "+"}</span>
+                        <span className="text-lg text-slate-600">{isOpen ? "-" : "+"}</span>
                       </button>
 
                       <div
-                        className={`tip-answer ${isOpen ? "open" : "collapsed"}`}
+                        className={`overflow-hidden transition-all duration-200 ease-in-out ${
+                          isOpen
+                            ? "max-h-[480px] border-t border-slate-200 px-3.5 pt-2.5 pb-3"
+                            : "max-h-0 border-t-0 px-3.5 py-0"
+                        }`}
                         aria-hidden={!isOpen}
                       >
-                        <p>{item.answer}</p>
+                        <p className="mb-2.5 leading-7 text-slate-600">{item.answer}</p>
                         {item.examples && item.examples.length > 0 && (
-                          <ul>
+                          <ul className="m-0 list-disc pl-[18px] text-slate-600">
                             {item.examples.map((example) => (
-                              <li key={example}>{example}</li>
+                              <li className="mb-1.5" key={example}>{example}</li>
                             ))}
                           </ul>
                         )}
                         {tipLink && (
-                          <p>
+                          <p className="mt-2.5">
                             <a
+                              className="text-indigo-600 underline-offset-2 hover:underline"
                               href={`${import.meta.env.BASE_URL}${tipLink.href.replace(/^\//, "")}`}
                               onClick={() =>
                                 trackEvent("click_tip_link", {
