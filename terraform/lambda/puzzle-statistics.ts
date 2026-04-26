@@ -25,8 +25,7 @@ interface CategoryCount {
 }
 
 interface CategoryPair {
-  rowCategoryId: string;
-  columnCategoryId: string;
+  categories: [string, string];
   count: number;
 }
 
@@ -40,7 +39,7 @@ interface CategoryStats {
   categoryPairs: CategoryPair[];
 }
 
-const BUCKET_NAME = process.env.BUCKET_NAME;
+const BUCKET_NAME = process.env.BUCKET_NAME!;
 const OUTPUT_KEY = process.env.OBJECT_KEY || "data/puzzle-stats.json";
 const PUZZLES_PREFIX = "data/puzzles/";
 
@@ -123,13 +122,16 @@ function buildStats(puzzles: Puzzle[]): CategoryStats {
     const rowCategoryIds = puzzle.rowConstraints.map(toCategoryId);
     const colCategoryIds = puzzle.colConstraints.map(toCategoryId);
 
+    // Count categories (rows + columns)
     for (const categoryId of [...rowCategoryIds, ...colCategoryIds]) {
       increment(categoryCounts, categoryId);
     }
 
+    // Count unordered pairs
     for (const rowCategoryId of rowCategoryIds) {
       for (const columnCategoryId of colCategoryIds) {
-        increment(categoryPairs, `${rowCategoryId}||${columnCategoryId}`);
+        const [a, b] = [rowCategoryId, columnCategoryId].sort();
+        increment(categoryPairs, `${a}||${b}`);
       }
     }
   }
@@ -143,28 +145,32 @@ function buildStats(puzzles: Puzzle[]): CategoryStats {
     categoryCounts: Array.from(categoryCounts.entries())
       .map(([categoryId, count]) => ({ categoryId, count }))
       .sort((a, b) => b.count - a.count || a.categoryId.localeCompare(b.categoryId)),
+
     categoryPairs: Array.from(categoryPairs.entries())
       .map(([pairKey, count]) => {
-        const [rowCategoryId, columnCategoryId] = pairKey.split("||");
+        const categories = pairKey.split("||") as [string, string];
 
         return {
-          rowCategoryId,
-          columnCategoryId,
+          categories,
           count,
         };
       })
       .sort((a, b) => {
         if (b.count !== a.count) return b.count - a.count;
 
-        const rowCompare = a.rowCategoryId.localeCompare(b.rowCategoryId);
-        if (rowCompare !== 0) return rowCompare;
+        const firstCompare = a.categories[0].localeCompare(b.categories[0]);
+        if (firstCompare !== 0) return firstCompare;
 
-        return a.columnCategoryId.localeCompare(b.columnCategoryId);
+        return a.categories[1].localeCompare(b.categories[1]);
       }),
   };
 }
 
 export async function handler() {
+  if (!BUCKET_NAME) {
+    throw new Error("BUCKET_NAME is required");
+  }
+
   const keys = await listPuzzleKeys();
 
   if (keys.length === 0) {
