@@ -276,6 +276,10 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Corsola   
     evolutionStage: 'No Evolution Line',
   },
+  264: {
+    // Linoone evolution fix
+    evolutionStage: 'Final Stage',
+  },
   489: {
     // Phione
     evolutionStage: 'No Evolution Line',
