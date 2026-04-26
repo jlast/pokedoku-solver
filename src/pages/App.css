@@ -215,7 +215,7 @@ header .pokemon-count {
 }
 
 .type-labels-left .constraint-selector {
-  height: 102px;
+  height: 112px;
   width:  100px;
 }
 
@@ -243,7 +243,7 @@ header .pokemon-count {
 
 .cell {
   width: 100px;
-  height: 100px;
+  height: 110px;
   background: #f8fafc;
   display: flex;
   flex-direction: column;
@@ -259,12 +259,70 @@ header .pokemon-count {
 
 .cell .pokemon-sprite {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 14px;
+  left: 16px;
+  width: 68px;
+  height: 68px;
   object-fit: contain;
   z-index: 0;
+}
+
+.cell-suggested-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  padding: 1px 5px;
+  border-top-left-radius: 2px;
+  border-bottom-right-radius: 8px;
+  line-height: 14px;
+  background: rgba(79, 70, 229, 0.9);
+  color: #ffffff;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.cell-swap-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 2;
+  width: 30px;
+  height: 34px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #4f46e5;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+}
+
+.cell-swap-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.cell-swap-count {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cell-swap-btn:hover {
+  background: #ffffff;
+  border-color: #a5b4fc;
+}
+
+.cell-swap-btn:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 1px;
 }
 
 .cell:hover {
@@ -319,7 +377,6 @@ header .pokemon-count {
   text-align: center;
   position: relative;
   z-index: 1;
-  background: rgba(128, 128, 128, 0.8);
 }
 
 .pokemon-id {
@@ -336,8 +393,24 @@ header .pokemon-count {
 }
 
 
+.cell-difficulty-badge {
+  margin-top: 2px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 .cell .pokemon-name {
-  color: white;
+  font-size: 9px;
+  line-height: 1.05;
+}
+
+.cell.suggested-cell .cell-content {
+  padding: 3px 6px;
+  margin: 2px;
 }
 
 .pokemon-types {
@@ -749,18 +822,28 @@ header .pokemon-count {
 
 @media (max-width: 768px) {
   .cell {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 110px;
+  }
+  .cell .pokemon-sprite {
+    left: 8px;
+  }
+
+  .constraint-display {
+    font-size: 10px;
+  }
+
+  .corner-spacer {
+    width: 70px;
   }
   
-  .corner-spacer,
   .constraint-selector {
-    width: 80px;
+    width: 90px;
   }
   
   .type-labels-left .constraint-selector {
-    height: 80px;
-    width: 80px;
+    height: 112px;
+    width: 70px;
   }
   
   .pokemon-name {
@@ -970,6 +1053,10 @@ footer span {
 
 /* Mobile tightening */
 @media (max-width: 600px) {
+  .app {
+    padding: 10px;
+  }
+
   .app > header .logo {
     max-width: 50px;
     margin-bottom: 10px;
@@ -1790,6 +1877,7 @@ footer span {
   border-radius: 8px;
   font-size: 0.85rem;
   color: #64748b;
+  font-weight: bold;
 }
 
 .support-btn {
@@ -1939,8 +2027,49 @@ footer span {
 }
 
 .site-header .header-date {
+  display: inline-flex;
   transform: none;
-  margin-top: 10px;
+  margin-top: 0;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+}
+
+.site-header .header-meta {
+  margin: 12px 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.site-header .header-update-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.site-header .header-update-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #22c55e;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.site-header .header-update-text {
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
 }
 
 .site-header .mobile-support {
@@ -2094,5 +2223,19 @@ footer span {
 
   .app > header.site-header .header-title-row {
     display: none;
+  }
+
+  .site-header .header-update-status {
+    font-size: 0.76rem;
+    gap: 7px;
+  }
+
+  .site-header .header-update-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .site-header .header-update-text {
+    font-size: 0.76rem;
   }
 }

@@ -62,6 +62,11 @@ export function SuggestionsPanel({
       <div className="suggestions-panel" ref={containerRef}>
         <div className="panel-header">
           <div className="column-headers">
+            <div>
+              <span>
+                {possiblePokemon.length} Pokémon
+              </span>
+            </div>
             <div className="column-header" onClick={() => sortByColumn('number')}>
               <div className="sort-arrows">
                 <span className={sortBy === 'number-asc' ? 'active' : ''}>▲</span><span className={sortBy === 'number-desc' ? 'active' : ''}>▼</span>

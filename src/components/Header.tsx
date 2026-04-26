@@ -128,11 +128,27 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
         </div>
 
         {showDate && (
-          <div className="header-date">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
-            </svg>
-            {showDate}
+          <div className="header-meta">
+            <div className="header-update-status" aria-label="Updates daily">
+              <span className="header-update-icon" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M20 6 9 17l-5-5"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <span className="header-update-text">Updated daily</span>
+            </div>
+            <div className="header-date">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+              </svg>
+              {showDate}
+            </div>
           </div>
         )}
 
