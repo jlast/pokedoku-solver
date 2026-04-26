@@ -248,6 +248,14 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Sneasel, hisuian form, evolution line is not branched
     isBranched: false,
   },
+  562: {
+    // Yamask, evolution line is not branched
+    isBranched: false,
+  },
+  10338: {
+    // Yamask Galar, evolution line is not branched
+    isBranched: false,
+  },
   65: {
     // Alakazam, linking cord fix
     evolutionTrigger: ["Evolved by Trade", "Evolved by Item"],
