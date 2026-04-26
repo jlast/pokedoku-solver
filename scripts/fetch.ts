@@ -282,6 +282,7 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
     types,
     region: REGION_BY_ID[speciesId] || "Unknown",
     sprite: `/sprites/${form.id}.png`,
+    formId,
   };
   
   if (ULTRA_BEASTS.has(id)) entry.category = "Ultra Beast";
