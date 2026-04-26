@@ -4,32 +4,11 @@ interface InfoBoxProps {
 
 export function InfoBox({ children }: InfoBoxProps) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "12px",
-        backgroundColor: "#e3f2fd",
-        padding: "12px 16px",
-        borderRadius: "8px",
-        fontSize: "0.9rem",
-      }}
-    >
-      <div
-        style={{
-          width: "24px",
-          height: "24px",
-          borderRadius: "50%",
-          backgroundColor: "#2196f3",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        <span style={{ color: "white", fontSize: "14px", fontWeight: "bold" }}>i</span>
+    <div className="flex items-center gap-3 rounded-lg bg-sky-100 px-4 py-3 text-sm">
+      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-500">
+        <span className="text-sm leading-none font-bold text-white">i</span>
       </div>
-      <span style={{ opacity: 0.9 }}>{children}</span>
+      <span className="opacity-90">{children}</span>
     </div>
   );
 }
