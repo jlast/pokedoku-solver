@@ -3,6 +3,8 @@ import type { Pokemon } from "../utils/types";
 import { TYPE_COLORS, DEX_DIFFICULTY_COLORS } from "../utils/constants";
 import { trackEvent } from "../utils/analytics";
 
+type SortBy = "number-asc" | "number-desc" | "difficulty-desc" | "difficulty-asc";
+
 interface SuggestionsPanelProps {
   selectedCell: [number, number] | null;
   possiblePokemon: Pokemon[];
@@ -16,20 +18,19 @@ export function SuggestionsPanel({
 }: SuggestionsPanelProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   
-  const [sortBy, setSortBy] = useState<"number-asc" | "number-desc" | "difficulty-desc" | "difficulty-asc">(() => {
+  const [sortBy, setSortBy] = useState<SortBy>(() => {
     if (typeof window !== "undefined") {
-      return (localStorage.getItem("pokedoku-sort") as "number-asc" | "number-desc" | "difficulty-desc" | "difficulty-asc") || "number-asc";
+      return (localStorage.getItem("pokedoku-sort") as SortBy) || "difficulty-asc";
     }
-    return "number-asc";
+    return "difficulty-asc";
   });
 
-  function sortByColumn(column: "number" | "difficulty") {
-    const newSort = column === "number"
-      ? (sortBy === "number-asc" ? "number-desc" : "number-asc")
-      : (sortBy === "difficulty-asc" ? "difficulty-desc" : "difficulty-asc");
+  function handleSortChange(newSort: SortBy) {
     setSortBy(newSort);
+    const column = newSort.startsWith("number") ? "number" : "difficulty";
     trackEvent("change_sort", { column, sort: newSort, source: "suggestions" });
   }
+
   useEffect(() => {
     localStorage.setItem("pokedoku-sort", sortBy);
   }, [sortBy]);
@@ -61,24 +62,22 @@ export function SuggestionsPanel({
     <div className="suggestions-panel-wrapper">
       <div className="suggestions-panel" ref={containerRef}>
         <div className="panel-header">
-          <div className="column-headers">
-            <div>
-              <span>
-                {possiblePokemon.length} Pokémon
-              </span>
-            </div>
-            <div className="column-header" onClick={() => sortByColumn('number')}>
-              <div className="sort-arrows">
-                <span className={sortBy === 'number-asc' ? 'active' : ''}>▲</span><span className={sortBy === 'number-desc' ? 'active' : ''}>▼</span>
-              </div>
-              <span>Pokemon</span>
-            </div>
-            <div className="column-header" onClick={() => sortByColumn('difficulty')}>
-              <div className="sort-arrows">
-                <span className={sortBy === 'difficulty-asc' ? 'active' : ''}>▲</span><span  className={sortBy === 'difficulty-desc' ? 'active' : ''}>▼</span>
-              </div>
-              <span>Dex Difficulty</span>
-            </div>
+          <div className="sort-header">
+            <span className="panel-title">{possiblePokemon.length} Pokémon</span>
+            <label className="sort-label">
+              <span className="sort-icon" aria-hidden="true">↕</span>
+              <select
+                className="sort-select"
+                aria-label="Sort Pokémon suggestions"
+                value={sortBy}
+                onChange={(event) => handleSortChange(event.target.value as SortBy)}
+              >
+                <option value="number-asc">Pokemon # (low to high)</option>
+                <option value="number-desc">Pokemon # (high to low)</option>
+                <option value="difficulty-asc">Dex difficulty (hard to easy)</option>
+                <option value="difficulty-desc">Dex difficulty (easy to hard)</option>
+              </select>
+            </label>
           </div>
         </div>
         <div className="pokemon-list">
