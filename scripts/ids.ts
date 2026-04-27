@@ -363,7 +363,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   28:{
     // Sandslash
-    evolutionTrigger: ["Evolved by Item"]
+    evolutionTrigger: ["Evolved by Level"]
   },
   10204: { 
     // Alolan Sandslash
