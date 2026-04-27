@@ -206,16 +206,31 @@ jobs:
 
           CONFIG=$(aws s3api get-bucket-notification-configuration --bucket "${{ secrets.S3_BUCKET_NAME }}" --output json)
           echo "Validating notification with id PuzzleStatisticsOnPuzzleUpload"
-          jq -e --arg function_arn "${FUNCTION_ARN}" '
+          echo "Expected function ARN: ${FUNCTION_ARN}"
+          echo "Current Lambda notification configs:"
+          jq '
+            (.LambdaFunctionConfigurations // [])
+            | map({
+                Id,
+                LambdaFunctionArn,
+                Events,
+                FilterRules: (.Filter.Key.FilterRules // [])
+              })
+          ' <<< "${CONFIG}"
+
+          if ! jq -e --arg function_arn "${FUNCTION_ARN}" '
             (.LambdaFunctionConfigurations // [])
             | any(
                 .Id == "PuzzleStatisticsOnPuzzleUpload"
                 and .LambdaFunctionArn == $function_arn
-                and (.Events // [] | index("s3:ObjectCreated:*"))
+                and ((.Events // []) | any(type == "string" and startswith("s3:ObjectCreated:")))
                 and (.Filter.Key.FilterRules // [] | any(.Name == "prefix" and .Value == "data/puzzles/"))
                 and (.Filter.Key.FilterRules // [] | any(.Name == "suffix" and .Value == ".json"))
               )
-          ' <<< "${CONFIG}" >/dev/null
+          ' <<< "${CONFIG}" >/dev/null; then
+            echo "S3 notification mismatch: PuzzleStatisticsOnPuzzleUpload is missing or has unexpected ARN/event/filter settings"
+            exit 1
+          fi
 
       - name: Dump CloudFormation failure events
         if: failure()
