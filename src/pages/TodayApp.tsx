@@ -207,25 +207,12 @@ export function TodayApp({ puzzle }: TodayAppProps) {
       .map(() => Array(GRID_SIZE).fill(0));
 
     for (let row = 0; row < GRID_SIZE; row++) {
-      for (let col = 0; col < GRID_SIZE; col++) {
-        const usedInRow = new Set(
-          grid.cells[row]
-            .filter((p, colIndex): p is Pokemon => p !== null && colIndex !== col)
-            .map((p) => p.id),
-        );
-
-        const usedInCol = new Set(
-          grid.cells
-            .map((rowValues, rowIndex) => (rowIndex === row ? null : rowValues[col]))
-            .filter((p): p is Pokemon => p !== null)
-            .map((p) => p.id),
-        );
+      for (let col = 0; col < GRID_SIZE; 
 
         const rowConstraint = grid.rowConstraints[row];
         const colConstraint = grid.colConstraints[col];
 
         result[row][col] = pokemon.filter((p) => {
-          if (usedInRow.has(p.id) || usedInCol.has(p.id)) return false;
           if (!matchesConstraint(p, rowConstraint)) return false;
           if (!matchesConstraint(p, colConstraint)) return false;
           return true;
@@ -282,24 +269,10 @@ export function TodayApp({ puzzle }: TodayAppProps) {
 
     const [row, col] = grid.selectedCell;
 
-    const usedInRow = new Set(
-      grid.cells[row]
-        .filter((p, colIndex): p is Pokemon => p !== null && colIndex !== col)
-        .map((p) => p.id),
-    );
-
-    const usedInCol = new Set(
-      grid.cells
-        .map((rowValues, rowIndex) => (rowIndex === row ? null : rowValues[col]))
-        .filter((p): p is Pokemon => p !== null)
-        .map((p) => p.id),
-    );
-
     const rowConstraint = grid.rowConstraints[row];
     const colConstraint = grid.colConstraints[col];
 
     return pokemon.filter((p) => {
-      if (usedInRow.has(p.id) || usedInCol.has(p.id)) return false;
       if (!matchesConstraint(p, rowConstraint)) return false;
       if (!matchesConstraint(p, colConstraint)) return false;
       return true;
