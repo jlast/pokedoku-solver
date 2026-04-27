@@ -68,12 +68,13 @@ export function TodayApp({ puzzle }: TodayAppProps) {
     colConstraints: [...puzzle.colConstraints],
     selectedCell: null,
   }));
-  const [suggestedPokemonKeys, setSuggestedPokemonKeys] = useState<(string | null)[][]>(
-    () =>
-      Array(GRID_SIZE)
-        .fill(null)
-        .map(() => Array(GRID_SIZE).fill(null)),
-  );
+ const suggestedPokemonKeys = useMemo(
+  () =>
+    grid.cells.map((row) =>
+      row.map((cell) => (cell ? cell.sprite || cell.name : null)),
+    ),
+  [grid.cells],
+ );
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!grid.selectedCell || !suggestionsRef.current) return;
