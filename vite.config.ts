@@ -12,6 +12,7 @@ export default defineConfig({
         today: './today/index.html',
         pokemonList: './pokemon-list/index.html',
         tips: './tips/index.html',
+        puzzleStats: './puzzle-stats/index.html',
       },
     },
   },
