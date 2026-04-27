@@ -77,6 +77,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_GITHUB_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Preflight AWS deploy checks
+        run: |
+          set -euo pipefail
+          if [ -z "${{ secrets.S3_BUCKET_NAME }}" ]; then
+            echo "S3_BUCKET_NAME is not set"
+            exit 1
+          fi
+
+          aws sts get-caller-identity >/dev/null
+          aws s3api head-bucket --bucket "${{ secrets.S3_BUCKET_NAME }}"
+          aws s3api get-bucket-notification-configuration --bucket "${{ secrets.S3_BUCKET_NAME }}" --output json | jq -e '.' >/dev/null
+
       - name: Package daily puzzle Lambda
         run: npm run package:daily-puzzle-lambda
 
@@ -146,6 +158,7 @@ jobs:
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
         run: |
+          set -euo pipefail
           STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-puzzle-statistics
           FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query "Stacks[0].Outputs[?OutputKey=='PuzzleStatisticsFunctionArn'].OutputValue" --output text)
           if [ -z "${FUNCTION_ARN}" ] || [ "${FUNCTION_ARN}" = "None" ]; then
@@ -153,7 +166,11 @@ jobs:
             exit 1
           fi
 
-          CURRENT_CONFIG=$(aws s3api get-bucket-notification-configuration --bucket "${{ secrets.S3_BUCKET_NAME }}")
+          CURRENT_CONFIG=$(aws s3api get-bucket-notification-configuration --bucket "${{ secrets.S3_BUCKET_NAME }}" --output json)
+          if [ -z "${CURRENT_CONFIG}" ]; then
+            CURRENT_CONFIG='{}'
+          fi
+
           UPDATED_CONFIG=$(jq -c --arg function_arn "${FUNCTION_ARN}" '
             .LambdaFunctionConfigurations = (
               ((.LambdaFunctionConfigurations // []) | map(select(.Id != "PuzzleStatisticsOnPuzzleUpload"))) +
@@ -173,9 +190,44 @@ jobs:
             )
           ' <<< "${CURRENT_CONFIG}")
 
+          if [ -z "${UPDATED_CONFIG}" ] || [ "${UPDATED_CONFIG}" = "null" ]; then
+            echo "Generated notification config is empty"
+            exit 1
+          fi
+
+          echo "Notification config size: ${#UPDATED_CONFIG}"
+
+          REQUEST_FILE=$(mktemp)
+          jq -n \
+            --arg bucket "${{ secrets.S3_BUCKET_NAME }}" \
+            --argjson config "${UPDATED_CONFIG}" \
+            '{Bucket: $bucket, NotificationConfiguration: $config}' > "${REQUEST_FILE}"
+
           aws s3api put-bucket-notification-configuration \
-            --bucket "${{ secrets.S3_BUCKET_NAME }}" \
-            --notification-configuration "${UPDATED_CONFIG}"
+            --cli-input-json "file://${REQUEST_FILE}"
+
+          rm -f "${REQUEST_FILE}"
+
+      - name: Verify puzzle statistics S3 notification
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+        run: |
+          set -euo pipefail
+          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-puzzle-statistics
+          FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query "Stacks[0].Outputs[?OutputKey=='PuzzleStatisticsFunctionArn'].OutputValue" --output text)
+
+          CONFIG=$(aws s3api get-bucket-notification-configuration --bucket "${{ secrets.S3_BUCKET_NAME }}" --output json)
+          echo "Validating notification with id PuzzleStatisticsOnPuzzleUpload"
+          jq -e --arg function_arn "${FUNCTION_ARN}" '
+            (.LambdaFunctionConfigurations // [])
+            | any(
+                .Id == "PuzzleStatisticsOnPuzzleUpload"
+                and .LambdaFunctionArn == $function_arn
+                and (.Events // [] | index("s3:ObjectCreated:*"))
+                and (.Filter.Key.FilterRules // [] | any(.Name == "prefix" and .Value == "data/puzzles/"))
+                and (.Filter.Key.FilterRules // [] | any(.Name == "suffix" and .Value == ".json"))
+              )
+          ' <<< "${CONFIG}" >/dev/null
 
       - name: Dump CloudFormation failure events
         if: failure()
