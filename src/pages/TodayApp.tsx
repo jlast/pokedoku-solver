@@ -159,10 +159,6 @@ export function TodayApp({ puzzle }: TodayAppProps) {
         colUsed[col].add(pick.id);
       }
 
-      setSuggestedPokemonKeys(
-        suggestedCells.map((row) => row.map((cell) => (cell ? cell.sprite || cell.name : null))),
-      );
-
       return {
         ...prev,
         cells: suggestedCells,
