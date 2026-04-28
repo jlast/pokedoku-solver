@@ -154,19 +154,6 @@ export function TodayApp({ puzzle }: TodayAppProps) {
 
   const hasGridData = grid.cells.some(row => row.some(cell => cell !== null));
 
-  const handleNavigate = (url: string, clearState?: () => void) => {
-    if (clearState) {
-      clearState();
-    }
-    trackEvent("click_navigate", { url });
-    window.location.href = `${import.meta.env.BASE_URL}${url}`;
-  };
-
-  const handleClearAndNavigate = () => {
-    handleNavigate('', clearCells);
-    window.location.href = import.meta.env.BASE_URL || '/';
-  };
-
   const selectedCellPossible = grid.selectedCell
     ? possiblePokemon[grid.selectedCell[0]][grid.selectedCell[1]]
     : [];
