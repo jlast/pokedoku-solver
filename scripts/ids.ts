@@ -369,4 +369,12 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Alolan Sandslash
     evolutionTrigger: ["Evolved by Item"]
   },
+  1011: {
+    // Dipplin
+    evolutionTrigger: ["Evolved by Item"]
+  },
+  10401: {
+    // Electrode Hisui
+    evolutionTrigger: ["Evolved by Item"]
+  }
 };
