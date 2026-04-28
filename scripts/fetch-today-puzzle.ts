@@ -65,7 +65,7 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
       return { category: 'category', value: 'Legendary' };
 
     case 'MEGA':
-      return { category: 'category', value: 'Mega' };
+      return { category: 'category', value: 'Mega Evolution' };
 
     case 'MYTHICAL':
       return { category: 'category', value: 'Mythical' };
