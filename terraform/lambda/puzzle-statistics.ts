@@ -4,6 +4,8 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { FILTER_CATEGORIES } from "../../src/utils/filters";
+import type { Pokemon } from "../../src/utils/types";
 
 type ConstraintCategory = "regions" | "types" | "evolution" | "category";
 
@@ -37,13 +39,28 @@ interface CategoryStats {
   };
   categoryCounts: CategoryCount[];
   categoryPairs: CategoryPair[];
+  pokemonLastUsable: PokemonLastUsable[];
+}
+
+interface PokemonLastUsable {
+  formId: number;
+  lastUsableDate: string | null;
+  daysSinceLastUsable: number | null;
 }
 
 const BUCKET_NAME = process.env.BUCKET_NAME!;
 const OUTPUT_KEY = process.env.OBJECT_KEY || "data/runtime/puzzle-stats.json";
 const PUZZLES_PREFIX = "data/runtime/puzzles/";
+const POKEMON_DATA_KEY = "data/pokemon.json";
 
 const s3 = new S3Client({});
+const constraintFilters = new Map<string, (pokemon: Pokemon) => boolean>();
+
+for (const filterCategory of FILTER_CATEGORIES) {
+  for (const option of filterCategory.options) {
+    constraintFilters.set(`${filterCategory.key}:${option.name}`, option.filter);
+  }
+}
 
 function toCategoryId(constraint: ConstraintMapping): string {
   return `${constraint.category}:${constraint.value}`;
@@ -108,11 +125,111 @@ async function readPuzzle(key: string): Promise<Puzzle> {
   return puzzle;
 }
 
+async function readPokemonList(): Promise<Pokemon[]> {
+  const response = await s3.send(
+    new GetObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: POKEMON_DATA_KEY,
+    }),
+  );
+
+  const body = await streamToString(response.Body);
+  const pokemon = JSON.parse(body) as Pokemon[];
+
+  if (!Array.isArray(pokemon)) {
+    throw new Error(`${POKEMON_DATA_KEY} does not contain a JSON array`);
+  }
+
+  return pokemon;
+}
+
 function increment(map: Map<string, number>, key: string, amount = 1): void {
   map.set(key, (map.get(key) ?? 0) + amount);
 }
 
-function buildStats(puzzles: Puzzle[]): CategoryStats {
+function startOfDayUtc(dateString: string): Date {
+  return new Date(`${dateString}T00:00:00.000Z`);
+}
+
+function daysBetween(fromDate: string, toDate: string): number {
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  const from = startOfDayUtc(fromDate).getTime();
+  const to = startOfDayUtc(toDate).getTime();
+
+  return Math.floor((to - from) / millisecondsPerDay);
+}
+
+function normalizeConstraintValue(constraint: ConstraintMapping): string {
+  if (constraint.category === "evolution" && constraint.value === "Is Branched") {
+    return "Branched evolution";
+  }
+
+  if (constraint.category === "category" && constraint.value === "Starter") {
+    return "First Partner";
+  }
+
+  return constraint.value;
+}
+
+function matchesConstraint(pokemon: Pokemon, constraint: ConstraintMapping): boolean {
+  const normalizedValue = normalizeConstraintValue(constraint);
+  const filter = constraintFilters.get(`${constraint.category}:${normalizedValue}`);
+
+  return filter?.(pokemon) ?? false;
+}
+
+function isUsableInPuzzle(pokemon: Pokemon, puzzle: Puzzle): boolean {
+  const matchesAnyRow = puzzle.rowConstraints.some((constraint) => matchesConstraint(pokemon, constraint));
+  if (!matchesAnyRow) {
+    return false;
+  }
+
+  return puzzle.colConstraints.some((constraint) => matchesConstraint(pokemon, constraint));
+}
+
+function buildPokemonLastUsableStats(puzzles: Puzzle[], pokemon: Pokemon[]): PokemonLastUsable[] {
+  const latestPuzzleDate = puzzles.reduce((latest, puzzle) => (puzzle.date > latest ? puzzle.date : latest), "");
+
+  return pokemon
+    .filter((entry): entry is Pokemon & { formId: number } => typeof entry.formId === "number")
+    .map((entry) => {
+      const latestUsableDate = puzzles.reduce<string | null>((latest, puzzle) => {
+        if (!isUsableInPuzzle(entry, puzzle)) {
+          return latest;
+        }
+
+        if (!latest || puzzle.date > latest) {
+          return puzzle.date;
+        }
+
+        return latest;
+      }, null);
+
+      return {
+        formId: entry.formId,
+        lastUsableDate: latestUsableDate,
+        daysSinceLastUsable:
+          latestUsableDate && latestPuzzleDate ? daysBetween(latestUsableDate, latestPuzzleDate) : null,
+      };
+    })
+    .sort((a, b) => {
+      if (a.lastUsableDate === b.lastUsableDate) {
+        return a.formId - b.formId;
+      }
+
+      if (a.lastUsableDate === null) {
+        return 1;
+      }
+
+      if (b.lastUsableDate === null) {
+        return -1;
+      }
+
+      return b.lastUsableDate.localeCompare(a.lastUsableDate);
+    });
+}
+
+function buildStats(puzzles: Puzzle[], pokemon: Pokemon[]): CategoryStats {
   const categoryCounts = new Map<string, number>();
   const categoryPairs = new Map<string, number>();
 
@@ -163,6 +280,7 @@ function buildStats(puzzles: Puzzle[]): CategoryStats {
 
         return a.categories[1].localeCompare(b.categories[1]);
       }),
+    pokemonLastUsable: buildPokemonLastUsableStats(puzzles, pokemon),
   };
 }
 
@@ -178,7 +296,8 @@ export async function handler() {
   }
 
   const puzzles = await Promise.all(keys.map(readPuzzle));
-  const stats = buildStats(puzzles);
+  const pokemon = await readPokemonList();
+  const stats = buildStats(puzzles, pokemon);
 
   await s3.send(
     new PutObjectCommand({

@@ -142,6 +142,37 @@ jobs:
               PuzzleStatisticsCodeS3Key=${STATS_LAMBDA_KEY} \
               PuzzleStatisticsOutputKey=data/runtime/puzzle-stats.json
 
+      - name: Run puzzle statistics Lambda
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+        run: |
+          set -euo pipefail
+          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-puzzle-statistics
+          FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query "Stacks[0].Outputs[?OutputKey=='PuzzleStatisticsFunctionArn'].OutputValue" --output text)
+
+          if [ -z "${FUNCTION_ARN}" ] || [ "${FUNCTION_ARN}" = "None" ]; then
+            echo "PuzzleStatisticsFunctionArn output not found on ${STACK_NAME}"
+            exit 1
+          fi
+
+          RESPONSE_FILE=$(mktemp)
+          aws lambda invoke \
+            --function-name "${FUNCTION_ARN}" \
+            --cli-binary-format raw-in-base64-out \
+            --payload '{}' \
+            "${RESPONSE_FILE}"
+
+          echo "Lambda response payload:"
+          cat "${RESPONSE_FILE}"
+
+          if jq -e '.FunctionError' "${RESPONSE_FILE}" > /dev/null; then
+            echo "Lambda invocation failed"
+            rm -f "${RESPONSE_FILE}"
+            exit 1
+          fi
+
+          rm -f "${RESPONSE_FILE}"
+
       - name: Configure S3 notification for puzzle statistics Lambda
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
