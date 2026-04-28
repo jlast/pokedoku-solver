@@ -68,14 +68,15 @@ export const IGNORED_FORM_IDS = new Set([
   10220, 10221, // Zygarde 10% and 50% power constructs 
   10218, // Greninja battle bond
   10065, // Pichu spiky eared 
-])
+  10346, 10347, 10348, 10349, 10350, 10351, 10352, 10353, 10449, 10450, 10451, 10452, 10453, 10454, 10455, 10456, 10457, 10458, 10459, 10460, 10461, 10462, 10463, 10464, 10465, 10466, 10467, 10468, 10469, 10470, 10471, 10472, 10473, 10474, 10475, 10476, 10477, 10478, 10479, 10480, 10481, 10482, 10483, 10484, 10485, 10486, 10487, 10488, 10489, 10490, 10491, 10492, 10493, 10494, 10495, 10496, 10497, 10498, 10499, 10500, 10501, 10502 // Alcremie special forms
+]);
 
 export const IGNORED_FORMS = new Set([
   'totem', 'totem-alola', 'totem-disguised', 'totem-busted'
 ]);
 
 export const IGNORE_SPECIAL_FORMS = new Set([
-  'unown', 'arceus', 'genesect', 'scatterbug', 'spewpa', 'vivillon', 'furfrou', 'xerneas', 'silvally', 'sinistea', 'polteageist', 'alcremie', 'koraidon', 'miraidon', 'poltchageist', 'sinistcha', 'mothim'
+  'unown', 'arceus', 'genesect', 'scatterbug', 'spewpa', 'vivillon', 'furfrou', 'xerneas', 'silvally', 'sinistea', 'polteageist', 'koraidon', 'miraidon', 'poltchageist', 'sinistcha', 'mothim'
 ])
 
 export const NAME_REPLACEMENTS: Record<string, string> = {
@@ -85,6 +86,7 @@ export const NAME_REPLACEMENTS: Record<string, string> = {
   'Minior red meteor': 'Minior meteor',
   'Zygarde 10': 'Zygarde 10%',
   'Zygarde 50': 'Zygarde 50%',
+  'Alcremie vanilla cream strawberry sweet': 'Alcremie'
 }
 
 export interface PokemonOverride {
