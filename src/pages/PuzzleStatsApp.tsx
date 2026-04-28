@@ -115,6 +115,32 @@ function getCategoryBarColor(parsed: ParsedCategory): string {
   return "#0f766e";
 }
 
+function getCategoryIconPath(parsed: ParsedCategory): string {
+  return `/icons/${parsed.type}/${parsed.label.toLowerCase()}.svg`;
+}
+
+function CategoryIcon({ parsed }: { parsed: ParsedCategory }) {
+  const [hidden, setHidden] = useState(false);
+  const backgroundColor = getCategoryBarColor(parsed);
+
+  if (hidden) {
+    return <span aria-hidden className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor }} />;
+  }
+
+  return (
+    <span aria-hidden className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor }}>
+      <img
+        alt=""
+        aria-hidden
+        className="h-3 w-3"
+        loading="lazy"
+        onError={() => setHidden(true)}
+        src={getCategoryIconPath(parsed)}
+      />
+    </span>
+  );
+}
+
 function CategoryList({
   items,
   showDistributionBar = false,
@@ -130,7 +156,6 @@ function CategoryList({
     <ol className="m-0 flex list-none flex-col gap-2.5 p-0">
       {items.map((item) => {
         const parsed = parseCategoryId(item.categoryId);
-        const typeLabel = CATEGORY_TYPE_LABELS[parsed.type] ?? "Other";
         const percent = showDistributionBar && distributionTotal && distributionTotal > 0 ? (item.count / distributionTotal) * 100 : 0;
         const barWidthPercent = showDistributionBar && maxCount > 0 ? (item.count / maxCount) * 100 : 0;
         const barColor = showDistributionBar ? getCategoryBarColor(parsed) : "#0f766e";
@@ -139,8 +164,10 @@ function CategoryList({
         return (
           <li key={item.categoryId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
             <div className="min-w-0 flex-1">
-              <p className="truncate font-semibold text-slate-800">{parsed.label}</p>
-              <p className="text-xs text-slate-500">{typeLabel}</p>
+              <p className="flex items-center gap-2 truncate font-semibold text-slate-800">
+                <CategoryIcon parsed={parsed} />
+                <span className="truncate">{parsed.label}</span>
+              </p>
               {showDistributionBar ? (
                 <div className="mt-2">
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
@@ -170,9 +197,15 @@ function PairList({ items }: { items: CategoryPair[] }) {
         return (
           <li key={`${item.categories[0]}||${item.categories[1]}`} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
             <p className="min-w-0 text-slate-700">
-              <span className="font-semibold text-slate-800">{left.label}</span>
+              <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
+                <CategoryIcon parsed={left} />
+                {left.label}
+              </span>
               <span className="mx-1 text-slate-400">+</span>
-              <span className="font-semibold text-slate-800">{right.label}</span>
+              <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
+                <CategoryIcon parsed={right} />
+                {right.label}
+              </span>
             </p>
             <span className="shrink-0 text-lg font-semibold text-slate-800">{item.count}</span>
           </li>
