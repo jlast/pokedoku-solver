@@ -35,8 +35,6 @@ export const REGION_COLORS: Record<string, string> = {
   Hisui: '#6699CC',
   Paldea: '#E6A800',
   Unknown: '#808080',
-  'Monotype': '#E74C3C',
-  'Dualtype': '#3498DB',
 };
 
 export const EVOLUTION_COLORS: Record<string, string> = {
