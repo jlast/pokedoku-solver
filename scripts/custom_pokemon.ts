@@ -8,6 +8,6 @@ export const CUSTOM_POKEMON: Pokemon[] = [
       "Bug"
     ],
     "region": "Kanto",
-    "evolutionMethod": "First Stage"
+    "evolutionStage": "First Stage"
   }
 ]

@@ -56,9 +56,19 @@ interface PokeAPISpecies {
   evolution_chain?: { url: string } | null;
 }
 
+interface EvolutionDetail {
+  trigger: { name: string; url: string };
+  item?: { name: string; url: string } | null;
+  min_level?: number | null;
+  min_affection?: number | null;
+  min_happiness?: number | null;
+  gender?: number | null;
+}
+
 interface EvolutionNode {
   species: { name: string; url: string };
   evolves_to: EvolutionNode[];
+  evolution_details?: EvolutionDetail[];
 }
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -116,7 +126,7 @@ function saveChain(id: number, data: EvolutionNode) {
   fs.writeFileSync(path.join(CHAIN_CACHE_DIR, `${id}.json`), JSON.stringify(data));
 }
 
-function getEvolutionStage(chain: EvolutionNode, speciesName: string): EvolutionMethod {
+function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: EvolutionMethod; trigger: string | null; branched: boolean } {
   function findNode(node: EvolutionNode, name: string): EvolutionNode | null {
     if (node.species.name === name) return node;
     for (const n of node.evolves_to) {
@@ -139,16 +149,69 @@ function getEvolutionStage(chain: EvolutionNode, speciesName: string): Evolution
     return ancestors;
   }
   
+  function getTriggerMethod(node: EvolutionNode): string | null {
+    // Check if node has evolution_details with trigger info
+    if (node.evolution_details && node.evolution_details.length > 0) {
+      const details = node.evolution_details[0];
+      if (details.trigger) {
+        const triggerName = details.trigger.name;
+        if (triggerName === 'level-up') {
+          if (details.item) return 'Evolved by Item';
+          if (details.min_affection !== null || details.min_happiness !== null) return 'Evolved by Friendship';
+          return 'Evolved by Level';
+        }
+        if (triggerName === 'trade') return 'Evolved by Trade';
+        if (triggerName === 'use-item') return 'Evolved by Item';
+        if (triggerName === 'shed') return 'Evolved by Item';
+        if (triggerName === 'aggression') return 'Evolved by Friendship';
+        if (triggerName === 'spin') return 'Evolved by Level';
+        if (triggerName === 'tower-of-darkness') return 'Evolved by Item';
+        if (triggerName === 'tower-of-waters') return 'Evolved by Item';
+        if (triggerName === 'three-critical-hits') return 'Evolved by Level';
+        if (triggerName === 'trade-s') return 'Evolved by Trade';
+        if (triggerName === 'get-gift') return 'Evolved by Item';
+        if (triggerName === 'get-gmail') return 'Evolved by Item';
+      }
+    }
+    return null;
+  }
+  
   const node = findNode(chain, speciesName);
-  if (!node) return 'No Evolution Line';
+  if (!node) return { stage: 'No Evolution Line', trigger: null, branched: false };
   const hasTo = node.evolves_to.length > 0;
   const ancestors = getAncestors(chain, speciesName);
   const hasFrom = ancestors.length > 0;
   
-  if (!hasFrom && !hasTo) return 'No Evolution Line';
-  if (!hasFrom && hasTo) return 'First Stage';
-  if (hasFrom && !hasTo) return 'Final Stage';
-  return 'Middle Stage';
+  let trigger: string | null = null;
+  
+  // Check for trigger-based evolution
+  if (hasFrom || hasTo) {
+    // Find the evolution_details leading to this node or from this node
+    for (const anc of ancestors) {
+      for (const evo of anc.evolves_to) {
+        if (evo.species.name === speciesName && evo.evolution_details && evo.evolution_details.length > 0) {
+          trigger = getTriggerMethod(evo);
+        }
+      }
+    }
+  }
+  
+  let stage: EvolutionMethod;
+  let branched = false;
+  if (!hasFrom && !hasTo) {
+    return { stage: 'No Evolution Line', trigger: null, branched: false };
+  }
+  else if (!hasFrom && hasTo) {
+    // Set branched if more than 1 evolution target
+    if (node.evolves_to.length > 1) {
+      branched = true;
+    }
+    stage = 'First Stage';
+  }
+  else if (hasFrom && !hasTo) stage = 'Final Stage';
+  else stage = 'Middle Stage';
+  
+  return { stage, trigger, branched };
 }
 
 async function fetchPokemons() {
@@ -285,7 +348,10 @@ async function main() {
           const chainId = parseInt(cm[1]);
           const chain = loadChain(chainId);
           if (chain && species.name) {
-            entry.evolutionMethod = getEvolutionStage(chain, species.name);
+            const result = getEvolutionStage(chain, species.name);
+            entry.evolutionStage = result.stage;
+            if (result.trigger) entry.evolutionTrigger = result.trigger as any;
+            if (result.branched) entry.isBranched = true;
           }
         }
       }
@@ -306,6 +372,22 @@ async function main() {
   
   output.push(...CUSTOM_POKEMON);
   output.sort((a, b) => a.id - b.id);
+  
+  // Known true branched: Eevee (multiple eeveelutions in same game)
+  // Known NOT branched: form variants have regional-specific evolutions
+  const knownBranched = ['Eevee'].join('|');
+  const knownNotBranched = ['Meowth', 'Slowpoke', 'Wooper', 'Sneasel', 'Tyrogue', 'Wurmple', 'Nincada'].join('|');
+  output.forEach(function(p) {
+    if (p.evolutionStage === 'First Stage') {
+      if (p.isBranched && knownNotBranched.includes(p.name.split(' ')[0])) {
+        p.isBranched = false;
+      }
+      if (!p.isBranched && knownBranched.includes(p.name.split(' ')[0])) {
+        p.isBranched = true;
+      }
+    }
+  });
+  
   console.log(`Total: ${output.length} Pokemon`);
   
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));
