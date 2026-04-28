@@ -8,9 +8,13 @@ interface GridProps {
   rowConstraints: (Constraint | null)[];
   colConstraints: (Constraint | null)[];
   possiblePokemon: Pokemon[][][];
+  suggestedPokemonKeys?: (string | null)[][];
+  swapOptionCounts?: number[][];
   selectedCell: [number, number] | null;
   editable?: boolean;
+  showSuggestedMeta?: boolean;
   onCellClick: (row: number, col: number) => void;
+  onSwapClick?: (row: number, col: number) => void;
   onConstraintChange: (index: number, isRow: boolean, option: { value: string; category: string } | null) => void;
 }
 
@@ -63,7 +67,9 @@ function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: 
   );
 }
 
-export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, selectedCell, editable = true, onCellClick, onConstraintChange }: GridProps) {
+export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, suggestedPokemonKeys, swapOptionCounts, selectedCell, editable = true, showSuggestedMeta = false, onCellClick, onSwapClick, onConstraintChange }: GridProps) {
+  const getPokemonKey = (pokemon: Pokemon): string => pokemon.sprite || pokemon.name;
+
   return (
     <div className="grid-wrapper">
       <div className="type-labels-top">
@@ -106,12 +112,18 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                 const rowConstraint = rowConstraints[rowIndex];
                 const colConstraint = colConstraints[colIndex];
                 const hasConstraint = rowConstraint || colConstraint;
+                const optionCount = swapOptionCounts?.[rowIndex]?.[colIndex] ?? possible.length;
+                const isSuggested = Boolean(
+                  showSuggestedMeta &&
+                    cell &&
+                    suggestedPokemonKeys?.[rowIndex]?.[colIndex] === getPokemonKey(cell),
+                );
                 
                 return (
-                  <div
-                    key={colIndex}
-                    className={`cell ${isSelected ? 'selected' : ''} ${cell ? 'filled' : ''} ${hasConstraint ? 'constrained' : ''}`}
-                    onClick={() => {
+                    <div
+                      key={colIndex}
+                      className={`cell ${isSelected ? 'selected' : ''} ${cell ? 'filled' : ''} ${hasConstraint ? 'constrained' : ''} ${isSuggested ? 'suggested-cell' : ''}`}
+                      onClick={() => {
                       trackEvent('click_cell', {
                         position: `${rowIndex}_${colIndex}`,
                         has_constraint: hasConstraint ? 'true' : 'false',
@@ -125,6 +137,23 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                   >
                     {cell ? (
                       <>
+                        {showSuggestedMeta && (
+                          <>
+                            {isSuggested && <span className="cell-suggested-label">Suggested</span>}
+                            <button
+                              type="button"
+                              className="cell-swap-btn"
+                              aria-label={`Swap ${cell.name} (${optionCount} options)`}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                (onSwapClick ?? onCellClick)(rowIndex, colIndex);
+                              }}
+                            >
+                              <span className="cell-swap-icon">⇄</span>
+                              <span className="cell-swap-count">{optionCount}</span>
+                            </button>
+                          </>
+                        )}
                         {cell.sprite && <img src={cell.sprite} alt="" className="pokemon-sprite" />}
                         <div className="cell-content">
                           <span className="pokemon-name">{cell.name}</span>
