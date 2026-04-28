@@ -220,9 +220,9 @@ function App() {
   return (
     <div className="app">
       <Header
-        title="Pokedoku Helper"
+        title="Custom Puzzle"
         subtitle="Explore all valid Pokémon for any Pokedoku square. Set constraints and click a cell to see matching Pokémon."
-        currentPage="editor"
+        currentPage="custom"
       />
 
       <div className="main-content">
