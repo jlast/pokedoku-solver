@@ -360,5 +360,13 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Ursaluna bloodmoon
     region: 'Paldea',
     evolutionStage: 'No Evolution Line'
-  }
+  },
+  28:{
+    // Sandslash
+    evolutionTrigger: ["Evolved by Item"]
+  },
+  10204: { 
+    // Alolan Sandslash
+    evolutionTrigger: ["Evolved by Item"]
+  },
 };
