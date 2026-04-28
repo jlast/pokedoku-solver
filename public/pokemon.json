@@ -11190,37 +11190,13 @@
   },
   {
     "id": 718,
-    "name": "Zygarde 50",
+    "name": "Zygarde 50%",
     "types": [
       "Dragon",
       "Ground"
     ],
     "region": "Kalos",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/718.png",
-    "category": "Legendary",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 718,
-    "name": "Zygarde 10 power construct",
-    "types": [
-      "Dragon",
-      "Ground"
-    ],
-    "region": "Kalos",
-    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10118.png",
-    "category": "Legendary",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 718,
-    "name": "Zygarde 50 power construct",
-    "types": [
-      "Dragon",
-      "Ground"
-    ],
-    "region": "Kalos",
-    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10119.png",
     "category": "Legendary",
     "evolutionStage": "No Evolution Line"
   },
@@ -11238,7 +11214,7 @@
   },
   {
     "id": 718,
-    "name": "Zygarde 10",
+    "name": "Zygarde 10%",
     "types": [
       "Dragon",
       "Ground"
@@ -12195,13 +12171,24 @@
   },
   {
     "id": 778,
-    "name": "Mimikyu",
+    "name": "Mimikyu disguised",
     "types": [
       "Ghost",
       "Fairy"
     ],
     "region": "Alola",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/778.png",
+    "evolutionStage": "No Evolution Line"
+  },
+  {
+    "id": 778,
+    "name": "Mimikyu busted",
+    "types": [
+      "Ghost",
+      "Fairy"
+    ],
+    "region": "Alola",
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10143.png",
     "evolutionStage": "No Evolution Line"
   },
   {
