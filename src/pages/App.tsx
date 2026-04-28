@@ -237,13 +237,6 @@ function App() {
           </svg>
           All Pokemon
         </button>
-        <button
-          onClick={clearGrid}
-          className="clear-btn"
-          disabled={!hasGridData}
-        >
-          Clear All
-        </button>
       </div>
 
       <div className="main-content">
@@ -260,8 +253,15 @@ function App() {
           onConstraintChange={handleConstraintChange}
         />
         <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
-          Numbers show how many Pokémon match each combination.
+          <i>Numbers show how many Pokémon match each combination.</i>
         </p>
+        <button
+          onClick={clearGrid}
+          className="clear-btn"
+          disabled={!hasGridData}
+        >
+          Clear All
+        </button>
         <div ref={suggestionsRef}>
           <SuggestionsPanel
             selectedCell={grid.selectedCell}

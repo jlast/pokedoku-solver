@@ -195,7 +195,6 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z"/></svg>
           All Pokemon
         </button>
-        <button onClick={clearCells} className="clear-btn" disabled={!hasGridData}>Clear All</button>
       </div>
 
       <div className="main-content">
@@ -213,7 +212,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           onConstraintChange={() => {}}
         />
         <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
-          Numbers show how many Pokémon match each combination.
+          <i>Numbers show how many Pokémon match each combination.</i>
         </p>
         <div ref={suggestionsRef}>
           <SuggestionsPanel
@@ -222,6 +221,8 @@ export function TodayApp({ puzzle }: TodayAppProps) {
             onSelect={handlePokemonSelect}
           />
         </div>
+
+        <button onClick={clearCells} className="clear-btn" disabled={!hasGridData}>Clear All</button>
       </div>
 
       <section className="content-section">

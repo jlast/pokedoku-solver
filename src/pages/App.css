@@ -59,6 +59,7 @@ header .pokemon-count {
 }
 
 .clear-btn {
+  width: fit-content;
   padding: 8px 16px;
   border-radius: 8px;
   border: none;
