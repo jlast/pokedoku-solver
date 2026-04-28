@@ -345,7 +345,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           />
         </div>
 
-        <button onClick={clearCells} className="clear-btn" disabled={!hasGridData}>Clear selected PokÃ©mon</button>
+        <button onClick={clearCells} className="clear-btn" disabled={!hasGridData}>Clear selected Pokémon</button>
       </div>
 
       <section className="content-section">
