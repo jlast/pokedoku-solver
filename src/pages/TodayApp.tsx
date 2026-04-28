@@ -185,20 +185,10 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           continue;
         }
 
-        const usedInRow = new Set(
-          grid.cells[row].filter(Boolean).map((p) => p!.id),
-        );
-        const usedInCol = new Set(
-          grid.cells
-            .map((r) => r[col])
-            .filter(Boolean)
-            .map((p) => p!.id),
-        );
         const rowConstraint = grid.rowConstraints[row];
         const colConstraint = grid.colConstraints[col];
 
         const candidates = pokemon.filter((p) => {
-          if (usedInRow.has(p.id) || usedInCol.has(p.id)) return false;
           if (!matchesConstraint(p, rowConstraint)) return false;
           if (!matchesConstraint(p, colConstraint)) return false;
           return true;
