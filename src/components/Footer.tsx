@@ -2,8 +2,9 @@ import { trackEvent } from "../utils/analytics";
 
 export function Footer() {
   return (
-    <footer>
+    <footer className="mt-8 flex flex-wrap items-center justify-center gap-2 border-t border-[#eee] pt-4 text-center text-[#666]">
       <a
+        className="inline-flex items-center gap-1.5 text-[#4ECDC4] no-underline hover:underline"
         href="https://pokedoku.com"
         target="_blank"
         rel="noopener noreferrer"
@@ -13,8 +14,9 @@ export function Footer() {
       >
         Play Pokedoku
       </a>
-      <span>•</span>
+      <span className="mx-2">•</span>
       <a
+        className="inline-flex items-center gap-1.5 text-[#4ECDC4] no-underline hover:underline"
         href="https://github.com/jlast/pokedoku-solver/issues"
         target="_blank"
         rel="noopener noreferrer"
@@ -29,8 +31,9 @@ export function Footer() {
         </svg>
         Report Issues
       </a>
-      <span>•</span>
+      <span className="mx-2">•</span>
       <a
+        className="inline-flex items-center gap-1.5 text-[#4ECDC4] no-underline hover:underline"
         href="https://www.reddit.com/user/pokedoku-solver/"
         target="_blank"
         rel="noopener noreferrer"
