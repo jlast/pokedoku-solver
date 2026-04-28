@@ -62,4 +62,5 @@ export interface Pokemon {
   sprite?: string;
   dexDifficulty?: DexDifficulty;
   dexDifficultyPercentile?: number;
+  formId?: number;
 }
