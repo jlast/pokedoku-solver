@@ -15,7 +15,7 @@ import {
   IGNORE_EVOLVE_FORMS,
   POKEMON_OVERRIDES,
 } from "./ids";
-import { fetchWithRetry, delay } from "./lib";
+import { fetchWithRetry, delay, ensureFileExists } from "./lib";
 import {
   loadPokemon,
   loadForm,
@@ -281,9 +281,9 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
     name,
     types,
     region: REGION_BY_ID[speciesId] || "Unknown",
-    sprite: form.sprites.front_default || undefined,
+    sprite: `/sprites/${form.id}.png`,
   };
-
+  
   if (ULTRA_BEASTS.has(id)) entry.category = "Ultra Beast";
   else if (FOSSIL_IDS.has(id)) entry.category = "Fossil";
   else if (STARTER_IDS.has(formId)) entry.category = "Starter";
@@ -337,7 +337,10 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
       entry.isBranched = formOverride.isBranched;
     if (formOverride.specialForm) entry.specialForm = formOverride.specialForm;
     if (formOverride.category) entry.category = formOverride.category;
-    if (formOverride.sprite) entry.sprite = formOverride.sprite;
+    if (formOverride.sprite) entry.sprite = formOverride.sprite; 
+  }
+  if(!formOverride?.sprite) {
+    ensureFileExists('public/sprites', `${form.id}.png`, form.sprites.front_default);
   }
 
   return entry;
