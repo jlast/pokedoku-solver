@@ -16,6 +16,11 @@ interface PuzzleStatsResponse {
     from: string;
     to: string;
   };
+  withoutLegacy: PuzzleStatsSection;
+  withLegacy: PuzzleStatsSection;
+}
+
+interface PuzzleStatsSection {
   topCategoryCounts: CategoryCount[];
   leastCategoryCounts: CategoryCount[];
   categoryTypeBreakdown: CategoryTypeSummary[];
@@ -65,12 +70,12 @@ function formatDate(value: string): string {
   }).format(date);
 }
 
-
 export default function PuzzleStatsApp() {
   const [stats, setStats] = useState<PuzzleStatsResponse | null>(null);
   const [pokemonByFormId, setPokemonByFormId] = useState<Map<number, PokemonListEntry>>(new Map());
   const [leastUsedMode, setLeastUsedMode] = useState<"categories" | "pairs">("categories");
   const [mostUsedMode, setMostUsedMode] = useState<"categories" | "pairs">("categories");
+  const [showLegacyFilters, setShowLegacyFilters] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -119,18 +124,20 @@ export default function PuzzleStatsApp() {
 
     const pairBucketColorByKey = new Map(PAIR_FREQUENCY_BUCKETS.map((bucket) => [bucket.key, bucket.color]));
 
-    const totalPairCombinations = stats.pairFrequencyDistribution.reduce((sum, item) => sum + item.comboCount, 0);
-    const totalPairOccurrences = stats.pairFrequencyDistribution.reduce((sum, item) => sum + item.occurrenceCount, 0);
+    const selectedStats = showLegacyFilters ? stats.withLegacy : stats.withoutLegacy;
 
-    const pairFrequencyDistribution = stats.pairFrequencyDistribution.map((item) => ({
+    const totalPairCombinations = selectedStats.pairFrequencyDistribution.reduce((sum, item) => sum + item.comboCount, 0);
+    const totalPairOccurrences = [...selectedStats.topCategoryPairs, ...selectedStats.leastCategoryPairs].reduce((sum, item) => sum + item.count, 0);
+
+    const pairFrequencyDistribution = selectedStats.pairFrequencyDistribution.map((item) => ({
       ...item,
       color: pairBucketColorByKey.get(item.key) ?? "#64748b",
       comboPercent: totalPairCombinations > 0 ? (item.comboCount / totalPairCombinations) * 100 : 0,
     }));
 
-    const categoryTypeTotal = stats.categoryTypeBreakdown.reduce((sum, item) => sum + item.count, 0);
+    const categoryTypeTotal = selectedStats.categoryTypeBreakdown.reduce((sum, item) => sum + item.count, 0);
 
-    const categoryTypeBreakdown = stats.categoryTypeBreakdown
+    const categoryTypeBreakdown = selectedStats.categoryTypeBreakdown
       .map((item) => ({
         ...item,
         label: CATEGORY_TYPE_LABELS[item.type] ?? "Other",
@@ -139,19 +146,19 @@ export default function PuzzleStatsApp() {
       .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 
     return {
-      mostCommonCategories: stats.topCategoryCounts,
-      leastCommonCategories: stats.leastCategoryCounts,
-      oldestVisiblePokemon: stats.oldestPokemonLastUsable,
-      mostCommonPairs: stats.topCategoryPairs,
-      leastCommonPairs: stats.leastCategoryPairs,
+      mostCommonCategories: selectedStats.topCategoryCounts,
+      leastCommonCategories: selectedStats.leastCategoryCounts,
+      oldestVisiblePokemon: selectedStats.oldestPokemonLastUsable,
+      mostCommonPairs: selectedStats.topCategoryPairs,
+      leastCommonPairs: selectedStats.leastCategoryPairs,
       categoryTypeBreakdown,
       categoryTypeTotal,
-      totalCategoryCount: stats.categoryTypeBreakdown.reduce((sum, item) => sum + item.count, 0),
+      totalCategoryCount: selectedStats.categoryTypeBreakdown.reduce((sum, item) => sum + item.count, 0),
       totalPairCombinations,
       totalPairOccurrences,
       pairFrequencyDistribution,
     };
-  }, [stats]);
+  }, [showLegacyFilters, stats]);
 
   if (error) {
     return (
@@ -184,6 +191,37 @@ export default function PuzzleStatsApp() {
         </p>
       </section>
 
+      <section className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3 text-left">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="m-0 text-sm font-semibold text-slate-800">Legacy filters</p>
+            <p className="m-0 text-xs text-slate-500">Moves and abilities</p>
+          </div>
+          <div className="inline-flex rounded-lg border border-slate-300 bg-white p-1">
+            <button
+              type="button"
+              onClick={() => {
+                setShowLegacyFilters(false);
+                trackEvent("toggle_legacy_filters", { enabled: "off" });
+              }}
+              className={`rounded-md px-3 py-1 text-sm ${!showLegacyFilters ? "bg-slate-700 text-white" : "text-slate-700"}`}
+            >
+              Off
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowLegacyFilters(true);
+                trackEvent("toggle_legacy_filters", { enabled: "on" });
+              }}
+              className={`rounded-md px-3 py-1 text-sm ${showLegacyFilters ? "bg-slate-700 text-white" : "text-slate-700"}`}
+            >
+              On
+            </button>
+          </div>
+        </div>
+      </section>
+
       <section className="mb-5 grid gap-3 sm:grid-cols-2">
         <article className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left shadow-sm">
           <p className="text-sm text-slate-500">Puzzles analyzed</p>
@@ -201,7 +239,7 @@ export default function PuzzleStatsApp() {
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
           <h2 className="mb-3 text-xl">When Was This Pokemon Last Valid?</h2>
-          <p className="mb-2 text-sm text-slate-600">Pokemon that have gone the longest without being usable in PokeDoku</p>
+          <p className="mb-2 text-sm text-slate-600">Pokemon that have gone the longest without being usable in PokeDoku.</p>
           <ul className="m-0 grid list-none gap-2 p-0">
             {derived.oldestVisiblePokemon.map((item) => {
               const pokemon = pokemonByFormId.get(item.formId);

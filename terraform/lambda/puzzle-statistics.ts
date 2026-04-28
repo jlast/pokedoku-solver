@@ -38,6 +38,11 @@ interface CategoryStats {
     from: string;
     to: string;
   };
+  withoutLegacy: CategoryStatsSection;
+  withLegacy: CategoryStatsSection;
+}
+
+interface CategoryStatsSection {
   topCategoryCounts: CategoryCount[];
   leastCategoryCounts: CategoryCount[];
   categoryTypeBreakdown: CategoryTypeSummary[];
@@ -280,6 +285,47 @@ function buildPairFrequencyDistribution(categoryPairs: CategoryPair[]): PairFreq
   });
 }
 
+function isLegacyCategoryId(categoryId: string): boolean {
+  return categoryId.startsWith("move:") || categoryId.startsWith("ability:");
+}
+
+function isLegacyPair(pair: CategoryPair): boolean {
+  return pair.categories.some((categoryId) => isLegacyCategoryId(categoryId));
+}
+
+function buildStatsSection(
+  allCategoryCounts: CategoryCount[],
+  allCategoryPairs: CategoryPair[],
+  oldestPokemonLastUsable: PokemonLastUsable[],
+  includeLegacy: boolean,
+): CategoryStatsSection {
+  const categoryCounts = includeLegacy
+    ? allCategoryCounts
+    : allCategoryCounts.filter((item) => !isLegacyCategoryId(item.categoryId));
+  const categoryPairs = includeLegacy ? allCategoryPairs : allCategoryPairs.filter((item) => !isLegacyPair(item));
+
+  return {
+    topCategoryCounts: categoryCounts.slice(0, 5),
+    leastCategoryCounts: [...categoryCounts]
+      .sort((a, b) => a.count - b.count || a.categoryId.localeCompare(b.categoryId))
+      .slice(0, 5),
+    categoryTypeBreakdown: buildCategoryTypeBreakdown(categoryCounts),
+    topCategoryPairs: categoryPairs.slice(0, 5),
+    leastCategoryPairs: [...categoryPairs]
+      .sort((a, b) => {
+        if (a.count !== b.count) return a.count - b.count;
+
+        const firstCompare = a.categories[0].localeCompare(b.categories[0]);
+        if (firstCompare !== 0) return firstCompare;
+
+        return a.categories[1].localeCompare(b.categories[1]);
+      })
+      .slice(0, 5),
+    pairFrequencyDistribution: buildPairFrequencyDistribution(categoryPairs),
+    oldestPokemonLastUsable,
+  };
+}
+
 function buildStats(puzzles: Puzzle[], pokemon: Pokemon[]): CategoryStats {
   const categoryCounts = new Map<string, number>();
   const categoryPairs = new Map<string, number>();
@@ -342,24 +388,8 @@ function buildStats(puzzles: Puzzle[], pokemon: Pokemon[]): CategoryStats {
       from: dates[0] ?? "",
       to: dates[dates.length - 1] ?? "",
     },
-    topCategoryCounts: allCategoryCounts.slice(0, 5),
-    leastCategoryCounts: [...allCategoryCounts]
-      .sort((a, b) => a.count - b.count || a.categoryId.localeCompare(b.categoryId))
-      .slice(0, 5),
-    categoryTypeBreakdown: buildCategoryTypeBreakdown(allCategoryCounts),
-    topCategoryPairs: allCategoryPairs.slice(0, 5),
-    leastCategoryPairs: [...allCategoryPairs]
-      .sort((a, b) => {
-        if (a.count !== b.count) return a.count - b.count;
-
-        const firstCompare = a.categories[0].localeCompare(b.categories[0]);
-        if (firstCompare !== 0) return firstCompare;
-
-        return a.categories[1].localeCompare(b.categories[1]);
-      })
-      .slice(0, 5),
-    pairFrequencyDistribution: buildPairFrequencyDistribution(allCategoryPairs),
-    oldestPokemonLastUsable,
+    withoutLegacy: buildStatsSection(allCategoryCounts, allCategoryPairs, oldestPokemonLastUsable, false),
+    withLegacy: buildStatsSection(allCategoryCounts, allCategoryPairs, oldestPokemonLastUsable, true),
   };
 }
 
