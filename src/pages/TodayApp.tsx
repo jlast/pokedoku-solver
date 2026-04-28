@@ -179,7 +179,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
     <div className="app">
       <Header
         title="Today's Answers"
-        subtitle="See the categories for today's Pokedoku puzzle and explore possible Pokémon for each square."
+        subtitle="Suggested answers for today's Pokedoku puzzle. Multiple Pokémon will fit each square, so tap any pick to see alternatives."
         showDate={formatDate(puzzle.date)}
         currentPage="today"
       />
