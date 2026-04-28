@@ -348,21 +348,25 @@ export default function PuzzleStatsApp() {
       <section className="grid gap-4 lg:grid-cols-2">
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
           <h2 className="mb-3 text-xl">Most common categories (top 5)</h2>
+          <p className="mb-2 text-sm text-slate-600">By number of puzzles</p>
           <CategoryList items={derived.mostCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} />
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
           <h2 className="mb-3 text-xl">Least common categories (top 5)</h2>
+          <p className="mb-2 text-sm text-slate-600">By number of puzzles</p>
           <CategoryList items={derived.leastCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} />
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
           <h2 className="mb-3 text-xl">Most common category pairs (top 5)</h2>
+          <p className="mb-2 text-sm text-slate-600">By number of occurrences</p>
           <PairList items={derived.mostCommonPairs} />
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
           <h2 className="mb-3 text-xl">Combination frequency distribution</h2>
+          <p className="mb-2 text-sm text-slate-600">How often each unique category pair appears.</p>
           <div className="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
             <div className="mx-auto">
               <div className="relative h-48 w-48">
@@ -398,6 +402,7 @@ export default function PuzzleStatsApp() {
 
       <section className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
         <h2 className="mb-3 text-xl">Category type breakdown</h2>
+        <p className="mb-2 text-sm text-slate-600">How often each category type appears.</p>
         <div className="grid gap-4 md:grid-cols-[240px_1fr] md:items-center">
           <div className="mx-auto">
             <div className="relative h-52 w-52">
