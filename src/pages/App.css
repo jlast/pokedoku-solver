@@ -911,20 +911,80 @@ footer span {
 .pokemon-list-filters {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   margin-bottom: 24px;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.filter-label {
+.filter-group .filter-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.filter-group .filter-header:hover {
+  background: var(--accent-bg);
+}
+
+.filter-group .filter-label {
   font-weight: 600;
   color: var(--text-h);
   font-size: 0.9rem;
+}
+
+.filter-group .filter-count {
+  background: var(--accent);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.filter-group .filter-chevron {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--text);
+}
+
+.filter-group .filter-buttons {
+  display: none;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 12px 12px;
+}
+
+.filter-group.expanded .filter-buttons {
+  display: flex;
+}
+
+.filter-group .filter-buttons {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .filter-buttons {

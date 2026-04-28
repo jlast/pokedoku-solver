@@ -62,9 +62,24 @@ function parseFiltersFromUrl(): FilterState {
   return loadedFilters;
 }
 
+const POKEMON_TYPES_LIST: PokemonType[] = ['Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'];
+const POKEMON_REGIONS_LIST: PokemonRegion[] = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Alola', 'Galar', 'Hisui', 'Paldea', 'Unknown'];
+const EVOLUTION_METHODS_LIST: EvolutionMethod[] = ['First Stage', 'Middle Stage', 'Final Stage', 'No Evolution Line', 'Not Fully Evolved'];
+const SPECIAL_FORMS_LIST: SpecialForm[] = ['Gigantamax', 'Mega Evolution'];
+const POKEMON_CATEGORIES_LIST: PokemonCategory[] = ['Legendary', 'Mythical', 'Ultra Beast', 'Paradox', 'Fossil', 'Starter', 'Baby'];
+
+const FILTER_GROUPS = [
+  { key: 'types', label: 'Types', options: POKEMON_TYPES_LIST, colors: TYPE_COLORS },
+  { key: 'regions', label: 'Regions', options: POKEMON_REGIONS_LIST, colors: REGION_COLORS },
+  { key: 'evolution', label: 'Evolution', options: EVOLUTION_METHODS_LIST, colors: EVOLUTION_COLORS },
+  { key: 'form', label: 'Forms', options: SPECIAL_FORMS_LIST, colors: FORM_COLORS },
+  { key: 'category', label: 'Categories', options: POKEMON_CATEGORIES_LIST, colors: CATEGORY_COLORS },
+] as const;
+
 function PokemonListApp() {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedFilters, setExpandedFilters] = useState<Set<string>>(new Set(['types']));
 
   const [filters, setFilters] = useState<FilterState>(parseFiltersFromUrl);
 
@@ -128,6 +143,18 @@ function PokemonListApp() {
       }
     });
     trackEvent('toggle_filter', { category, value });
+  };
+
+  const toggleFilterExpanded = (key: string) => {
+    setExpandedFilters(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
   };
 
   const clearFilters = () => {
@@ -221,11 +248,7 @@ function PokemonListApp() {
     return copy;
   }, [filteredPokemon, sortBy]);
 
-  const POKEMON_TYPES: PokemonType[] = ['Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'];
-  const POKEMON_REGIONS: PokemonRegion[] = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Alola', 'Galar', 'Hisui', 'Paldea', 'Unknown'];
-  const EVOLUTION_METHODS: EvolutionMethod[] = ['First Stage', 'Middle Stage', 'Final Stage', 'No Evolution Line', 'Not Fully Evolved'];
-  const SPECIAL_FORMS: SpecialForm[] = ['Mega Evolution', 'Gigantamax'];
-  const POKEMON_CATEGORIES: PokemonCategory[] = ['Legendary', 'Mythical', 'Ultra Beast', 'Paradox', 'Fossil', 'Starter', 'Baby'];
+  
 
   if (loading) {
     return (
@@ -254,85 +277,36 @@ function PokemonListApp() {
       </div>
 
       <div className="pokemon-list-filters">
-        <div className="filter-group">
-          <div className="filter-label">Types</div>
-          <div className="filter-buttons">
-            {POKEMON_TYPES.map(type => (
-              <button
-                key={type}
-                className={`filter-btn ${filters.types.includes(type) ? 'active' : ''}`}
-                style={filters.types.includes(type) ? { backgroundColor: TYPE_COLORS[type], borderColor: TYPE_COLORS[type] } : {}}
-                onClick={() => toggleFilter('types', type)}
+        {FILTER_GROUPS.map(group => {
+          const isExpanded = expandedFilters.has(group.key);
+          const activeCount = filters[group.key].length;
+          return (
+            <div key={group.key} className={`filter-group ${isExpanded ? 'expanded' : ''}`}>
+              <button 
+                className="filter-header"
+                onClick={() => toggleFilterExpanded(group.key)}
               >
-                {type}
+                <span className="filter-label">{group.label}</span>
+                {activeCount > 0 && (
+                  <span className="filter-count">{activeCount}</span>
+                )}
+                <span className="filter-chevron">{isExpanded ? '▼' : '▶'}</span>
               </button>
-            ))}
-          </div>
-        </div>
-      
-        <div className="filter-group">
-          <div className="filter-label">Regions</div>
-          <div className="filter-buttons">
-            {POKEMON_REGIONS.map(region => (
-              <button
-                key={region}
-                className={`filter-btn ${filters.regions.includes(region) ? 'active' : ''}`}
-                style={filters.regions.includes(region) ? { backgroundColor: REGION_COLORS[region], borderColor: REGION_COLORS[region] } : {}}
-                onClick={() => toggleFilter('regions', region)}
-              >
-                {region}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="filter-group">
-          <div className="filter-label">Evolution</div>
-          <div className="filter-buttons">
-            {EVOLUTION_METHODS.map(evo => (
-              <button
-                key={evo}
-                className={`filter-btn ${filters.evolution.includes(evo) ? 'active' : ''}`}
-                style={filters.evolution.includes(evo) ? { backgroundColor: EVOLUTION_COLORS[evo], borderColor: EVOLUTION_COLORS[evo] } : {}}
-                onClick={() => toggleFilter('evolution', evo)}
-              >
-                {evo}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="filter-group">
-          <div className="filter-label">Forms</div>
-          <div className="filter-buttons">
-            {SPECIAL_FORMS.map(form => (
-              <button
-                key={form}
-                className={`filter-btn ${filters.form.includes(form) ? 'active' : ''}`}
-                style={filters.form.includes(form) ? { backgroundColor: FORM_COLORS[form], borderColor: FORM_COLORS[form] } : {}}
-                onClick={() => toggleFilter('form', form)}
-              >
-                {form}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="filter-group">
-          <div className="filter-label">Categories</div>
-          <div className="filter-buttons">
-            {POKEMON_CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                className={`filter-btn ${filters.category.includes(cat) ? 'active' : ''}`}
-                style={filters.category.includes(cat) ? { backgroundColor: CATEGORY_COLORS[cat], borderColor: CATEGORY_COLORS[cat] } : {}}
-                onClick={() => toggleFilter('category', cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
+              <div className="filter-buttons">
+                {group.options.map(option => (
+                  <button
+                    key={option}
+                    className={`filter-btn ${(filters[group.key] as string[]).includes(option) ? 'active' : ''}`}
+                    style={(filters[group.key] as string[]).includes(option) ? { backgroundColor: group.colors[option], borderColor: group.colors[option] } : {}}
+                    onClick={() => toggleFilter(group.key as keyof FilterState, option)}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="pokemon-list-header">
