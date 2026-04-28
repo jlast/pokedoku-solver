@@ -91,7 +91,7 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
       return null;
 
     default:
-      console.warn(`Unknown constraint type: ${type}`);
+      console.warn(`Unknown constraint type: ${type}, value: ${obj}`);
       return null;
   }
 }
