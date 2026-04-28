@@ -35,7 +35,11 @@ export const STARTER_IDS = new Set([
 ]);
 
 export const CANT_EVOLVE_FORMS = new Set([
-  'gmax', 'starter', 'mega'
+  'starter', 
+]);
+
+export const IGNORE_EVOLVE_FORMS = new Set([
+  'gmax', 'mega'
 ]);
 
 export const ULTRA_BEASTS = new Set([793, 794, 795, 796, 797, 798, 799, 803, 804, 805, 806]);
@@ -56,14 +60,23 @@ export const FOSSIL_IDS = new Set([
 export const IGNORED_FORM_IDS = new Set([
   10433, 10434, 10435, 10436,  // Koraidon
   10437, 10438, 10439, 10440,  // Miraidon
-  10182, 10183, 10184, 10185, 10186, 10187, 10196, 10197, 10198, 10199, 10200, 10201, 10267, 10319 // All pikachu costumes
+  10182, 10183, 10184, 10185, 10186, 10187, 10196, 10197, 10198, 10199, 10200, 10201, 10267, 10319, // All pikachu costumes
+  10103, 10104, 10105, 10106, 10107, 10108, 10109, 10110, 10111, 10112, 10113, 10114, // Flabebe, Floette and Florges special forms
+  10249, 10250, 10251, 10252, 10253, 10254,
 ])
 
 export const IGNORED_FORMS = new Set([
-  'totem', 'totem-alola',
-  'yellow', 'blue', 'orange', 'blue', 'white'
+  'totem', 'totem-alola', 'totem-disguised', 'totem-busted', 'busted'
 ]);
 
 export const IGNORE_SPECIAL_FORMS = new Set([
-  'unown', 'arceus', 'genesect', 'scatterbug', 'spewpa', 'vivillon', 'flabebe', 'florges', 'furfrou', 'xerneas', 'silvally', 'sinistea', 'polteageist', 'alcremie', 'koraidon', 'miraidon', 'poltchageist', 'sinistcha'
+  'unown', 'arceus', 'genesect', 'scatterbug', 'spewpa', 'vivillon', 'furfrou', 'xerneas', 'silvally', 'sinistea', 'polteageist', 'alcremie', 'koraidon', 'miraidon', 'poltchageist', 'sinistcha'
 ])
+
+export const NAME_REPLACEMENTS: Record<string, string> = {
+  'Flabebe red': 'Flabebe',
+  'Floette red': 'Floette',
+  'Florges red': 'Florges',
+  'Minior red meteor': 'Minior meteor',
+  'Mimikyu disguised': 'Mimikyu',
+}

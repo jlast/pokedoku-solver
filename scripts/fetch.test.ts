@@ -151,22 +151,28 @@ describe('pokemon.json', () => {
 
 describe('evolution triggers', () => {
   it('should have Pokemon with Evolved by Level', () => {
-    const byLevel = data.filter(p => p.evolutionTrigger === 'Evolved by Level');
+    const byLevel = data.filter(p => p.evolutionTrigger?.includes('Evolved by Level'));
     expect(byLevel.length).toBeGreaterThan(0);
   });
 
   it('should have Pokemon with Evolved by Item', () => {
-    const byItem = data.filter(p => p.evolutionTrigger === 'Evolved by Item');
+    const byItem = data.filter(p => p.evolutionTrigger?.includes('Evolved by Item'));
     expect(byItem.length).toBeGreaterThan(0);
   });
 
+  it('should return a big list for ice and evolved by item', () => {
+    const expectedList = ['Crabominable', 'Cloyster', 'Darmanitan galar zen', 'Sandslash alola', 'Weavile', 'Cetitan', 'Darmanitan galar standard', 'Ninetales alola', 'Froslass', 'Glaceon'];
+    const byItem = data.filter(p => p.evolutionTrigger?.includes('Evolved by Item') && p.types.includes('Ice')).map(p => p.name);
+    expect(byItem.sort()).toEqual(expectedList.sort());
+  });
+
   it('should have Pokemon with Evolved by Trade', () => {
-    const byTrade = data.filter(p => p.evolutionTrigger === 'Evolved by Trade');
+    const byTrade = data.filter(p => p.evolutionTrigger?.includes('Evolved by Trade'));
     expect(byTrade.length).toBeGreaterThan(0);
   });
 
   it('should have Pokemon with Evolved by Friendship', () => {
-    const byFriend = data.filter(p => p.evolutionTrigger === 'Evolved by Friendship');
+    const byFriend = data.filter(p => p.evolutionTrigger?.includes('Evolved by Friendship'));
     expect(byFriend.length).toBeGreaterThan(0);
   });
 });

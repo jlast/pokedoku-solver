@@ -20,7 +20,9 @@
     "region": "Kanto",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 3,
@@ -32,7 +34,9 @@
     "region": "Kanto",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 3,
@@ -42,7 +46,6 @@
       "Poison"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -53,7 +56,6 @@
       "Poison"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -75,7 +77,9 @@
     "region": "Kanto",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 6,
@@ -87,7 +91,9 @@
     "region": "Kanto",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 6,
@@ -98,7 +104,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -110,7 +118,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -121,7 +131,6 @@
       "Flying"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -143,7 +152,9 @@
     "region": "Kanto",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 9,
@@ -154,7 +165,9 @@
     "region": "Kanto",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 9,
@@ -163,7 +176,6 @@
       "Water"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -173,7 +185,6 @@
       "Water"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -202,7 +213,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 12,
@@ -213,7 +226,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 12,
@@ -223,7 +238,6 @@
       "Flying"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -245,7 +259,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 15,
@@ -256,7 +272,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 15,
@@ -266,7 +284,6 @@
       "Poison"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -288,7 +305,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 18,
@@ -299,7 +318,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 18,
@@ -309,7 +330,6 @@
       "Flying"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -339,7 +359,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 20,
@@ -350,7 +372,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 21,
@@ -371,7 +395,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 23,
@@ -390,7 +416,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 25,
@@ -400,7 +428,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 25,
@@ -419,7 +449,6 @@
       "Electric"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -430,7 +459,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 26,
@@ -441,7 +472,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 26,
@@ -451,7 +484,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item",
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -462,7 +497,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item",
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -492,7 +529,10 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 28,
@@ -503,7 +543,10 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 29,
@@ -522,7 +565,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 31,
@@ -533,7 +578,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 32,
@@ -552,7 +599,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 34,
@@ -563,7 +612,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 35,
@@ -573,7 +624,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 36,
@@ -583,7 +636,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 36,
@@ -593,7 +648,6 @@
       "Flying"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -622,7 +676,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 38,
@@ -633,7 +689,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 39,
@@ -644,7 +702,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 40,
@@ -655,7 +715,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 41,
@@ -676,7 +738,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 43,
@@ -697,7 +761,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ],
     "isBranched": true
   },
   {
@@ -709,7 +775,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 46,
@@ -730,7 +798,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 48,
@@ -751,7 +821,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 50,
@@ -780,7 +852,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 51,
@@ -791,7 +865,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 52,
@@ -830,7 +906,6 @@
       "Normal"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -841,7 +916,10 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 53,
@@ -851,7 +929,10 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 54,
@@ -870,7 +951,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 56,
@@ -889,7 +972,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 58,
@@ -918,7 +1003,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 59,
@@ -929,7 +1016,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 60,
@@ -948,7 +1037,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ],
     "isBranched": true
   },
   {
@@ -960,7 +1051,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 63,
@@ -979,7 +1072,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 65,
@@ -989,7 +1084,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 65,
@@ -998,7 +1095,6 @@
       "Psychic"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -1018,7 +1114,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 68,
@@ -1028,7 +1126,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 68,
@@ -1037,7 +1137,6 @@
       "Fighting"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -1059,7 +1158,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 71,
@@ -1070,7 +1171,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 71,
@@ -1080,7 +1183,6 @@
       "Poison"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -1102,7 +1204,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 74,
@@ -1133,7 +1237,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 75,
@@ -1144,7 +1250,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 76,
@@ -1155,7 +1263,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 76,
@@ -1166,7 +1276,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 77,
@@ -1194,7 +1306,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 78,
@@ -1205,7 +1319,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 79,
@@ -1237,7 +1353,10 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 80,
@@ -1247,7 +1366,6 @@
       "Psychic"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -1259,7 +1377,10 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 81,
@@ -1280,7 +1401,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 83,
@@ -1320,7 +1443,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 86,
@@ -1340,7 +1465,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 88,
@@ -1369,7 +1496,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 89,
@@ -1380,7 +1509,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 90,
@@ -1400,7 +1531,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 92,
@@ -1421,7 +1554,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 94,
@@ -1432,7 +1567,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 94,
@@ -1442,7 +1579,6 @@
       "Poison"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -1453,7 +1589,6 @@
       "Poison"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -1483,7 +1618,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 98,
@@ -1502,7 +1639,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 99,
@@ -1511,7 +1650,6 @@
       "Water"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -1541,7 +1679,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 101,
@@ -1552,7 +1692,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 102,
@@ -1573,7 +1715,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 103,
@@ -1584,7 +1728,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 104,
@@ -1603,7 +1749,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 105,
@@ -1614,7 +1762,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 106,
@@ -1624,7 +1774,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 107,
@@ -1634,7 +1786,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 108,
@@ -1662,7 +1816,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 110,
@@ -1673,7 +1829,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 111,
@@ -1694,7 +1852,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 113,
@@ -1704,7 +1864,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 114,
@@ -1731,7 +1893,6 @@
       "Normal"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -1751,7 +1912,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 118,
@@ -1770,7 +1933,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 120,
@@ -1790,7 +1955,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 121,
@@ -1800,7 +1967,6 @@
       "Psychic"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -1812,7 +1978,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 122,
@@ -1823,7 +1991,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 123,
@@ -1845,7 +2015,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 125,
@@ -1855,7 +2027,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 126,
@@ -1865,7 +2039,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 127,
@@ -1884,7 +2060,6 @@
       "Flying"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -1943,7 +2118,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 130,
@@ -1953,7 +2130,6 @@
       "Dark"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -1974,7 +2150,6 @@
       "Ice"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -2013,7 +2188,6 @@
       "Normal"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -2024,7 +2198,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 135,
@@ -2034,7 +2210,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 136,
@@ -2044,7 +2222,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 137,
@@ -2076,7 +2256,9 @@
     "region": "Kanto",
     "category": "Fossil",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 140,
@@ -2099,7 +2281,9 @@
     "region": "Kanto",
     "category": "Fossil",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 142,
@@ -2120,7 +2304,6 @@
       "Flying"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -2131,7 +2314,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 143,
@@ -2140,7 +2325,6 @@
       "Normal"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -2226,7 +2410,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 149,
@@ -2237,7 +2423,9 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 149,
@@ -2247,7 +2435,6 @@
       "Flying"
     ],
     "region": "Kanto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -2312,7 +2499,9 @@
     "region": "Johto",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 154,
@@ -2323,7 +2512,9 @@
     "region": "Johto",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 154,
@@ -2333,7 +2524,6 @@
       "Fairy"
     ],
     "region": "Johto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -2355,7 +2545,9 @@
     "region": "Johto",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 157,
@@ -2366,7 +2558,9 @@
     "region": "Johto",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 157,
@@ -2378,7 +2572,9 @@
     "region": "Hisui",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 158,
@@ -2399,7 +2595,9 @@
     "region": "Johto",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 160,
@@ -2410,7 +2608,9 @@
     "region": "Johto",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 160,
@@ -2420,7 +2620,6 @@
       "Dragon"
     ],
     "region": "Johto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -2440,7 +2639,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 163,
@@ -2461,7 +2662,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 165,
@@ -2482,7 +2685,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 167,
@@ -2503,7 +2708,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 169,
@@ -2514,7 +2721,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 170,
@@ -2535,7 +2744,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 172,
@@ -2597,7 +2808,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 177,
@@ -2618,7 +2831,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 179,
@@ -2637,7 +2852,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 181,
@@ -2647,7 +2864,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 181,
@@ -2657,7 +2876,6 @@
       "Dragon"
     ],
     "region": "Johto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -2668,7 +2886,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 183,
@@ -2679,7 +2899,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 184,
@@ -2690,7 +2912,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 185,
@@ -2700,7 +2924,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 186,
@@ -2710,7 +2936,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 187,
@@ -2731,7 +2959,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 189,
@@ -2742,7 +2972,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 190,
@@ -2770,7 +3002,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 193,
@@ -2813,7 +3047,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 196,
@@ -2823,7 +3059,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 197,
@@ -2833,7 +3071,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 198,
@@ -2854,7 +3094,10 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 199,
@@ -2865,7 +3108,10 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 200,
@@ -2893,7 +3139,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 203,
@@ -2923,7 +3171,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 206,
@@ -2953,7 +3203,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 208,
@@ -2963,7 +3215,6 @@
       "Ground"
     ],
     "region": "Johto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -2983,7 +3234,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 211,
@@ -3014,7 +3267,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 212,
@@ -3024,7 +3279,6 @@
       "Steel"
     ],
     "region": "Johto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -3055,7 +3309,6 @@
       "Fighting"
     ],
     "region": "Johto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -3097,7 +3350,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 218,
@@ -3117,7 +3372,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 220,
@@ -3138,7 +3395,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 222,
@@ -3176,7 +3435,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 225,
@@ -3197,7 +3458,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 227,
@@ -3217,7 +3480,6 @@
       "Flying"
     ],
     "region": "Johto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -3239,7 +3501,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 229,
@@ -3249,7 +3513,6 @@
       "Fire"
     ],
     "region": "Johto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -3261,7 +3524,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 231,
@@ -3280,7 +3545,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 233,
@@ -3290,7 +3557,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 234,
@@ -3329,7 +3598,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 238,
@@ -3379,7 +3650,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 243,
@@ -3430,7 +3703,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 248,
@@ -3441,7 +3716,9 @@
     ],
     "region": "Johto",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 248,
@@ -3451,7 +3728,6 @@
       "Dark"
     ],
     "region": "Johto",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -3506,7 +3782,9 @@
     "region": "Hoenn",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 254,
@@ -3517,7 +3795,9 @@
     "region": "Hoenn",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 254,
@@ -3527,7 +3807,6 @@
       "Dragon"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -3550,7 +3829,9 @@
     "region": "Hoenn",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 257,
@@ -3562,7 +3843,9 @@
     "region": "Hoenn",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 257,
@@ -3572,7 +3855,6 @@
       "Fighting"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -3595,7 +3877,9 @@
     "region": "Hoenn",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 260,
@@ -3607,7 +3891,9 @@
     "region": "Hoenn",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 260,
@@ -3617,7 +3903,6 @@
       "Ground"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -3637,7 +3922,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 263,
@@ -3666,7 +3953,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 264,
@@ -3677,7 +3966,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 265,
@@ -3697,7 +3988,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 267,
@@ -3708,7 +4001,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 268,
@@ -3718,7 +4013,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 269,
@@ -3729,7 +4026,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 270,
@@ -3750,7 +4049,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 272,
@@ -3761,7 +4062,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 273,
@@ -3781,7 +4084,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 275,
@@ -3792,7 +4097,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 276,
@@ -3813,7 +4120,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 278,
@@ -3834,7 +4143,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 280,
@@ -3855,7 +4166,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ],
     "isBranched": true
   },
   {
@@ -3867,7 +4180,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 282,
@@ -3877,7 +4192,6 @@
       "Fairy"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -3899,7 +4213,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 285,
@@ -3919,7 +4235,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 287,
@@ -3938,7 +4256,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 289,
@@ -3948,7 +4268,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 290,
@@ -3970,7 +4292,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 292,
@@ -3981,7 +4305,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 293,
@@ -4000,7 +4326,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 295,
@@ -4010,7 +4338,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 296,
@@ -4029,7 +4359,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 298,
@@ -4068,7 +4400,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 302,
@@ -4088,7 +4422,6 @@
       "Ghost"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4109,7 +4442,6 @@
       "Fairy"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4131,7 +4463,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 306,
@@ -4142,7 +4476,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 306,
@@ -4151,7 +4487,6 @@
       "Steel"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4173,7 +4508,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 308,
@@ -4183,7 +4520,6 @@
       "Psychic"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4203,7 +4539,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 310,
@@ -4212,7 +4550,6 @@
       "Electric"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4260,7 +4597,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 316,
@@ -4279,7 +4618,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 318,
@@ -4300,7 +4641,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 319,
@@ -4310,7 +4653,6 @@
       "Dark"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4330,7 +4672,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 322,
@@ -4351,7 +4695,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 323,
@@ -4361,7 +4707,6 @@
       "Ground"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4390,7 +4735,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 327,
@@ -4419,7 +4766,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 330,
@@ -4430,7 +4779,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 331,
@@ -4450,7 +4801,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 333,
@@ -4471,7 +4824,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 334,
@@ -4481,7 +4836,6 @@
       "Fairy"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4541,7 +4895,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 341,
@@ -4561,7 +4917,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 343,
@@ -4582,7 +4940,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 345,
@@ -4605,7 +4965,9 @@
     "region": "Hoenn",
     "category": "Fossil",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 347,
@@ -4628,7 +4990,9 @@
     "region": "Hoenn",
     "category": "Fossil",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 349,
@@ -4647,7 +5011,10 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 351,
@@ -4711,7 +5078,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 354,
@@ -4720,7 +5089,6 @@
       "Ghost"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4740,7 +5108,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 357,
@@ -4760,7 +5130,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 358,
@@ -4770,7 +5142,6 @@
       "Steel"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4789,7 +5160,6 @@
       "Dark"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4831,7 +5201,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 362,
@@ -4840,7 +5212,6 @@
       "Ice"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4862,7 +5233,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 365,
@@ -4873,7 +5246,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 366,
@@ -4893,7 +5268,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 368,
@@ -4903,7 +5280,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 369,
@@ -4941,7 +5320,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 373,
@@ -4952,7 +5333,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 373,
@@ -4962,7 +5345,6 @@
       "Flying"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -4984,7 +5366,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 376,
@@ -4995,7 +5379,9 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 376,
@@ -5005,7 +5391,6 @@
       "Psychic"
     ],
     "region": "Hoenn",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -5058,7 +5443,6 @@
     ],
     "region": "Hoenn",
     "category": "Legendary",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -5081,7 +5465,6 @@
     ],
     "region": "Hoenn",
     "category": "Legendary",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -5145,7 +5528,6 @@
     ],
     "region": "Hoenn",
     "category": "Legendary",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -5218,7 +5600,9 @@
     "region": "Sinnoh",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 389,
@@ -5230,7 +5614,9 @@
     "region": "Sinnoh",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 390,
@@ -5252,7 +5638,9 @@
     "region": "Sinnoh",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 392,
@@ -5264,7 +5652,9 @@
     "region": "Sinnoh",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 393,
@@ -5285,7 +5675,9 @@
     "region": "Sinnoh",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 395,
@@ -5297,7 +5689,9 @@
     "region": "Sinnoh",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 396,
@@ -5318,7 +5712,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 398,
@@ -5329,7 +5725,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 398,
@@ -5339,7 +5737,6 @@
       "Flying"
     ],
     "region": "Sinnoh",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -5360,7 +5757,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 401,
@@ -5379,7 +5778,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 403,
@@ -5398,7 +5799,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 405,
@@ -5408,7 +5811,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 406,
@@ -5430,7 +5835,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 408,
@@ -5451,7 +5858,9 @@
     "region": "Sinnoh",
     "category": "Fossil",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 410,
@@ -5474,7 +5883,9 @@
     "region": "Sinnoh",
     "category": "Fossil",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 412,
@@ -5515,7 +5926,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 413,
@@ -5526,7 +5939,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 413,
@@ -5537,7 +5952,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 414,
@@ -5548,7 +5965,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 414,
@@ -5559,7 +5978,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 414,
@@ -5570,7 +5991,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 415,
@@ -5591,7 +6014,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 417,
@@ -5619,7 +6044,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 420,
@@ -5638,7 +6065,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 421,
@@ -5648,7 +6077,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 422,
@@ -5677,7 +6108,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 423,
@@ -5688,7 +6121,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 424,
@@ -5698,7 +6133,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 425,
@@ -5719,7 +6156,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 427,
@@ -5738,7 +6177,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 428,
@@ -5748,7 +6189,6 @@
       "Fighting"
     ],
     "region": "Sinnoh",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -5759,7 +6199,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 430,
@@ -5770,7 +6212,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 431,
@@ -5789,7 +6233,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 433,
@@ -5820,7 +6266,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 436,
@@ -5841,7 +6289,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 438,
@@ -5913,7 +6363,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 445,
@@ -5924,7 +6376,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 445,
@@ -5934,7 +6388,6 @@
       "Ground"
     ],
     "region": "Sinnoh",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -5945,7 +6398,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -5977,7 +6432,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 448,
@@ -5987,7 +6444,6 @@
       "Steel"
     ],
     "region": "Sinnoh",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -5999,7 +6455,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship",
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -6019,7 +6477,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 451,
@@ -6040,7 +6500,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 453,
@@ -6061,7 +6523,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 455,
@@ -6089,7 +6553,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 458,
@@ -6121,7 +6587,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 460,
@@ -6131,7 +6599,6 @@
       "Ice"
     ],
     "region": "Sinnoh",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -6143,7 +6610,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 462,
@@ -6154,7 +6623,10 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 463,
@@ -6164,7 +6636,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 464,
@@ -6175,7 +6649,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 465,
@@ -6185,7 +6661,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 466,
@@ -6195,7 +6673,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 467,
@@ -6205,7 +6685,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 468,
@@ -6216,7 +6698,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 469,
@@ -6227,7 +6711,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 470,
@@ -6237,7 +6723,10 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 471,
@@ -6247,7 +6736,10 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 472,
@@ -6258,7 +6750,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 473,
@@ -6269,7 +6763,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 474,
@@ -6279,7 +6775,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 475,
@@ -6290,7 +6788,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 475,
@@ -6300,7 +6800,6 @@
       "Fighting"
     ],
     "region": "Sinnoh",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -6312,7 +6811,10 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 477,
@@ -6322,7 +6824,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 478,
@@ -6333,7 +6837,9 @@
     ],
     "region": "Sinnoh",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 478,
@@ -6343,7 +6849,6 @@
       "Ghost"
     ],
     "region": "Sinnoh",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -6500,7 +7005,6 @@
     ],
     "region": "Sinnoh",
     "category": "Legendary",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -6583,7 +7087,6 @@
     ],
     "region": "Sinnoh",
     "category": "Mythical",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -6647,7 +7150,9 @@
     "region": "Unova",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 497,
@@ -6658,7 +7163,9 @@
     "region": "Unova",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 498,
@@ -6680,7 +7187,9 @@
     "region": "Unova",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 500,
@@ -6692,7 +7201,9 @@
     "region": "Unova",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 500,
@@ -6702,7 +7213,6 @@
       "Fighting"
     ],
     "region": "Unova",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -6724,7 +7234,9 @@
     "region": "Unova",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 503,
@@ -6735,7 +7247,9 @@
     "region": "Unova",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 503,
@@ -6747,7 +7261,9 @@
     "region": "Hisui",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 504,
@@ -6766,7 +7282,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 506,
@@ -6785,7 +7303,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 508,
@@ -6795,7 +7315,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 509,
@@ -6814,7 +7336,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 511,
@@ -6833,7 +7357,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 513,
@@ -6852,7 +7378,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 515,
@@ -6871,7 +7399,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 517,
@@ -6890,7 +7420,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 519,
@@ -6911,7 +7443,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 521,
@@ -6922,7 +7456,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 522,
@@ -6941,7 +7477,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 524,
@@ -6960,7 +7498,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 526,
@@ -6970,7 +7510,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 527,
@@ -6991,7 +7533,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 529,
@@ -7011,7 +7555,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 530,
@@ -7021,7 +7567,6 @@
       "Steel"
     ],
     "region": "Unova",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -7041,7 +7586,6 @@
       "Fairy"
     ],
     "region": "Unova",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -7061,7 +7605,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 534,
@@ -7071,7 +7617,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 535,
@@ -7091,7 +7639,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 537,
@@ -7102,7 +7652,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 538,
@@ -7141,7 +7693,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 542,
@@ -7152,7 +7706,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 543,
@@ -7173,7 +7729,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 545,
@@ -7184,7 +7742,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 545,
@@ -7194,7 +7754,6 @@
       "Poison"
     ],
     "region": "Unova",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -7216,7 +7775,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 548,
@@ -7235,7 +7796,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 549,
@@ -7246,7 +7809,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 550,
@@ -7294,7 +7859,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 553,
@@ -7305,7 +7872,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 554,
@@ -7333,7 +7902,10 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 555,
@@ -7344,7 +7916,10 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 555,
@@ -7354,7 +7929,10 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 555,
@@ -7365,7 +7943,10 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 556,
@@ -7395,7 +7976,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 559,
@@ -7416,7 +7999,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 560,
@@ -7426,7 +8011,6 @@
       "Fighting"
     ],
     "region": "Unova",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -7468,7 +8052,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 564,
@@ -7491,7 +8077,9 @@
     "region": "Unova",
     "category": "Fossil",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 566,
@@ -7514,7 +8102,9 @@
     "region": "Unova",
     "category": "Fossil",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 568,
@@ -7533,7 +8123,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 569,
@@ -7542,7 +8134,6 @@
       "Poison"
     ],
     "region": "Unova",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -7572,7 +8163,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 571,
@@ -7583,7 +8176,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 572,
@@ -7602,7 +8197,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 574,
@@ -7621,7 +8218,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 576,
@@ -7631,7 +8230,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 577,
@@ -7650,7 +8251,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 579,
@@ -7660,7 +8263,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 580,
@@ -7681,7 +8286,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 582,
@@ -7700,7 +8307,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 584,
@@ -7710,7 +8319,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 585,
@@ -7761,7 +8372,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 586,
@@ -7772,7 +8385,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 586,
@@ -7783,7 +8398,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 586,
@@ -7794,7 +8411,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 587,
@@ -7824,7 +8443,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 590,
@@ -7845,7 +8466,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 592,
@@ -7876,7 +8499,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 593,
@@ -7887,7 +8512,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 594,
@@ -7917,7 +8544,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 597,
@@ -7938,7 +8567,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 599,
@@ -7957,7 +8588,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 601,
@@ -7967,7 +8600,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 602,
@@ -7986,7 +8621,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 604,
@@ -7996,7 +8633,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 604,
@@ -8005,7 +8644,6 @@
       "Electric"
     ],
     "region": "Unova",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -8025,7 +8663,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 607,
@@ -8046,7 +8686,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 609,
@@ -8057,7 +8699,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 609,
@@ -8067,7 +8711,6 @@
       "Fire"
     ],
     "region": "Unova",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -8087,7 +8730,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 612,
@@ -8097,7 +8742,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 613,
@@ -8116,7 +8763,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 615,
@@ -8144,7 +8793,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 618,
@@ -8183,7 +8834,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 621,
@@ -8213,7 +8866,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 623,
@@ -8223,7 +8878,6 @@
       "Ghost"
     ],
     "region": "Unova",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -8245,7 +8899,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 626,
@@ -8275,7 +8931,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 628,
@@ -8286,7 +8944,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 629,
@@ -8307,7 +8967,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 631,
@@ -8347,7 +9009,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 635,
@@ -8358,7 +9022,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 636,
@@ -8379,7 +9045,9 @@
     ],
     "region": "Unova",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 638,
@@ -8523,6 +9191,17 @@
     "evolutionStage": "No Evolution Line"
   },
   {
+    "id": 646,
+    "name": "Kyurem white",
+    "types": [
+      "Dragon",
+      "Ice"
+    ],
+    "region": "Unova",
+    "category": "Legendary",
+    "evolutionStage": "No Evolution Line"
+  },
+  {
     "id": 647,
     "name": "Keldeo ordinary",
     "types": [
@@ -8596,7 +9275,9 @@
     "region": "Kalos",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 652,
@@ -8608,7 +9289,9 @@
     "region": "Kalos",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 652,
@@ -8618,7 +9301,6 @@
       "Fighting"
     ],
     "region": "Kalos",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -8640,7 +9322,9 @@
     "region": "Kalos",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 655,
@@ -8652,7 +9336,9 @@
     "region": "Kalos",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 655,
@@ -8662,7 +9348,6 @@
       "Psychic"
     ],
     "region": "Kalos",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -8684,7 +9369,9 @@
     "region": "Kalos",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 658,
@@ -8696,7 +9383,9 @@
     "region": "Kalos",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 658,
@@ -8707,7 +9396,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 658,
@@ -8718,7 +9409,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 658,
@@ -8728,7 +9421,6 @@
       "Dark"
     ],
     "region": "Kalos",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -8749,7 +9441,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 661,
@@ -8770,7 +9464,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 663,
@@ -8781,7 +9477,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 664,
@@ -8800,7 +9498,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 666,
@@ -8811,7 +9511,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 667,
@@ -8832,7 +9534,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 668,
@@ -8842,7 +9546,6 @@
       "Normal"
     ],
     "region": "Kalos",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -8854,7 +9557,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 669,
@@ -8867,13 +9572,15 @@
   },
   {
     "id": 670,
-    "name": "Floette red",
+    "name": "Floette",
     "types": [
       "Fairy"
     ],
     "region": "Kalos",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 670,
@@ -8883,7 +9590,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 670,
@@ -8892,7 +9601,6 @@
       "Fairy"
     ],
     "region": "Kalos",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -8903,7 +9611,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 672,
@@ -8922,7 +9632,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 674,
@@ -8942,7 +9654,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 676,
@@ -8970,7 +9684,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 678,
@@ -8980,7 +9696,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 678,
@@ -8989,7 +9707,6 @@
       "Psychic"
     ],
     "region": "Kalos",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -9011,7 +9728,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 681,
@@ -9022,7 +9741,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 681,
@@ -9033,7 +9754,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 682,
@@ -9052,7 +9775,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 684,
@@ -9071,7 +9796,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 686,
@@ -9092,7 +9819,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 687,
@@ -9102,7 +9831,6 @@
       "Psychic"
     ],
     "region": "Kalos",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -9124,7 +9852,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 689,
@@ -9134,7 +9864,6 @@
       "Fighting"
     ],
     "region": "Kalos",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -9156,7 +9885,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 691,
@@ -9166,7 +9897,6 @@
       "Dragon"
     ],
     "region": "Kalos",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -9186,7 +9916,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 694,
@@ -9207,7 +9939,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 696,
@@ -9230,7 +9964,9 @@
     "region": "Kalos",
     "category": "Fossil",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 698,
@@ -9253,7 +9989,9 @@
     "region": "Kalos",
     "category": "Fossil",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 700,
@@ -9263,7 +10001,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 701,
@@ -9283,7 +10023,6 @@
       "Flying"
     ],
     "region": "Kalos",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -9323,7 +10062,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 705,
@@ -9334,7 +10075,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 706,
@@ -9344,7 +10087,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 706,
@@ -9355,7 +10100,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 707,
@@ -9386,7 +10133,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 710,
@@ -9437,7 +10186,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 711,
@@ -9448,7 +10199,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 711,
@@ -9459,7 +10212,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 711,
@@ -9470,7 +10225,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Trade"
+    "evolutionTrigger": [
+      "Evolved by Trade"
+    ]
   },
   {
     "id": 712,
@@ -9489,7 +10246,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 713,
@@ -9500,7 +10259,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 714,
@@ -9521,7 +10282,9 @@
     ],
     "region": "Kalos",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 716,
@@ -9608,7 +10371,6 @@
     ],
     "region": "Kalos",
     "category": "Legendary",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -9631,7 +10393,6 @@
     ],
     "region": "Kalos",
     "category": "Mythical",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -9688,7 +10449,9 @@
     "region": "Alola",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 724,
@@ -9700,7 +10463,9 @@
     "region": "Alola",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 724,
@@ -9712,7 +10477,9 @@
     "region": "Hisui",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 725,
@@ -9733,7 +10500,9 @@
     "region": "Alola",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 727,
@@ -9745,7 +10514,9 @@
     "region": "Alola",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 728,
@@ -9766,7 +10537,9 @@
     "region": "Alola",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 730,
@@ -9778,7 +10551,9 @@
     "region": "Alola",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 731,
@@ -9799,7 +10574,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 733,
@@ -9810,7 +10587,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 734,
@@ -9829,7 +10608,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 736,
@@ -9849,7 +10630,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 738,
@@ -9860,7 +10643,10 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 739,
@@ -9880,7 +10666,10 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level",
+      "Evolved by Item"
+    ]
   },
   {
     "id": 740,
@@ -9890,7 +10679,6 @@
       "Ice"
     ],
     "region": "Alola",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -9952,7 +10740,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 744,
@@ -9980,7 +10770,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 745,
@@ -9990,7 +10782,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 745,
@@ -10000,7 +10794,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 746,
@@ -10039,7 +10835,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 749,
@@ -10058,7 +10856,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 751,
@@ -10079,7 +10879,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 753,
@@ -10098,7 +10900,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 755,
@@ -10119,7 +10923,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 757,
@@ -10140,7 +10946,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 759,
@@ -10161,7 +10969,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 761,
@@ -10180,7 +10990,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 763,
@@ -10190,7 +11002,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 764,
@@ -10239,7 +11053,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 768,
@@ -10249,7 +11065,6 @@
       "Steel"
     ],
     "region": "Alola",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -10271,7 +11086,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 771,
@@ -10301,71 +11118,13 @@
     "region": "Alola",
     "category": "Legendary",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 774,
-    "name": "Minior red meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 774,
-    "name": "Minior orange meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 774,
-    "name": "Minior yellow meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 774,
-    "name": "Minior green meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 774,
-    "name": "Minior blue meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 774,
-    "name": "Minior indigo meteor",
-    "types": [
-      "Rock",
-      "Flying"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 774,
-    "name": "Minior violet meteor",
+    "name": "Minior meteor",
     "types": [
       "Rock",
       "Flying"
@@ -10385,7 +11144,37 @@
   },
   {
     "id": 774,
+    "name": "Minior orange",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionStage": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior yellow",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionStage": "No Evolution Line"
+  },
+  {
+    "id": 774,
     "name": "Minior green",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
+    "region": "Alola",
+    "evolutionStage": "No Evolution Line"
+  },
+  {
+    "id": 774,
+    "name": "Minior blue",
     "types": [
       "Rock",
       "Flying"
@@ -10444,37 +11233,7 @@
   },
   {
     "id": 778,
-    "name": "Mimikyu disguised",
-    "types": [
-      "Ghost",
-      "Fairy"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 778,
-    "name": "Mimikyu busted",
-    "types": [
-      "Ghost",
-      "Fairy"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 778,
-    "name": "Mimikyu totem disguised",
-    "types": [
-      "Ghost",
-      "Fairy"
-    ],
-    "region": "Alola",
-    "evolutionStage": "No Evolution Line"
-  },
-  {
-    "id": 778,
-    "name": "Mimikyu totem busted",
+    "name": "Mimikyu",
     "types": [
       "Ghost",
       "Fairy"
@@ -10510,7 +11269,6 @@
       "Dragon"
     ],
     "region": "Alola",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -10541,7 +11299,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 784,
@@ -10552,7 +11312,9 @@
     ],
     "region": "Alola",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 785,
@@ -10617,7 +11379,9 @@
     "region": "Alola",
     "category": "Legendary",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ],
     "isBranched": true
   },
   {
@@ -10630,7 +11394,9 @@
     "region": "Alola",
     "category": "Legendary",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 792,
@@ -10642,7 +11408,9 @@
     "region": "Alola",
     "category": "Legendary",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 793,
@@ -10794,7 +11562,6 @@
     ],
     "region": "Alola",
     "category": "Mythical",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -10806,7 +11573,6 @@
     ],
     "region": "Alola",
     "category": "Mythical",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -10840,7 +11606,9 @@
     "region": "Alola",
     "category": "Ultra Beast",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 805,
@@ -10882,7 +11650,6 @@
     ],
     "region": "Alola",
     "category": "Mythical",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -10913,7 +11680,6 @@
     ],
     "region": "Unknown",
     "category": "Mythical",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -10935,7 +11701,9 @@
     "region": "Galar",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 812,
@@ -10946,7 +11714,9 @@
     "region": "Galar",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 812,
@@ -10955,7 +11725,6 @@
       "Grass"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -10977,7 +11746,9 @@
     "region": "Galar",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 815,
@@ -10988,7 +11759,9 @@
     "region": "Galar",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 815,
@@ -10997,7 +11770,6 @@
       "Fire"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11019,7 +11791,9 @@
     "region": "Galar",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 818,
@@ -11030,7 +11804,9 @@
     "region": "Galar",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 818,
@@ -11039,7 +11815,6 @@
       "Water"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11059,7 +11834,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 821,
@@ -11078,7 +11855,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 823,
@@ -11089,7 +11868,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 823,
@@ -11099,7 +11880,6 @@
       "Steel"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11120,7 +11900,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 826,
@@ -11131,7 +11913,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 826,
@@ -11141,7 +11925,6 @@
       "Psychic"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11161,7 +11944,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 829,
@@ -11180,7 +11965,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 831,
@@ -11199,7 +11986,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 833,
@@ -11219,7 +12008,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 834,
@@ -11229,7 +12020,6 @@
       "Rock"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11249,7 +12039,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 837,
@@ -11269,7 +12061,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 839,
@@ -11280,7 +12074,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 839,
@@ -11290,7 +12086,6 @@
       "Fire"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11313,7 +12108,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 841,
@@ -11323,7 +12120,6 @@
       "Dragon"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11335,7 +12131,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 842,
@@ -11345,7 +12143,6 @@
       "Dragon"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11365,7 +12162,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 844,
@@ -11374,7 +12173,6 @@
       "Ground"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11424,7 +12222,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 848,
@@ -11446,7 +12246,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 849,
@@ -11457,7 +12259,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 849,
@@ -11467,7 +12271,6 @@
       "Poison"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11478,7 +12281,6 @@
       "Poison"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11500,7 +12302,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 851,
@@ -11510,7 +12314,6 @@
       "Bug"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11530,7 +12333,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 854,
@@ -11549,7 +12354,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 856,
@@ -11568,7 +12375,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 858,
@@ -11579,7 +12388,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 858,
@@ -11589,7 +12400,6 @@
       "Fairy"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11611,7 +12421,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 861,
@@ -11622,7 +12434,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 861,
@@ -11632,7 +12446,6 @@
       "Fairy"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11644,7 +12457,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 863,
@@ -11654,7 +12469,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 864,
@@ -11664,7 +12481,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 865,
@@ -11674,7 +12493,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 866,
@@ -11685,7 +12506,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 867,
@@ -11695,7 +12518,10 @@
       "Ghost"
     ],
     "region": "Galar",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      null
+    ]
   },
   {
     "id": 868,
@@ -11714,7 +12540,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 869,
@@ -11723,7 +12551,6 @@
       "Fairy"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11742,7 +12569,6 @@
       "Fighting"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -11773,7 +12599,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Friendship"
+    "evolutionTrigger": [
+      "Evolved by Friendship"
+    ]
   },
   {
     "id": 874,
@@ -11859,7 +12687,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 879,
@@ -11868,7 +12698,6 @@
       "Steel"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11933,7 +12762,6 @@
       "Dragon"
     ],
     "region": "Galar",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -11955,7 +12783,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 887,
@@ -11966,7 +12796,9 @@
     ],
     "region": "Galar",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 888,
@@ -12052,7 +12884,9 @@
     "region": "Galar",
     "category": "Legendary",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 892,
@@ -12064,7 +12898,9 @@
     "region": "Galar",
     "category": "Legendary",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 892,
@@ -12075,7 +12911,6 @@
     ],
     "region": "Galar",
     "category": "Legendary",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -12087,7 +12922,6 @@
     ],
     "region": "Galar",
     "category": "Legendary",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Gigantamax"
   },
   {
@@ -12193,7 +13027,10 @@
       "Psychic"
     ],
     "region": "Hisui",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      null
+    ]
   },
   {
     "id": 900,
@@ -12204,7 +13041,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 901,
@@ -12215,7 +13054,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 901,
@@ -12226,7 +13067,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 902,
@@ -12236,7 +13079,10 @@
       "Ghost"
     ],
     "region": "Hisui",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      null
+    ]
   },
   {
     "id": 902,
@@ -12246,7 +13092,10 @@
       "Ghost"
     ],
     "region": "Hisui",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      null
+    ]
   },
   {
     "id": 903,
@@ -12257,7 +13106,9 @@
     ],
     "region": "Hisui",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 904,
@@ -12267,7 +13118,11 @@
       "Poison"
     ],
     "region": "Hisui",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      null,
+      "Evolved by Level"
+    ]
   },
   {
     "id": 905,
@@ -12310,7 +13165,9 @@
     "region": "Paldea",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 908,
@@ -12322,7 +13179,9 @@
     "region": "Paldea",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 909,
@@ -12343,7 +13202,9 @@
     "region": "Paldea",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 911,
@@ -12355,7 +13216,9 @@
     "region": "Paldea",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 912,
@@ -12376,7 +13239,9 @@
     "region": "Paldea",
     "category": "Starter",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 914,
@@ -12388,7 +13253,9 @@
     "region": "Paldea",
     "category": "Starter",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 915,
@@ -12407,7 +13274,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 916,
@@ -12417,7 +13286,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 917,
@@ -12436,7 +13307,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 919,
@@ -12456,7 +13329,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 921,
@@ -12476,7 +13351,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 923,
@@ -12487,7 +13364,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 924,
@@ -12505,7 +13384,10 @@
       "Normal"
     ],
     "region": "Paldea",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      null
+    ]
   },
   {
     "id": 925,
@@ -12514,7 +13396,10 @@
       "Normal"
     ],
     "region": "Paldea",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      null
+    ]
   },
   {
     "id": 926,
@@ -12533,7 +13418,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 928,
@@ -12554,7 +13441,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 930,
@@ -12565,7 +13454,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 931,
@@ -12624,7 +13515,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 934,
@@ -12634,7 +13527,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 935,
@@ -12655,7 +13550,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 937,
@@ -12666,7 +13563,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 938,
@@ -12685,7 +13584,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 940,
@@ -12706,7 +13607,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 942,
@@ -12725,7 +13628,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 944,
@@ -12746,7 +13651,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 946,
@@ -12767,7 +13674,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 948,
@@ -12788,7 +13697,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 950,
@@ -12817,7 +13728,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 952,
@@ -12827,7 +13740,6 @@
       "Fire"
     ],
     "region": "Paldea",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -12848,7 +13760,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 955,
@@ -12867,7 +13781,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 957,
@@ -12888,7 +13804,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 959,
@@ -12899,7 +13817,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 960,
@@ -12918,7 +13838,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 962,
@@ -12947,7 +13869,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 964,
@@ -12957,7 +13881,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 965,
@@ -12978,7 +13904,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 967,
@@ -13018,7 +13946,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 970,
@@ -13028,7 +13958,6 @@
       "Poison"
     ],
     "region": "Paldea",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -13048,7 +13977,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 973,
@@ -13077,7 +14008,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Item"
+    "evolutionTrigger": [
+      "Evolved by Item"
+    ]
   },
   {
     "id": 976,
@@ -13136,7 +14069,6 @@
       "Water"
     ],
     "region": "Paldea",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -13147,7 +14079,6 @@
       "Water"
     ],
     "region": "Paldea",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -13158,7 +14089,6 @@
       "Water"
     ],
     "region": "Paldea",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -13169,7 +14099,10 @@
       "Ghost"
     ],
     "region": "Paldea",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      null
+    ]
   },
   {
     "id": 980,
@@ -13180,7 +14113,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 981,
@@ -13191,7 +14126,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 982,
@@ -13201,7 +14138,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 982,
@@ -13211,7 +14150,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 983,
@@ -13221,7 +14162,10 @@
       "Steel"
     ],
     "region": "Paldea",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      null
+    ]
   },
   {
     "id": 984,
@@ -13374,7 +14318,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 998,
@@ -13385,7 +14331,9 @@
     ],
     "region": "Paldea",
     "evolutionStage": "Final Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
   },
   {
     "id": 998,
@@ -13395,7 +14343,6 @@
       "Ice"
     ],
     "region": "Paldea",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -13424,7 +14371,10 @@
       "Ghost"
     ],
     "region": "Paldea",
-    "evolutionStage": "Final Stage"
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      null
+    ]
   },
   {
     "id": 1001,

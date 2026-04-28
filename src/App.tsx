@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import type { Pokemon, PokemonType } from './types';
+import type { EvolutionTrigger, Pokemon, PokemonType } from './types';
 import { POKEMON_TYPES, POKEMON_REGIONS, EVOLUTION_METHODS, EVOLUTION_TRIGGERS, SPECIAL_FORMS, POKEMON_CATEGORIES } from './types';
 import './App.css';
 import './index.css';
@@ -105,11 +105,25 @@ const ALL_OPTIONS: ConstraintOption[] = CONSTRAINT_OPTIONS.flatMap(g => g.option
 function App() {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
-  const [grid, setGrid] = useState<GridState>({
-    cells: Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null)),
-    rowConstraints: [null, null, null],
-    colConstraints: [null, null, null],
-    selectedCell: null,
+  const [grid, setGrid] = useState<GridState>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const parseConstraints = (key: string): (Constraint | null)[] => {
+      const values = params.get(key)?.split(',').slice(0, GRID_SIZE) || [];
+      return values.map(val => {
+        const option = ALL_OPTIONS.find(o => o.value === val) || ALL_OPTIONS.find(o => o.label.toLowerCase() === val.toLowerCase());
+        return option ? { value: option.value, category: option.category } : null;
+      });
+    };
+    const rowConstraints = parseConstraints('rows');
+    const colConstraints = parseConstraints('cols');
+    while (rowConstraints.length < GRID_SIZE) rowConstraints.push(null);
+    while (colConstraints.length < GRID_SIZE) colConstraints.push(null);
+    return {
+      cells: Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null)),
+      rowConstraints,
+      colConstraints,
+      selectedCell: null,
+    };
   });
 
   useEffect(() => {
@@ -124,6 +138,20 @@ function App() {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const toQueryString = (constraints: (Constraint | null)[]): string =>
+      constraints.map(c => c?.value || '').filter(Boolean).join(',');
+    const rowsStr = toQueryString(grid.rowConstraints);
+    const colsStr = toQueryString(grid.colConstraints);
+    if (rowsStr) params.set('rows', rowsStr);
+    else params.delete('rows');
+    if (colsStr) params.set('cols', colsStr);
+    else params.delete('cols');
+    const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+    window.history.replaceState({}, '', newUrl);
+  }, [grid.rowConstraints, grid.colConstraints]);
 
   const possiblePokemon = useMemo(() => {
     const result: Pokemon[][][] = Array(GRID_SIZE).fill(null).map(() =>
@@ -157,7 +185,7 @@ function App() {
                 if (p.types.length !== 2) return false;
               } else if (p.evolutionStage !== rowConstraint.value) return false;
             } else if (rowConstraint.category === 'trigger') {
-              if (p.evolutionTrigger !== rowConstraint.value) return false;
+              if (!p.evolutionTrigger?.includes(rowConstraint.value as EvolutionTrigger)) return false;
             } else if (rowConstraint.category === 'branched') {
               if (rowConstraint.value === 'Yes' && !p.isBranched) return false;
               if (rowConstraint.value === 'No' && p.isBranched) return false;
@@ -180,7 +208,7 @@ function App() {
                 if (p.types.length !== 2) return false;
               } else if (p.evolutionStage !== colConstraint.value) return false;
             } else if (colConstraint.category === 'trigger') {
-              if (p.evolutionTrigger !== colConstraint.value) return false;
+              if (!p.evolutionTrigger?.includes(colConstraint.value as EvolutionTrigger)) return false;
             } else if (colConstraint.category === 'branched') {
               if (colConstraint.value === 'Yes' && !p.isBranched) return false;
               if (colConstraint.value === 'No' && p.isBranched) return false;
