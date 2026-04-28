@@ -37,7 +37,10 @@ const PAIR_FREQUENCY_BUCKETS: PairFrequencyBucket[] = [
 ];
 
 function formatDate(value: string): string {
-  const date = new Date(value);
+  const isoDateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  const date = isoDateMatch
+    ? new Date(Number(isoDateMatch[1]), Number(isoDateMatch[2]) - 1, Number(isoDateMatch[3]))
+    : new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
