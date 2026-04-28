@@ -407,7 +407,6 @@
       "Electric"
     ],
     "region": "Kanto",
-    "category": "Starter",
     "evolutionStage": "Middle Stage",
     "evolutionTrigger": "Evolved by Friendship"
   },
@@ -418,6 +417,7 @@
       "Electric"
     ],
     "region": "Kanto",
+    "category": "Starter",
     "evolutionStage": "Middle Stage",
     "evolutionTrigger": "Evolved by Friendship"
   },
@@ -2014,7 +2014,6 @@
       "Normal"
     ],
     "region": "Kanto",
-    "category": "Starter",
     "evolutionStage": "First Stage",
     "isBranched": true
   },
@@ -2025,6 +2024,7 @@
       "Normal"
     ],
     "region": "Kanto",
+    "category": "Starter",
     "evolutionStage": "First Stage",
     "isBranched": true
   },
@@ -2402,6 +2402,7 @@
       "Ghost"
     ],
     "region": "Hisui",
+    "category": "Starter",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": "Evolved by Level"
   },
@@ -6717,6 +6718,7 @@
       "Dark"
     ],
     "region": "Hisui",
+    "category": "Starter",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": "Evolved by Level"
   },
@@ -9613,6 +9615,7 @@
       "Fighting"
     ],
     "region": "Hisui",
+    "category": "Starter",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": "Evolved by Level"
   },
