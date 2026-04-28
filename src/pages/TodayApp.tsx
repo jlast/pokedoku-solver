@@ -60,14 +60,18 @@ function compareByHardest(a: Pokemon, b: Pokemon): number {
 export function TodayApp({ puzzle }: TodayAppProps) {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
-  const [grid, setGrid] = useState<GridState>(() => ({
-    cells: Array(GRID_SIZE)
-      .fill(null)
-      .map(() => Array(GRID_SIZE).fill(null)),
-    rowConstraints: [...puzzle.rowConstraints],
-    colConstraints: [...puzzle.colConstraints],
-    selectedCell: null,
-  }));
+  const initialCells = useMemo(() => {
+  return Array(GRID_SIZE)
+    .fill(null)
+    .map(() => Array(GRID_SIZE).fill(null));
+}, []);
+
+const [grid, setGrid] = useState<GridState>(() => ({
+  cells: initialCells,
+  rowConstraints: [...puzzle.rowConstraints],
+  colConstraints: [...puzzle.colConstraints],
+  selectedCell: null,
+}));
  const suggestedPokemonKeys = useMemo(
   () =>
     grid.cells.map((row) =>
