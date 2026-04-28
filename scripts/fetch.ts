@@ -40,7 +40,7 @@ function getAllCategories(pokemon: Pokemon): string[] {
   if (typeCount === 1) categories.push('Monotype');
   else if (typeCount === 2) categories.push('Dualtype');
   
-  if (pokemon.region) categories.push(pokemon.region);
+  if (pokemon.region !== 'Unknown') categories.push(pokemon.region);
   if (pokemon.evolutionStage) categories.push(pokemon.evolutionStage);
   if (pokemon.evolutionStage === 'First Stage' || pokemon.evolutionStage === 'Middle Stage') categories.push('not fully evolved');
   if (pokemon.evolutionTrigger) categories.push(...pokemon.evolutionTrigger);
