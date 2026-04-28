@@ -337,10 +337,10 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
       entry.isBranched = formOverride.isBranched;
     if (formOverride.specialForm) entry.specialForm = formOverride.specialForm;
     if (formOverride.category) entry.category = formOverride.category;
-    if (formOverride.sprite) entry.sprite = formOverride.sprite; 
+    if (formOverride.sprite) entry.sprite = formOverride.sprite;
   }
   if(!formOverride?.sprite) {
-    ensureFileExists('public/sprites', `${form.id}.png`, form.sprites.front_default);
+    ensureFileExists('public/sprites', `${form.id}.png`, form?.sprites?.front_default);
   }
 
   return entry;
