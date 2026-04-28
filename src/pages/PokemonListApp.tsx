@@ -165,11 +165,6 @@ function PokemonListApp() {
     window.location.href = `${import.meta.env.BASE_URL}${url}`;
   };
 
-  const handleClearAndNavigate = () => {
-    handleNavigate("", true);
-    window.location.href = import.meta.env.BASE_URL || "/";
-  };
-
   const sortByColumn = (column: "number" | "difficulty") => {
     const newSort =
       column === "number"
