@@ -43,6 +43,14 @@ const EVOLUTION_MAP: Record<string, string> = {
   final: "Final Stage",
 };
 
+const EVOLVED_BY_MAP: Record<string, string> = {
+  item: "Evolved by Item",
+  level: "Evolved by Level",
+  trade: "Evolved by Trade",
+  friendship: "Evolved by Friendship",
+};
+
+
 function mapConstraintType(type: string, obj: string | boolean): ConstraintMapping | null {
   switch (type) {
     case "GENERATION":
@@ -63,17 +71,11 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
       }
       return null;
 
-    case "EVOLVED_BY-level":
-      return { category: "evolution", value: "Evolved by Level" };
-
-    case "EVOLVED_BY-item":
-      return { category: "evolution", value: "Evolved by Item" };
-
-    case "EVOLVED_BY-trade":
-      return { category: "evolution", value: "Evolved by Trade" };
-
-    case "EVOLVED_BY-friendship":
-      return { category: "evolution", value: "Evolved by Friendship" };
+    case "EVOLVED_BY":
+      if (typeof obj === "string" && EVOLVED_BY_MAP[obj]) {
+        return { category: "evolution", value: EVOLVED_BY_MAP[obj] };
+      }
+      return null;
 
     case "MONOTYPE":
       return { category: "types", value: "Monotype" };
