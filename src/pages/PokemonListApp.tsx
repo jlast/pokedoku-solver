@@ -37,6 +37,10 @@ function PokemonListApp() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_RENDER_COUNT);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
+  const resetVisibleCount = () => {
+    setVisibleCount(INITIAL_RENDER_COUNT);
+  };
+
   const [filters, setFilters] = useState<FilterState>(() => {
     const initial: FilterState = {};
     FILTER_CATEGORIES.forEach((cat) => {
@@ -101,6 +105,7 @@ function PokemonListApp() {
   }, [filters, sortBy]);
 
   const toggleFilter = (categoryKey: string, value: string) => {
+    resetVisibleCount();
     setFilters((prev) => {
       const arr = prev[categoryKey] ?? [];
       const isRemoving = arr.includes(value);
@@ -140,6 +145,7 @@ function PokemonListApp() {
     setFilters(cleared);
     setSearchQuery("");
     setDifficultyFilter([]);
+    resetVisibleCount();
     setShowFilterDrawer(false);
     if (typeof window !== "undefined") {
       window.history.replaceState({}, "", window.location.pathname);
@@ -157,7 +163,17 @@ function PokemonListApp() {
           ? "difficulty-desc"
           : "difficulty-asc";
     setSortBy(newSort as SortOption);
+    resetVisibleCount();
     trackEvent("change_sort", { column, sort: newSort });
+  };
+
+  const toggleDifficulty = (diff: string) => {
+    resetVisibleCount();
+    setDifficultyFilter((prev) =>
+      prev.includes(diff)
+        ? prev.filter((d) => d !== diff)
+        : [...prev, diff],
+    );
   };
 
   const filteredPokemon = useMemo(() => {
@@ -244,10 +260,6 @@ function PokemonListApp() {
   );
 
   useEffect(() => {
-    setVisibleCount(INITIAL_RENDER_COUNT);
-  }, [sortedPokemon]);
-
-  useEffect(() => {
     if (!loadMoreRef.current || visibleCount >= sortedPokemon.length) return;
 
     const observer = new IntersectionObserver(
@@ -313,7 +325,10 @@ function PokemonListApp() {
             type="text"
             placeholder="Search by name, type, or region..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              resetVisibleCount();
+              setSearchQuery(e.target.value);
+            }}
             className="search-input"
           />
         </div>
@@ -348,14 +363,8 @@ function PokemonListApp() {
                       ? "white"
                       : DEX_DIFFICULTY_COLORS[diff],
                   }}
-                  onClick={() => {
-                    setDifficultyFilter((prev) =>
-                      prev.includes(diff)
-                        ? prev.filter((d) => d !== diff)
-                        : [...prev, diff],
-                    );
-                  }}
-                >
+                   onClick={() => toggleDifficulty(diff)}
+                 >
                   {diff}
                 </button>
               ))}
@@ -557,7 +566,10 @@ function PokemonListApp() {
                   type="text"
                   placeholder="Search by name, type, or region..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    resetVisibleCount();
+                    setSearchQuery(e.target.value);
+                  }}
                   className="search-input"
                 />
               </div>
@@ -588,13 +600,7 @@ function PokemonListApp() {
                           ? "white"
                           : DEX_DIFFICULTY_COLORS[diff],
                       }}
-                      onClick={() => {
-                        setDifficultyFilter((prev) =>
-                          prev.includes(diff)
-                            ? prev.filter((d) => d !== diff)
-                            : [...prev, diff],
-                        );
-                      }}
+                      onClick={() => toggleDifficulty(diff)}
                     >
                       {diff}
                     </button>
