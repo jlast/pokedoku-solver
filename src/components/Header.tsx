@@ -25,6 +25,18 @@ const NAV_BUTTONS: NavButton[] = [
 export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const desktopNavButtonClass = (isActive: boolean) =>
+    `inline-flex min-h-10 items-center gap-1.5 rounded-[10px] border px-2.5 text-[0.8rem] whitespace-nowrap transition-colors ${
+      isActive
+        ? "border-slate-700 bg-slate-700 text-white"
+        : "border-transparent bg-transparent text-slate-700 hover:border-indigo-200 hover:bg-indigo-50"
+    }`;
+
+  const mobileNavButtonClass = (isActive: boolean) =>
+    `inline-flex w-full items-center justify-start gap-2 rounded-lg border-none px-3 py-2.5 text-left text-sm transition-colors ${
+      isActive ? "bg-slate-500 text-white" : "bg-transparent text-slate-700 hover:bg-slate-50"
+    }`;
+
   const closeMobileMenu = (source: "overlay" | "button" | "close" | "navigate" | "support") => {
     trackEvent("mobile_menu_close", { from: currentPage, source });
     setMobileMenuOpen(false);
@@ -61,13 +73,16 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
 
   return (
     <>
-      <header className="site-header">
-        <div className="header-top-row">
-          <div className="brand-block">
-            <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" />
-            <span className="mobile-inline-title">{title}</span>
+      <header className="site-header text-left">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex min-w-0 flex-1 items-center gap-2.5">
+            <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="m-0 h-8 w-8 max-[1100px]:h-7 max-[1100px]:w-7" />
+            <span className="hidden ml-0.5 text-base leading-tight font-bold text-slate-900 max-[1100px]:inline-block">{title}</span>
 
-            <nav className="header-nav" aria-label="Primary">
+            <nav
+              className="inline-flex items-stretch gap-1 rounded-[14px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-1 shadow-[0_6px_18px_rgba(15,23,42,0.08)] max-[1100px]:hidden"
+              aria-label="Primary"
+            >
               {NAV_BUTTONS.map((btn) => {
                 const isActive = btn.page === currentPage;
 
@@ -78,7 +93,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                       if (isActive) return;
                       navigateTo(btn.url);
                     }}
-                    className={`nav-btn ${isActive ? "active" : ""}`}
+                    className={desktopNavButtonClass(isActive)}
                     disabled={isActive}
                     aria-current={isActive ? "page" : undefined}
                   >
@@ -92,45 +107,45 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
             </nav>
           </div>
 
-          <div className="header-right-actions">
+          <div className="flex items-center gap-2">
             <a
               href="https://buymeacoffee.com/jeroenvande"
               target="_blank"
               rel="noopener noreferrer"
-              className="support-btn desktop-support"
+              className="hidden items-center min-[1200px]:inline-flex"
               aria-label="Support me on Buy Me a Coffee"
               onClick={() => handleSupportClick("desktop")}
             >
               <img
                 src="https://cdn.buymeacoffee.com/uploads/project_updates/2023/12/08f1cf468ace518fc8cc9e352a2e613f.png"
                 alt="Support me on Buy Me a Coffee"
-                className="support-desktop"
+                className="h-6 w-auto"
               />
             </a>
 
             <button
-              className="menu-toggle"
+              className="hidden h-10 w-10 cursor-pointer flex-col justify-center rounded-[10px] border border-slate-300 bg-white p-2 max-[1100px]:inline-flex"
               type="button"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-nav"
               aria-label="Toggle navigation menu"
               onClick={toggleMobileMenu}
             >
-              <span />
-              <span />
-              <span />
+              <span className="mb-[5px] block h-0.5 w-full rounded-sm bg-slate-700" />
+              <span className="mb-[5px] block h-0.5 w-full rounded-sm bg-slate-700" />
+              <span className="block h-0.5 w-full rounded-sm bg-slate-700" />
             </button>
           </div>
         </div>
 
-        <div className="title header-title-row">
-          <h1>{title}</h1>
+        <div className="title !hidden shrink-0 pt-4 lg:!flex">
+          <h1 className="m-0 !text-[1.55rem] leading-tight tracking-[0.01em]">{title}</h1>
         </div>
 
         {showDate && (
-          <div className="header-meta">
-            <div className="header-update-status" aria-label="Updates daily">
-              <span className="header-update-icon" aria-hidden="true">
+          <div className="inline-flex flex-col items-center gap-2.5">
+            <div className="inline-flex items-center gap-2 text-[0.8rem] font-medium text-slate-500 max-[1100px]:gap-[7px] max-[1100px]:text-[0.76rem]" aria-label="Updates daily">
+              <span className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-green-500 text-white max-[1100px]:h-[17px] max-[1100px]:w-[17px]" aria-hidden="true">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M20 6 9 17l-5-5"
@@ -141,9 +156,9 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                   />
                 </svg>
               </span>
-              <span className="header-update-text">Updated daily</span>
+              <span className="text-[0.8rem] leading-tight font-medium tracking-[0.01em] text-slate-500 max-[1100px]:text-[0.76rem]">Updated daily</span>
             </div>
-            <div className="header-date">
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-[0.85rem] text-slate-500">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
               </svg>
@@ -155,15 +170,15 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
         {mobileMenuOpen && (
           <>
             <div
-              className="mobile-menu-overlay"
+              className="fixed inset-0 z-[1099] block bg-black/50 animate-[headerFadeIn_0.2s]"
               onClick={() => closeMobileMenu("overlay")}
               aria-hidden="true"
             />
-            <div className="mobile-menu-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu">
-              <div className="mobile-menu-header">
-                <span className="mobile-menu-title">Pokedoku Helper</span>
+            <div className="fixed top-0 bottom-0 left-0 z-[1100] block w-[85%] max-w-[320px] overflow-y-auto bg-white shadow-[10px_0_28px_rgba(15,23,42,0.2)] animate-[headerSlideIn_0.3s_ease-out]" role="dialog" aria-modal="true" aria-label="Navigation menu">
+              <div className="sticky top-0 z-[2] flex items-center justify-between border-b border-slate-200 bg-white px-3.5 pt-3.5 pb-2.5">
+                <span className="text-base font-bold text-slate-900">Pokedoku Helper</span>
                 <button
-                  className="mobile-menu-close"
+                  className="h-[34px] w-[34px] cursor-pointer rounded-lg border-none bg-transparent text-slate-600"
                   type="button"
                   onClick={() => closeMobileMenu("close")}
                   aria-label="Close navigation menu"
@@ -174,8 +189,8 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                 </button>
               </div>
 
-              <div id="mobile-nav" className="mobile-menu open">
-                <nav className="mobile-nav" aria-label="Mobile primary">
+              <div id="mobile-nav" className="block px-2 pt-2.5 pb-3">
+                <nav className="flex flex-col gap-1" aria-label="Mobile primary">
                   {NAV_BUTTONS.map((btn) => {
                     const isActive = btn.page === currentPage;
 
@@ -187,7 +202,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                           navigateTo(btn.url);
                           closeMobileMenu("navigate");
                         }}
-                        className={`nav-btn ${isActive ? "active" : ""}`}
+                        className={mobileNavButtonClass(isActive)}
                         disabled={isActive}
                         aria-current={isActive ? "page" : undefined}
                       >
@@ -203,7 +218,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                     href="https://buymeacoffee.com/jeroenvande"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="support-btn mobile-support"
+                    className="mt-2 mb-1 ml-1 inline-flex items-center gap-2 text-[0.9rem] text-slate-700"
                     aria-label="Support me on Buy Me a Coffee"
                     onClick={() => {
                       handleSupportClick("mobile");
@@ -213,7 +228,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                     <img
                       src="https://cdn.buymeacoffee.com/uploads/project_updates/2023/12/08f1cf468ace518fc8cc9e352a2e613f.png"
                       alt="Support me on Buy Me a Coffee"
-                      className="support-mobile"
+                      className="inline-block h-8 w-auto"
                     />
                   </a>
                 </nav>
@@ -224,7 +239,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
 
         {subtitle && <p className="lead">{subtitle}</p>}
       </header>
-      <div className="header-divider" />
+      <div className="my-6 h-1 bg-gradient-to-b from-black/10 to-transparent" />
     </>
   );
 }
