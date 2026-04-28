@@ -15,6 +15,14 @@ Parameters:
     Type: String
     Description: "S3 key for the daily puzzle Lambda zip"
 
+  DailyPuzzleAlertEmail:
+    Type: String
+    Default: ""
+    Description: "Email address to receive daily puzzle Lambda failure alerts"
+
+Conditions:
+  HasDailyPuzzleAlertEmail: !Not [!Equals [!Ref DailyPuzzleAlertEmail, ""]]
+
 Resources:
   # S3 Bucket for website content
   WebsiteBucket:
@@ -103,9 +111,41 @@ Resources:
       Principal: events.amazonaws.com
       SourceArn: !GetAtt DailyPuzzleSchedule.Arn
 
+  DailyPuzzleAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${AWS::StackName}-daily-puzzle-alerts"
+
+  DailyPuzzleAlertsEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasDailyPuzzleAlertEmail
+    Properties:
+      Protocol: email
+      Endpoint: !Ref DailyPuzzleAlertEmail
+      TopicArn: !Ref DailyPuzzleAlertsTopic
+
+  DailyPuzzleFetcherErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: "Alerts when the daily puzzle Lambda reports errors"
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref DailyPuzzleFetcherFunction
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      DatapointsToAlarm: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref DailyPuzzleAlertsTopic
+
   # ACM Certificate (must be us-east-1 for CloudFront)
   SSLCertificate:
-    Type: AWS::ACM::Certificate
+    Type: AWS::CertificateManager::Certificate
     Properties:
       DomainName: !Ref DomainName
       SubjectAlternativeNames:
