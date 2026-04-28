@@ -57,6 +57,61 @@ function compareByHardest(a: Pokemon, b: Pokemon): number {
   return a.id - b.id;
 }
 
+function buildSuggestedCells(
+  pokemon: Pokemon[],
+  rowConstraints: (Constraint | null)[],
+  colConstraints: (Constraint | null)[],
+): { cells: (Pokemon | null)[][]; suggestedKeys: (string | null)[][] } {
+  const candidatesByCell: Pokemon[][][] = Array(GRID_SIZE)
+    .fill(null)
+    .map(() => Array(GRID_SIZE).fill(null).map(() => [] as Pokemon[]));
+
+  for (let row = 0; row < GRID_SIZE; row++) {
+    for (let col = 0; col < GRID_SIZE; col++) {
+      const rowConstraint = rowConstraints[row];
+      const colConstraint = colConstraints[col];
+
+      candidatesByCell[row][col] = pokemon
+        .filter((p) => matchesConstraint(p, rowConstraint) && matchesConstraint(p, colConstraint))
+        .sort(compareByHardest);
+    }
+  }
+
+  const rowUsed = Array.from({ length: GRID_SIZE }, () => new Set<number>());
+  const colUsed = Array.from({ length: GRID_SIZE }, () => new Set<number>());
+  const suggestedCells: (Pokemon | null)[][] = Array(GRID_SIZE)
+    .fill(null)
+    .map(() => Array(GRID_SIZE).fill(null));
+
+  const cellOrder = Array.from({ length: GRID_SIZE * GRID_SIZE }, (_, index) => ({
+    row: Math.floor(index / GRID_SIZE),
+    col: index % GRID_SIZE,
+  })).sort(
+    (a, b) =>
+      candidatesByCell[a.row][a.col].length - candidatesByCell[b.row][b.col].length,
+  );
+
+  for (const { row, col } of cellOrder) {
+    const candidates = candidatesByCell[row][col];
+    if (candidates.length === 0) continue;
+
+    const uniqueCandidate = candidates.find(
+      (candidate) => !rowUsed[row].has(candidate.id) && !colUsed[col].has(candidate.id),
+    );
+
+    const pick = uniqueCandidate ?? candidates[0];
+
+    suggestedCells[row][col] = pick;
+    rowUsed[row].add(pick.id);
+    colUsed[col].add(pick.id);
+  }
+
+  return {
+    cells: suggestedCells,
+    suggestedKeys: suggestedCells.map((row) => row.map((cell) => (cell ? cell.sprite || cell.name : null))),
+  };
+}
+
 export function TodayApp({ puzzle }: TodayAppProps) {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,6 +153,22 @@ export function TodayApp({ puzzle }: TodayAppProps) {
       .then((res) => res.json())
       .then((data) => {
         setPokemon(data);
+        setGrid((prev) => {
+          const hasAnySelected = prev.cells.some((row) => row.some((cell) => cell !== null));
+          if (hasAnySelected) return prev;
+
+          const { cells, suggestedKeys } = buildSuggestedCells(
+            data,
+            prev.rowConstraints,
+            prev.colConstraints,
+          );
+          setSuggestedPokemonKeys(suggestedKeys);
+
+          return {
+            ...prev,
+            cells,
+          };
+        });
         setLoading(false);
       })
       .catch((err) => {
@@ -105,69 +176,6 @@ export function TodayApp({ puzzle }: TodayAppProps) {
         setLoading(false);
       });
   }, []);
-
-  useEffect(() => {
-    if (pokemon.length === 0) return;
-
-    setGrid((prev) => {
-      const hasAnySelected = prev.cells.some((row) => row.some((cell) => cell !== null));
-      if (hasAnySelected) return prev;
-
-      const candidatesByCell: Pokemon[][][] = Array(GRID_SIZE)
-        .fill(null)
-        .map(() => Array(GRID_SIZE).fill(null).map(() => [] as Pokemon[]));
-
-      for (let row = 0; row < GRID_SIZE; row++) {
-        for (let col = 0; col < GRID_SIZE; col++) {
-          const rowConstraint = prev.rowConstraints[row];
-          const colConstraint = prev.colConstraints[col];
-
-          candidatesByCell[row][col] = pokemon
-            .filter((p) => matchesConstraint(p, rowConstraint) && matchesConstraint(p, colConstraint))
-            .sort(compareByHardest);
-        }
-      }
-
-      const rowUsed = Array.from({ length: GRID_SIZE }, () => new Set<number>());
-      const colUsed = Array.from({ length: GRID_SIZE }, () => new Set<number>());
-      const suggestedCells: (Pokemon | null)[][] = Array(GRID_SIZE)
-        .fill(null)
-        .map(() => Array(GRID_SIZE).fill(null));
-
-      const cellOrder = Array.from({ length: GRID_SIZE * GRID_SIZE }, (_, index) => ({
-        row: Math.floor(index / GRID_SIZE),
-        col: index % GRID_SIZE,
-      })).sort(
-        (a, b) =>
-          candidatesByCell[a.row][a.col].length - candidatesByCell[b.row][b.col].length,
-      );
-
-      for (const { row, col } of cellOrder) {
-        const candidates = candidatesByCell[row][col];
-        if (candidates.length === 0) continue;
-
-        const uniqueCandidate = candidates.find(
-          (candidate) =>
-            !rowUsed[row].has(candidate.id) && !colUsed[col].has(candidate.id),
-        );
-
-        const pick = uniqueCandidate ?? candidates[0];
-
-        suggestedCells[row][col] = pick;
-        rowUsed[row].add(pick.id);
-        colUsed[col].add(pick.id);
-      }
-
-      setSuggestedPokemonKeys(
-        suggestedCells.map((row) => row.map((cell) => (cell ? cell.sprite || cell.name : null))),
-      );
-
-      return {
-        ...prev,
-        cells: suggestedCells,
-      };
-    });
-  }, [pokemon]);
 
   const possiblePokemon = useMemo(() => {
     const result: Pokemon[][][] = Array(GRID_SIZE)
@@ -208,19 +216,6 @@ export function TodayApp({ puzzle }: TodayAppProps) {
 
     for (let row = 0; row < GRID_SIZE; row++) {
       for (let col = 0; col < GRID_SIZE; col++) {
-        const _usedInRow = new Set(
-          grid.cells[row]
-            .filter((p, colIndex): p is Pokemon => p !== null && colIndex !== col)
-            .map((p) => p.id),
-        );
-
-        const _usedInCol = new Set(
-          grid.cells
-            .map((rowValues, rowIndex) => (rowIndex === row ? null : rowValues[col]))
-            .filter((p): p is Pokemon => p !== null)
-            .map((p) => p.id),
-        );
-
         const rowConstraint = grid.rowConstraints[row];
         const colConstraint = grid.colConstraints[col];
 
@@ -233,7 +228,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
     }
 
     return result;
-  }, [grid.cells, grid.rowConstraints, grid.colConstraints, pokemon]);
+  }, [grid.rowConstraints, grid.colConstraints, pokemon]);
 
   const handleCellClick = (row: number, col: number) => {
     setGrid((prev) => {
@@ -281,19 +276,6 @@ export function TodayApp({ puzzle }: TodayAppProps) {
 
     const [row, col] = grid.selectedCell;
 
-    const _usedInRow = new Set(
-      grid.cells[row]
-        .filter((p, colIndex): p is Pokemon => p !== null && colIndex !== col)
-        .map((p) => p.id),
-    );
-
-    const _usedInCol = new Set(
-      grid.cells
-        .map((rowValues, rowIndex) => (rowIndex === row ? null : rowValues[col]))
-        .filter((p): p is Pokemon => p !== null)
-        .map((p) => p.id),
-    );
-
     const rowConstraint = grid.rowConstraints[row];
     const colConstraint = grid.colConstraints[col];
 
@@ -302,7 +284,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
       if (!matchesConstraint(p, colConstraint)) return false;
       return true;
     });
-  }, [grid.selectedCell, grid.cells, grid.rowConstraints, grid.colConstraints, pokemon]);
+  }, [grid.selectedCell, grid.rowConstraints, grid.colConstraints, pokemon]);
 
   if (loading) {
     return (
