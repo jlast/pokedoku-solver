@@ -175,10 +175,10 @@ function App() {
   return (
     <div className="app">
       <header>
-        <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" />
-        
-
-        <h1>Pokedoku Helper</h1>
+        <div className="title">
+          <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" />
+          <h1>Pokedoku Helper</h1>
+        </div>
         <p className="lead">
           Explore all valid Pokémon for any Pokedoku square. Set constraints and click a cell to see matching Pokémon.
         </p>
