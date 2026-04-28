@@ -3002,17 +3002,6 @@
     "evolutionStage": "First Stage"
   },
   {
-    "id": 172,
-    "name": "Pichu spiky eared",
-    "types": [
-      "Electric"
-    ],
-    "region": "Johto",
-    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172-spiky-eared.png",
-    "category": "Baby",
-    "evolutionStage": "First Stage"
-  },
-  {
     "id": 173,
     "name": "Cleffa",
     "types": [
@@ -7024,6 +7013,16 @@
     "evolutionStage": "First Stage"
   },
   {
+    "id": 449,
+    "name": "Hippopotas female",
+    "types": [
+      "Ground"
+    ],
+    "region": "Sinnoh",
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/female/449.png",
+    "evolutionStage": "First Stage"
+  },
+  {
     "id": 450,
     "name": "Hippowdon",
     "types": [
@@ -7031,6 +7030,19 @@
     ],
     "region": "Sinnoh",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/450.png",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
+  },
+  {
+    "id": 450,
+    "name": "Hippowdon female",
+    "types": [
+      "Ground"
+    ],
+    "region": "Sinnoh",
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/female/450.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
       "Evolved by Level"
@@ -8098,6 +8110,20 @@
     ],
     "region": "Unova",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/521.png",
+    "evolutionStage": "Final Stage",
+    "evolutionTrigger": [
+      "Evolved by Level"
+    ]
+  },
+  {
+    "id": 521,
+    "name": "Unfezant female",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "region": "Unova",
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/female/521.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
       "Evolved by Level"
@@ -10189,20 +10215,6 @@
     "region": "Kalos",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/658.png",
     "category": "Starter",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": [
-      "Evolved by Level"
-    ]
-  },
-  {
-    "id": 658,
-    "name": "Greninja battle bond",
-    "types": [
-      "Water",
-      "Dark"
-    ],
-    "region": "Kalos",
-    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10116.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
       "Evolved by Level"

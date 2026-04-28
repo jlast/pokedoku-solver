@@ -66,6 +66,8 @@ export const IGNORED_FORM_IDS = new Set([
   10249, 10250, 10251, 10252, 10253, 10254, // Minior meteor
   10341, 10342, // Cramorant
   10220, 10221, // Zygarde 10% and 50% power constructs 
+  10218, // Greninja battle bond
+  10065, // Pichu spiky eared 
 ])
 
 export const IGNORED_FORMS = new Set([
