@@ -33,6 +33,21 @@ jobs:
       - name: Run tests
         run: npm test
 
+  deploy-gh-pages:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+
   build-and-deploy:
     needs: validate
     runs-on: ubuntu-latest
