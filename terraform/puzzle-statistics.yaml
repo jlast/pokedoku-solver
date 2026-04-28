@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Pokedoku Helper - Puzzle statistics Lambda"
+
+Parameters:
+  TargetBucketName:
+    Type: String
+    Description: "S3 bucket containing puzzle files and puzzle-stats.json"
+
+  PuzzleStatisticsCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing the Lambda zip"
+
+  PuzzleStatisticsCodeS3Key:
+    Type: String
+    Description: "S3 key for the Lambda zip"
+
+  PuzzleStatisticsOutputKey:
+    Type: String
+    Default: "data/puzzle-stats.json"
+    Description: "S3 key where puzzle statistics are written"
+
+Resources:
+  PuzzleStatisticsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: PuzzleStatisticsS3Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !Sub "arn:aws:s3:::${TargetBucketName}"
+                Condition:
+                  StringLike:
+                    s3:prefix:
+                      - "data/puzzles/*"
+
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource: !Sub "arn:aws:s3:::${TargetBucketName}/data/puzzles/*"
+
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource: !Sub "arn:aws:s3:::${TargetBucketName}/${PuzzleStatisticsOutputKey}"
+
+  PuzzleStatisticsFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: puzzle-statistics.handler
+      Role: !GetAtt PuzzleStatisticsRole.Arn
+      Timeout: 60
+      MemorySize: 256
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref TargetBucketName
+          OBJECT_KEY: !Ref PuzzleStatisticsOutputKey
+      Code:
+        S3Bucket: !Ref PuzzleStatisticsCodeS3Bucket
+        S3Key: !Ref PuzzleStatisticsCodeS3Key
+
+  PuzzleStatisticsInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref PuzzleStatisticsFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !Sub "arn:aws:s3:::${TargetBucketName}"
+
+Outputs:
+  PuzzleStatisticsFunctionName:
+    Description: "Puzzle statistics Lambda function name"
+    Value: !Ref PuzzleStatisticsFunction
+
+  PuzzleStatisticsFunctionArn:
+    Description: "Puzzle statistics Lambda function ARN"
+    Value: !GetAtt PuzzleStatisticsFunction.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-PuzzleStatisticsFunctionArn"
