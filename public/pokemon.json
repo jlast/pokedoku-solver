@@ -112,10 +112,6 @@
     ],
     "region": "Kanto",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10034.png",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": [
-      "Evolved by Level"
-    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -127,10 +123,6 @@
     ],
     "region": "Kanto",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10035.png",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": [
-      "Evolved by Level"
-    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -523,10 +515,6 @@
       "Electric"
     ],
     "region": "Kanto",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": [
-      "Evolved by Item"
-    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -536,10 +524,6 @@
       "Electric"
     ],
     "region": "Kanto",
-    "evolutionStage": "Final Stage",
-    "evolutionTrigger": [
-      "Evolved by Item"
-    ],
     "specialForm": "Mega Evolution"
   },
   {
@@ -1472,8 +1456,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Level"
     ]
   },
   {
@@ -2675,7 +2658,6 @@
     "region": "Kanto",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10043.png",
     "category": "Legendary",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -2687,7 +2669,6 @@
     "region": "Kanto",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10044.png",
     "category": "Legendary",
-    "evolutionStage": "No Evolution Line",
     "specialForm": "Mega Evolution"
   },
   {
@@ -13592,7 +13573,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/869.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level"
+      "Evolved by Item"
     ]
   },
   {
