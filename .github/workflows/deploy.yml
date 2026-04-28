@@ -154,7 +154,8 @@ jobs:
           fi
 
           CURRENT_CONFIG=$(aws s3api get-bucket-notification-configuration --bucket "${{ secrets.S3_BUCKET_NAME }}")
-          UPDATED_CONFIG=$(jq --arg function_arn "${FUNCTION_ARN}" '
+          CONFIG_FILE=$(mktemp)
+          jq --arg function_arn "${FUNCTION_ARN}" '
             .LambdaFunctionConfigurations = (
               ((.LambdaFunctionConfigurations // []) | map(select(.Id != "PuzzleStatisticsOnPuzzleUpload"))) +
               [{
@@ -171,11 +172,13 @@ jobs:
                 }
               }]
             )
-          ' <<< "${CURRENT_CONFIG}")
+          ' <<< "${CURRENT_CONFIG}" > "${CONFIG_FILE}"
 
           aws s3api put-bucket-notification-configuration \
             --bucket "${{ secrets.S3_BUCKET_NAME }}" \
-            --notification-configuration "${UPDATED_CONFIG}"
+            --notification-configuration "file://${CONFIG_FILE}"
+
+          rm -f "${CONFIG_FILE}"
 
       - name: Dump CloudFormation failure events
         if: failure()
