@@ -4,7 +4,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const POKEMON_DATA = path.join(__dirname, '..', 'public', 'pokemon.json');
+const POKEMON_DATA = path.join(__dirname, '..', 'public', 'data', 'pokemon.json');
 
 interface Pokemon {
   id: number;

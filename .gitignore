@@ -12,7 +12,7 @@ dist
 dist-lambda
 dist-ssr
 *.local
-public/today-puzzle.json
+public/data
 
 # Editor directories and files
 .vscode/*

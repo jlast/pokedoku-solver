@@ -92,7 +92,7 @@ Resources:
                 Action:
                   - s3:PutObject
             Resource:
-              - !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/today-puzzle.json"]]
+              - !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/data/today-puzzle.json"]]
               - !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/data/puzzles/*"]]
  
   DailyPuzzleFetcherFunction:
@@ -106,7 +106,7 @@ Resources:
       Environment:
         Variables:
           BUCKET_NAME: !Ref WebsiteBucket
-          OBJECT_KEY: today-puzzle.json
+          OBJECT_KEY: data/today-puzzle.json
       Code:
         S3Bucket: !Ref DailyPuzzleFetcherCodeS3Bucket
         S3Key: !Ref DailyPuzzleFetcherCodeS3Key

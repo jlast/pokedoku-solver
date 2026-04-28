@@ -71,6 +71,34 @@ export const DEX_DIFFICULTY_COLORS: Record<string, string> = {
   Impossible: "#333333",
 };
 
+export const CATEGORY_TYPE_LABELS: Record<string, string> = {
+  types: "Types",
+  regions: "Regions",
+  evolution: "Evolution",
+  category: "Category",
+  ability: "Ability",
+  move: "Move",
+};
+
+export const CATEGORY_TYPE_COLORS: Record<string, string> = {
+  types: "#0f766e",
+  regions: "#0369a1",
+  evolution: "#16a34a",
+  category: "#ca8a04",
+  other: "#64748b",
+};
+
+export const MOVE_TYPE_ICON_MAP: Record<string, string> = {
+  "Calm Mind": "psychic",
+  Earthquake: "ground",
+  Flamethrower: "fire",
+  "Ice Beam": "ice",
+  "Psychic Move": "psychic",
+  "Razor Leaf": "grass",
+  "Shadow Ball": "ghost",
+  Thunderbolt: "electric",
+};
+
 export interface ConstraintOption {
   value: string;
   label: string;

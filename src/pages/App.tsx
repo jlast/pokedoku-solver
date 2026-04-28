@@ -67,7 +67,7 @@ function App() {
   }, [grid.selectedCell]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}pokemon.json?t=${Date.now()}`)
+    fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`)
       .then((res) => res.json())
       .then((data) => {
         setPokemon(data);

@@ -47,7 +47,7 @@ const NO_CACHE = process.argv.includes("--no-cache");
 const POKEMON_API_BASE = "https://pokeapi.co/api/v2";
 const REQUEST_DELAY = 100;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUTPUT_FILE = path.join(__dirname, "..", "public", "pokemon.json");
+const OUTPUT_FILE = path.join(__dirname, "..", "public", "data", "pokemon.json");
 
 function getAllCategories(pokemon: Pokemon): string[] {
   const categories: string[] = [];
@@ -281,7 +281,7 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
     name,
     types,
     region: REGION_BY_ID[speciesId] || "Unknown",
-    sprite: `/sprites/${form.id}.png`,
+    sprite: `/images/sprites/${form.id}.png`,
     formId,
   };
   
@@ -341,7 +341,7 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
     if (formOverride.sprite) entry.sprite = formOverride.sprite;
   }
   if(!formOverride?.sprite) {
-    ensureFileExists('public/sprites', `${form.id}.png`, form?.sprites?.front_default);
+    ensureFileExists('public/images/sprites', `${form.id}.png`, form?.sprites?.front_default);
   }
 
   return entry;

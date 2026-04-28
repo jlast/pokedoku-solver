@@ -2,7 +2,15 @@ import { useEffect, useMemo, useState } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { trackEvent } from "../utils/analytics";
-import { CATEGORY_COLORS, EVOLUTION_COLORS, REGION_COLORS, TYPE_COLORS } from "../utils/constants";
+import {
+  CATEGORY_COLORS,
+  CATEGORY_TYPE_COLORS,
+  CATEGORY_TYPE_LABELS,
+  EVOLUTION_COLORS,
+  MOVE_TYPE_ICON_MAP,
+  REGION_COLORS,
+  TYPE_COLORS,
+} from "../utils/constants";
 import "./App.css";
 import "../index.css";
 
@@ -39,23 +47,6 @@ interface PairFrequencyBucket {
   max: number | null;
   color: string;
 }
-
-const CATEGORY_TYPE_LABELS: Record<string, string> = {
-  types: "Types",
-  regions: "Regions",
-  evolution: "Evolution",
-  category: "Category",
-  ability: "Ability",
-  move: "Move",
-};
-
-const CATEGORY_TYPE_COLORS: Record<string, string> = {
-  types: "#0f766e",
-  regions: "#0369a1",
-  evolution: "#16a34a",
-  category: "#ca8a04",
-  other: "#64748b",
-};
 
 const PAIR_FREQUENCY_BUCKETS: PairFrequencyBucket[] = [
   { key: "once", label: "1 time", min: 1, max: 1, color: "#7c3aed" },
@@ -108,6 +99,13 @@ function bottomByCount<T>(items: T[], getCount: (item: T) => number, getLabel: (
 }
 
 function getCategoryBarColor(parsed: ParsedCategory): string {
+  if (parsed.type === "move") {
+    const mappedType = MOVE_TYPE_ICON_MAP[parsed.label];
+    if (mappedType) {
+      const typeName = mappedType.charAt(0).toUpperCase() + mappedType.slice(1);
+      return TYPE_COLORS[typeName] ?? "#0f766e";
+    }
+  }
   if (parsed.type === "types") return TYPE_COLORS[parsed.label] ?? "#0f766e";
   if (parsed.type === "regions") return REGION_COLORS[parsed.label] ?? "#0f766e";
   if (parsed.type === "evolution") return EVOLUTION_COLORS[parsed.label] ?? "#0f766e";
@@ -116,7 +114,11 @@ function getCategoryBarColor(parsed: ParsedCategory): string {
 }
 
 function getCategoryIconPath(parsed: ParsedCategory): string {
-  return `/icons/${parsed.type}/${parsed.label.toLowerCase()}.svg`;
+  if (parsed.type === "move") {
+    const mappedType = MOVE_TYPE_ICON_MAP[parsed.label];
+    if (mappedType) return `/images/icons/types/${mappedType}.svg`;
+  }
+  return `/images/icons/${parsed.type}/${parsed.label.toLowerCase()}.svg`;
 }
 
 function CategoryIcon({ parsed }: { parsed: ParsedCategory }) {

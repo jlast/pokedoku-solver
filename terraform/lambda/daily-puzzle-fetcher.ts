@@ -179,7 +179,7 @@ async function fetchPuzzle() {
 
 export async function handler() {
   const bucketName = process.env.BUCKET_NAME;
-  const objectKey = process.env.OBJECT_KEY || "today-puzzle.json";
+  const objectKey = process.env.OBJECT_KEY || "data/today-puzzle.json";
 
   if (!bucketName) {
     throw new Error("BUCKET_NAME is required");

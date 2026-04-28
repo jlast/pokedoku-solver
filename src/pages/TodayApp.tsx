@@ -149,7 +149,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
   }, [grid.selectedCell]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}pokemon.json`)
+    fetch(`${import.meta.env.BASE_URL}data/pokemon.json`)
       .then((res) => res.json())
       .then((data) => {
         setPokemon(data);
@@ -298,7 +298,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
     <div className="app">
       <Header
         title="Today's Answers"
-        subtitle="Suggested answers for today's Pokedoku puzzle. Multiple PokÃ©mon will fit each square, so tap any pick to see alternatives."
+        subtitle="Suggested answers for today's Pokedoku puzzle. Multiple Pokémon will fit each square, so tap any pick to see alternatives."
         showDate={formatDate(puzzle.date)}
         currentPage="today"
       />

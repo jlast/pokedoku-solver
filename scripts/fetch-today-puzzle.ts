@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import type { ConstraintCategory } from '../src/utils/filters';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'today-puzzle.json');
+const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'data', 'today-puzzle.json');
 
 const GENERATION_MAP: Record<string, string> = {
   'generation-i': 'Kanto',
