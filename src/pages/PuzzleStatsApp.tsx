@@ -147,10 +147,12 @@ function CategoryList({
   items,
   showDistributionBar = false,
   distributionTotal,
+  maxBarWidthPercent = 100,
 }: {
   items: CategoryCount[];
   showDistributionBar?: boolean;
   distributionTotal?: number;
+  maxBarWidthPercent?: number;
 }) {
   const maxCount = showDistributionBar ? Math.max(...items.map((item) => item.count), 0) : 0;
 
@@ -161,7 +163,8 @@ function CategoryList({
         const percent = showDistributionBar && distributionTotal && distributionTotal > 0 ? (item.count / distributionTotal) * 100 : 0;
         const barWidthPercent = showDistributionBar && maxCount > 0 ? (item.count / maxCount) * 100 : 0;
         const barColor = showDistributionBar ? getCategoryBarColor(parsed) : "#0f766e";
-        const barWidth = item.count > 0 ? `max(${barWidthPercent}%, 8px)` : "0%";
+        const scaledBarWidthPercent = (barWidthPercent * maxBarWidthPercent) / 100;
+        const barWidth = item.count > 0 ? `max(${scaledBarWidthPercent}%, 8px)` : "0%";
 
         return (
           <li key={item.categoryId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
@@ -172,7 +175,7 @@ function CategoryList({
               </p>
               {showDistributionBar ? (
                 <div className="mt-2">
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full">
                     <div className="h-full rounded-full" style={{ width: barWidth, backgroundColor: barColor }} />
                   </div>
                 </div>
@@ -189,27 +192,52 @@ function CategoryList({
   );
 }
 
-function PairList({ items }: { items: CategoryPair[] }) {
+function PairList({
+  items,
+  showDistributionBar = false,
+  distributionTotal,
+}: {
+  items: CategoryPair[];
+  showDistributionBar?: boolean;
+  distributionTotal?: number;
+}) {
+  const maxCount = showDistributionBar ? Math.max(...items.map((item) => item.count), 0) : 0;
+
   return (
     <ol className="m-0 flex list-none flex-col gap-2.5 p-0">
       {items.map((item) => {
         const left = parseCategoryId(item.categories[0]);
         const right = parseCategoryId(item.categories[1]);
+        const percent = showDistributionBar && distributionTotal && distributionTotal > 0 ? (item.count / distributionTotal) * 100 : 0;
+        const barWidthPercent = showDistributionBar && maxCount > 0 ? (item.count / maxCount) * 100 : 0;
+        const barWidth = item.count > 0 ? `max(${barWidthPercent}%, 8px)` : "0%";
 
         return (
           <li key={`${item.categories[0]}||${item.categories[1]}`} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <p className="min-w-0 text-slate-700">
-              <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
-                <CategoryIcon parsed={left} />
-                {left.label}
-              </span>
-              <span className="mx-1 text-slate-400">+</span>
-              <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
-                <CategoryIcon parsed={right} />
-                {right.label}
-              </span>
-            </p>
-            <span className="shrink-0 text-lg font-semibold text-slate-800">{item.count}</span>
+            <div className="min-w-0 flex-1">
+              <p className="min-w-0 text-slate-700">
+                <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
+                  <CategoryIcon parsed={left} />
+                  {left.label}
+                </span>
+                <span className="mx-1 text-slate-400">+</span>
+                <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
+                  <CategoryIcon parsed={right} />
+                  {right.label}
+                </span>
+              </p>
+              {showDistributionBar ? (
+                <div className="mt-2">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full">
+                    <div className="h-full rounded-full bg-slate-700" style={{ width: barWidth }} />
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="shrink-0 text-right">
+              <span className="text-lg font-semibold text-slate-800">{item.count}</span>
+              {showDistributionBar ? <p className="text-xs text-slate-500">{percent.toFixed(1)}%</p> : null}
+            </div>
           </li>
         );
       })}
@@ -355,13 +383,13 @@ export default function PuzzleStatsApp() {
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
           <h2 className="mb-3 text-xl">Least common categories (top 5)</h2>
           <p className="mb-2 text-sm text-slate-600">By number of puzzles</p>
-          <CategoryList items={derived.leastCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} />
+          <CategoryList items={derived.leastCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} maxBarWidthPercent={50} />
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
           <h2 className="mb-3 text-xl">Most common category pairs (top 5)</h2>
           <p className="mb-2 text-sm text-slate-600">By number of occurrences</p>
-          <PairList items={derived.mostCommonPairs} />
+          <PairList items={derived.mostCommonPairs} showDistributionBar distributionTotal={derived.totalPairOccurrences} />
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
