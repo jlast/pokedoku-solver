@@ -182,16 +182,30 @@ export async function handler() {
 
   const puzzle = await fetchPuzzle();
 
+  const datedObjectKey = `data/puzzles/${puzzle.date}.json`;
+
   const s3 = new S3Client({});
-  await s3.send(
-    new PutObjectCommand({
-      Bucket: bucketName,
-      Key: objectKey,
-      Body: JSON.stringify(puzzle, null, 2),
-      ContentType: "application/json",
-      CacheControl: "max-age=300, public",
-    }),
-  );
+
+  await Promise.all([
+    s3.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: objectKey,
+        Body: JSON.stringify(puzzle, null, 2),
+        ContentType: "application/json",
+        CacheControl: "max-age=300, public",
+      }),
+    ),
+    s3.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: datedObjectKey,
+        Body: JSON.stringify(puzzle, null, 2),
+        ContentType: "application/json",
+        CacheControl: "max-age=300, public",
+      }),
+    ),
+  ])
 
   return {
     statusCode: 200,
