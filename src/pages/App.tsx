@@ -170,6 +170,9 @@ function App() {
       </div>
 
       <div className="main-content">
+        <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
+          Select a category to begin
+        </p>
         <Grid
           cells={grid.cells}
           rowConstraints={grid.rowConstraints}
