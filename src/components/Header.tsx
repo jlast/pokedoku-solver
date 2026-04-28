@@ -28,13 +28,15 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
   const desktopNavButtonClass = (isActive: boolean) =>
     `inline-flex min-h-10 items-center gap-1.5 rounded-[10px] border px-2.5 text-[0.8rem] whitespace-nowrap transition-colors ${
       isActive
-        ? "border-slate-700 bg-slate-700 text-white"
-        : "border-transparent bg-transparent text-slate-700 hover:border-indigo-200 hover:bg-indigo-50"
+        ? "cursor-default border-slate-700 bg-slate-700 text-white"
+        : "cursor-pointer border-transparent bg-transparent text-slate-700 hover:border-indigo-200 hover:bg-indigo-50"
     }`;
 
   const mobileNavButtonClass = (isActive: boolean) =>
     `inline-flex w-full items-center justify-start gap-2 rounded-lg border-none px-3 py-2.5 text-left text-sm transition-colors ${
-      isActive ? "bg-slate-500 text-white" : "bg-transparent text-slate-700 hover:bg-slate-50"
+      isActive
+        ? "cursor-default bg-slate-500 text-white"
+        : "cursor-pointer bg-transparent text-slate-700 hover:bg-slate-50"
     }`;
 
   const closeMobileMenu = (source: "overlay" | "button" | "close" | "navigate" | "support") => {
