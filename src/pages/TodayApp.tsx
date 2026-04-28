@@ -185,18 +185,8 @@ export function TodayApp({ puzzle }: TodayAppProps) {
         title="Today's Pokedoku Helper"
         subtitle="See the categories for today's Pokedoku puzzle and explore possible Pokémon for each square."
         showDate={formatDate(puzzle.date)}
+        currentPage="today"
       />
-
-      <div className="controls">
-        <button onClick={handleClearAndNavigate} className="nav-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-          Editor
-        </button>
-        <button onClick={() => handleNavigate('pokemon-list/')} className="nav-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z"/></svg>
-          All Pokemon
-        </button>
-      </div>
 
       <div className="main-content">
         <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
