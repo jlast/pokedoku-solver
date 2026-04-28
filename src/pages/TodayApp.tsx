@@ -382,7 +382,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
         <h3>What is Dex Difficulty?</h3>
 
         <p>
-          Dex Difficulty shows how hard it is to use a PokÃ©mon in Pokedoku.
+          Dex Difficulty shows how hard it is to use a Pokémon in Pokedoku.
           <strong> Nightmare</strong> = few valid spots, lots of competition.
           <strong> Easy</strong> = more options or less competition. Helps you
           see which answers are more logical to prioritize for dex completion.
