@@ -155,16 +155,6 @@ Resources:
         - DomainName: !Ref DomainName
           HostedZoneId: !Ref HostedZone
 
-  # CloudFront Origin Access Control
-  CloudFrontOAC:
-    Type: AWS::CloudFront::OriginAccessControl
-    Properties:
-      OriginAccessControlConfig:
-        Name: !Ref DomainName
-        OriginAccessControlOriginType: s3
-        SigningBehavior: always
-        SigningProtocol: sigv4
-
   # CloudFront Distribution
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
@@ -172,7 +162,7 @@ Resources:
       DistributionConfig:
         Enabled: true
         Aliases:
-          - !Join ["www.", [!Ref DomainName]]
+          - !Sub "www.${DomainName}"
         DefaultRootObject: index.html
         HttpVersion: http2andhttp3
         IPAddressType: ipv4
@@ -210,7 +200,7 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: !Ref HostedZone
-      Name: !Join ["www.", [!Ref DomainName]]
+      Name: !Sub "www.${DomainName}"
       Type: A
       AliasTarget:
         DNSName: !GetAtt CloudFrontDistribution.DomainName
