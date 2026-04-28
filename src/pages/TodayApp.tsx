@@ -60,25 +60,20 @@ function compareByHardest(a: Pokemon, b: Pokemon): number {
 export function TodayApp({ puzzle }: TodayAppProps) {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
-  const initialCells = useMemo(() => {
-  return Array(GRID_SIZE)
-    .fill(null)
-    .map(() => Array(GRID_SIZE).fill(null));
-}, []);
-
-const [grid, setGrid] = useState<GridState>(() => ({
-  cells: initialCells,
-  rowConstraints: [...puzzle.rowConstraints],
-  colConstraints: [...puzzle.colConstraints],
-  selectedCell: null,
-}));
- const suggestedPokemonKeys = useMemo(
-  () =>
-    grid.cells.map((row) =>
-      row.map((cell) => (cell ? cell.sprite || cell.name : null)),
-    ),
-  [grid.cells],
- );
+  const [grid, setGrid] = useState<GridState>(() => ({
+    cells: Array(GRID_SIZE)
+      .fill(null)
+      .map(() => Array(GRID_SIZE).fill(null)),
+    rowConstraints: [...puzzle.rowConstraints],
+    colConstraints: [...puzzle.colConstraints],
+    selectedCell: null,
+  }));
+  const [suggestedPokemonKeys, setSuggestedPokemonKeys] = useState<(string | null)[][]>(
+    () =>
+      Array(GRID_SIZE)
+        .fill(null)
+        .map(() => Array(GRID_SIZE).fill(null)),
+  );
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!grid.selectedCell || !suggestionsRef.current) return;
@@ -163,6 +158,10 @@ const [grid, setGrid] = useState<GridState>(() => ({
         colUsed[col].add(pick.id);
       }
 
+      setSuggestedPokemonKeys(
+        suggestedCells.map((row) => row.map((cell) => (cell ? cell.sprite || cell.name : null))),
+      );
+
       return {
         ...prev,
         cells: suggestedCells,
@@ -209,10 +208,24 @@ const [grid, setGrid] = useState<GridState>(() => ({
 
     for (let row = 0; row < GRID_SIZE; row++) {
       for (let col = 0; col < GRID_SIZE; col++) {
+        const usedInRow = new Set(
+          grid.cells[row]
+            .filter((p, colIndex): p is Pokemon => p !== null && colIndex !== col)
+            .map((p) => p.id),
+        );
+
+        const usedInCol = new Set(
+          grid.cells
+            .map((rowValues, rowIndex) => (rowIndex === row ? null : rowValues[col]))
+            .filter((p): p is Pokemon => p !== null)
+            .map((p) => p.id),
+        );
+
         const rowConstraint = grid.rowConstraints[row];
         const colConstraint = grid.colConstraints[col];
 
         result[row][col] = pokemon.filter((p) => {
+          if (usedInRow.has(p.id) || usedInCol.has(p.id)) return false;
           if (!matchesConstraint(p, rowConstraint)) return false;
           if (!matchesConstraint(p, colConstraint)) return false;
           return true;
@@ -221,7 +234,7 @@ const [grid, setGrid] = useState<GridState>(() => ({
     }
 
     return result;
-  }, [grid.rowConstraints, grid.colConstraints, pokemon]);
+  }, [grid.cells, grid.rowConstraints, grid.colConstraints, pokemon]);
 
   const handleCellClick = (row: number, col: number) => {
     setGrid((prev) => {
@@ -269,20 +282,34 @@ const [grid, setGrid] = useState<GridState>(() => ({
 
     const [row, col] = grid.selectedCell;
 
+    const usedInRow = new Set(
+      grid.cells[row]
+        .filter((p, colIndex): p is Pokemon => p !== null && colIndex !== col)
+        .map((p) => p.id),
+    );
+
+    const usedInCol = new Set(
+      grid.cells
+        .map((rowValues, rowIndex) => (rowIndex === row ? null : rowValues[col]))
+        .filter((p): p is Pokemon => p !== null)
+        .map((p) => p.id),
+    );
+
     const rowConstraint = grid.rowConstraints[row];
     const colConstraint = grid.colConstraints[col];
 
     return pokemon.filter((p) => {
+      if (usedInRow.has(p.id) || usedInCol.has(p.id)) return false;
       if (!matchesConstraint(p, rowConstraint)) return false;
       if (!matchesConstraint(p, colConstraint)) return false;
       return true;
     });
-  }, [grid.selectedCell, grid.rowConstraints, grid.colConstraints, pokemon]);
+  }, [grid.selectedCell, grid.cells, grid.rowConstraints, grid.colConstraints, pokemon]);
 
   if (loading) {
     return (
       <div className="app loading">
-        <p>Loading Pokémon data...</p>
+        <p>Loading PokÃ©mon data...</p>
       </div>
     );
   }
@@ -291,7 +318,7 @@ const [grid, setGrid] = useState<GridState>(() => ({
     <div className="app">
       <Header
         title="Today's Answers"
-        subtitle="Suggested answers for today's Pokedoku puzzle. Multiple Pokémon will fit each square, so tap any pick to see alternatives."
+        subtitle="Suggested answers for today's Pokedoku puzzle. Multiple PokÃ©mon will fit each square, so tap any pick to see alternatives."
         showDate={formatDate(puzzle.date)}
         currentPage="today"
       />
@@ -311,7 +338,7 @@ const [grid, setGrid] = useState<GridState>(() => ({
           onSwapClick={handleCellClick}
           onConstraintChange={() => {}}
         />
-        <InfoBox>These are suggested Pokedoku answers highlighting rarer, harder Pokémon. Tap a square for all options.</InfoBox>
+        <InfoBox>These are suggested Pokedoku answers highlighting rarer, harder PokÃ©mon. Tap a square for all options.</InfoBox>
         <div ref={suggestionsRef}>
           <SuggestionsPanel
             selectedCell={grid.selectedCell}
@@ -320,7 +347,7 @@ const [grid, setGrid] = useState<GridState>(() => ({
           />
         </div>
 
-        <button onClick={clearCells} className="clear-btn" disabled={!hasGridData}>Clear selected Pokémon</button>
+        <button onClick={clearCells} className="clear-btn" disabled={!hasGridData}>Clear selected PokÃ©mon</button>
       </div>
 
       <section className="content-section">
@@ -328,7 +355,7 @@ const [grid, setGrid] = useState<GridState>(() => ({
 
         <p>
           This page automatically loads the current Pokedoku puzzle constraints
-          so you can inspect every square and see which Pokémon fit. It updates
+          so you can inspect every square and see which PokÃ©mon fit. It updates
           each day with the latest puzzle.
         </p>
       </section>
@@ -340,7 +367,7 @@ const [grid, setGrid] = useState<GridState>(() => ({
 
         <p>
           This page loads today&apos;s Pokedoku categories and shows possible
-          Pokémon matches for each square.
+          PokÃ©mon matches for each square.
         </p>
 
         <h3>Does this update automatically?</h3>
@@ -357,7 +384,7 @@ const [grid, setGrid] = useState<GridState>(() => ({
         <h3>What is Dex Difficulty?</h3>
 
         <p>
-          Dex Difficulty shows how hard it is to use a Pokémon in Pokedoku.
+          Dex Difficulty shows how hard it is to use a PokÃ©mon in Pokedoku.
           <strong> Nightmare</strong> = few valid spots, lots of competition.
           <strong> Easy</strong> = more options or less competition. Helps you
           see which answers are more logical to prioritize for dex completion.
