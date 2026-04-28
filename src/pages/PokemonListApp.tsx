@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import type { Pokemon } from "../utils/types";
-import { TYPE_COLORS } from "../utils/constants";
+import { TYPE_COLORS, DEX_DIFFICULTY_COLORS } from "../utils/constants";
 import {
   FILTER_CATEGORIES,
   parseFiltersFromUrl,
@@ -14,15 +14,6 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import "./App.css";
 import "../index.css";
-
-const DEX_DIFFICULTY_COLORS: Record<string, string> = {
-  Easy: "#27ae60",
-  Normal: "#3498db",
-  Hard: "#e67e22",
-  Expert: "#e74c3c",
-  Nightmare: "#9b59b6",
-  Impossible: "#333333",
-};
 
 type SortOption =
   | "number-asc"
