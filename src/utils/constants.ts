@@ -48,6 +48,7 @@ export const EVOLUTION_COLORS: Record<string, string> = {
   'Middle Stage': '#F08030',
   'Final Stage': '#705898',
   'No Evolution Line': '#808080',
+  'Not Fully Evolved': '#E67E22',
   'Evolved by Level': '#58D68D',
   'Evolved by Item': '#F4D03F',
   'Evolved by Trade': '#5DADE2',
