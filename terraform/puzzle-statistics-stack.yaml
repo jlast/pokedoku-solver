@@ -79,6 +79,7 @@ Resources:
       FunctionName: !Ref PuzzleStatisticsFunction
       Principal: s3.amazonaws.com
       SourceArn: !Sub "arn:aws:s3:::${TargetBucketName}"
+      SourceAccount: !Ref AWS::AccountId
 
 Outputs:
   PuzzleStatisticsFunctionName:
