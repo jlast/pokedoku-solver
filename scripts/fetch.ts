@@ -215,26 +215,32 @@ function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: 
         if (details.trigger) {
           const triggerName = details.trigger.name;
           if (triggerName === 'level-up') {
-            if (details.item || details.held_item) return 'Evolved by Item' as const;
-            if (details.min_affection !== null || details.min_happiness !== null) return 'Evolved by Friendship' as const;
-            return 'Evolved by Level' as const;
+            if (details.item || details.held_item) return ['Evolved by Item'] as const;
+            if (details.min_affection !== null || details.min_happiness !== null) return ['Evolved by Friendship'] as const;
+            return ['Evolved by Level'] as const;
           }
-          if (triggerName === 'trade') return 'Evolved by Trade' as const;
-          if (triggerName === 'use-item') return 'Evolved by Item' as const;
-          if (triggerName === 'shed') return 'Evolved by Item' as const;
-          if (triggerName === 'aggression') return 'Evolved by Friendship' as const;
-          if (triggerName === 'spin') return 'Evolved by Level' as const;
-          if (triggerName === 'tower-of-darkness') return 'Evolved by Item' as const;
-          if (triggerName === 'tower-of-waters') return 'Evolved by Item' as const;
-          if (triggerName === 'three-critical-hits') return 'Evolved by Level' as const;
-          if (triggerName === 'recoil-high-damage') return 'Evolved by Level' as const;
-          if (triggerName === 'recoil-med-damage') return 'Evolved by Level' as const;
-          if (triggerName === 'mechanical-arm') return 'Evolved by Item' as const;
-          if (triggerName === 'take-damage-accuracy') return 'Evolved by Level' as const;
-          if (triggerName === 'other') return 'Evolved by Level' as const;
+          if (triggerName === 'trade') {
+            if(details.held_item) {
+              return ['Evolved by Item', 'Evolved by Trade']
+            }
+            return ['Evolved by Trade'] as const;
+          }
+          if (triggerName === 'use-item') return ['Evolved by Item'] as const;
+          if (triggerName === 'shed') return ['Evolved by Item'] as const;
+          if (triggerName === 'aggression') return ['Evolved by Friendship'] as const;
+          if (triggerName === 'spin') return ['Evolved by Level'] as const;
+          if (triggerName === 'tower-of-darkness') return ['Evolved by Item'] as const;
+          if (triggerName === 'tower-of-waters') return ['Evolved by Item'] as const;
+          if (triggerName === 'three-critical-hits') return ['Evolved by Level'] as const;
+          if (triggerName === 'recoil-high-damage') return ['Evolved by Level']as const;
+          if (triggerName === 'recoil-med-damage') return ['Evolved by Level'] as const;
+          if (triggerName === 'mechanical-arm') return ['Evolved by Item'] as const;
+          if (triggerName === 'take-damage-accuracy') return ['Evolved by Level'] as const;
+          if (triggerName === 'other') return ['Evolved by Level'] as const;
+          return ['Evolved by Level']
         }
         return undefined;
-      }).filter((t): t is EvolutionTrigger => t !== undefined))];
+      }).reduce((t, prev) => [...prev, ...t], []).filter((t): t is EvolutionTrigger => t !== undefined))];
     }
     return [];
   }
@@ -425,7 +431,7 @@ function getEntry(formId: number, added: Set<number>): Pokemon|undefined {
           if (chain && species.name) {
             const result = getEvolutionStage(chain, species.name);
             entry.evolutionStage = result.stage;
-            if (result.trigger) entry.evolutionTrigger = result.trigger;
+            if (result.trigger) entry.evolutionTrigger = result.trigger.length > 0 ? result.trigger : undefined;
             if (result.branched) entry.isBranched = true;
           }
         }

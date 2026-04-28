@@ -573,8 +573,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -588,8 +588,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10102.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -993,8 +993,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/53.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Friendship"
+      "Evolved by Friendship",
+      "Evolved by Level"
     ]
   },
   {
@@ -1007,8 +1007,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10108.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Friendship"
+      "Evolved by Friendship",
+      "Evolved by Level"
     ]
   },
   {
@@ -1469,8 +1469,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -1495,8 +1495,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -3191,6 +3191,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -3363,8 +3364,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Trade",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Trade"
     ]
   },
   {
@@ -3378,8 +3379,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10172.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Trade",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Trade"
     ]
   },
   {
@@ -3482,6 +3483,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/208.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -3552,6 +3554,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -3832,6 +3835,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -3868,6 +3872,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png",
     "evolutionStage": "Middle Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -5454,8 +5459,9 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/350.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Trade"
+      "Evolved by Item",
+      "Evolved by Trade",
+      "Evolved by Level"
     ]
   },
   {
@@ -5734,6 +5740,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/367.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -5747,6 +5754,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/368.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -7205,8 +7213,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/462.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -7233,6 +7241,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/464.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -7259,6 +7268,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/466.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -7272,6 +7282,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/467.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -7313,8 +7324,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/470.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -7327,8 +7338,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/471.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -7369,6 +7380,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/474.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -7408,8 +7420,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/476.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -7422,6 +7434,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/477.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -8593,8 +8606,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/555.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -8608,8 +8621,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10017.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -8622,8 +8635,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10177.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -8637,8 +8650,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10178.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -10621,6 +10634,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/683.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -10644,6 +10658,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/685.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
+      "Evolved by Item",
       "Evolved by Trade"
     ]
   },
@@ -11559,8 +11574,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/738.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -11584,8 +11599,8 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/740.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      "Evolved by Level",
-      "Evolved by Item"
+      "Evolved by Item",
+      "Evolved by Level"
     ]
   },
   {
@@ -13601,7 +13616,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/867.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      null
+      "Evolved by Level"
     ]
   },
   {
@@ -14157,7 +14172,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/899.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      null
+      "Evolved by Level"
     ]
   },
   {
@@ -14213,7 +14228,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/902.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      null
+      "Evolved by Level"
     ]
   },
   {
@@ -14227,7 +14242,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10248.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      null
+      "Evolved by Level"
     ]
   },
   {
@@ -14255,7 +14270,6 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/904.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      null,
       "Evolved by Level"
     ]
   },
@@ -14544,7 +14558,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/925.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      null
+      "Evolved by Level"
     ]
   },
   {
@@ -14557,7 +14571,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10257.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      null
+      "Evolved by Level"
     ]
   },
   {
@@ -15320,7 +15334,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/979.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      null
+      "Evolved by Level"
     ]
   },
   {
@@ -15388,7 +15402,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/983.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      null
+      "Evolved by Level"
     ]
   },
   {
@@ -15615,7 +15629,7 @@
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1000.png",
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
-      null
+      "Evolved by Level"
     ]
   },
   {
