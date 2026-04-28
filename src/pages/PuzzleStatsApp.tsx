@@ -171,6 +171,13 @@ export default function PuzzleStatsApp() {
         currentPage="puzzle-stats"
       />
 
+      <section className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
+        <p className="m-0 text-sm text-slate-700">
+          Wondering when a Pokemon was valid in PokeDoku? This page tracks when Pokemon were last usable,
+          alongside rarity, category, and pair-frequency trends across puzzle history.
+        </p>
+      </section>
+
       <section className="mb-5 grid gap-3 sm:grid-cols-2">
         <article className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left shadow-sm">
           <p className="text-sm text-slate-500">Puzzles analyzed</p>
@@ -187,8 +194,8 @@ export default function PuzzleStatsApp() {
       <section className="grid gap-4 lg:grid-cols-2">
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-          <h2 className="mb-3 text-xl">Waiting the Longest</h2>
-          <p className="mb-2 text-sm text-slate-600">Pokémon still not usable after all this time</p>
+          <h2 className="mb-3 text-xl">When Was This Pokemon Last Valid?</h2>
+          <p className="mb-2 text-sm text-slate-600">Pokemon that have gone the longest without being usable in PokeDoku</p>
           <ul className="m-0 grid list-none gap-2 p-0">
             {derived.oldestVisiblePokemon.map((item) => {
               const pokemon = pokemonByFormId.get(item.formId);
