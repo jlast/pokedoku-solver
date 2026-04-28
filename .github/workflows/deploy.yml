@@ -80,6 +80,14 @@ jobs:
       - name: Package daily puzzle Lambda
         run: npm run package:daily-puzzle-lambda
 
+      - name: Verify CloudFormation template revision
+        run: |
+          echo "Template from commit ${GITHUB_SHA}"
+          if grep -E 'ACMValidationRecord|CloudFrontOAC' terraform/cloudformation.yaml; then
+            echo "Found deprecated resources in template; aborting deploy"
+            exit 1
+          fi
+
       - name: Upload daily puzzle Lambda artifact
         run: |
           LAMBDA_KEY=lambda/daily-puzzle-fetcher-${{ github.sha }}.zip
@@ -91,6 +99,7 @@ jobs:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
           DAILY_PUZZLE_ALERT_EMAIL: ${{ secrets.DAILY_PUZZLE_ALERT_EMAIL }}
         run: |
+          echo "Deploying commit ${GITHUB_SHA}"
           STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
           PARAM_OVERRIDES="DailyPuzzleFetcherCodeS3Bucket=${{ secrets.S3_BUCKET_NAME }} DailyPuzzleFetcherCodeS3Key=${LAMBDA_KEY}"
           if [ -n "${DAILY_PUZZLE_ALERT_EMAIL}" ]; then
@@ -118,9 +127,12 @@ jobs:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
         run: |
           STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
-          CHANGE_SET_ID=$(aws cloudformation list-change-sets --stack-name ${STACK_NAME} --query 'Summaries[0].ChangeSetId' --output text || true)
+          CHANGE_SET_ID=$(aws cloudformation list-change-sets --stack-name ${STACK_NAME} --query 'reverse(sort_by(Summaries,&CreationTime))[0].ChangeSetId' --output text || true)
           if [ -n "${CHANGE_SET_ID}" ] && [ "${CHANGE_SET_ID}" != "None" ]; then
-            aws cloudformation describe-change-set --change-set-name ${CHANGE_SET_ID} --stack-name ${STACK_NAME}
+            aws cloudformation describe-change-set \
+              --change-set-name ${CHANGE_SET_ID} \
+              --stack-name ${STACK_NAME} \
+              --query '{Status:Status,StatusReason:StatusReason,CreationTime:CreationTime,Changes:Changes[].ResourceChange.{Action:Action,LogicalId:LogicalResourceId,Type:ResourceType}}'
           else
             echo "No change set found for stack ${STACK_NAME}"
           fi
