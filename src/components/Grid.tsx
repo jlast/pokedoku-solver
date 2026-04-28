@@ -103,7 +103,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
           ))}
         </div>
 
-        <div className="grid">
+        <div className="suggested-grid">
           {cells.map((row, rowIndex) => (
             <div key={rowIndex} className="row">
               {row.map((cell, colIndex) => {
