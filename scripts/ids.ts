@@ -54,5 +54,5 @@ export const IGNORED_FORM_IDS = new Set([
 ])
 
 export const IGNORED_FORMS = new Set([
-  'totem'
+  'totem', 'totem-alola'
 ]);
