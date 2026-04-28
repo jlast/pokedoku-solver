@@ -20,13 +20,18 @@ Parameters:
     Default: ""
     Description: "Email address to receive daily puzzle Lambda failure alerts"
 
+  PuzzleStatisticsFunctionArn:
+    Type: String
+    Description: "ARN of the puzzle statistics Lambda function"
+
 Conditions:
   HasDailyPuzzleAlertEmail: !Not [!Equals [!Ref DailyPuzzleAlertEmail, ""]]
-
+  HasPuzzleStatisticsFunctionArn: !Not [!Equals [!Ref PuzzleStatisticsFunctionArn, ""]]
+  
 Resources:
   # S3 Bucket for website content
   WebsiteBucket:
-    Type: AWS::S3::Bucket
+    Type: AWS::S3::Bucket 
     Properties:
       BucketName: !Ref DomainName
       WebsiteConfiguration:
@@ -40,7 +45,18 @@ Resources:
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerPreferred
-
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: s3:ObjectCreated:*
+            Function: !Ref PuzzleStatisticsFunctionArn
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: data/puzzles/
+                  - Name: suffix
+                    Value: .json
+  
   # Bucket Policy for public read access
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -75,8 +91,10 @@ Resources:
               - Effect: Allow
                 Action:
                   - s3:PutObject
-                Resource: !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/today-puzzle.json"]]
-
+            Resource:
+              - !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/today-puzzle.json"]]
+              - !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/data/puzzles/*"]]
+ 
   DailyPuzzleFetcherFunction:
     Type: AWS::Lambda::Function
     Properties:
