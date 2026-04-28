@@ -266,7 +266,7 @@ jobs:
 
       - name: Sync to S3
         run: |
-          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete --exclude "lambda/*" --exclude "images/*" --exclude "data/runtime/*"
+          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete --exclude "lambda/*" --exclude "images/*" --exclude "data/runtime/*" --exclude "data/puzzles/*"
           aws s3 sync dist/images/ s3://${{ secrets.S3_BUCKET_NAME }}/images/ --cache-control "public,max-age=31536000,immutable"
 
       - name: Invalidate CloudFront cache
