@@ -1,0 +1,960 @@
+2023-09-11,,,,,,,
+2023-09-12,,,,,,,
+2023-09-13,,,,,,,
+2023-09-14,,,,,,,
+2023-09-15,,,,,,,
+2023-09-16,,,,,,,
+2023-09-17,,,,,,,
+2023-09-18,,,,,,,
+2023-09-19,,,,,,,
+2023-09-20,Normal,Fire,Ground,Fairy,Normal,Rock,Galar
+2023-09-21,Normal,Dark,Rock,Steel,Ground,Psychic,Mythical
+2023-09-22,Normal,Poison,Ice,Electric,Dragon,Steel,Legendary
+2023-09-23,,,,,,,
+2023-09-24,,,,,,,
+2023-09-25,,,,,,,
+2023-09-26,Normal,Grass,Bug,Steel,Ground,Ice,Mono Type
+2023-09-27,Normal,Normal,Grass,Ghost,Poison,Ground,Galar
+2023-09-28,Normal,Grass,Dragon,Fairy,Electric,Water,Mono Type
+2023-09-29,,,,,,,
+2023-09-30,Normal,Ground,Bug,Electric,Rock,Water,Mono Type
+2023-10-01,,,,,,,
+2023-10-02,Sponsored,Bug,Poison,Legendary,Grass,Fairy,Unova
+2023-10-03,Normal,Fighting,Dragon,Psychic,Grass,Flying,Alola
+2023-10-04,Normal,Poison,Normal,Water,Fighting,Dark,Paldea
+2023-10-05,Normal,Fighting,Poison,Fairy,Dark,Bug,Alola
+2023-10-06,Normal,Flying,Ghost,Ground,Water,Poison,Kalos
+2023-10-07,,,,,,,
+2023-10-08,Normal,Ground,Poison,Mega,Grass,Flying,Kanto
+2023-10-09,Sponsored,Hoenn,Kanto,Johto,Dragon,Bug,Grass
+2023-10-10,Normal,Dark,Grass,Sinnoh,Steel,Psychic,Mega
+2023-10-11,Normal,Water,Rock,Hoenn,Bug,Flying,Fossil
+2023-10-12,,,,,,,
+2023-10-13,,,,,,,
+2023-10-14,,,,,,,
+2023-10-15,Normal,Dark,Flying,Kanto,Grass,Fighting,Gmax
+2023-10-16,Sponsored,Kalos,Bug,Dual Type,Electric,Fairy,Grass
+2023-10-17,,,,,,,
+2023-10-18,Normal,Flying,Ground,Legendary,Electric,Psychic,Alola
+2023-10-19,Sponsored,Ice,Flying,Dragon,Dark,Electric,Mono Type
+2023-10-20,Normal,Grass,Ice,Fossil,Bug,Dragon,Sinnoh
+2023-10-21,Normal,Ground,Normal,Fossil,Electric,Grass,Galar
+2023-10-22,Normal,Bug,Dark,Legendary,Fairy,Psychic,Gmax
+2023-10-23,Sponsored,Electric,Galar,Unova,Ground,Steel,Flying
+2023-10-24,Normal,Grass,Water,Unova,Electric,Fighting,Mythical
+2023-10-25,,,,,,,
+2023-10-26,,,,,,,
+2023-10-27,Normal,Ice,Psychic,Mono Type,Dragon,Water,Hoenn
+2023-10-28,,,,,,,
+2023-10-29,,,,,,,
+2023-10-30,Sponsored,Flying,Water,Fairy,Psychic,Grass,Kanto
+2023-10-31,Normal,Dragon,Normal,Last Evo,Poison,Ghost,Gmax
+2023-11-01,,,,,,,
+2023-11-02,Normal,Normal,Rock,Mega,Electric,Dragon,Johto
+2023-11-03,Sponsored,Electric,Fairy,Psychic,Mega,Mono Type,Baby
+2023-11-04,,,,,,,
+2023-11-05,Normal,Flying,Ice,Legendary,Grass,Psychic,Alola
+2023-11-06,Normal,Steel,Poison,First Evo,Dark,Dragon,Mono Type
+2023-11-07,Sponsored,Sinnoh,Hoenn,Kalos,Normal,Mega,Water
+2023-11-08,Normal,Ghost,Rock,Legendary,Steel,Dragon,First Evo
+2023-11-09,Normal,Water,Steel,Legendary,Electric,Ice,Galar
+2023-11-10,Sponsored,Galar,Paldea,Fairy,Psychic,Poison,Steel
+2023-11-11,Normal,Flying,Ground,Legendary,Fire,Psychic,Paldea
+2023-11-12,Normal,Fire,Water,Fairy,Mono Type,Unova,Paradox
+2023-11-13,,,,,,,
+2023-11-14,,,,,,,
+2023-11-15,,,,,,,
+2023-11-16,Normal,Grass,Bug,Legendary,Ghost,Flying,Sinnoh
+2023-11-17,,,,,,,
+2023-11-18,Normal,Ground,Rock,Mega,Steel,Bug,Last Evo
+2023-11-19,,,,,,,
+2023-11-20,Sponsored,Unova,Mono Type,First Evo,Dark,Bug,Fire
+2023-11-21,Normal,Fighting,Fire,Item Evo,Poison,Flying,Kanto
+2023-11-22,Sponsored,First Evo,Trade Evo,Last Evo,Grass,Ghost,Kalos
+2023-11-23,,,,,,,
+2023-11-24,Sponsored,Normal,Fairy,Mono Type,Alola,Baby,Psychic
+2023-11-25,Sponsored,Mythical,No Evo,Fire,Steel,Unova,Bug
+2023-11-26,Normal,Ground,Fairy,Item Evo,Bug,Flying,Kanto
+2023-11-27,Sponsored,Mono Type,Grass,Galar,Steel,Ghost,Fire
+2023-11-28,Normal,Fire,Dark,Mono Type,Fighting,Dragon,First Evo
+2023-11-29,Sponsored,Psychic,Legendary,Normal,Paldea,Flying,Alola
+2023-11-30,Normal,Dragon,Psychic,Item Evo,Rock,Normal,Kalos
+2023-12-01,Sponsored,Flying,Normal,Fighting,Paldea,Hoenn,Mono Type
+2023-12-02,Sponsored,Grass,Steel,Dark,Mythical,Fighting,Dragon
+2023-12-03,Normal,Steel,Water,Galar,Flying,Bug,Gmax
+2023-12-04,Sponsored,Ground,Dragon,Legendary,Flying,Steel,Water
+2023-12-05,Normal,Dragon,Grass,Trade Evo,Electric,Normal,Mono Type
+2023-12-06,Sponsored,Flying,Dark,Kalos,Dragon,Ghost,Mythical
+2023-12-07,Sponsored,Mega,Branched Evo,Electric,Mono Type,Normal,Dragon
+2023-12-08,Sponsored,Johto,Kanto,Last Evo,Water,Flying,Grass
+2023-12-09,Sponsored,Normal,Mega,Rock,Dragon,Grass,Ground
+2023-12-10,Normal,Poison,Water,Sinnoh,Ground,Dark,First Evo
+2023-12-11,Sponsored,Legendary,Mythical,First Evo,Ghost,Psychic,Fairy
+2023-12-12,Normal,Fairy,Psychic,Hoenn,Poison,Rock,Item Evo
+2023-12-13,Sponsored,Flying,Unova,Item Evo,Electric,Water,Fire
+2023-12-14,Normal,Electric,Steel,Unova,Fighting,Bug,Fossil
+2023-12-15,Sponsored,Fire,Grass,Paldea,Dark,Psychic,Normal
+2023-12-16,Normal,Ice,Poison,Johto,Grass,Bug,Mega
+2023-12-17,Sponsored,Normal,Mono Type,No Evo,Kanto,Johto,Sinnoh
+2023-12-18,Sponsored,First Evo,No Evo,Last Evo,Hoenn,Mono Type,Grass
+2023-12-19,Normal,Fairy,Water,Hoenn,Psychic,Grass,Mythical
+2023-12-20,Normal,Fire,Dark,Trade Evo,Ghost,Psychic,Unova
+2023-12-21,Sponsored,Fighting,Ultra,Rock,Bug,Poison,Steel
+2023-12-22,Sponsored,Grass,Electric,Fairy,Bug,Steel,Alola
+2023-12-23,Normal,Fighting,Fairy,Legendary,Ghost,Electric,Kalos
+2023-12-24,Normal,Ground,Flying,Hisui,Electric,Steel,Legendary
+2023-12-25,,,,,,,
+2023-12-26,Normal,Fairy,Ice,Mono Type,Flying,Dark,No Evo
+2023-12-27,Normal,Fighting,Rock,Sinnoh,Flying,Bug,Trade Evo
+2023-12-28,Normal,Ground,Psychic,Mega,Poison,Fire,Johto
+2023-12-29,,,,,,,
+2023-12-30,Sponsored,Ice,Fighting,Bug,Hoenn,Fire,Middle Evo
+2023-12-31,Normal,Water,Ground,Mega,Dragon,Rock,Hoenn
+2024-01-01,Normal,Flying,Dark,Mono Type,Ground,Grass,Gmax
+2024-01-02,Sponsored,Normal,Mono Type,Last Evo,Kanto,Sinnoh,Friend Evo
+2024-01-03,Normal,Psychic,Normal,Trade Evo,Ghost,Fairy,Mono Type
+2024-01-04,Normal,Poison,Psychic,Item Evo,Bug,Water,Hisui
+2024-01-05,Sponsored,Ground,No Evo,Last Evo,Water,Poison,Steel
+2024-01-06,Normal,Dragon,Dark,Mega,Fire,Ground,Sinnoh
+2024-01-07,Sponsored,Ground,Johto,Paldea,Water,Last Evo,Poison
+2024-01-08,Sponsored,Item Evo,Fairy,Middle Evo,Normal,Poison,Hoenn
+2024-01-09,Normal,Dark,Fire,Last Evo,Ghost,Flying,Hisui
+2024-01-10,Sponsored,Flying,Item Evo,Baby,Normal,Fairy,Hoenn
+2024-01-11,Normal,Fairy,Fighting,Hoenn,Grass,Steel,Mythical
+2024-01-12,Normal,Ghost,Normal,Galar,Ground,Fighting,Thunderbolt
+2024-01-13,Sponsored,Dragon,Water,Grass,Unova,Alola,Hisui
+2024-01-14,,,,,,,
+2024-01-15,Sponsored,First Evo,Last Evo,Mega,Water,Poison,Ground
+2024-01-16,Normal,Water,Flying,No Evo,Fairy,Electric,Sinnoh
+2024-01-17,Sponsored,Bug,Water,Grass,Ground,Branched Evo,Hoenn
+2024-01-18,Normal,Normal,Dragon,Paradox,Fighting,Fire,Paldea
+2024-01-19,Sponsored,Sinnoh,Flying,Grass,Friend Evo,Mega,Branched Evo
+2024-01-20,Sponsored,First Evo,Legendary,Ghost,Steel,Fire,Alola
+2024-01-21,Normal,Water,Dark,Paldea,Poison,Fairy,Last Evo
+2024-01-22,Sponsored,Alola,Mono Type,Hoenn,Steel,First Evo,Legendary
+2024-01-23,Normal,Dark,Ghost,Hoenn,Fighting,Dragon,Mega
+2024-01-24,Sponsored,Ground,Johto,Hoenn,Last Evo,Poison,Mono Type
+2024-01-25,Normal,Fairy,Grass,Galar,Psychic,Rock,Gmax
+2024-01-26,Sponsored,Alola,Legendary,Last Evo,Psychic,Dark,Fighting
+2024-01-27,Sponsored,Fire,Fighting,Psychic,Normal,Bug,Mega
+2024-01-28,Normal,Psychic,Rock,Legendary,Poison,Ground,Sinnoh
+2024-01-29,Sponsored,Ice,Mono Type,Steel,Hoenn,Electric,Middle Evo
+2024-01-30,Normal,Grass,Dark,Baby,Fairy,Fighting,Johto
+2024-01-31,Sponsored,Johto,Poison,Grass,Last Evo,Ground,First Evo
+2024-02-01,Normal,Ghost,Bug,Partner,Fire,Grass,Mono Type
+2024-02-02,Sponsored,Alola,No Evo,Psychic,Mono Type,Steel,Legendary
+2024-02-03,Sponsored,Dark,Ice,Fire,Middle Evo,Dragon,Paldea
+2024-02-04,Normal,Grass,Rock,Johto,Electric,Psychic,Mono Type
+2024-02-05,Sponsored,Alola,Item Evo,Last Evo,Ice,Fire,Legendary
+2024-02-06,Normal,Ground,Grass,Fossil,Water,Steel,Sinnoh
+2024-02-07,,,,,,,
+2024-02-08,Normal,Ghost,Ground,Paldea,Normal,Dragon,Mono Type
+2024-02-09,Sponsored,Item Evo,Mega,Legendary,Fire,Water,Electric
+2024-02-10,Sponsored,Hoenn,Fairy,Normal,Mega,Psychic,Dual Type
+2024-02-11,Normal,Grass,Fairy,Fossil,Rock,Electric,Kalos
+2024-02-12,Sponsored,Steel,Last Evo,No Evo,Flying,Johto,Grass
+2024-02-13,Normal,Flying,Water,Hoenn,Ground,Ice,Fossil
+2024-02-14,Sponsored,Dragon,Steel,Branched Evo,Middle Evo,Water,Hoenn
+2024-02-15,Normal,Ghost,Bug,Ultra,Poison,Fighting,Alola
+2024-02-16,Sponsored,Water,Paldea,Last Evo,Ground,Item Evo,Mono Type
+2024-02-17,Normal,Normal,Poison,Alola,Ground,Dragon,Mono Type
+2024-02-18,Normal,Psychic,Ice,Mega,Dark,Flying,Legendary
+2024-02-19,Sponsored,Dual Type,No Evo,First Evo,Electric,Ultra,Johto
+2024-02-20,Sponsored,First Evo,No Evo,Last Evo,Fairy,Fire,Mono Type
+2024-02-21,Sponsored,Fire,Mono Type,Fairy,Alola,Last Evo,Shadow Ball
+2024-02-22,Normal,Dragon,Ground,Mega,Water,Psychic,Sinnoh
+2024-02-23,Sponsored,Mono Type,Poison,Middle Evo,Johto,Hoenn,Fighting
+2024-02-24,Sponsored,Flying,Electric,Legendary,Steel,Middle Evo,Earthquake
+2024-02-25,Normal,Poison,Fighting,Item Evo,Normal,Flying,Ice Beam
+2024-02-26,Sponsored,Normal,Fairy,Poison,Kanto,Baby,Mono Type
+2024-02-27,Normal,Flying,Water,Galar,Bug,Fairy,Mono Type
+2024-02-28,Sponsored,Mono Type,Dual Type,Last Evo,Ground,Fire,Ghost
+2024-02-29,Normal,Fire,Psychic,Mega,Fighting,Ground,Legendary
+2024-03-01,Sponsored,Flying,Dragon,Earthquake,Ice Beam,Kalos,Sinnoh
+2024-03-02,Normal,Dragon,Normal,Hoenn,Poison,Fire,Mega
+2024-03-03,Normal,Rock,Steel,Branched Evo,Psychic,Grass,Galar
+2024-03-04,Sponsored,Paldea,Ground,Ice,Legendary,No Evo,Item Evo
+2024-03-05,Normal,Bug,Fairy,Legendary,Electric,Rock,Johto
+2024-03-06,Sponsored,Steel,Flying,Fighting,Galar,Johto,Sinnoh
+2024-03-07,Normal,Grass,Poison,First Evo,Normal,Fighting,Mono Type
+2024-03-08,Sponsored,Psychic,Water,Normal,Last Evo,Ground,Paldea
+2024-03-09,Sponsored,First Evo,Middle Evo,Last Evo,Hoenn,Rock,Steel
+2024-03-10,Normal,Fairy,Psychic,Last Evo,Dark,Item Evo,Kalos
+2024-03-11,Sponsored,Normal,Flying,Last Evo,Johto,Poison,Friend Evo
+2024-03-12,Normal,Psychic,Bug,Partner,Fire,Hoenn,Mono Type
+2024-03-13,Sponsored,Paradox,Last Evo,Hoenn,Fire,Water,Dragon
+2024-03-14,Normal,Dragon,Fire,Mythical,Fighting,Alola,Unova
+2024-03-15,Sponsored,Alola,Normal,Middle Evo,Item Evo,Ice Beam,Friend Evo
+2024-03-16,Sponsored,Ghost,Mono Type,Dragon,Ground,Sinnoh,Legendary
+2024-03-17,Normal,Ground,Fighting,Mega,Electric,Kanto,Legendary
+2024-03-18,Sponsored,Steel,Fire,Ghost,Shadow Ball,Sinnoh,First Evo
+2024-03-19,Normal,Fighting,Ghost,Partner,Water,Unova,Galar
+2024-03-20,Normal,Steel,Grass,Kalos,Fairy,Mono Type,Fossil
+2024-03-21,Sponsored,No Evo,Earthquake,Dual Type,Flying,Rock,Alola
+2024-03-22,Sponsored,Johto,Dragon,Paldea,Last Evo,Mono Type,Dual Type
+2024-03-23,Sponsored,Partner,Fire,Fighting,Hoenn,Sinnoh,Unova
+2024-03-24,Normal,Normal,Dragon,First Evo,Dark,Unova,Hisui
+2024-03-25,Sponsored,Steel,Last Evo,Thunderbolt,Dual Type,Psychic,Hoenn
+2024-03-26,Normal,Bug,Fire,Mono Type,Fighting,Kanto,Gmax
+2024-03-27,Normal,Electric,Ground,Last Evo,Steel,Kalos,Trade Evo
+2024-03-28,Normal,Rock,Ground,Paldea,Bug,Legendary,Paradox
+2024-03-29,Sponsored,Water,Psychic,Dragon,Hoenn,Dual Type,Paldea
+2024-03-30,Sponsored,Ultra,No Evo,Mono Type,Alola,Poison,Steel
+2024-03-31,Normal,Normal,Ground,Partner,Fire,Johto,Unova
+2024-04-01,Sponsored,First Evo,Flying,Last Evo,Electric,Normal,Unova
+2024-04-02,Normal,Fairy,Fighting,Gmax,Electric,Kanto,Mono Type
+2024-04-03,Normal,Fighting,Fire,Legendary,Psychic,Sinnoh,No Evo
+2024-04-04,Normal,Ground,Fairy,Kanto,Ghost,Mega,No Evo
+2024-04-05,Sponsored,Mono Type,Water,Shadow Ball,Dragon,Psychic,Legendary
+2024-04-06,Sponsored,Unova,Grass,Water,Legendary,Item Evo,Bug
+2024-04-07,Normal,Grass,Ice,Legendary,Rock,Johto,Alola
+2024-04-08,Sponsored,Water,Friend Evo,Flamethrower,Hoenn,Sinnoh,Dual Type
+2024-04-09,Normal,Grass,Ground,Legendary,Poison,Kanto,Paldea
+2024-04-10,Normal,Electric,Dark,Item Evo,Dragon,Sinnoh,Hoenn
+2024-04-11,Normal,Bug,Psychic,Middle Evo,Fairy,Branched Evo,Hoenn
+2024-04-12,Sponsored,Psychic,Earthquake,Flying,Fighting,Shadow Ball,Mega
+2024-04-13,Sponsored,Alola,Johto,Dragon,Psychic,First Evo,Electric
+2024-04-14,Normal,Grass,Steel,Last Evo,Rock,Item Evo,Hisui
+2024-04-15,Sponsored,Fire,Bug,Last Evo,Dual Type,Galar,Hoenn
+2024-04-16,Normal,Fighting,Flying,Partner,Grass,Mono Type,Paldea
+2024-04-17,Normal,Sinnoh,Hisui,Baby,Poison,Normal,Fighting
+2024-04-18,Normal,Ghost,Fire,Legendary,Ground,Mono Type,First Evo
+2024-04-19,Sponsored,Grass,Dark,Water,Poison,Johto,Ice
+2024-04-20,Sponsored,Dragon,Bug,Mono Type,Kalos,Ice,Galar
+2024-04-21,Normal,Dragon,Fighting,Friend Evo,Flying,Middle Evo,Alola
+2024-04-22,Sponsored,First Evo,Mono Type,Earthquake,Water,Johto,Legendary
+2024-04-23,Normal,Ground,Grass,Fossil,Rock,Dual Type,Galar
+2024-04-24,Normal,Psychic,Dragon,Last Evo,Ghost,Hisui,Legendary
+2024-04-25,Normal,Dragon,Electric,Baby,Normal,Mono Type,Earthquake
+2024-04-26,Sponsored,Steel,Psychic,Dual Type,Hoenn,Thunderbolt,Mythical
+2024-04-27,Sponsored,Unova,Flamethrower,Item Evo,Fairy,Fighting,Psychic
+2024-04-28,Normal,Water,Psychic,Trade Evo,Fairy,Kanto,Kalos
+2024-04-29,Sponsored,Electric,Fighting,Grass,Dark,Thunderbolt,Flying
+2024-04-30,Normal,Rock,Ground,Paldea,Flying,Middle Evo,Paradox
+2024-05-01,Normal,Normal,Psychic,Dual Type,Ghost,Baby,Legendary
+2024-05-02,Normal,Dark,Electric,Dual Type,Ice,Mega,Middle Evo
+2024-05-03,Sponsored,Item Evo,Dark,Psychic,Bug,Fire,Ground
+2024-05-04,Sponsored,Rock,Alola,No Evo,Flying,Dual Type,Earthquake
+2024-05-05,Normal,Dragon,Fire,Mythical,Grass,Kalos,No Evo
+2024-05-06,Sponsored,Flying,Shadow Ball,Mono Type,Friend Evo,Paldea,Earthquake
+2024-05-07,Normal,Flying,Grass,Gmax,Steel,Galar,Mono Type
+2024-05-08,Sponsored,No Evo,Last Evo,Thunderbolt,Mono Type,Hoenn,Shadow Ball
+2024-05-09,Normal,Water,Dark,Partner,Grass,Alola,Galar
+2024-05-10,Sponsored,First Evo,Fighting,Item Evo,Steel,Water,Johto
+2024-05-11,Sponsored,Fighting,Dragon,Steel,Sinnoh,Kalos,Ultra
+2024-05-12,Normal,Psychic,Water,Legendary,Flying,Hisui,Kalos
+2024-05-13,,,,,,,
+2024-05-14,,,,,,,
+2024-05-15,Normal,Dragon,Normal,Friend Evo,Dark,Last Evo,Hoenn
+2024-05-16,Normal,Psychic,Normal,Mono Type,Dragon,Baby,Paldea
+2024-05-17,Sponsored,Psychic,Mono Type,First Evo,Normal,Sinnoh,Unova
+2024-05-18,Sponsored,Johto,Galar,Paldea,Dark,Bug,Fairy
+2024-05-19,Normal,Dragon,Bug,Last Evo,Fighting,Alola,Fossil
+2024-05-20,Sponsored,Item Evo,Fighting,Dual Type,Fire,Normal,Sinnoh
+2024-05-21,Normal,Rock,Electric,First Evo,Flying,Hoenn,Galar
+2024-05-22,Normal,Ghost,Fairy,Fossil,Grass,Unova,Hoenn
+2024-05-23,Normal,Water,Fighting,Gmax,Flying,Kanto,Dual Type
+2024-05-24,Sponsored,Water,Normal,Dual Type,Johto,Hoenn,Last Evo
+2024-05-25,Sponsored,No Evo,Legendary,Dual Type,Ghost,Sinnoh,Water
+2024-05-26,Normal,Ghost,Water,Item Evo,Fighting,Paldea,Hisui
+2024-05-27,Sponsored,Middle Evo,Galar,First Evo,Dual Type,Mono Type,Bug
+2024-05-28,Normal,Electric,Flying,Dual Type,Dragon,Alola,Hisui
+2024-05-29,Normal,Dragon,Fairy,Legendary,Dark,Galar,Paldea
+2024-05-30,Normal,Steel,Dragon,Johto,Psychic,Mono Type,Mega
+2024-05-31,Sponsored,Gmax,Hisui,Mega,Dark,Fighting,Electric
+2024-06-01,Sponsored,Water,Electric,Psychic,Flying,Johto,Fighting
+2024-06-02,Normal,Fairy,Rock,Hisui,Water,Dual Type,Last Evo
+2024-06-03,Sponsored,Last Evo,Kanto,Dual Type,Fighting,Water,Ground
+2024-06-04,Normal,Rock,Dragon,Last Evo,Steel,Fossil,Legendary
+2024-06-05,Sponsored,Mono Type,Earthquake,Flamethrower,Thunderbolt,Shadow Ball,Ice Beam
+2024-06-06,Normal,Ground,Bug,Dual Type,Poison,Sinnoh,Middle Evo
+2024-06-07,Sponsored,Flamethrower,Thunderbolt,Dual Type,Rock,Kanto,Paldea
+2024-06-08,Normal,Rock,Ghost,No Evo,Alola,Flying,Earthquake
+2024-06-09,Normal,Electric,Flying,Fossil,Water,First Evo,Galar
+2024-06-10,Sponsored,Item Evo,Grass,Psychic,Dragon,Fairy,Kalos
+2024-06-11,Normal,Steel,Fighting,Partner,Grass,Paldea,Alola
+2024-06-12,Normal,Rock,Water,No Evo,Ground,Paradox,Kanto
+2024-06-13,Normal,Grass,Fighting,Item Evo,Dark,Johto,Hoenn
+2024-06-14,Sponsored,Water,Dragon,Mythical,Dark,Sinnoh,Dual Type
+2024-06-15,Sponsored,Grass,Bug,Legendary,Kanto,Poison,Last Evo
+2024-06-16,Normal,Grass,Water,Unova,Psychic,Mythical,Item Evo
+2024-06-17,Sponsored,Bug,Paldea,Fossil,Dual Type,Last Evo,Mono Type
+2024-06-18,Normal,Rock,Steel,Baby,Fairy,Dual Type,Johto
+2024-06-19,Sponsored,Earthquake,Dual Type,Flying,Dragon,Hoenn,Last Evo
+2024-06-20,Normal,Water,Normal,Item Evo,Dark,Sinnoh,Middle Evo
+2024-06-21,Sponsored,Mythical,Fairy,Poison,Dark,Unova,Ghost
+2024-06-22,Sponsored,Grass,Fire,Ghost,Dual Type,Kanto,Item Evo
+2024-06-23,Normal,Psychic,Grass,Hoenn,Water,Legendary,Trade Evo
+2024-06-24,Sponsored,Dragon,Water,Mono Type,Item Evo,Ground,Fossil
+2024-06-25,Normal,Flying,Rock,Dual Type,Ground,Middle Evo,Galar
+2024-06-26,Normal,Fairy,Electric,Hoenn,Normal,Item Evo,Mega
+2024-06-27,Normal,Dragon,Grass,Friend Evo,Flying,Sinnoh,Hoenn
+2024-06-28,Sponsored,Fairy,Hoenn,Dual Type,Legendary,Mythical,Mega
+2024-06-29,Sponsored,Fairy,Psychic,Fighting,Baby,Mythical,Mega
+2024-06-30,Normal,Poison,Normal,Mega,Fire,Johto,Sinnoh
+2024-07-01,Sponsored,Psychic,Flying,Dual Type,Unova,Johto,No Evo
+2024-07-02,Normal,Electric,Ice,Mono Type,Water,Rock,Alola
+2024-07-03,Normal,Steel,Grass,Galar,Dark,Bug,Gmax
+2024-07-04,Normal,Ghost,Fighting,Item Evo,Normal,Poison,Kalos
+2024-07-05,Sponsored,Mono Type,Grass,Ice,Bug,Kanto,First Evo
+2024-07-06,Sponsored,No Evo,Last Evo,First Evo,Ice Beam,Flamethrower,Water
+2024-07-07,Sponsored,Psychic,Dual Type,Item Evo,Steel,Dark,Last Evo
+2024-07-08,Sponsored,Ground,Hoenn,Electric,Dragon,Dual Type,Mono Type
+2024-07-09,Normal,Flying,Rock,Legendary,Fire,Fairy,Unova
+2024-07-10,Normal,Normal,Poison,Middle Evo,Fighting,Ghost,Alola
+2024-07-11,Normal,Grass,Bug,Paradox,Water,Steel,Paldea
+2024-07-12,Sponsored,Ice,Legendary,No Evo,Earthquake,Mono Type,Dual Type
+2024-07-13,Sponsored,Fairy,Ghost,Ground,Dual Type,Flamethrower,Unova
+2024-07-14,Sponsored,Grass,Electric,Mono Type,Unova,Last Evo,Gmax
+2024-07-15,Sponsored,Legendary,Dual Type,Hoenn,Flying,No Evo,Dragon
+2024-07-16,Normal,Poison,Fire,Mythical,Fighting,Normal,Sinnoh
+2024-07-17,Sponsored,Psychic,Water,Dual Type,Flying,No Evo,Johto
+2024-07-18,Normal,Steel,Bug,Middle Evo,Fairy,Ice,Paldea
+2024-07-19,Sponsored,Dark,Last Evo,Rock,Unova,Fire,Dragon
+2024-07-20,Sponsored,First Evo,Middle Evo,Last Evo,Psychic,Steel,Rock
+2024-07-21,Normal,Fighting,Ground,Sinnoh,Poison,Electric,Mega
+2024-07-22,Sponsored,Hoenn,Dual Type,Flying,Normal,Grass,Last Evo
+2024-07-23,Normal,Ghost,Galar,Paradox,First Evo,Fairy,Water
+2024-07-24,Sponsored,Fighting,Mono Type,Legendary,Poison,Kanto,Grass
+2024-07-25,Normal,Dragon,Bug,Psychic,Ice,Sinnoh,Paldea
+2024-07-26,Sponsored,Ground,Steel,Water,Hoenn,Mono Type,Rock
+2024-07-27,Sponsored,Item Evo,Poison,Mono Type,Sinnoh,Paldea,Kanto
+2024-07-28,Normal,Fighting,Dark,Partner,Fire,Unova,Galar
+2024-07-29,Sponsored,Flying,Hoenn,Dual Type,Grass,Item Evo,Mega
+2024-07-30,Normal,Electric,Ghost,Psychic,Alola,Legendary,Hisui
+2024-07-31,Sponsored,Normal,Dark,Mono Type,Johto,Last Evo,First Evo
+2024-08-01,Normal,Ultra,Rock,Kalos,Steel,Poison,Dragon
+2024-08-02,Sponsored,Mega,Fire,Water,Kanto,Hoenn,Dual Type
+2024-08-03,Sponsored,Item Evo,Kanto,Friend Evo,Last Evo,Shadow Ball,Mono Type
+2024-08-04,Sponsored,Paldea,First Evo,Water,Fairy,Dual Type,Mono Type
+2024-08-05,Sponsored,Bug,Steel,Mono Type,Unova,Galar,Middle Evo
+2024-08-06,Normal,Psychic,Poison,Alola,Flying,Ground,No Evo
+2024-08-07,Sponsored,Partner,Middle Evo,Gmax,Grass,Fire,Water
+2024-08-08,,,,,,,
+2024-08-09,Sponsored,Dual Type,Normal,Item Evo,Hoenn,Unova,Last Evo
+2024-08-10,Sponsored,Electric,Ground,Normal,Johto,Hoenn,Sinnoh
+2024-08-11,Normal,Paradox,Flying,Fairy,No Evo,Rock,Steel
+2024-08-12,Sponsored,Sinnoh,Johto,Psychic,Last Evo,Normal,Legendary
+2024-08-13,Normal,Middle Evo,Mega,Ice,Dark,Dragon,Bug
+2024-08-14,Normal,Fighting,Ground,Mythical,Fire,Ghost,Kalos
+2024-08-15,Normal,Electric,No Evo,Rock,Steel,Hisui,Unova
+2024-08-16,Sponsored,Poison,Water,Dual Type,Alola,Ghost,Gmax
+2024-08-17,Sponsored,Last Evo,Electric,Shadow Ball,Water,Grass,Ice
+2024-08-18,Sponsored,First Evo,Mono Type,Unova,Water,Normal,Poison
+2024-08-19,Sponsored,Legendary,Galar,Water,Fairy,Dual Type,Mono Type
+2024-08-20,Normal,Paldea,Alola,Psychic,Dragon,Fighting,Steel
+2024-08-21,Sponsored,Kanto,Mono Type,Last Evo,Item Evo,Friend Evo,Normal
+2024-08-22,Sponsored,Mega,Fighting,No Evo,Dragon,Bug,Grass
+2024-08-23,Normal,No Evo,Last Evo,Ground,Mono Type,Dual Type,Paldea
+2024-08-24,Sponsored,Kanto,Dual Type,Johto,Mega,Poison,Bug
+2024-08-25,Normal,Unova,Flying,Legendary,Electric,Fire,Ghost
+2024-08-26,Sponsored,Fairy,Hoenn,First Evo,Water,Mono Type,Grass
+2024-08-27,Normal,Johto,Paradox,Hisui,Rock,Steel,No Evo
+2024-08-28,Sponsored,Mono Type,Flying,Kanto,Water,Normal,First Evo
+2024-08-29,Normal,Dark,Kalos,Galar,Fire,Ice,Legendary
+2024-08-30,Sponsored,Fighting,Ghost,Grass,Poison,Normal,Psychic
+2024-08-31,Sponsored,Item Evo,No Evo,Steel,Fairy,Galar,Hisui
+2024-09-01,Normal,Bug,Unova,Mono Type,Electric,Friend Evo,Fossil
+2024-09-02,Sponsored,Dragon,Johto,Paldea,Water,Fighting,Ground
+2024-09-03,Normal,Fire,Rock,Dark,Poison,Gmax,Paradox
+2024-09-04,Normal,Psychic,Normal,Grass,Flying,Kalos,Kanto
+2024-09-05,Normal,Legendary,Steel,Fairy,Paldea,Ghost,Sinnoh
+2024-09-06,Sponsored,Ice,Grass,Electric,Last Evo,Ground,Fossil
+2024-09-07,Sponsored,Psychic,Bug,Poison,Paldea,Mono Type,Dual Type
+2024-09-08,Sponsored,No Evo,Last Evo,Alola,Dual Type,Fighting,Psychic
+2024-09-09,Sponsored,Last Evo,First Evo,Fossil,Dragon,Water,Dual Type
+2024-09-10,Normal,Ground,Dark,Grass,Fire,Mega,Paldea
+2024-09-11,Normal,Bug,Alola,Middle Evo,Flying,Ice,Fairy
+2024-09-12,Normal,Normal,Water,Fighting,Dragon,Mythical,Gmax
+2024-09-13,Sponsored,Electric,Last Evo,Ground,Dual Type,Sinnoh,Legendary
+2024-09-14,Sponsored,No Evo,Item Evo,Mega,Fairy,Dragon,Ghost
+2024-09-15,Normal,Dual Type,Sinnoh,Paldea,Last Evo,Legendary,Ground
+2024-09-16,Sponsored,Normal,Last Evo,Item Evo,Mono Type,Dual Type,Kanto
+2024-09-17,Normal,Fighting,Fire,Dark,Flying,Hoenn,Paradox
+2024-09-18,Sponsored,Galar,Paldea,Sinnoh,Electric,Ground,Item Evo
+2024-09-19,Normal,Grass,Normal,Poison,Mega,Alola,Kalos
+2024-09-20,Sponsored,Trade Evo,Middle Evo,Ground,Johto,Dual Type,Unova
+2024-09-21,Sponsored,Hoenn,Fighting,Unova,Dual Type,Ghost,Dark
+2024-09-22,Normal,Fire,Galar,Electric,Grass,Rock,Mono Type
+2024-09-23,Sponsored,Trade Evo,Item Evo,Mega,Kanto,Johto,Hoenn
+2024-09-24,Normal,Last Evo,Ground,Legendary,Dragon,Poison,Normal
+2024-09-25,Normal,Hisui,Psychic,Dual Type,Flying,Water,Steel
+2024-09-26,Normal,Grass,Galar,Dark,First Evo,Ghost,Fairy
+2024-09-27,Sponsored,Last Evo,Dragon,Steel,Kalos,Mono Type,Hisui
+2024-09-28,Sponsored,Poison,Flying,Fighting,Ghost,Water,Bug
+2024-09-29,Normal,Galar,Rock,Dark,Ice,Item Evo,Ground
+2024-09-30,Sponsored,Kalos,Psychic,Mythical,Ghost,Fairy,Grass
+2024-10-01,Normal,Trade Evo,Gmax,Dragon,Water,Electric,Normal
+2024-10-02,Normal,Fighting,Fire,Unova,Dual Type,Dark,Flying
+2024-10-03,Normal,Ice,Psychic,Rock,Steel,Kanto,Mono Type
+2024-10-04,Sponsored,Kanto,Johto,Mono Type,First Evo,Middle Evo,Last Evo
+2024-10-05,Sponsored,Last Evo,Mono Type,Item Evo,Normal,Fire,Water
+2024-10-06,Normal,Friend Evo,Fairy,Mega,Grass,Hoenn,Flying
+2024-10-07,Sponsored,Normal,Water,Fighting,Mono Type,Last Evo,Paldea
+2024-10-08,Normal,Poison,Legendary,Steel,Galar,Ghost,Dragon
+2024-10-09,Sponsored,Last Evo,Middle Evo,No Evo,Mono Type,Electric,Kanto
+2024-10-10,Normal,Item Evo,Kalos,Psychic,Ground,Ice,Rock
+2024-10-11,Sponsored,Flying,Legendary,Dual Type,Johto,Galar,Hoenn
+2024-10-12,Sponsored,Trade Evo,Unova,Item Evo,Electric,Ground,Bug
+2024-10-13,Normal,Fighting,Mega,Partner,Grass,Water,Fire
+2024-10-14,Sponsored,Mono Type,Steel,Normal,Last Evo,Mythical,Ghost
+2024-10-15,Normal,Sinnoh,Paldea,Ice,Electric,Bug,Flying
+2024-10-16,Sponsored,Kanto,Hoenn,Galar,Mono Type,Fighting,Fire
+2024-10-17,Normal,Rock,No Evo,Dark,Unova,Ground,Dragon
+2024-10-18,Sponsored,First Evo,Last Evo,Item Evo,Mono Type,Dual Type,Fire
+2024-10-19,Sponsored,Grass,Psychic,Water,First Evo,Mono Type,Unova
+2024-10-20,Normal,Middle Evo,Ghost,Bug,Flying,Poison,Hoenn
+2024-10-21,Sponsored,Friend Evo,Paldea,Mega,Fairy,Dual Type,Mono Type
+2024-10-22,Normal,Item Evo,Steel,Ice,Sinnoh,Dragon,Dark
+2024-10-23,Sponsored,Mono Type,Partner,Last Evo,Grass,Galar,Unova
+2024-10-24,Normal,Normal,Fighting,Fire,Ghost,Hisui,Kanto
+2024-10-25,Sponsored,Ground,Mono Type,Last Evo,Water,Unova,Poison
+2024-10-26,Sponsored,Item Evo,Johto,Water,Dual Type,Last Evo,Mono Type
+2024-10-27,Normal,Rock,Galar,Flying,Electric,Gmax,Bug
+2024-10-28,Sponsored,Unova,Dark,Dual Type,First Evo,Middle Evo,Last Evo
+2024-10-29,Normal,Poison,Psychic,Mega,Hoenn,Steel,Fairy
+2024-10-30,Sponsored,Ghost,Dual Type,Kalos,First Evo,Grass,Last Evo
+2024-10-31,Normal,Flying,Johto,Sinnoh,Fire,Rock,Dark
+2024-11-01,Sponsored,Mono Type,Dual Type,Hoenn,Last Evo,No Evo,Middle Evo
+2024-11-02,Sponsored,Galar,First Evo,Last Evo,Normal,Ghost,Water
+2024-11-03,Normal,Ice,Bug,Dragon,Paldea,Mega,Grass
+2024-11-04,Sponsored,Partner,Legendary,Dark,Dual Type,Hoenn,Mono Type
+2024-11-05,Normal,Psychic,Mythical,Alola,Normal,Ghost,Steel
+2024-11-06,Normal,Item Evo,Fire,Electric,Kanto,Rock,Poison
+2024-11-07,Normal,Flying,Grass,Bug,Gmax,Sinnoh,Unova
+2024-11-08,Sponsored,Alola,Last Evo,Mega,Water,Dual Type,Legendary
+2024-11-09,Sponsored,Flying,Dual Type,Mono Type,Kanto,Mega,Last Evo
+2024-11-10,Normal,Dark,Baby,Psychic,Fighting,Poison,Johto
+2024-11-11,Sponsored,Ice,Flying,Electric,Last Evo,No Evo,Hoenn
+2024-11-12,Normal,Item Evo,Ghost,Partner,Galar,Water,Unova
+2024-11-13,Normal,Bug,Grass,Fighting,Kanto,Steel,Kalos
+2024-11-14,Normal,Fairy,Rock,Dragon,Psychic,Gmax,Mono Type
+2024-11-15,Sponsored,Bug,Unova,Normal,Fighting,Flying,Item Evo
+2024-11-16,Sponsored,First Evo,Middle Evo,Last Evo,Unova,Paldea,Galar
+2024-11-17,Normal,Johto,Mono Type,Sinnoh,Mega,Water,Fire
+2024-11-18,Sponsored,Poison,Galar,Last Evo,Electric,Bug,Dual Type
+2024-11-19,Normal,Rock,Kanto,Grass,Fairy,Ice,No Evo
+2024-11-20,Normal,Ghost,Mono Type,Johto,Ground,Steel,Fighting
+2024-11-21,Normal,Kalos,Dark,Psychic,Legendary,Dragon,Fire
+2024-11-22,Normal,Electric,Rock,Bug,Hoenn,Alola,Kanto
+2024-11-23,Sponsored,Ice,Last Evo,Item Evo,Ground,Dual Type,Mono Type
+2024-11-24,Normal,Flying,Legendary,Grass,Paldea,Johto,Rock
+2024-11-25,Sponsored,Fire,Normal,Dual Type,Hoenn,Sinnoh,Middle Evo
+2024-11-26,Normal,Mono Type,Friend Evo,Dark,Psychic,Poison,Unova
+2024-11-27,Normal,Last Evo,Ghost,Item Evo,Dragon,Fighting,Kalos
+2024-11-28,Normal,Galar,Electric,Flying,Fossil,Grass,Steel
+2024-11-29,Sponsored,Item Evo,Water,Ghost,Kanto,Dual Type,Sinnoh
+2024-11-30,Sponsored,Hoenn,No Evo,Flying,Water,Mono Type,Dual Type
+2024-12-01,Normal,Dragon,Partner,Bug,Paldea,First Evo,Fire
+2024-12-02,Sponsored,Hoenn,Item Evo,Alola,Ice,Dual Type,Fairy
+2024-12-03,Normal,Unova,Middle Evo,Ground,Ghost,Steel,Grass
+2024-12-04,Normal,Kalos,Flying,Galar,Rock,Poison,Normal
+2024-12-05,Normal,Legendary,Dark,Johto,Fire,Dragon,Psychic
+2024-12-06,Sponsored,Mono Type,Poison,Normal,Item Evo,Alola,Paldea
+2024-12-07,Sponsored,Alola,Paldea,Hoenn,Rock,Mono Type,No Evo
+2024-12-08,Normal,Sinnoh,Grass,Middle Evo,Flying,Electric,Bug
+2024-12-09,Sponsored,Water,Fairy,Last Evo,Kanto,Hoenn,Dual Type
+2024-12-10,Normal,Galar,Poison,Legendary,Ground,Steel,Ghost
+2024-12-11,Normal,Sinnoh,Fire,Unova,Psychic,Mono Type,Partner
+2024-12-12,Normal,Grass,Dragon,Dark,Paldea,Gmax,Water
+2024-12-13,Sponsored,Last Evo,Normal,Legendary,Alola,Psychic,Dual Type
+2024-12-14,Normal,First Evo,Mono Type,Kalos,Partner,Steel,Dark
+2024-12-15,Normal,Poison,Ground,Fossil,Electric,Rock,Unova
+2024-12-16,Normal,Ice,Flying,Fighting,Hoenn,Johto,Dragon
+2024-12-17,Normal,Ghost,Middle Evo,Paldea,Psychic,Fire,Normal
+2024-12-18,Normal,Grass,Water,Mythical,Dual Type,Fairy,Mono Type
+2024-12-19,Normal,Paradox,Sinnoh,Bug,Rock,Fighting,Electric
+2024-12-20,Normal,Mega,Poison,Dragon,Hoenn,Johto,Steel
+2024-12-21,Normal,Unova,Fairy,Dark,Psychic,Legendary,Last Evo
+2024-12-22,Normal,Normal,Water,Fire,Ground,Galar,Mythical
+2024-12-23,Sponsored,Steel,Legendary,Dragon,Flying,Paldea,Mega
+2024-12-24,Normal,Alola,Grass,Kalos,Ghost,Poison,Fighting
+2024-12-25,Normal,Fire,Hoenn,Fairy,Middle Evo,Rock,Dark
+2024-12-26,Normal,Bug,Electric,Psychic,Water,Gmax,Johto
+2024-12-27,Normal,Galar,Hisui,Ice,Dragon,Legendary,Item Evo
+2024-12-28,Sponsored,Fighting,Grass,Ghost,Alola,Poison,Paldea
+2024-12-29,Normal,Trade Evo,Fossil,Flying,Last Evo,Rock,Dual Type
+2024-12-30,Normal,Normal,Ground,Dark,Psychic,Mega,Kalos
+2024-12-31,Normal,Unova,Item Evo,Mono Type,Steel,Bug,Fairy
+2025-01-01,Normal,Ghost,Partner,Hisui,Water,Grass,Fire
+2025-01-02,Normal,Flying,Dark,Alola,Poison,Ice,Legendary
+2025-01-03,Sponsored,Mono Type,No Evo,Item Evo,Sinnoh,Unova,Dragon
+2025-01-04,Sponsored,Last Evo,Kalos,Mono Type,Water,Psychic,Normal
+2025-01-05,Normal,Hoenn,Steel,Galar,Ground,Fairy,Fighting
+2025-01-06,Sponsored,Flying,Poison,First Evo,Dual Type,Water,Mono Type
+2025-01-07,Normal,Rock,Mega,Bug,Johto,Fire,Psychic
+2025-01-08,Normal,Middle Evo,Ground,Fairy,Alola,Normal,Grass
+2025-01-09,Normal,Steel,Water,No Evo,Dual Type,Hoenn,Electric
+2025-01-10,Normal,Mega,Dragon,Ghost,Kanto,Poison,Flying
+2025-01-11,Sponsored,Fire,Item Evo,Steel,Unova,Sinnoh,Psychic
+2025-01-12,Normal,Ice,Fighting,Electric,Legendary,Bug,Alola
+2025-01-13,Normal,Poison,Gmax,Mega,Fairy,Rock,Dark
+2025-01-14,Normal,Hisui,Ground,Johto,Dragon,Water,No Evo
+2025-01-15,Normal,Flying,Fire,Ghost,Normal,Galar,Kalos
+2025-01-16,Normal,Electric,Mono Type,Steel,Ice,Kanto,Fairy
+2025-01-17,Normal,Hoenn,Psychic,Ultra,Rock,Poison,Bug
+2025-01-18,Sponsored,Grass,Fire,Water,Partner,Dark,Fighting
+2025-01-19,Normal,Dragon,Fairy,Dual Type,Flying,Unova,Item Evo
+2025-01-20,Sponsored,Johto,Sinnoh,Kanto,Mono Type,Normal,Last Evo
+2025-01-21,Normal,Hisui,Mythical,Ground,Ghost,Water,Steel
+2025-01-22,Normal,Rock,Galar,Paradox,Electric,Fairy,Legendary
+2025-01-23,Normal,Dragon,Bug,Fire,Mega,Poison,Alola
+2025-01-24,Normal,Psychic,First Evo,Grass,Dual Type,Normal,Ice
+2025-01-25,Sponsored,Flying,Legendary,Unova,Electric,Mono Type,Ground
+2025-01-26,Normal,Level Evo,Poison,Fire,Kalos,Johto,Partner
+2025-01-27,Normal,Item Evo,Mythical,Alola,Fighting,Fairy,Dark
+2025-01-28,Normal,Fossil,Ice,Sinnoh,Bug,Rock,Dragon
+2025-01-29,Normal,Ground,Dual Type,Psychic,Trade Evo,Middle Evo,Ghost
+2025-01-30,Normal,Grass,Mono Type,Paldea,Poison,Steel,Electric
+2025-01-31,Sponsored,Sinnoh,Mono Type,Unova,Steel,Legendary,Trade Evo
+2025-02-01,Normal,Hisui,Dark,Hoenn,Fighting,Fire,Dragon
+2025-02-02,Normal,Rock,Mega,Ice,Johto,Flying,Water
+2025-02-03,Normal,Poison,Normal,Kalos,Level Evo,Psychic,Fairy
+2025-02-04,Normal,Fossil,Paldea,Mono Type,Grass,Dragon,Bug
+2025-02-05,Normal,Dual Type,Fighting,Ground,Steel,Electric,Galar
+2025-02-06,Normal,Kanto,Dark,Legendary,Ice,Ghost,Flying
+2025-02-07,Normal,Psychic,Poison,Partner,Water,Unova,Fire
+2025-02-08,Sponsored,Kanto,Sinnoh,Kalos,Dragon,Electric,Fairy
+2025-02-09,Normal,Alola,Mega,Dual Type,Ghost,Ice,Ground
+2025-02-10,Sponsored,Bug,Normal,Hoenn,Last Evo,Flying,Mono Type
+2025-02-11,Normal,Dragon,Fire,Poison,Paldea,Fighting,Johto
+2025-02-12,Normal,Grass,Steel,Psychic,Ground,Galar,Legendary
+2025-02-13,Normal,Water,Electric,Rock,No Evo,Fairy,Fossil
+2025-02-14,Sponsored,Poison,Dual Type,Partner,Grass,Kanto,First Evo
+2025-02-15,,,,,,,
+2025-02-16,Normal,Dark,Level Evo,Bug,Ground,Alola,Ice
+2025-02-17,Normal,Kalos,Sinnoh,Fairy,Trade Evo,Legendary,Poison
+2025-02-18,Normal,Rock,Fighting,Fire,Psychic,Dual Type,Kanto
+2025-02-19,Normal,Mono Type,Normal,Flying,Paldea,Johto,Electric
+2025-02-20,Normal,Gmax,Ice,Galar,Water,Steel,Grass
+2025-02-21,Normal,Unova,Dragon,Legendary,Ghost,Dark,Ground
+2025-02-22,Normal,Bug,Hoenn,Paldea,Rock,Psychic,Fighting
+2025-02-23,Sponsored,Normal,Last Evo,Item Evo,Legendary,Hisui,Dragon
+2025-02-24,Normal,Steel,Water,Fairy,Mythical,Mega,Electric
+2025-02-25,Normal,No Evo,Dark,Kanto,Grass,Flying,Poison
+2025-02-26,Normal,Unova,Fire,Ground,Bug,Dual Type,Partner
+2025-02-27,Sponsored,Legendary,Ghost,Psychic,Flying,Mega,Dark
+2025-02-28,Normal,Dragon,Paradox,Gmax,Fighting,Electric,Rock
+2025-03-01,Normal,Grass,Hoenn,Mono Type,Steel,Fairy,Mythical
+2025-03-02,Normal,Unova,Ice,Hisui,Psychic,Dark,Flying
+2025-03-03,Sponsored,Alola,Johto,Dual Type,Fairy,Fire,Legendary
+2025-03-04,Normal,Sinnoh,Fighting,Normal,Ghost,Electric,Baby
+2025-03-05,Normal,Water,Grass,First Evo,Hisui,Poison,Hoenn
+2025-03-06,Normal,Ground,Kalos,Mono Type,Dragon,Rock,Bug
+2025-03-07,Normal,Galar,Flying,Legendary,Fairy,Steel,Psychic
+2025-03-08,Normal,Mono Type,Hoenn,Ground,Water,No Evo,Level Evo
+2025-03-09,Normal,Fighting,First Evo,Ice,Grass,Dark,Paldea
+2025-03-10,Sponsored,Dual Type,No Evo,Last Evo,Psychic,Fire,Hisui
+2025-03-11,Normal,Hoenn,Kalos,Fairy,Poison,Ghost,Middle Evo
+2025-03-12,Normal,Sinnoh,Normal,Unova,Friend Evo,Electric,Grass
+2025-03-13,Normal,Rock,Ice,Kanto,Mono Type,Water,Dragon
+2025-03-14,Sponsored,Ghost,Dual Type,Grass,Legendary,Partner,Mythical
+2025-03-15,Normal,Mono Type,Paldea,Ground,No Evo,Last Evo,Rock
+2025-03-16,Normal,Poison,Hoenn,Middle Evo,Psychic,Steel,Bug
+2025-03-17,Sponsored,Mythical,Mega,Friend Evo,Mono Type,Sinnoh,Normal
+2025-03-18,Normal,Ghost,Dragon,Fighting,Dual Type,Alola,Fire
+2025-03-19,Sponsored,First Evo,No Evo,Mythical,Psychic,Rock,Mono Type
+2025-03-20,Normal,Electric,Water,Dark,Legendary,Galar,Hisui
+2025-03-21,Sponsored,Grass,First Evo,Mythical,Sinnoh,Dual Type,Fire
+2025-03-22,Sponsored,Normal,Ice,Dark,No Evo,Middle Evo,Item Evo
+2025-03-23,,,,,,,
+2025-03-24,,,,,,,
+2025-03-25,Normal,Flying,Grass,Ghost,Hisui,Partner,Legendary
+2025-03-26,Normal,Psychic,Electric,Water,Gmax,Ground,Johto
+2025-03-27,Normal,Rock,Normal,Dark,Kalos,Poison,Hoenn
+2025-03-28,Sponsored,Legendary,Trade Evo,Item Evo,Ghost,Dual Type,Sinnoh
+2025-03-29,Normal,Ice,Branched Evo,Fairy,Bug,Grass,Mono Type
+2025-03-30,Normal,Fire,Normal,Paldea,Psychic,Middle Evo,Ground
+2025-03-31,Sponsored,Electric,Level Evo,Last Evo,Johto,Fossil,Flying
+2025-04-01,Sponsored,Fire,Dual Type,Alola,Dark,Partner,Last Evo
+2025-04-02,Normal,Unova,Kalos,Rock,Bug,Water,Psychic
+2025-04-03,Normal,Baby,Normal,Hoenn,Electric,Fighting,Poison
+2025-04-04,Sponsored,Last Evo,Grass,Dual Type,Sinnoh,Item Evo,Psychic
+2025-04-05,Normal,Ground,Legendary,Fire,No Evo,Ghost,Dragon
+2025-04-06,Normal,Bug,First Evo,Rock,Fairy,Paldea,Ice
+2025-04-07,Sponsored,Mono Type,Dual Type,Hoenn,Normal,Dark,Psychic
+2025-04-08,Normal,Sinnoh,Grass,Galar,Steel,Water,Flying
+2025-04-09,Sponsored,Ghost,Poison,First Evo,Hisui,Mono Type,Kanto
+2025-04-10,Normal,Electric,Rock,Last Evo,Bug,Ground,Legendary
+2025-04-11,Sponsored,Unova,No Evo,Psychic,Normal,Fighting,Dual Type
+2025-04-12,Normal,Steel,Mono Type,Grass,Mythical,Rock,Dragon
+2025-04-13,Normal,Ground,Ice,Ghost,Flying,Kalos,Paldea
+2025-04-14,Sponsored,Hoenn,Unova,Last Evo,Earthquake,Dark,Dual Type
+2025-04-15,Normal,Poison,Level Evo,Psychic,Bug,Fire,Alola
+2025-04-16,Normal,No Evo,Last Evo,First Evo,Dual Type,Water,Mono Type
+2025-04-17,Normal,Mythical,Legendary,Ghost,Fairy,Fighting,Normal
+2025-04-18,Sponsored,Last Evo,Dark,First Evo,Dual Type,Mono Type,Partner
+2025-04-19,Normal,Electric,Fire,Ground,Item Evo,Bug,Hoenn
+2025-04-20,Normal,Kanto,Johto,Rock,Poison,Flying,Grass
+2025-04-21,Sponsored,Water,Mono Type,Kalos,Ghost,Fairy,Dragon
+2025-04-22,Normal,Dark,Unova,Hoenn,Ice,Fighting,Psychic
+2025-04-23,Sponsored,Water,Steel,Rock,First Evo,Middle Evo,Last Evo
+2025-04-24,Normal,Grass,Ghost,Fire,Poison,Mythical,Paldea
+2025-04-25,Sponsored,Fossil,Earthquake,Item Evo,Flying,Dual Type,Kalos
+2025-04-26,Normal,Dragon,Bug,Mono Type,Kanto,Ice,Fighting
+2025-04-27,Normal,Poison,Water,Normal,Sinnoh,Unova,Psychic
+2025-04-28,Sponsored,Fairy,Middle Evo,Dual Type,Dark,Friend Evo,Kalos
+2025-04-29,Normal,Fighting,Partner,Galar,Flying,Grass,Ghost
+2025-04-30,Sponsored,Kanto,Unova,Baby,Mono Type,Psychic,First Evo
+2025-05-01,Normal,Ground,Fossil,Legendary,Water,Dragon,Rock
+2025-05-02,Sponsored,Hoenn,Fairy,Johto,No Evo,Grass,Dual Type
+2025-05-03,Normal,Dark,Ghost,Bug,Steel,Alola,Mega
+2025-05-04,Normal,Unova,Flying,Mono Type,Fire,Poison,Level Evo
+2025-05-05,Sponsored,Mega,Branched Evo,Normal,Kanto,Dual Type,Psychic
+2025-05-06,Normal,Electric,Ice,Last Evo,Bug,Kalos,Ground
+2025-05-07,Normal,Ghost,Middle Evo,Steel,Alola,Paldea,Dual Type
+2025-05-08,Normal,Fire,Sinnoh,Dark,No Evo,Dragon,Partner
+2025-05-09,Normal,Normal,Fairy,Grass,Flying,Mono Type,Unova
+2025-05-10,Normal,Water,Johto,Hoenn,Fighting,Ice,Psychic
+2025-05-11,Normal,Ground,Paldea,Flying,Mono Type,Bug,Partner
+2025-05-12,Sponsored,Alola,Legendary,Unova,Electric,Dark,Dual Type
+2025-05-13,Normal,Kalos,Mega,Middle Evo,Steel,Dragon,Rock
+2025-05-14,Sponsored,Level Evo,First Evo,No Evo,Normal,Fighting,Grass
+2025-05-15,Normal,Water,Ice,Fairy,Electric,Sinnoh,Paldea
+2025-05-16,Sponsored,Normal,Fighting,Fire,Mono Type,Middle Evo,Last Evo
+2025-05-17,Normal,Hoenn,Dual Type,Grass,Bug,Partner,Mega
+2025-05-18,Normal,Psychic,Galar,Flamethrower,Branched Evo,Fairy,Ghost
+2025-05-19,Sponsored,First Evo,Dragon,Fire,Dual Type,Flying,Mono Type
+2025-05-20,Normal,Steel,Hoenn,Trade Evo,Ghost,Grass,Ground
+2025-05-21,Normal,Item Evo,Legendary,Dragon,Water,Electric,Fire
+2025-05-22,Normal,Fairy,Dual Type,Psychic,Paradox,Kanto,Friend Evo
+2025-05-23,Normal,Steel,Bug,Hoenn,Mono Type,Rock,Flying
+2025-05-24,Normal,Dark,Fire,Poison,Mega,Johto,Ground
+2025-05-25,Normal,Dragon,Paldea,Kalos,Ghost,Normal,Grass
+2025-05-26,,,,,,,
+2025-05-27,Normal,Flying,Ice,Alola,Rock,Electric,Legendary
+2025-05-28,Normal,Mega,Middle Evo,Ground,Water,Normal,Ghost
+2025-05-29,Normal,Partner,Fire,Dark,Grass,Kalos,Fighting
+2025-05-30,Sponsored,Rock,Fairy,Normal,Kanto,Paldea,Mega
+2025-05-31,Sponsored,Fairy,Water,Ground,Paradox,Legendary,Rock
+2025-06-01,Normal,Johto,Fossil,First Evo,Ice,Flying,Electric
+2025-06-02,Sponsored,Dual Type,Partner,Last Evo,Fighting,Paldea,Ground
+2025-06-03,Normal,Water,Legendary,Baby,Psychic,Hoenn,Poison
+2025-06-04,Normal,Mono Type,Gmax,Mega,Flying,Dark,Grass
+2025-06-05,Normal,Ultra,Electric,Ghost,Dual Type,Dragon,Steel
+2025-06-06,Normal,Grass,Ice,Partner,Galar,Flying,Water
+2025-06-07,Normal,Level Evo,Alola,Dark,Poison,Psychic,Ground
+2025-06-08,Normal,Kanto,Unova,Rock,Fire,Item Evo,Bug
+2025-06-09,Sponsored,Hoenn,Flamethrower,Grass,Dark,Mega,Legendary
+2025-06-10,Normal,Flying,Baby,Kalos,Fighting,Fairy,Electric
+2025-06-11,Normal,Water,Last Evo,Dragon,Dual Type,Mono Type,Hoenn
+2025-06-12,Normal,Paldea,No Evo,Grass,Ghost,Fighting,Ground
+2025-06-13,Sponsored,Dual Type,Mono Type,Psychic,Friend Evo,Bug,Baby
+2025-06-14,Sponsored,Partner,Hisui,Level Evo,Grass,Water,Fire
+2025-06-15,Normal,Steel,Legendary,Ground,Electric,Ghost,Mono Type
+2025-06-16,Sponsored,Flying,Dual Type,Mono Type,Hoenn,Fire,Normal
+2025-06-17,Normal,Water,Hisui,Galar,Dragon,Fighting,Poison
+2025-06-18,Normal,Johto,Alola,Level Evo,Dark,Partner,Fairy
+2025-06-19,Normal,Rock,Psychic,Ground,Steel,First Evo,Kalos
+2025-06-20,Sponsored,Ice,Water,Mono Type,Kanto,Hoenn,Sinnoh
+2025-06-21,Normal,Legendary,Dragon,Dark,Poison,Fighting,No Evo
+2025-06-22,Normal,Ultra,Flying,Grass,Dual Type,Bug,Flamethrower
+2025-06-23,Sponsored,Paldea,No Evo,Galar,Fairy,Ghost,Dragon
+2025-06-24,Normal,Psychic,Dark,Rock,Hisui,Hoenn,Ice
+2025-06-25,Normal,Fire,Dual Type,Level Evo,Kalos,Poison,Legendary
+2025-06-26,Normal,Ground,Middle Evo,Alola,Water,Electric,Flying
+2025-06-27,Normal,Last Evo,Normal,Ghost,Dragon,Fighting,Normal
+2025-06-28,Normal,Grass,Dual Type,Fire,Partner,Dark,Level Evo
+2025-06-29,Normal,Fighting,Kanto,Rock,Psychic,Mega,Flying
+2025-06-30,Normal,Legendary,Paldea,Mythical,Normal,Steel,Water
+2025-07-01,Normal,Flamethrower,Dragon,Poison,Kalos,Sinnoh,Alola
+2025-07-02,Sponsored,Unova,Fairy,Water,Mono Type,Item Evo,Psychic Move
+2025-07-03,Normal,Grass,Dual Type,Bug,Gmax,Fighting,Branched Evo
+2025-07-04,Normal,Fire,Dark,Razor Leaf,Paldea,Johto,Ghost
+2025-07-05,Normal,Steel,Legendary,Kalos,Rock,Electric,Psychic
+2025-07-06,Normal,Ice,Fossil,No Evo,Flying,Unova,Dragon
+2025-07-07,Sponsored,Mono Type,Middle Evo,Flamethrower,Fighting,Water,Ground
+2025-07-08,Normal,Hoenn,Poison,Kalos,Ghost,Fire,Dark
+2025-07-09,Sponsored,Steel,Mono Type,Dual Type,Galar,Legendary,No Evo
+2025-07-10,Normal,Flying,Normal,Grass,Dragon,Friend Evo,Alola
+2025-07-11,Sponsored,Level Evo,Sinnoh,Dual Type,Electric,Poison,Steel
+2025-07-12,Normal,Ground,Kalos,Johto,Normal,Dual Type,Partner
+2025-07-13,Normal,Middle Evo,Dragon,Ghost,Hoenn,Grass,Flying
+2025-07-14,Sponsored,No Evo,Ground,Psychic Move,Partner,Paldea,Steel
+2025-07-15,Normal,Sinnoh,Bug,Alola,Mono Type,Psychic,Fire
+2025-07-16,Sponsored,Dual Type,Rock,Grass,Unova,Hisui,Ground
+2025-07-17,Normal,Electric,Dragon,Flying,Fossil,Kalos,Water
+2025-07-18,Sponsored,Mono Type,Dual Type,Fairy,Paldea,Unova,Hoenn
+2025-07-19,Sponsored,Water,Rock,No Evo,Fossil,Johto,Mono Type
+2025-07-20,Normal,Kanto,Fighting,Galar,First Evo,Grass,Gmax
+2025-07-21,Normal,Last Evo,Level Evo,Ground,Kalos,Alola,Fire
+2025-07-22,Normal,Electric,Steel,Poison,Dragon,Dual Type,Sinnoh
+2025-07-23,Normal,Normal,Water,Mono Type,Kanto,Unova,Paldea
+2025-07-24,Sponsored,Dual Type,Flamethrower,Mono Type,Alola,No Evo,Psychic Move
+2025-07-25,Normal,Ground,Grass,Galar,Flying,Partner,Bug
+2025-07-26,Normal,Ghost,Rock,Dark,Poison,Kalos,First Evo
+2025-07-27,Normal,Fighting,Fire,Mega,Legendary,Hoenn,Psychic
+2025-07-28,Normal,Normal,Flying,Dual Type,Fairy,Dragon,Gmax
+2025-07-29,Normal,Last Evo,Electric,Dark,Galar,Water,Ice
+2025-07-30,Normal,Alola,Unova,Grass,Steel,Ghost,Poison
+2025-07-31,Normal,Normal,Legendary,Flying,Psychic Move,Psychic,No Evo
+2025-08-01,Sponsored,Partner,Mono Type,Dual Type,Kanto,Johto,Hoenn
+2025-08-02,Normal,Sinnoh,Fire,Fairy,Level Evo,Ghost,Dragon
+2025-08-03,Normal,Psychic,Electric,Fairy,First Evo,Steel,Mono Type
+2025-08-04,Sponsored,Rock,Branched Evo,Flying,Flamethrower,Dual Type,Bug
+2025-08-05,Normal,Ghost,Poison,Johto,No Evo,Dark,Legendary
+2025-08-06,Normal,Mono Type,Ground,Grass,Kalos,Alola,Galar
+2025-08-07,Normal,Psychic,Trade Evo,Fire,Bug,Fighting,Kanto
+2025-08-08,Sponsored,Sinnoh,Hoenn,Mega,Flying,Grass,Dragon
+2025-08-09,Normal,Ghost,Mono Type,Water,Mythical,Partner,Paldea
+2025-08-10,Normal,Paradox,Rock,Alola,Electric,Steel,Psychic
+2025-08-11,Sponsored,Fighting,Hoenn,Grass,Poison,Dark,Mega
+2025-08-12,Normal,Fire,Ghost,Dual Type,Hisui,Kalos,Ground
+2025-08-13,Sponsored,Paldea,Electric,Mono Type,Flamethrower,No Evo,First Evo
+2025-08-14,Normal,Psychic,Galar,Water,Branched Evo,Poison,Flying
+2025-08-15,Sponsored,Mono Type,Last Evo,Item Evo,Normal,Fighting,Psychic
+2025-08-16,Normal,Fire,Ground,Dual Type,Partner,Dark,Psychic Move
+2025-08-17,Normal,Baby,Fairy,Ground,Poison,Johto,Mono Type
+2025-08-18,Sponsored,Dragon,Dual Type,Sinnoh,Mega,Fossil,Fire
+2025-08-19,Normal,Fighting,Rock,Psychic,Bug,Gmax,Middle Evo
+2025-08-20,Sponsored,Flying,Fire,No Evo,Dragon,Kanto,Hoenn
+2025-08-21,Sponsored,Mono Type,Normal,Dual Type,Johto,Paldea,First Evo
+2025-08-22,Sponsored,Johto,Water,Grass,Partner,Dual Type,Last Evo
+2025-08-23,Sponsored,Mega,Last Evo,Item Evo,Fighting,Water,Poison
+2025-08-24,Sponsored,Grass,Mono Type,Dual Type,Unova,Kalos,Normal
+2025-08-25,Sponsored,Flying,Ground,Earthquake,Last Evo,Dual Type,Sinnoh
+2025-08-26,Normal,Hoenn,Electric,Flamethrower,Water,Trade Evo,Baby
+2025-08-27,Sponsored,Ghost,Grass,Normal,Dark,Fighting,Fairy
+2025-08-28,Normal,Galar,Dual Type,Poison,Rock,Bug,Gmax
+2025-08-29,Sponsored,Steel,Water,Psychic,Legendary,Unova,Fighting
+2025-08-30,Normal,Kanto,Paradox,Hoenn,Electric,Dragon,Ground
+2025-08-31,Normal,Flying,Sinnoh,Grass,Ghost,First Evo,Mono Type
+2025-09-01,Normal,Mega,Psychic,Johto,Rock,Fire,Ice
+2025-09-02,Normal,Fighting,Electric,Steel,Paldea,Alola,Bug
+2025-09-03,Normal,Psychic,Dual Type,Last Evo,Dragon,Water,Legendary
+2025-09-04,Normal,Dark,Fairy,Flamethrower,Poison,Galar,Mono Type
+2025-09-05,Sponsored,Last Evo,Partner,Ground,Dual Type,Unova,Shadow Ball
+2025-09-06,Normal,Flying,Bug,Legendary,Johto,Rock,Grass
+2025-09-07,Normal,Alola,Fighting,Fairy,Mythical,Normal,Item Evo
+2025-09-08,Sponsored,Kanto,Dual Type,Sinnoh,Water,First Evo,Dragon
+2025-09-09,Normal,Rock,Gmax,Ground,Steel,Fire,Mono Type
+2025-09-10,Normal,Flying,Fighting,Grass,Psychic,Partner,Sinnoh
+2025-09-11,Sponsored,Flying,Kalos,Dual Type,No Evo,Electric,Fossil
+2025-09-12,Normal,Dragon,Water,Dark,Ghost,Hisui,Alola
+2025-09-13,Normal,Gmax,Grass,Mono Type,Poison,Fighting,Electric
+2025-09-14,Normal,Johto,Flying,Hoenn,Fairy,Friend Evo,Normal
+2025-09-15,Sponsored,Dual Type,Mono Type,Legendary,Alola,Kanto,Galar
+2025-09-16,Normal,Sinnoh,Ground,Item Evo,Ghost,Dark,Rock
+2025-09-17,Sponsored,Mono Type,Dragon,Legendary,Fire,Poison,Ice
+2025-09-18,Normal,Baby,Trade Evo,Hoenn,Psychic,Electric,Fighting
+2025-09-19,Sponsored,Dual Type,Flamethrower,Mono Type,Level Evo,Last Evo,Kanto
+2025-09-20,Normal,Johto,Ground,Ghost,Mega,Partner,Flying
+2025-09-21,Normal,Electric,Psychic,Paldea,Steel,Legendary,Ice
+2025-09-22,Sponsored,Flying,Hoenn,Earthquake,No Evo,Razor Leaf,Grass
+2025-09-23,Normal,Unova,Middle Evo,Water,Ground,Poison,Dark
+2025-09-24,Sponsored,Dual Type,Mono Type,Flamethrower,Partner,Grass,Ultra
+2025-09-25,Normal,Bug,Fighting,Galar,Poison,Gmax,Last Evo
+2025-09-26,Sponsored,Grass,Water,Psychic,Kalos,Mega,Paradox
+2025-09-27,Normal,Rock,Normal,Ghost,Paldea,Unova,Fairy
+2025-09-28,Normal,Steel,Ground,Ice,Galar,Hoenn,Legendary
+2025-09-29,Sponsored,Mono Type,Alola,Dark,Fire,Dragon,Grass
+2025-09-30,Normal,Flamethrower,Electric,Mega,Bug,Flying,Fighting
+2025-10-01,Sponsored,Dual Type,Mono Type,Water,Fairy,Paldea,Dark
+2025-10-02,Normal,Grass,Rock,Ghost,Steel,Galar,Not Fully Evo
+2025-10-03,Sponsored,Dual Type,Mono Type,First Evo,Johto,Poison,Fairy
+2025-10-04,Normal,Ground,Ice,Fire,Mega,Flying,Item Evo
+2025-10-05,Normal,Grass,Electric,Water,Dragon,No Evo,Flamethrower
+2025-10-06,Sponsored,Fighting,Fairy,Fire,Paradox,Last Evo,Psychic
+2025-10-07,Normal,Bug,Ghost,Sinnoh,Trade Evo,Mono Type,Poison
+2025-10-08,Sponsored,Electric,Paradox,Dark,Paldea,Flamethrower,Dragon
+2025-10-09,Normal,Ground,Fighting,Gmax,Grass,Dual Type,Normal
+2025-10-10,Sponsored,Johto,Mega,Grass,Bug,Normal,Psychic
+2025-10-11,Normal,Middle Evo,Level Evo,Rock,Flying,Electric,Fairy
+2025-10-12,Normal,Fire,Ice,Dragon,Hoenn,Legendary,Mono Type
+2025-10-13,Sponsored,Dual Type,Normal,Hisui,Flamethrower,No Evo,Item Evo
+2025-10-14,Normal,Water,Steel,Dark,Psychic,Paradox,Kalos
+2025-10-15,,,,,,,
+2025-10-16,Normal,Fighting,Rock,Ghost,Steel,Hoenn,Alola
+2025-10-17,Sponsored,Hoenn,Not Fully Evo,Dual Type,First Evo,Grass,Partner
+2025-10-18,Normal,Water,Dragon,Dark,Unova,Ground,Galar
+2025-10-19,Normal,Fighting,Legendary,Ghost,No Evo,Poison,Psychic
+2025-10-20,Sponsored,Calm Mind,Dual Type,Mono Type,Kanto,Last Evo,Grass
+2025-10-21,Normal,Flying,Alola,Johto,Ground,Steel,Bug
+2025-10-22,Normal,Grass,Unova,Mega,Fairy,Normal,Psychic
+2025-10-23,Normal,Ice,Fighting,Legendary,Kalos,Not Fully Evo,Dragon
+2025-10-24,Sponsored,Flying,Ghost,Dark,Fire,Ground,Grass
+2025-10-25,Normal,Bug,Electric,Sinnoh,Water,Rock,Dual Type
+2025-10-26,Normal,Normal,Paldea,Steel,No Evo,Psychic,Fairy
+2025-10-27,Normal,Ground,Poison,Dragon,Grass,Psychic,Fairy
+2025-10-28,Normal,Psychic Move,Bug,Galar,Item Evo,Branched Evo,Electric
+2025-10-29,Normal,Partner,Water,Sinnoh,Flying,Dark,Fighting
+2025-10-30,Normal,Gmax,Rock,Level Evo,Fire,Dual Type,Grass
+2025-10-31,Sponsored,Flamethrower,Kanto,Johto,First Evo,Psychic,Flying
+2025-11-01,Sponsored,Mega,Last Evo,Psychic,Psychic Move,Dual Type,Mono Type
+2025-11-02,Normal,Galar,Poison,Middle Evo,Ground,Water,Ghost
+2025-11-03,Sponsored,Trade Evo,Psychic,Kanto,Water,Dual Type,Flamethrower
+2025-11-04,Normal,Alola,Dragon,Bug,Fire,Flying,First Evo
+2025-11-05,Sponsored,Not Fully Evo,Last Evo,Mono Type,Paldea,Normal,Water
+2025-11-06,Normal,Rock,Fairy,Middle Evo,Poison,Steel,Galar
+2025-11-07,Sponsored,Dual Type,Mono Type,Last Evo,Dark,Bug,Alola
+2025-11-08,Normal,Dragon,Branched Evo,Partner,Hoenn,Kanto,Water
+2025-11-09,Normal,Fire,Psychic,Electric,Unova,Fighting,Kalos
+2025-11-10,Sponsored,Mono Type,No Evo,Earthquake,Rock,Hoenn,Legendary
+2025-11-11,Normal,Bug,Steel,Dragon,Paldea,Alola,Ground
+2025-11-12,Sponsored,Unova,Not Fully Evo,Last Evo,Water,Normal,Mono Type
+2025-11-13,Normal,Rock,Ghost,Kanto,Fairy,Grass,Legendary
+2025-11-14,Sponsored,No Evo,Dual Type,Mono Type,Ground,Electric,Razor Leaf
+2025-11-15,Normal,Dark,Steel,Normal,Fighting,First Evo,Galar
+2025-11-16,Normal,Psychic,Partner,Alola,Fire,Poison,Fairy
+2025-11-17,Sponsored,Johto,Sinnoh,Dual Type,Baby,Water,Flying
+2025-11-18,Normal,Normal,Mono Type,Fighting,Dragon,Item Evo,Mythical
+2025-11-19,Sponsored,Electric,Fire,Dual Type,Sinnoh,Grass,Flying
+2025-11-20,Normal,Rock,Fairy,Bug,Unova,Water,Galar
+2025-11-21,Sponsored,Kalos,Hoenn,Sinnoh,Fighting,Dragon,Psychic
+2025-11-22,Normal,Ice,Dark,Mega,Johto,Mono Type,Psychic Move
+2025-11-23,Normal,Steel,Unova,Ground,Not Fully Evo,Ghost,Grass
+2025-11-24,Sponsored,Dragon,Dual Type,Hoenn,Mega,Middle Evo,Fossil
+2025-11-25,Normal,No Evo,Mono Type,Fighting,Partner,Flying,Alola
+2025-11-26,Normal,Galar,Ice,Kanto,Psychic,Water,Electric
+2025-11-27,Normal,Bug,Fairy,Poison,Level Evo,Grass,Dual Type
+2025-11-28,Sponsored,Mega,Dual Type,Mono Type,Dark,Unova,Kalos
+2025-11-29,Normal,Dragon,Alola,Sinnoh,Normal,Ghost,Steel
+2025-11-30,Sponsored,Last Evo,Water,Not Fully Evo,Dual Type,Mono Type,Ground
+2025-12-01,Sponsored,Dual Type,No Evo,Mono Type,Unova,Fairy,Legendary
+2025-12-02,Normal,Flying,Grass,Dark,Item Evo,Fire,Partner
+2025-12-03,Normal,Poison,Ghost,First Evo,Hisui,Fighting,Water
+2025-12-04,Normal,Paldea,Mono Type,Rock,Psychic,Ground,Steel
+2025-12-05,Sponsored,Dual Type,Johto,Sinnoh,Baby,Water,No Evo
+2025-12-06,Normal,Flying,First Evo,Dragon,Kalos,Grass,Galar
+2025-12-07,Normal,Fairy,Bug,Paradox,Psychic,Electric,Paldea
+2025-12-08,Sponsored,Dual Type,No Evo,Last Evo,Kalos,Dragon,Ice
+2025-12-09,Normal,Johto,Alola,Kanto,Partner,Rock,Poison
+2025-12-10,Sponsored,Psychic Move,Mono Type,No Evo,Hoenn,Normal,Mythical
+2025-12-11,Normal,Poison,Ground,Dragon,Ghost,Sinnoh,Item Evo
+2025-12-12,Sponsored,Johto,Dual Type,Hoenn,Water,Legendary,Mega
+2025-12-13,Normal,Fire,Bug,Hisui,Flying,Level Evo,Rock
+2025-12-14,Normal,Poison,Psychic,Water,Not Fully Evo,Dragon,Galar
+2025-12-15,Sponsored,Fairy,Dark,Electric,Item Evo,Dual Type,Paradox
+2025-12-16,Normal,Unova,Sinnoh,Johto,Bug,Normal,Mono Type
+2025-12-17,Normal,Flying,Level Evo,Grass,Steel,Kanto,Psychic
+2025-12-18,Normal,Ghost,Poison,Kalos,Fighting,Legendary,Fairy
+2025-12-19,Normal,Rock,Dragon,Bug,Electric,Mega,Gmax
+2025-12-20,Sponsored,Fairy,Ground,Fighting,Water,Steel,Mega
+2025-12-21,Normal,Poison,Normal,Ice,Mono Type,Level Evo,Psychic
+2025-12-22,Sponsored,Water,Last Evo,Ghost,Sinnoh,Partner,Galar
+2025-12-23,Normal,Paradox,Middle Evo,Grass,Dragon,Rock,Fire
+2025-12-24,Normal,Dark,Electric,Fairy,Alola,Hoenn,First Evo
+2025-12-25,Normal,Hisui,Fighting,Mega,Psychic,Normal,Legendary
+2025-12-26,Sponsored,Dual Type,Middle Evo,Grass,Bug,Kanto,Water
+2025-12-27,Normal,Partner,Dragon,Fire,Not Fully Evo,Ground,Flying
+2025-12-28,Normal,Fighting,Psychic,Poison,Unova,Grass,Dual Type
+2025-12-29,Sponsored,Kanto,Last Evo,Level Evo,Partner,Water,Mono Type
+2025-12-30,Normal,Poison,Psychic,Steel,Rock,Johto,Galar
+2025-12-31,Normal,Kalos,Hoenn,Mythical,Grass,Dual Type,Fighting
+2026-01-01,Normal,Fire,Dark,Fairy,Paldea,Unova,Ghost
+2026-01-02,Sponsored,Mono Type,Dual Type,Legendary,Kanto,Hoenn,Sinnoh
+2026-01-03,Normal,Galar,Kalos,Water,Ghost,Dragon,Fairy
+2026-01-04,Normal,Johto,Normal,Hisui,Flying,Dark,Not Fully Evo
+2026-01-05,Sponsored,Thunderbolt,Legendary,Dual Type,Electric,Unova,Earthquake
+2026-01-06,Normal,Branched Evo,Poison,Ice,Psychic,Hoenn,Kanto
+2026-01-07,Sponsored,Grass,Level Evo,No Evo,Water,Mono Type,Unova
+2026-01-08,Normal,Flying,Steel,Ground,Dual Type,Ghost,Paldea
+2026-01-09,Sponsored,Fighting,Mono Type,Normal,First Evo,Legendary,Mega
+2026-01-10,Sponsored,Psychic,Legendary,Last Evo,Rock,Steel,Ice
+2026-01-11,Normal,Dual Type,Dragon,Hisui,Poison,Grass,Ghost
+2026-01-12,Sponsored,Last Evo,Hoenn,Mono Type,Water,Psychic,Normal
+2026-01-13,Normal,Sinnoh,Kalos,Alola,Rock,Ice,Electric
+2026-01-14,Normal,Not Fully Evo,Flying,Unova,Ground,Bug,Steel
+2026-01-15,Normal,Dark,Galar,Item Evo,Grass,Ghost,Poison
+2026-01-16,Sponsored,Johto,No Evo,Mega,Bug,Dual Type,Fighting
+2026-01-17,Normal,Dragon,Fossil,Fairy,Flying,Sinnoh,Water
+2026-01-18,Normal,Ghost,Galar,Poison,Level Evo,Psychic,Ground
+2026-01-19,Sponsored,Bug,Hoenn,Flying,Mono Type,Friend Evo,Item Evo
+2026-01-20,Normal,Fire,Fairy,Fighting,Rock,Mythical,Dual Type
+2026-01-21,Sponsored,Galar,Poison,Unova,Water,Dark,Dragon
+2026-01-22,Normal,Flying,Normal,Psychic,Sinnoh,Gmax,Grass
+2026-01-23,Sponsored,Dual Type,Steel,Mono Type,No Evo,Not Fully Evo,Johto
+2026-01-24,Normal,Ghost,Dark,Kanto,Water,Legendary,Last Evo
+2026-01-25,Normal,Rock,Ground,Poison,Hoenn,Paldea,Bug
+2026-01-26,Sponsored,Unova,Hoenn,Sinnoh,Ice,Dragon,Normal
+2026-01-27,Normal,Mythical,Dual Type,Fairy,Steel,Kalos,Psychic
+2026-01-28,Normal,Level Evo,Flying,Last Evo,Mono Type,Sinnoh,Ground
+2026-01-29,Normal,Partner,Middle Evo,Grass,Fighting,Fire,Dark
+2026-01-30,Normal,Dual Type,Item Evo,Water,Dragon,Electric,Fairy
+2026-01-31,Normal,Rock,Psychic,Ghost,Unova,Mono Type,Steel
+2026-02-01,Normal,Fire,Bug,Flying,Galar,Hoenn,Fighting
+2026-02-02,Sponsored,Mono Type,Dual Type,Johto,Normal,First Evo,Legendary
+2026-02-03,Normal,Ice,Paldea,Hisui,Item Evo,Dark,Psychic
+2026-02-04,Normal,Ghost,Kalos,Hoenn,Dual Type,Legendary,Mono Type
+2026-02-05,Normal,Electric,Water,Grass,Alola,Bug,Middle Evo
+2026-02-06,Normal,Normal,First Evo,Last Evo,Johto,Mono Type,Dual Type
+2026-02-07,Normal,Psychic,Galar,Psychic Move,Fairy,Fighting,Branched Evo
+2026-02-08,Normal,Ice,Water,Steel,Sinnoh,Flying,Kalos
+2026-02-09,Normal,Dark,Grass,Fire,Unova,Ghost,Legendary
+2026-02-10,Normal,Kanto,Dual Type,Poison,Friend Evo,Ground,Psychic
+2026-02-11,Sponsored,Partner,Normal,Not Fully Evo,Johto,Sinnoh,Kalos
+2026-02-12,Normal,Rock,Mono Type,Flying,Fairy,Fighting,Gmax
+2026-02-13,Sponsored,Kalos,Legendary,Kanto,Grass,Dragon,Psychic
+2026-02-14,Normal,Water,Steel,Last Evo,Hoenn,Ghost,Ground
+2026-02-15,Normal,Galar,Alola,Fire,Flying,Rock,Middle Evo
+2026-02-16,Sponsored,Dual Type,Last Evo,Mega,Dragon,Ice,Sinnoh
+2026-02-17,Normal,Paradox,Paldea,Dark,Fighting,Water,Psychic
+2026-02-18,Sponsored,Alola,Mono Type,Grass,Last Evo,Legendary,No Evo
+2026-02-19,Normal,Water,Ghost,Dual Type,Poison,Hisui,Partner
+2026-02-20,Normal,Psychic,Not Fully Evo,Paradox,Rock,Dragon,Fire
+2026-02-21,Normal,Unova,Flying,Paldea,Normal,Ice,Bug
+2026-02-22,Normal,Fairy,Fighting,Water,Grass,Level Evo,Galar
+2026-02-23,Sponsored,Mono Type,Dual Type,Alola,Bug,Fire,Ghost
+2026-02-24,Normal,Dark,Ground,Rock,Poison,Hoenn,Legendary
+2026-02-25,Sponsored,Last Evo,Water,Middle Evo,Level Evo,Johto,Partner
+2026-02-26,Normal,Mega,Normal,Grass,Alola,Mono Type,Mythical
+2026-02-27,Sponsored,Hoenn,Unova,Dragon,Dark,Dual Type,Legendary
+2026-02-28,Normal,Paldea,Bug,Sinnoh,Psychic,Fighting,Poison
+2026-03-01,Normal,Middle Evo,Electric,Johto,Ground,Ice,Fairy
+2026-03-02,Sponsored,Steel,Unova,Mega,Fairy,Mythical,Legendary
+2026-03-03,Normal,Fire,Galar,Paradox,Dragon,Dark,Grass
+2026-03-04,Normal,Alola,Ghost,Fighting,Dual Type,Last Evo,Legendary
+2026-03-05,Normal,Unova,Ground,Flying,Bug,First Evo,Water
+2026-03-06,Normal,Dragon,No Evo,Sinnoh,Ice,Electric,Normal
+2026-03-07,Normal,Poison,Dark,Steel,Middle Evo,Mono Type,Grass
+2026-03-08,Normal,Fighting,Rock,Branched Evo,Psychic,Galar,Hoenn
+2026-03-09,Normal,Last Evo,Mega,Ground,Unova,Kanto,Normal
+2026-03-10,Normal,No Evo,Kalos,Dual Type,Grass,Electric,Psychic
+2026-03-11,Sponsored,Kanto,Hoenn,Normal,Mono Type,First Evo,Not Fully Evo
+2026-03-12,Normal,Poison,Dragon,Item Evo,Hisui,Level Evo,Fighting
+2026-03-13,Sponsored,First Evo,Last Evo,Kanto,Mono Type,Dual Type,Partner
+2026-03-14,Sponsored,Normal,Sinnoh,Dual Type,First Evo,Middle Evo,No Evo
+2026-03-15,Normal,Electric,Flying,Fairy,Gmax,Hoenn,Water
+2026-03-16,Sponsored,Dark,Dragon,Dual Type,Fire,Mega,Sinnoh
+2026-03-17,Normal,Grass,Unova,Mono Type,Steel,Ghost,Psychic
+2026-03-18,Normal,Water,Ground,Fairy,Johto,Item Evo,Legendary
+2026-03-19,Normal,Mono Type,Fire,Electric,Fighting,Rock,Alola
+2026-03-20,Sponsored,Flying,Last Evo,Dark,Dragon,Partner,Sinnoh
+2026-03-21,Normal,Ghost,Bug,Steel,Psychic,Dual Type,Galar
+2026-03-22,Normal,Fairy,Kanto,Johto,Poison,Level Evo,Trade Evo
+2026-03-23,Sponsored,Fighting,Dragon,Bug,Ultra,Mono Type,Hoenn
+2026-03-24,Normal,Kalos,Flying,Fossil,Dual Type,Ice,Rock
+2026-03-25,Normal,Fairy,Water,Dark,Paldea,Grass,Mythical
+2026-03-26,Normal,No Evo,Steel,Alola,Ultra,Fighting,Ghost
+2026-03-27,Sponsored,Hoenn,Not Fully Evo,Dual Type,Water,Bug,Ground
+2026-03-28,Sponsored,Psychic,Galar,Unova,Item Evo,Poison,Dragon
+2026-03-29,Normal,Fighting,Electric,Normal,First Evo,Kanto,Johto
+2026-03-30,Sponsored,Dual Type,Mega,Mono Type,Water,Kalos,Dragon
+2026-03-31,Normal,Steel,Flying,Psychic,Alola,Not Fully Evo,Paldea
+2026-04-01,Normal,Grass,Dual Type,Rock,Electric,Fighting,Johto
+2026-04-01,Bonus,Razor Leaf,Fire,Fighting,Baby,Levitate,Ultra
+2026-04-02,Normal,Fairy,Water,Ice,Item Evo,Galar,Kanto
+2026-04-03,Sponsored,Johto,Middle Evo,Mega,Bug,Poison,Steel
+2026-04-04,Normal,Mono Type,Hoenn,Flying,First Evo,Psychic,Fire
+2026-04-05,Normal,Fighting,Dragon,Item Evo,Dark,Poison,Sinnoh
+2026-04-06,Sponsored,Not Fully Evo,No Evo,First Evo,Mono Type,Ice,Dual Type
+2026-04-07,Normal,Alola,Water,Paldea,Ghost,Partner,Fairy
+2026-04-08,Sponsored,Hoenn,Mono Type,Dual Type,Bug,Level Evo,Psychic
+2026-04-09,Normal,Rock,Legendary,Galar,Fire,Steel,Flying
+2026-04-10,Normal,Mythical,Alola,Poison,Grass,Water,Mono Type
+2026-04-11,Normal,Dragon,Steel,Paldea,Fighting,Dual Type,Psychic
+2026-04-12,Normal,Normal,Ghost,Ground,Level Evo,Dark,Sinnoh
+2026-04-13,Sponsored,First Evo,Johto,Galar,Fire,Psychic,Poison
+2026-04-14,Normal,Mono Type,Grass,Kanto,Electric,Branched Evo,Water
+2026-04-15,Sponsored,Item Evo,Galar,Fossil,Ice,Dragon,Rock
+2026-04-16,Normal,Mega,Unova,Flying,Dark,Normal,Fairy
+2026-04-17,Sponsored,Grass,Ghost,Legendary,Paldea,Mono Type,Dual Type
+2026-04-18,Sponsored,Mono Type,Dual Type,No Evo,Hoenn,Legendary,Fire
+2026-04-19,Normal,Rock,Water,Ground,Not Fully Evo,Paradox,Paldea
+2026-04-20,Normal,Sinnoh,Electric,Kalos,Fairy,Dragon,Fighting
+2026-04-21,Normal,Psychic,Johto,Kanto,Grass,Mono Type,Mega
+2026-04-22,Sponsored,First Evo,Legendary,Last Evo,Fire,Dragon,Ice
+2026-04-23,Normal,Hoenn,Unova,Rock,Flying,Steel,Poison
+2026-04-24,Sponsored,Mega,Ground,No Evo,Dragon,Paldea,Water
+2026-04-25,Normal,Grass,Last Evo,Legendary,Fighting,Electric,Normal
+2026-04-26,Normal,Rock,Mono Type,Psychic,Fairy,Kalos,Galar

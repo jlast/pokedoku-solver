@@ -11,6 +11,7 @@
     "build:puzzle-statistics-lambda": "mkdir -p dist-lambda && npx esbuild terraform/lambda/puzzle-statistics.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile=dist-lambda/puzzle-statistics.js",
     "package:puzzle-statistics-lambda": "npm run build:puzzle-statistics-lambda && zip -j dist-lambda/puzzle-statistics.zip dist-lambda/puzzle-statistics.js",
     "fetch-today-puzzle": "tsx scripts/fetch-today-puzzle.ts",
+    "import-puzzles": "tsx scripts/import-puzzles.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "fetch-pokemon": "tsx scripts/fetch.ts",

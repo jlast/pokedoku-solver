@@ -13,6 +13,7 @@ dist-lambda
 dist-ssr
 *.local
 public/today-puzzle.json
+data
 
 # Editor directories and files
 .vscode/*
