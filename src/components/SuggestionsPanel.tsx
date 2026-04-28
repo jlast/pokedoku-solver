@@ -85,8 +85,8 @@ export function SuggestionsPanel({
           </div>
         </div>
         <div className="pokemon-list">
-          {sortedPokemon.length > 0 ? (
-            sortedPokemon.map((p) => (
+          {sortedPokemon?.length && sortedPokemon?.length > 0 ? (
+            sortedPokemon?.map((p) => (
               <button
                 key={`${p.id}-${p.name}`}
                 className="pokemon-item"
