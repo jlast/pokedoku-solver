@@ -152,7 +152,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
 
       <div className="main-content">
         <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
-          Tap a square to begin
+          Tap a square to see matching Pokémon
         </p>
         <Grid
           cells={grid.cells}
