@@ -154,10 +154,15 @@ jobs:
             exit 1
           fi
 
+          echo "Target Lambda ARN: ${FUNCTION_ARN}"
+
           CURRENT_CONFIG=$(aws s3api get-bucket-notification-configuration --bucket "${{ secrets.S3_BUCKET_NAME }}" --output json)
           if [ -z "${CURRENT_CONFIG}" ]; then
             CURRENT_CONFIG='{}'
           fi
+
+          echo "Current S3 notification config:"
+          echo "${CURRENT_CONFIG}" | jq '.'
 
           UPDATED_CONFIG=$(jq -c --arg function_arn "${FUNCTION_ARN}" '
             .LambdaFunctionConfigurations = (
@@ -183,7 +188,8 @@ jobs:
             exit 1
           fi
 
-          echo "Notification config size: ${#UPDATED_CONFIG}"
+          echo "Updated S3 notification config:"
+          echo "${UPDATED_CONFIG}" | jq '.'
 
           REQUEST_FILE=$(mktemp)
           jq -n \
@@ -191,10 +197,17 @@ jobs:
             --argjson config "${UPDATED_CONFIG}" \
             '{Bucket: $bucket, NotificationConfiguration: $config}' > "${REQUEST_FILE}"
 
+          echo "Request being sent to S3:"
+          cat "${REQUEST_FILE}" | jq '.'
+
           aws s3api put-bucket-notification-configuration \
             --cli-input-json "file://${REQUEST_FILE}"
 
+          echo "Notification configuration set successfully"
           rm -f "${REQUEST_FILE}"
+
+          # Add a brief delay to allow AWS to process the change
+          sleep 2
 
       - name: Verify puzzle statistics S3 notification
         env:
@@ -217,6 +230,9 @@ jobs:
                 FilterRules: (.Filter.Key.FilterRules // [])
               })
           ' <<< "${CONFIG}"
+
+          echo "Full current config:"
+          jq '.' <<< "${CONFIG}"
 
           if ! jq -e --arg function_arn "${FUNCTION_ARN}" '
             (.LambdaFunctionConfigurations // [])
