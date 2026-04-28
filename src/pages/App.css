@@ -389,13 +389,6 @@ header .pokemon-count {
   overflow-y: visible;
 }
 
-@media (min-width: 900px) {
-  .suggestions-panel {
-    margin-top: 0;
-    max-height: none;
-  }
-}
-
 .suggestions-panel h3 {
   margin: 0 0 12px;
   font-size: 1rem;
