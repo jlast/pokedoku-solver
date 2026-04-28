@@ -189,7 +189,7 @@ export default function PuzzleStatsApp() {
                 <li key={item.formId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
                   <div className="flex items-center gap-3">
                     {pokemon?.sprite ? (
-                      <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md bg-slate-100 p-1" loading="lazy" />
+                      <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md" loading="lazy" />
                     ) : (
                       <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-500">#{item.formId}</div>
                     )}
