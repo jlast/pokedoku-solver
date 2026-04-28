@@ -6,7 +6,7 @@ import { CategoryList, type CategoryCount } from "../components/puzzle-stats/Cat
 import { PairList, type CategoryPair } from "../components/puzzle-stats/PairList";
 import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { trackEvent } from "../utils/analytics";
-import { CATEGORY_TYPE_COLORS, CATEGORY_TYPE_LABELS } from "../utils/constants";
+import { CATEGORY_TYPE_COLORS, CATEGORY_TYPE_LABELS, TYPE_COLORS } from "../utils/constants";
 import "./App.css";
 import "../index.css";
 
@@ -18,6 +18,20 @@ interface PuzzleStatsResponse {
   };
   categoryCounts: CategoryCount[];
   categoryPairs: CategoryPair[];
+  pokemonLastUsable: PokemonLastUsable[];
+}
+
+interface PokemonLastUsable {
+  formId: number;
+  lastUsableDate: string | null;
+  daysSinceLastUsable: number | null;
+}
+
+interface PokemonListEntry {
+  formId?: number;
+  name: string;
+  sprite?: string;
+  types?: string[];
 }
 
 
@@ -56,28 +70,39 @@ function topByCount<T>(items: T[], getCount: (item: T) => number, getLabel: (ite
     .slice(0, 5);
 }
 
-function bottomByCount<T>(items: T[], getCount: (item: T) => number, getLabel: (item: T) => string): T[] {
-  return [...items]
-    .sort((a, b) => getCount(a) - getCount(b) || getLabel(a).localeCompare(getLabel(b)))
-    .slice(0, 5);
-}
-
-
 export default function PuzzleStatsApp() {
   const [stats, setStats] = useState<PuzzleStatsResponse | null>(null);
+  const [pokemonByFormId, setPokemonByFormId] = useState<Map<number, PokemonListEntry>>(new Map());
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     trackEvent("view_puzzle_stats_page");
 
-    fetch("/data/runtime/puzzle-stats.json?t=" + Date.now())
-      .then((res) => {
-        if (!res.ok) {
+    Promise.all([
+      fetch("/data/runtime/puzzle-stats.json?t=" + Date.now()),
+      fetch("/data/pokemon.json?t=" + Date.now()),
+    ])
+      .then(async ([statsRes, pokemonRes]) => {
+        if (!statsRes.ok) {
           throw new Error("Failed to load puzzle statistics");
         }
-        return res.json() as Promise<PuzzleStatsResponse>;
+        if (!pokemonRes.ok) {
+          throw new Error("Failed to load pokemon list");
+        }
+
+        const statsData = (await statsRes.json()) as PuzzleStatsResponse;
+        const pokemonData = (await pokemonRes.json()) as PokemonListEntry[];
+        const lookup = new Map<number, PokemonListEntry>();
+
+        for (const entry of pokemonData) {
+          if (typeof entry.formId === "number") {
+            lookup.set(entry.formId, entry);
+          }
+        }
+
+        setPokemonByFormId(lookup);
+        setStats(statsData);
       })
-      .then((data) => setStats(data))
       .catch((err: unknown) => {
         const message = err instanceof Error ? err.message : "Unknown error";
         setError(message);
@@ -93,16 +118,18 @@ export default function PuzzleStatsApp() {
       (item) => item.categoryId,
     );
 
-    const leastCommonCategories = bottomByCount(
-      stats.categoryCounts,
-      (item) => item.count,
-      (item) => item.categoryId,
-    );
-
     const pairLabel = (pair: CategoryPair) => `${pair.categories[0]}||${pair.categories[1]}`;
 
     const mostCommonPairs = topByCount(stats.categoryPairs, (item) => item.count, pairLabel);
-    const leastCommonPairs = bottomByCount(stats.categoryPairs, (item) => item.count, pairLabel);
+    const oldestVisiblePokemon = [...stats.pokemonLastUsable]
+      .filter((item) => item.lastUsableDate !== null)
+      .sort((a, b) => {
+        if (a.daysSinceLastUsable === null && b.daysSinceLastUsable === null) return 0;
+        if (a.daysSinceLastUsable === null) return 1;
+        if (b.daysSinceLastUsable === null) return -1;
+        return b.daysSinceLastUsable - a.daysSinceLastUsable || a.formId - b.formId;
+      })
+      .slice(0, 5);
 
     const totalPairCombinations = stats.categoryPairs.length;
     const totalPairOccurrences = stats.categoryPairs.reduce((sum, item) => sum + item.count, 0);
@@ -142,9 +169,8 @@ export default function PuzzleStatsApp() {
 
     return {
       mostCommonCategories,
-      leastCommonCategories,
+      oldestVisiblePokemon,
       mostCommonPairs,
-      leastCommonPairs,
       categoryTypeBreakdown,
       categoryTypeTotal,
       totalCategoryCount: total,
@@ -192,16 +218,54 @@ export default function PuzzleStatsApp() {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
+
+        <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
+          <h2 className="mb-3 text-xl">Waiting the Longest</h2>
+          <p className="mb-2 text-sm text-slate-600">Pokémon still not usable after all this time</p>
+          <ul className="m-0 grid list-none gap-2 p-0">
+            {derived.oldestVisiblePokemon.map((item) => {
+              const pokemon = pokemonByFormId.get(item.formId);
+              return (
+                <li key={item.formId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+                  <div className="flex items-center gap-3">
+                    {pokemon?.sprite ? (
+                      <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md bg-slate-100 p-1" loading="lazy" />
+                    ) : (
+                      <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-500">#{item.formId}</div>
+                    )}
+                    <div>
+                      <p className="m-0 font-semibold text-slate-900">{pokemon?.name ?? "Unknown Pokemon"}</p>
+                      {pokemon?.types?.length ? (
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {pokemon.types.map((type) => (
+                            <span key={`${item.formId}-${type}`} className="type-badge" style={{ backgroundColor: TYPE_COLORS[type] }}>
+                              {type}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="m-0 text-xs text-slate-500">Types: Unknown</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="m-0 text-sm font-semibold text-slate-800">
+                      {item.lastUsableDate ? formatDate(item.lastUsableDate) : "Never"}
+                    </p>
+                    <p className="m-0 text-xs text-slate-500">
+                      {item.daysSinceLastUsable === null ? "No match yet" : `${item.daysSinceLastUsable}d ago`}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </article>
+        
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
           <h2 className="mb-3 text-xl">Most common categories (top 5)</h2>
           <p className="mb-2 text-sm text-slate-600">By number of puzzles</p>
           <CategoryList items={derived.mostCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} />
-        </article>
-
-        <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-          <h2 className="mb-3 text-xl">Least common categories (top 5)</h2>
-          <p className="mb-2 text-sm text-slate-600">By number of puzzles</p>
-          <CategoryList items={derived.leastCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} maxBarWidthPercent={50} />
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
