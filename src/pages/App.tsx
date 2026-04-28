@@ -54,9 +54,9 @@ function App() {
     const el = suggestionsRef.current;
     const rect = el.getBoundingClientRect();
 
-    const isInView = rect.top >= 0 && rect.bottom <= window.innerHeight;
+    const isPartiallyInView = rect.bottom > 0 && rect.top < window.innerHeight;
 
-    if (!isInView) {
+    if (!isPartiallyInView) {
       setTimeout(() => {
         el.scrollIntoView({
           behavior: "smooth",

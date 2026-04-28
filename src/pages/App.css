@@ -244,7 +244,7 @@ header .pokemon-count {
 .cell {
   width: 100px;
   height: 100px;
-  background: #ecf0f1;
+  background: #f8fafc;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -268,12 +268,18 @@ header .pokemon-count {
 }
 
 .cell:hover {
-  background: #d5dbdb;
+  background: #e2e8f0;
 }
 
 .cell.selected {
-  background: #3498db;
-  box-shadow: 0 0 0 3px #2980b9;
+  background: #475569;
+  color: #f1f5f9;
+  box-shadow: 0 0 0 3px #334155;
+}
+
+.cell.selected .possible-count,
+.cell.selected .tap-hint {
+  color: #f1f5f9;
 }
 
 .cell.filled {
@@ -299,7 +305,7 @@ header .pokemon-count {
 
 .tap-hint {
   font-size: 0.6rem;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 .cell-content {
@@ -327,6 +333,11 @@ header .pokemon-count {
   font-weight: 600;
   color: #2c3e50;
   line-height: 1.1;
+}
+
+
+.cell .pokemon-name {
+  color: white;
 }
 
 .pokemon-types {
@@ -409,7 +420,7 @@ header .pokemon-count {
 .possible-count {
   font-size: 26px;
   font-weight: 700;
-  color: #95a5a6;
+  color: #334155;
 }
 
 .suggestions-panel {
@@ -898,12 +909,14 @@ footer span {
 }
 
 .suggestions-panel-wrapper{
+  margin-bottom: 16px;
   position: relative;
 }
 
 .scroll-hint {
   position: sticky;
   left: 50%;
+  transform: translateX(-16px);
   margin-top: -40px;
   width: 32px;
   height: 32px;
