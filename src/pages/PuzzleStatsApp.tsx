@@ -20,6 +20,7 @@ interface PuzzleStatsResponse {
   leastCategoryCounts: CategoryCount[];
   categoryTypeBreakdown: CategoryTypeSummary[];
   topCategoryPairs: CategoryPair[];
+  leastCategoryPairs: CategoryPair[];
   pairFrequencyDistribution: PairFrequencyDistributionItem[];
   oldestPokemonLastUsable: PokemonLastUsable[];
 }
@@ -68,6 +69,8 @@ function formatDate(value: string): string {
 export default function PuzzleStatsApp() {
   const [stats, setStats] = useState<PuzzleStatsResponse | null>(null);
   const [pokemonByFormId, setPokemonByFormId] = useState<Map<number, PokemonListEntry>>(new Map());
+  const [leastUsedMode, setLeastUsedMode] = useState<"categories" | "pairs">("categories");
+  const [mostUsedMode, setMostUsedMode] = useState<"categories" | "pairs">("categories");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -140,6 +143,7 @@ export default function PuzzleStatsApp() {
       leastCommonCategories: stats.leastCategoryCounts,
       oldestVisiblePokemon: stats.oldestPokemonLastUsable,
       mostCommonPairs: stats.topCategoryPairs,
+      leastCommonPairs: stats.leastCategoryPairs,
       categoryTypeBreakdown,
       categoryTypeTotal,
       totalCategoryCount: stats.categoryTypeBreakdown.reduce((sum, item) => sum + item.count, 0),
@@ -239,21 +243,53 @@ export default function PuzzleStatsApp() {
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-          <h2 className="mb-3 text-xl">Most common category pairs (top 5)</h2>
-          <p className="mb-2 text-sm text-slate-600">By number of occurrences</p>
-          <PairList items={derived.mostCommonPairs} showDistributionBar distributionTotal={derived.totalPairOccurrences} />
-        </article>
-        
-        <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-          <h2 className="mb-3 text-xl">Most common categories (top 5)</h2>
-          <p className="mb-2 text-sm text-slate-600">By number of puzzles</p>
-          <CategoryList items={derived.mostCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} />
+          <h2 className="mb-3 text-xl">Most used (top 5)</h2>
+          <div className="mb-3 inline-flex rounded-lg border border-slate-300 bg-white p-1">
+            <button
+              type="button"
+              onClick={() => setMostUsedMode("categories")}
+              className={`rounded-md px-3 py-1 text-sm ${mostUsedMode === "categories" ? "bg-slate-700 text-white" : "text-slate-700"}`}
+            >
+              Categories
+            </button>
+            <button
+              type="button"
+              onClick={() => setMostUsedMode("pairs")}
+              className={`rounded-md px-3 py-1 text-sm ${mostUsedMode === "pairs" ? "bg-slate-700 text-white" : "text-slate-700"}`}
+            >
+              Pairs
+            </button>
+          </div>
+          {mostUsedMode === "categories" ? (
+            <CategoryList items={derived.mostCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} />
+          ) : (
+            <PairList items={derived.mostCommonPairs} showDistributionBar distributionTotal={derived.totalPairOccurrences} />
+          )}
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-          <h2 className="mb-3 text-xl">Least used categories (top 5)</h2>
-          <p className="mb-2 text-sm text-slate-600">By number of puzzles</p>
-          <CategoryList items={derived.leastCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} maxBarWidthPercent={50} />
+          <h2 className="mb-3 text-xl">Least used (top 5)</h2>
+          <div className="mb-3 inline-flex rounded-lg border border-slate-300 bg-white p-1">
+            <button
+              type="button"
+              onClick={() => setLeastUsedMode("categories")}
+              className={`rounded-md px-3 py-1 text-sm ${leastUsedMode === "categories" ? "bg-slate-700 text-white" : "text-slate-700"}`}
+            >
+              Categories
+            </button>
+            <button
+              type="button"
+              onClick={() => setLeastUsedMode("pairs")}
+              className={`rounded-md px-3 py-1 text-sm ${leastUsedMode === "pairs" ? "bg-slate-700 text-white" : "text-slate-700"}`}
+            >
+              Pairs
+            </button>
+          </div>
+          {leastUsedMode === "categories" ? (
+            <CategoryList items={derived.leastCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} maxBarWidthPercent={50} />
+          ) : (
+            <PairList items={derived.leastCommonPairs} showDistributionBar distributionTotal={derived.totalPairOccurrences} />
+          )}
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
