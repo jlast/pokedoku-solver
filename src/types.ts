@@ -4,6 +4,8 @@ export const POKEMON_TYPES = [
   'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'
 ] as const;
 
+export type ConstraintCategory = 'type' | 'typeline' | 'region' | 'evolution' | 'branched' | 'trigger' | 'form' | 'category';
+
 export type PokemonType = typeof POKEMON_TYPES[number];
 
 export const POKEMON_REGIONS = [
@@ -16,9 +18,7 @@ export const EVOLUTION_METHODS = [
   'First Stage',
   'Middle Stage', 
   'Final Stage',
-  'No Evolution Line',
-  'Monotype',
-  'Dualtype'
+  'No Evolution Line'
 ] as const;
 
 export const EVOLUTION_TRIGGERS = [

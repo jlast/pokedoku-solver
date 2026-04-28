@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "build:github": "tsc -b && vite build --base=/pokedoku-solver/ && rm -rf docs && mv dist docs",
+    "build": "npm run fetch-today-puzzle && tsc -b && vite build",
+    "build:github": "npm run fetch-today-puzzle && tsc -b && vite build --base=/pokedoku-solver/ && rm -rf docs && mv dist docs",
+    "fetch-today-puzzle": "tsx scripts/fetch-today-puzzle.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "fetch-pokemon": "tsx scripts/fetch.ts",
