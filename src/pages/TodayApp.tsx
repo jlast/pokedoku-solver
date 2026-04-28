@@ -348,7 +348,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           onSwapClick={handleCellClick}
           onConstraintChange={() => {}}
         />
-        <InfoBox>Suggested Pokedoku answers highlighting rarer, harder Pokémon. Tap a square for all options.</InfoBox>
+        <InfoBox>These are suggested Pokedoku answers highlighting rarer, harder Pokémon. Tap a square for all options.</InfoBox>
         <div ref={suggestionsRef}>
           <SuggestionsPanel
             selectedCell={grid.selectedCell}
