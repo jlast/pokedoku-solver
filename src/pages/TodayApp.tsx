@@ -207,8 +207,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
       .map(() => Array(GRID_SIZE).fill(0));
 
     for (let row = 0; row < GRID_SIZE; row++) {
-      for (let col = 0; col < GRID_SIZE; 
-
+      for (let col = 0; col < GRID_SIZE; col++) {
         const rowConstraint = grid.rowConstraints[row];
         const colConstraint = grid.colConstraints[col];
 
