@@ -34,6 +34,10 @@ export const STARTER_IDS = new Set([
   10402, 10405, 10413
 ]);
 
+export const CANT_EVOLVE_FORMS = new Set([
+  'gmax', 'starter', 'mega'
+]);
+
 export const ULTRA_BEASTS = new Set([793, 794, 795, 796, 797, 798, 799, 803, 804, 805, 806]);
 
 export const PARADOX_POKEMON = new Set([

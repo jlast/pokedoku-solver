@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { REGION_BY_ID, STARTER_IDS, ULTRA_BEASTS, FOSSIL_IDS, PARADOX_POKEMON, IGNORED_FORM_IDS, IGNORED_FORMS } from './ids';
+import { REGION_BY_ID, STARTER_IDS, ULTRA_BEASTS, FOSSIL_IDS, PARADOX_POKEMON, IGNORED_FORM_IDS, IGNORED_FORMS, CANT_EVOLVE_FORMS } from './ids';
 import { fetchWithRetry } from './lib';
 import type { EvolutionMethod, Pokemon, PokemonType } from '../src/types';
 import { CUSTOM_POKEMON } from './custom_pokemon';
@@ -415,7 +415,7 @@ async function main() {
       if (species.is_mythical) entry.category = 'Mythical';
       if (species.is_baby) entry.category = 'Baby';
       
-      if (species.evolution_chain?.url) {
+      if (!CANT_EVOLVE_FORMS.has(form.form_name) && species.evolution_chain?.url) {
         const cm = species.evolution_chain.url.match(/\/evolution-chain\/(\d+)\/$/);
         if (cm) {
           const chainId = parseInt(cm[1]);
@@ -427,6 +427,8 @@ async function main() {
             if (result.branched) entry.isBranched = true;
           }
         }
+      } else {
+        entry.evolutionStage = 'No Evolution Line';
       }
     }
 

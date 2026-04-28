@@ -79,6 +79,20 @@ describe('pokemon.json', () => {
     expect(eevee!.isBranched).toBe(true);
   });
 
+  it('Eevee starter should not be able to evolve', () => {
+    const eevee = data.find(p => p.name === 'Eevee');
+    expect(eevee).toBeDefined();
+    expect(eevee!.evolutionStage).toBe('First Stage');
+    expect(eevee!.isBranched).toBe(true);
+  });
+
+  it('Eevee gmax should not be able to evolve', () => {
+    const eevee = data.find(p => p.name === 'Eevee');
+    expect(eevee).toBeDefined();
+    expect(eevee!.evolutionStage).toBe('First Stage');
+    expect(eevee!.isBranched).toBe(true);
+  });
+
   it('Kirlia should be Middle stage and branched', () => {
     const kirlia = data.find(p => p.name === 'Kirlia');
     expect(kirlia).toBeDefined();
