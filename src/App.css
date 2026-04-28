@@ -15,18 +15,22 @@ header {
 header h1 {
   height: 40px;
   margin: 0 0 8px;
-  font-size: 2.5rem;
-  background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FFEAA7);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradient-shift 8s ease infinite;
+}
+
+header h1 .logo {
+  height: 100%;
+  object-fit: contain;
+  animation: none;
 }
 
 @keyframes gradient-shift {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
+}
+
+.logo {
+  display: block;
+  margin: 0 auto;
 }
 
 header p {
@@ -349,6 +353,20 @@ header .pokemon-count {
   transition: all 0.15s;
   text-align: left;
   flex-wrap: wrap;
+}
+
+.pokemon-item .pokemon-sprite {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.pokemon-item .pokemon-sprite-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--code-bg);
+  flex-shrink: 0;
 }
 
 .pokemon-item:hover {

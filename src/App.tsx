@@ -321,7 +321,7 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>Pokedoku Helper</h1>
+        <h1><img src="/logo.svg" alt="Pokedoku Helper" className="logo" /></h1>
         <p>Set row/column constraints, then click a cell to place a Pokemon.</p>
       </header>
 
@@ -429,11 +429,11 @@ function App() {
                                 {cell.evolutionStage}
                               </span>
                             )}
-                            {cell.evolutionTrigger && (
-                              <span className="evolution-badge" style={{ backgroundColor: EVOLUTION_COLORS[cell.evolutionTrigger] || '#888' }}>
-                                {cell.evolutionTrigger}
+                            {cell.evolutionTrigger?.map(trigger => (
+                              <span key={trigger} className="evolution-badge" style={{ backgroundColor: EVOLUTION_COLORS[trigger] || '#888' }}>
+                                {trigger}
                               </span>
-                            )}
+                            ))}
                             {cell.specialForm && (
                               <span className="form-badge" style={{ backgroundColor: FORM_COLORS[cell.specialForm] }}>
                                 {cell.specialForm}
@@ -482,6 +482,11 @@ function App() {
                     className="pokemon-item"
                     onClick={() => handlePokemonSelect(p)}
                   >
+                    {p.sprite ? (
+                      <img src={p.sprite} alt="" className="pokemon-sprite" />
+                    ) : (
+                      <div className="pokemon-sprite-placeholder" />
+                    )}
                     <span className="pokemon-id">#{p.id.toString().padStart(4, '0')}</span>
                     <span className="pokemon-name">{p.name}</span>
                     <div className="pokemon-types">
