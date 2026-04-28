@@ -4,6 +4,7 @@ import { GRID_SIZE, type Constraint } from '../utils/constants';
 import { matchesConstraint, formatDate } from '../utils/utils';
 import { trackEvent } from '../utils/analytics';
 import { Grid } from '../components/Grid';
+import { Header } from '../components/Header';
 import { SuggestionsPanel } from '../components/SuggestionsPanel';
 import './App.css';
 import '../index.css';
@@ -152,17 +153,11 @@ useEffect(() => {
 
   return (
     <div className="app">
-      <header>
-        <div className="title">
-          <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" />
-          <h1>Today's Pokedoku Helper</h1>
-        </div>
-        <p className="lead">
-          See the categories for today's Pokedoku puzzle and explore possible
-          Pokémon for each square.
-        </p>
-        <p>Today's puzzle for <b>{formatDate(puzzle.date)}</b></p>
-      </header>
+      <Header
+        title="Today's Pokedoku Helper"
+        subtitle="See the categories for today's Pokedoku puzzle and explore possible Pokémon for each square."
+        showDate={formatDate(puzzle.date)}
+      />
 
       <div className="controls">
         <a href={import.meta.env.BASE_URL} onClick={() => trackEvent('click_back_to_editor', { url: '/' })} className="today-btn">Back to Editor</a>
