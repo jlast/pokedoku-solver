@@ -1,7 +1,7 @@
-import type { Pokemon } from '../types';
-import type { Constraint } from '../constants';
-import { TYPE_COLORS, CATEGORY_COLORS, getCategoryAbbr } from '../constants';
-import { trackEvent } from '../analytics';
+import type { Pokemon } from '../utils/types';
+import type { Constraint } from '../utils/constants';
+import { TYPE_COLORS, CATEGORY_COLORS, getCategoryAbbr } from '../utils/constants';
+import { trackEvent } from '../utils/analytics';
 
 interface SuggestionsPanelProps {
   selectedCell: [number, number] | null;
