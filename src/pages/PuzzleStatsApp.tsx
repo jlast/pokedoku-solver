@@ -4,9 +4,9 @@ import { Footer } from "../components/Footer";
 import { DonutChart } from "../components/charts/DonutChart";
 import { CategoryList, type CategoryCount } from "../components/puzzle-stats/CategoryList";
 import { PairList, type CategoryPair } from "../components/puzzle-stats/PairList";
-import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { trackEvent } from "../utils/analytics";
 import { CATEGORY_TYPE_COLORS, CATEGORY_TYPE_LABELS, TYPE_COLORS } from "../utils/constants";
+import { PAIR_FREQUENCY_BUCKETS } from "../utils/pairFrequencyBuckets";
 import "./App.css";
 import "../index.css";
 
@@ -16,9 +16,11 @@ interface PuzzleStatsResponse {
     from: string;
     to: string;
   };
-  categoryCounts: CategoryCount[];
-  categoryPairs: CategoryPair[];
-  pokemonLastUsable: PokemonLastUsable[];
+  topCategoryCounts: CategoryCount[];
+  categoryTypeBreakdown: CategoryTypeSummary[];
+  topCategoryPairs: CategoryPair[];
+  pairFrequencyDistribution: PairFrequencyDistributionItem[];
+  oldestPokemonLastUsable: PokemonLastUsable[];
 }
 
 interface PokemonLastUsable {
@@ -34,21 +36,19 @@ interface PokemonListEntry {
   types?: string[];
 }
 
+interface CategoryTypeSummary {
+  type: string;
+  count: number;
+}
 
-interface PairFrequencyBucket {
+interface PairFrequencyDistributionItem {
   key: string;
   label: string;
   min: number;
   max: number | null;
-  color: string;
+  comboCount: number;
+  occurrenceCount: number;
 }
-
-const PAIR_FREQUENCY_BUCKETS: PairFrequencyBucket[] = [
-  { key: "once", label: "1 time", min: 1, max: 1, color: "#7c3aed" },
-  { key: "twoToNine", label: "2-9 times", min: 2, max: 9, color: "#2563eb" },
-  { key: "fiveToNineteen", label: "10-19 times", min: 10, max: 19, color: "#eab308" },
-  { key: "twenty+", label: "20+ times", min: 20, max: null, color: "#f97316" },
-];
 
 function formatDate(value: string): string {
   const isoDateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
@@ -63,12 +63,6 @@ function formatDate(value: string): string {
   }).format(date);
 }
 
-
-function topByCount<T>(items: T[], getCount: (item: T) => number, getLabel: (item: T) => string): T[] {
-  return [...items]
-    .sort((a, b) => getCount(b) - getCount(a) || getLabel(a).localeCompare(getLabel(b)))
-    .slice(0, 5);
-}
 
 export default function PuzzleStatsApp() {
   const [stats, setStats] = useState<PuzzleStatsResponse | null>(null);
@@ -112,68 +106,34 @@ export default function PuzzleStatsApp() {
   const derived = useMemo(() => {
     if (!stats) return null;
 
-    const mostCommonCategories = topByCount(
-      stats.categoryCounts,
-      (item) => item.count,
-      (item) => item.categoryId,
-    );
+    const pairBucketColorByKey = new Map(PAIR_FREQUENCY_BUCKETS.map((bucket) => [bucket.key, bucket.color]));
 
-    const pairLabel = (pair: CategoryPair) => `${pair.categories[0]}||${pair.categories[1]}`;
+    const totalPairCombinations = stats.pairFrequencyDistribution.reduce((sum, item) => sum + item.comboCount, 0);
+    const totalPairOccurrences = stats.pairFrequencyDistribution.reduce((sum, item) => sum + item.occurrenceCount, 0);
 
-    const mostCommonPairs = topByCount(stats.categoryPairs, (item) => item.count, pairLabel);
-    const oldestVisiblePokemon = [...stats.pokemonLastUsable]
-      .filter((item) => item.lastUsableDate !== null)
-      .sort((a, b) => {
-        if (a.daysSinceLastUsable === null && b.daysSinceLastUsable === null) return 0;
-        if (a.daysSinceLastUsable === null) return 1;
-        if (b.daysSinceLastUsable === null) return -1;
-        return b.daysSinceLastUsable - a.daysSinceLastUsable || a.formId - b.formId;
-      })
-      .slice(0, 5);
+    const pairFrequencyDistribution = stats.pairFrequencyDistribution.map((item) => ({
+      ...item,
+      color: pairBucketColorByKey.get(item.key) ?? "#64748b",
+      comboPercent: totalPairCombinations > 0 ? (item.comboCount / totalPairCombinations) * 100 : 0,
+    }));
 
-    const totalPairCombinations = stats.categoryPairs.length;
-    const totalPairOccurrences = stats.categoryPairs.reduce((sum, item) => sum + item.count, 0);
+    const categoryTypeTotal = stats.categoryTypeBreakdown.reduce((sum, item) => sum + item.count, 0);
 
-    const pairFrequencyDistribution = PAIR_FREQUENCY_BUCKETS.map((bucket) => {
-      const combos = stats.categoryPairs.filter((pair) => pair.count >= bucket.min && (bucket.max === null || pair.count <= bucket.max));
-      const comboCount = combos.length;
-      const occurrenceCount = combos.reduce((sum, pair) => sum + pair.count, 0);
-
-      return {
-        ...bucket,
-        comboCount,
-        occurrenceCount,
-        comboPercent: totalPairCombinations > 0 ? (comboCount / totalPairCombinations) * 100 : 0,
-      };
-    });
-
-    const typeTotals = new Map<string, number>();
-    for (const item of stats.categoryCounts) {
-      const parsed = parseCategoryId(item.categoryId);
-      if (parsed.type === "category") continue;
-      typeTotals.set(parsed.type, (typeTotals.get(parsed.type) ?? 0) + item.count);
-    }
-
-    const total = stats.categoryCounts.reduce((sum, item) => sum + item.count, 0);
-
-    const categoryTypeBreakdown = Array.from(typeTotals.entries())
-      .map(([type, count]) => ({
-        type,
-        label: CATEGORY_TYPE_LABELS[type] ?? "Other",
-        count,
-        percent: total > 0 ? (count / total) * 100 : 0,
+    const categoryTypeBreakdown = stats.categoryTypeBreakdown
+      .map((item) => ({
+        ...item,
+        label: CATEGORY_TYPE_LABELS[item.type] ?? "Other",
+        percent: categoryTypeTotal > 0 ? (item.count / categoryTypeTotal) * 100 : 0,
       }))
       .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 
-    const categoryTypeTotal = categoryTypeBreakdown.reduce((sum, item) => sum + item.count, 0);
-
     return {
-      mostCommonCategories,
-      oldestVisiblePokemon,
-      mostCommonPairs,
+      mostCommonCategories: stats.topCategoryCounts,
+      oldestVisiblePokemon: stats.oldestPokemonLastUsable,
+      mostCommonPairs: stats.topCategoryPairs,
       categoryTypeBreakdown,
       categoryTypeTotal,
-      totalCategoryCount: total,
+      totalCategoryCount: stats.categoryTypeBreakdown.reduce((sum, item) => sum + item.count, 0),
       totalPairCombinations,
       totalPairOccurrences,
       pairFrequencyDistribution,

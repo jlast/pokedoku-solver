@@ -5,6 +5,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { FILTER_CATEGORIES } from "../../src/utils/filters";
+import { PAIR_FREQUENCY_BUCKETS } from "../../src/utils/pairFrequencyBuckets";
 import type { Pokemon } from "../../src/utils/types";
 
 type ConstraintCategory = "regions" | "types" | "evolution" | "category";
@@ -37,9 +38,25 @@ interface CategoryStats {
     from: string;
     to: string;
   };
-  categoryCounts: CategoryCount[];
-  categoryPairs: CategoryPair[];
-  pokemonLastUsable: PokemonLastUsable[];
+  topCategoryCounts: CategoryCount[];
+  categoryTypeBreakdown: CategoryTypeSummary[];
+  topCategoryPairs: CategoryPair[];
+  pairFrequencyDistribution: PairFrequencySummary[];
+  oldestPokemonLastUsable: PokemonLastUsable[];
+}
+
+interface CategoryTypeSummary {
+  type: string;
+  count: number;
+}
+
+interface PairFrequencySummary {
+  key: string;
+  label: string;
+  min: number;
+  max: number | null;
+  comboCount: number;
+  occurrenceCount: number;
 }
 
 interface PokemonLastUsable {
@@ -212,10 +229,10 @@ function buildPokemonLastUsableStats(puzzles: Puzzle[], pokemon: Pokemon[]): Pok
           latestUsableDate && latestPuzzleDate ? daysBetween(latestUsableDate, latestPuzzleDate) : null,
       };
     })
-    .sort((a, b) => {
-      if (a.lastUsableDate === b.lastUsableDate) {
-        return a.formId - b.formId;
-      }
+      .sort((a, b) => {
+        if (a.lastUsableDate === b.lastUsableDate) {
+          return a.formId - b.formId;
+        }
 
       if (a.lastUsableDate === null) {
         return 1;
@@ -225,8 +242,40 @@ function buildPokemonLastUsableStats(puzzles: Puzzle[], pokemon: Pokemon[]): Pok
         return -1;
       }
 
-      return b.lastUsableDate.localeCompare(a.lastUsableDate);
-    });
+        return b.lastUsableDate.localeCompare(a.lastUsableDate);
+      });
+}
+
+function buildCategoryTypeBreakdown(categoryCounts: CategoryCount[]): CategoryTypeSummary[] {
+  const totals = new Map<string, number>();
+
+  for (const item of categoryCounts) {
+    const separatorIndex = item.categoryId.indexOf(":");
+    const type = separatorIndex === -1 ? "other" : item.categoryId.slice(0, separatorIndex);
+    if (type === "category") {
+      continue;
+    }
+    totals.set(type, (totals.get(type) ?? 0) + item.count);
+  }
+
+  return Array.from(totals.entries())
+    .map(([type, count]) => ({ type, count }))
+    .sort((a, b) => b.count - a.count || a.type.localeCompare(b.type));
+}
+
+function buildPairFrequencyDistribution(categoryPairs: CategoryPair[]): PairFrequencySummary[] {
+  return PAIR_FREQUENCY_BUCKETS.map((bucket) => {
+    const combos = categoryPairs.filter((pair) => pair.count >= bucket.min && (bucket.max === null || pair.count <= bucket.max));
+
+    return {
+      key: bucket.key,
+      label: bucket.label,
+      min: bucket.min,
+      max: bucket.max,
+      comboCount: combos.length,
+      occurrenceCount: combos.reduce((sum, pair) => sum + pair.count, 0),
+    };
+  });
 }
 
 function buildStats(puzzles: Puzzle[], pokemon: Pokemon[]): CategoryStats {
@@ -253,34 +302,49 @@ function buildStats(puzzles: Puzzle[], pokemon: Pokemon[]): CategoryStats {
     }
   }
 
+  const allCategoryCounts = Array.from(categoryCounts.entries())
+    .map(([categoryId, count]) => ({ categoryId, count }))
+    .sort((a, b) => b.count - a.count || a.categoryId.localeCompare(b.categoryId));
+
+  const allCategoryPairs = Array.from(categoryPairs.entries())
+    .map(([pairKey, count]) => {
+      const categories = pairKey.split("||") as [string, string];
+
+      return {
+        categories,
+        count,
+      };
+    })
+    .sort((a, b) => {
+      if (b.count !== a.count) return b.count - a.count;
+
+      const firstCompare = a.categories[0].localeCompare(b.categories[0]);
+      if (firstCompare !== 0) return firstCompare;
+
+      return a.categories[1].localeCompare(b.categories[1]);
+    });
+
+  const oldestPokemonLastUsable = buildPokemonLastUsableStats(puzzles, pokemon)
+    .filter((item) => item.lastUsableDate !== null)
+    .sort((a, b) => {
+      if (a.daysSinceLastUsable === null && b.daysSinceLastUsable === null) return 0;
+      if (a.daysSinceLastUsable === null) return 1;
+      if (b.daysSinceLastUsable === null) return -1;
+      return b.daysSinceLastUsable - a.daysSinceLastUsable || a.formId - b.formId;
+    })
+    .slice(0, 5);
+
   return {
     puzzlesAnalyzed: puzzles.length,
     dateRange: {
       from: dates[0] ?? "",
       to: dates[dates.length - 1] ?? "",
     },
-    categoryCounts: Array.from(categoryCounts.entries())
-      .map(([categoryId, count]) => ({ categoryId, count }))
-      .sort((a, b) => b.count - a.count || a.categoryId.localeCompare(b.categoryId)),
-
-    categoryPairs: Array.from(categoryPairs.entries())
-      .map(([pairKey, count]) => {
-        const categories = pairKey.split("||") as [string, string];
-
-        return {
-          categories,
-          count,
-        };
-      })
-      .sort((a, b) => {
-        if (b.count !== a.count) return b.count - a.count;
-
-        const firstCompare = a.categories[0].localeCompare(b.categories[0]);
-        if (firstCompare !== 0) return firstCompare;
-
-        return a.categories[1].localeCompare(b.categories[1]);
-      }),
-    pokemonLastUsable: buildPokemonLastUsableStats(puzzles, pokemon),
+    topCategoryCounts: allCategoryCounts.slice(0, 5),
+    categoryTypeBreakdown: buildCategoryTypeBreakdown(allCategoryCounts),
+    topCategoryPairs: allCategoryPairs.slice(0, 5),
+    pairFrequencyDistribution: buildPairFrequencyDistribution(allCategoryPairs),
+    oldestPokemonLastUsable,
   };
 }
 
