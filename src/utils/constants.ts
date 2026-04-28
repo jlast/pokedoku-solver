@@ -81,10 +81,12 @@ export const CATEGORY_TYPE_LABELS: Record<string, string> = {
 };
 
 export const CATEGORY_TYPE_COLORS: Record<string, string> = {
-  types: "#0f766e",
-  regions: "#0369a1",
+  types: "#1d4ed8",
+  regions: "#b45309",
   evolution: "#16a34a",
-  category: "#ca8a04",
+  category: "#f59e0b",
+  ability: "#7c3aed",
+  move: "#ea580c",
   other: "#64748b",
 };
 

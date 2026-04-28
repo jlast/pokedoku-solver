@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { DonutChart } from "../components/charts/DonutChart";
 import { trackEvent } from "../utils/analytics";
 import {
   CATEGORY_COLORS,
@@ -52,8 +53,7 @@ const PAIR_FREQUENCY_BUCKETS: PairFrequencyBucket[] = [
   { key: "once", label: "1 time", min: 1, max: 1, color: "#7c3aed" },
   { key: "twoToNine", label: "2-9 times", min: 2, max: 9, color: "#2563eb" },
   { key: "fiveToNineteen", label: "10-19 times", min: 10, max: 19, color: "#eab308" },
-  { key: "twentyToTwentyNine", label: "20-29 times", min: 20, max: 29, color: "#f97316" },
-  { key: "thirtyPlus", label: "30+ times", min: 30, max: null, color: "#ef4444" },
+  { key: "twenty+", label: "20+ times", min: 20, max: null, color: "#f97316" },
 ];
 
 function formatDate(value: string): string {
@@ -224,7 +224,7 @@ export default function PuzzleStatsApp() {
   useEffect(() => {
     trackEvent("view_puzzle_stats_page");
 
-    fetch("/data/puzzle-stats.json?t=" + Date.now())
+    fetch("/data/runtime/puzzle-stats.json?t=" + Date.now())
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to load puzzle statistics");
@@ -274,20 +274,6 @@ export default function PuzzleStatsApp() {
       };
     });
 
-    let runningPairPercent = 0;
-    const pairFrequencyConicGradient =
-      pairFrequencyDistribution.some((bucket) => bucket.comboCount > 0)
-        ? `conic-gradient(${pairFrequencyDistribution
-            .filter((bucket) => bucket.comboCount > 0)
-            .map((bucket) => {
-              const start = runningPairPercent;
-              runningPairPercent += bucket.comboPercent;
-              const end = runningPairPercent;
-              return `${bucket.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
-            })
-            .join(", ")})`
-        : "conic-gradient(#e2e8f0 0% 100%)";
-
     const typeTotals = new Map<string, number>();
     for (const item of stats.categoryCounts) {
       const parsed = parseCategoryId(item.categoryId);
@@ -308,20 +294,6 @@ export default function PuzzleStatsApp() {
 
     const categoryTypeTotal = categoryTypeBreakdown.reduce((sum, item) => sum + item.count, 0);
 
-    let runningPercent = 0;
-    const categoryTypeConicGradient =
-      categoryTypeBreakdown.length > 0
-        ? `conic-gradient(${categoryTypeBreakdown
-            .map((item) => {
-              const start = runningPercent;
-              runningPercent += item.percent;
-              const end = runningPercent;
-              const color = CATEGORY_TYPE_COLORS[item.type] ?? CATEGORY_TYPE_COLORS.other;
-              return `${color} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
-            })
-            .join(", ")})`
-        : "conic-gradient(#e2e8f0 0% 100%)";
-
     return {
       mostCommonCategories,
       leastCommonCategories,
@@ -329,12 +301,10 @@ export default function PuzzleStatsApp() {
       leastCommonPairs,
       categoryTypeBreakdown,
       categoryTypeTotal,
-      categoryTypeConicGradient,
       totalCategoryCount: total,
       totalPairCombinations,
       totalPairOccurrences,
       pairFrequencyDistribution,
-      pairFrequencyConicGradient,
     };
   }, [stats]);
 
@@ -395,18 +365,16 @@ export default function PuzzleStatsApp() {
           <h2 className="mb-3 text-xl">Combination frequency distribution</h2>
           <div className="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
             <div className="mx-auto">
-              <div
-                aria-label={derived.pairFrequencyDistribution
-                  .filter((bucket) => bucket.comboCount > 0)
-                  .map((bucket) => `${bucket.label}: ${bucket.comboPercent.toFixed(1)}%`)
-                  .join(", ")}
-                className="relative h-48 w-48 rounded-full"
-                role="img"
-                style={{ background: derived.pairFrequencyConicGradient }}
-              >
-                <div className="absolute inset-8 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Unique pairs</p>
-                  <p className="text-2xl font-bold text-slate-900">{derived.totalPairCombinations}</p>
+              <div className="relative h-48 w-48">
+                <DonutChart
+                  ariaLabel={derived.pairFrequencyDistribution
+                    .filter((bucket) => bucket.comboCount > 0)
+                    .map((bucket) => `${bucket.label}: ${bucket.comboPercent.toFixed(1)}%`)
+                    .join(", ")}
+                  segments={derived.pairFrequencyDistribution.map((bucket) => ({ value: bucket.comboCount, color: bucket.color }))}
+                  size={192}
+                />
+                <div className="absolute inset-12 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
                 </div>
               </div>
             </div>
@@ -432,17 +400,16 @@ export default function PuzzleStatsApp() {
         <h2 className="mb-3 text-xl">Category type breakdown</h2>
         <div className="grid gap-4 md:grid-cols-[240px_1fr] md:items-center">
           <div className="mx-auto">
-            <div
-              aria-label={derived.categoryTypeBreakdown
-                .map((item) => `${item.label}: ${item.percent.toFixed(1)}%`)
-                .join(", ")}
-              className="relative h-52 w-52 rounded-full"
-              role="img"
-              style={{ background: derived.categoryTypeConicGradient }}
-            >
-              <div className="absolute inset-8 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Category Types</p>
-                <p className="text-2xl font-bold text-slate-900">{derived.categoryTypeTotal}</p>
+            <div className="relative h-52 w-52">
+              <DonutChart
+                ariaLabel={derived.categoryTypeBreakdown.map((item) => `${item.label}: ${item.percent.toFixed(1)}%`).join(", ")}
+                segments={derived.categoryTypeBreakdown.map((item) => ({
+                  value: item.count,
+                  color: CATEGORY_TYPE_COLORS[item.type] ?? CATEGORY_TYPE_COLORS.other,
+                }))}
+                size={208}
+              />
+              <div className="absolute inset-12 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
               </div>
             </div>
           </div>
