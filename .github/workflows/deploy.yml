@@ -33,6 +33,12 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+
   deploy-gh-pages:
     needs: validate
     runs-on: ubuntu-latest
