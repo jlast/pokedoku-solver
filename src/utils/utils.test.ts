@@ -9,7 +9,7 @@ describe('formatDate', () => {
 
   it('should handle different months', () => {
     expect(formatDate('2024-06-01')).toBe('Jun 1, 2024');
-    expect(formatDate('2024-12-25')).toBe('Dec 25, 2025');
+    expect(formatDate('2024-12-25')).toBe('Dec 25, 2024');
   });
 
   it('should handle single digit days', () => {
