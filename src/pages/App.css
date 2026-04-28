@@ -133,6 +133,7 @@ header .pokemon-count {
 
 .grid-wrapper {
   display: flex;
+  margin-bottom: 12px;
   flex-direction: column;
   align-items: center;
 }
@@ -288,9 +289,16 @@ header .pokemon-count {
 
 .cell-count {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
+  gap: 2px;
+}
+
+.tap-hint {
+  font-size: 0.6rem;
+  opacity: 0.5;
 }
 
 .cell-content {

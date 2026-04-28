@@ -7,6 +7,7 @@ import { Grid } from "../components/Grid";
 import { Header } from "../components/Header";
 import { SuggestionsPanel } from "../components/SuggestionsPanel";
 import { Footer } from "../components/Footer";
+import { InfoBox } from "../components/InfoBox";
 import "./App.css";
 import "../index.css";
 
@@ -237,9 +238,7 @@ function App() {
           onCellClick={handleCellClick}
           onConstraintChange={handleConstraintChange}
         />
-        <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
-          <i>Numbers show how many Pokémon match each combination.</i>
-        </p>
+        <InfoBox>Numbers show how many Pokémon match each combination.</InfoBox>
         <button
           onClick={clearGrid}
           className="clear-btn"
