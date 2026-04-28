@@ -79,7 +79,7 @@ const FILTER_GROUPS = [
 function PokemonListApp() {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expandedFilters, setExpandedFilters] = useState<Set<string>>(new Set(['types']));
+  const [expandedFilters, setExpandedFilters] = useState<Set<string>>(new Set([]));
 
   const [filters, setFilters] = useState<FilterState>(parseFiltersFromUrl);
 
