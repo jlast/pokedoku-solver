@@ -94,11 +94,18 @@ export default function PuzzleStatsApp() {
           }
         }
 
+        trackEvent("puzzle_stats_loaded", {
+          puzzlesAnalyzed: statsData.puzzlesAnalyzed,
+          dateFrom: statsData.dateRange.from,
+          dateTo: statsData.dateRange.to,
+        });
+
         setPokemonByFormId(lookup);
         setStats(statsData);
       })
       .catch((err: unknown) => {
         const message = err instanceof Error ? err.message : "Unknown error";
+        trackEvent("puzzle_stats_load_error", { message });
         setError(message);
       });
   }, []);
@@ -159,7 +166,7 @@ export default function PuzzleStatsApp() {
   return (
     <div className="app">
       <Header
-        title="Puzzle Stats"
+        title="PokeDoku Rarity Stats"
         subtitle="Explore historical category trends across past Pokedoku puzzles."
         currentPage="puzzle-stats"
       />

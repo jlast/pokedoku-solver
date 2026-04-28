@@ -918,7 +918,6 @@ footer span {
 
 /* Header text only */
 .app > header {
-  max-width: 760px;
   margin: 0 auto 24px;
   text-align: center;
 }
