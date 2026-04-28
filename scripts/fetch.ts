@@ -348,6 +348,9 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
 }
 
 async function main() {
+  fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
+  fs.mkdirSync(path.join(__dirname, "..", "public", "images", "sprites"), { recursive: true });
+
   await fetchPokemons();
   await fetchSpecies();
   await fetchForms();

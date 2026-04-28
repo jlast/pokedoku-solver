@@ -40,7 +40,7 @@ interface CategoryStats {
 }
 
 const BUCKET_NAME = process.env.BUCKET_NAME!;
-const OUTPUT_KEY = process.env.OBJECT_KEY || "data/puzzle-stats.json";
+const OUTPUT_KEY = process.env.OBJECT_KEY || "data/runtime/puzzle-stats.json";
 const PUZZLES_PREFIX = "data/puzzles/";
 
 const s3 = new S3Client({});

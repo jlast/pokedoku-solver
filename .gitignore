@@ -12,7 +12,8 @@ dist
 dist-lambda
 dist-ssr
 *.local
-public/data
+public/data/pokemon.json
+public/data/runtime/
 
 # Editor directories and files
 .vscode/*

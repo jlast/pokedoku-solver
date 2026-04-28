@@ -44,7 +44,7 @@ Resources:
                 Action:
                   - s3:PutObject
                 Resource: 
-                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/today-puzzle.json"
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/today-puzzle.json"
                   - !Sub "arn:aws:s3:::${TargetBucketName}/data/puzzles/*"
       
   DailyPuzzleFetcherFunction:
@@ -58,7 +58,7 @@ Resources:
       Environment:
         Variables:
           BUCKET_NAME: !Ref TargetBucketName
-          OBJECT_KEY: data/today-puzzle.json
+          OBJECT_KEY: data/runtime/today-puzzle.json
       Code:
         S3Bucket: !Ref DailyPuzzleFetcherCodeS3Bucket
         S3Key: !Ref DailyPuzzleFetcherCodeS3Key

@@ -6,7 +6,7 @@ export function TodayLoader() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}data/today-puzzle.json?t=${Date.now()}`)
+    fetch(`${import.meta.env.BASE_URL}data/runtime/today-puzzle.json?t=${Date.now()}`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to load puzzle');
         return res.json();

@@ -140,7 +140,7 @@ jobs:
               TargetBucketName=${{ secrets.S3_BUCKET_NAME }} \
               PuzzleStatisticsCodeS3Bucket=${{ secrets.S3_BUCKET_NAME }} \
               PuzzleStatisticsCodeS3Key=${STATS_LAMBDA_KEY} \
-              PuzzleStatisticsOutputKey=data/puzzle-stats.json
+              PuzzleStatisticsOutputKey=data/runtime/puzzle-stats.json
 
       - name: Configure S3 notification for puzzle statistics Lambda
         env:
@@ -266,7 +266,7 @@ jobs:
 
       - name: Sync to S3
         run: |
-          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete --exclude "lambda/*" --exclude "images/*"
+          aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete --exclude "lambda/*" --exclude "images/*" --exclude "data/runtime/*"
           aws s3 sync dist/images/ s3://${{ secrets.S3_BUCKET_NAME }}/images/ --cache-control "public,max-age=31536000,immutable"
 
       - name: Invalidate CloudFront cache

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import type { ConstraintCategory } from '../src/utils/filters';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'data', 'today-puzzle.json');
+const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'data', 'runtime', 'today-puzzle.json');
 
 const GENERATION_MAP: Record<string, string> = {
   'generation-i': 'Kanto',
@@ -185,6 +185,8 @@ async function fetchPuzzle(): Promise<void> {
   if (rowConstraints.some(c => c === null) || colConstraints.some(c => c === null)) {
     throw new Error('Some constraints could not be mapped');
   }
+
+  fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
 
   const output = {
     date: puzzle.date,

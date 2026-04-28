@@ -16,7 +16,7 @@ Parameters:
 
   PuzzleStatisticsOutputKey:
     Type: String
-    Default: "data/puzzle-stats.json"
+    Default: "data/runtime/puzzle-stats.json"
     Description: "S3 key where puzzle statistics are written"
 
 Resources:
