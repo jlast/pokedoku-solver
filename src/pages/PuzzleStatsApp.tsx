@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from "recharts";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { trackEvent } from "../utils/analytics";
@@ -40,8 +39,6 @@ const CATEGORY_TYPE_LABELS: Record<string, string> = {
   ability: "Ability",
   move: "Move",
 };
-
-const CHART_COLORS = ["#1e40af", "#dc2626", "#16a34a", "#d97706", "#7c3aed", "#06b6d4", "#ec4899"];
 
 function formatDate(value: string): string {
   const date = new Date(value);
@@ -180,11 +177,11 @@ export default function PuzzleStatsApp() {
     const categoryTypeBreakdown = Array.from(typeTotals.entries())
       .map(([type, count]) => ({
         type,
-        name: CATEGORY_TYPE_LABELS[type] ?? "Other",
-        value: count,
+        label: CATEGORY_TYPE_LABELS[type] ?? "Other",
+        count,
         percent: total > 0 ? (count / total) * 100 : 0,
       }))
-      .sort((a, b) => b.value - a.value || a.name.localeCompare(b.name));
+      .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 
     return {
       mostCommonCategories,
@@ -256,50 +253,16 @@ export default function PuzzleStatsApp() {
 
       <section className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
         <h2 className="mb-3 text-xl">Category type break down</h2>
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
-          <div className="flex-1">
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={derived.categoryTypeBreakdown}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={2}
-                  dataKey="value"
-                >
-                  {derived.categoryTypeBreakdown.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(value: number) => [`${value}`, "Count"]}
-                  labelFormatter={(label: string) => `Category: ${label}`}
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex-1">
-            <ul className="m-0 flex list-none flex-col gap-2 p-0">
-              {derived.categoryTypeBreakdown.map((item, index) => (
-                <li key={item.type} className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="h-3 w-3 rounded-full"
-                      style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
-                    />
-                    <p className="font-semibold text-slate-800">{item.name}</p>
-                  </div>
-                  <p className="text-right text-slate-700">
-                    {item.value} <span className="text-sm text-slate-500">({item.percent.toFixed(1)}%)</span>
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <ul className="m-0 grid list-none gap-2 p-0 sm:grid-cols-2">
+          {derived.categoryTypeBreakdown.map((item) => (
+            <li key={item.type} className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2">
+              <p className="font-semibold text-slate-800">{item.label}</p>
+              <p className="text-right text-slate-700">
+                {item.count} <span className="text-sm text-slate-500">({item.percent.toFixed(1)}%)</span>
+              </p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <Footer />
