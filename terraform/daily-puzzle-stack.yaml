@@ -43,8 +43,10 @@ Resources:
               - Effect: Allow
                 Action:
                   - s3:PutObject
-                Resource: !Sub "arn:aws:s3:::${TargetBucketName}/today-puzzle.json"
-
+                Resource: 
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/today-puzzle.json"
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/puzzles/*"
+      
   DailyPuzzleFetcherFunction:
     Type: AWS::Lambda::Function
     Properties:
