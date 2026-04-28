@@ -37,6 +37,26 @@ export function TodayApp({ puzzle }: TodayAppProps) {
   }));
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
 
+useEffect(() => {
+  if (!grid.selectedCell || !suggestionsRef.current) return;
+
+  const el = suggestionsRef.current;
+  const rect = el.getBoundingClientRect();
+
+  const isInView =
+    rect.top >= 0 &&
+    rect.bottom <= window.innerHeight;
+
+  if (!isInView) {
+    setTimeout(() => {
+      el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, 50);
+  }
+}, [grid.selectedCell]);
+  
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}pokemon.json`)
       .then(res => res.json())
@@ -96,16 +116,6 @@ export function TodayApp({ puzzle }: TodayAppProps) {
     }
   };
 
-  useEffect(() => {
-  if (!grid.selectedCell) return;
-
-  setTimeout(() => {
-    suggestionsRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  }, 50);
-}, [grid.selectedCell]);
 
   const handlePokemonSelect = (selectedPokemon: Pokemon) => {
     if (!grid.selectedCell) return;
