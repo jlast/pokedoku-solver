@@ -175,7 +175,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
         />
       </div>
 
-      div>
+      
 
   <section className="content-section">
 
