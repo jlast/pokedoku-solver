@@ -366,36 +366,25 @@ async function fetchForms() {
   }
 }
 
-async function main() {
-  await fetchPokemons();
-  await fetchSpecies();
-  await fetchForms();
-  
-  console.log('\nProcessing...');
-  const output: Pokemon[] = [];
-  const added = new Set<number>();
-  
-  
-  for (let formId = 1; formId <= 10553; formId++) {
-    if(IGNORED_FORM_IDS.has(formId)) continue;
+function getEntry(formId: number, added: Set<number>): Pokemon|undefined {
+  if(IGNORED_FORM_IDS.has(formId)) return;
     const form = loadForm(formId);
-    if(!form) continue;
-    if(IGNORED_FORMS.has(form.form_name)) continue;
+    if(!form) return;
+    if(IGNORED_FORMS.has(form.form_name)) return;
 
     const pokemonMatch = form.pokemon.url.match(/\/pokemon\/(\d+)\/$/);
-    if (!pokemonMatch) continue;
+    if (!pokemonMatch) return;
     const id = parseInt(pokemonMatch[1]);
     const pokemon = loadPokemon(id);
-    if (!pokemon) continue;
+    if (!pokemon) return;
     
     const speciesIdMatch = pokemon.species.url.match(/\/pokemon-species\/(\d+)\/$/);
-    if (!speciesIdMatch) continue;
+    if (!speciesIdMatch) return;
     const speciesId = parseInt(speciesIdMatch[1]);
     const species = loadSpecies(speciesId);
-    if (!species) continue;
+    if (!species) return;
     
-    if (added.has(id) && IGNORE_SPECIAL_FORMS.has(species.name)) continue;
-      added.add(id);
+    if (added.has(id) && IGNORE_SPECIAL_FORMS.has(species.name)) return;
 
     let name = IGNORE_SPECIAL_FORMS.has(species.name) ? species.name : form.name;
     name = name.replace('Floette red', 'Floette'); // Special case for Floette which has a unique form name for the base form
@@ -443,8 +432,24 @@ async function main() {
     if(form.form_name.includes('paldea')) entry.region = 'Paldea';
     
     console.log(entry.id, entry.name);
-    
-    output.push(entry);
+    return entry;
+}
+
+async function main() {
+  await fetchPokemons();
+  await fetchSpecies();
+  await fetchForms();
+  
+  console.log('\nProcessing...');
+  const output: Pokemon[] = [];
+  const added = new Set<number>();
+  
+  for (let formId = 1; formId <= 10553; formId++) {
+    const entry = getEntry(formId, added);
+    if (entry) {
+      output.push(entry);
+      added.add(entry.id);
+    }
   }
 
   
