@@ -131,7 +131,21 @@ export function TodayApp({ puzzle }: TodayAppProps) {
   return (
     <div className="app">
       <header>
-        <h1><img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" /></h1>
+        <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="logo" />
+        
+
+    <h1>Today&apos;s Pokedoku Helper</h1>
+
+    <p className="lead">
+      See the categories for today&apos;s Pokedoku puzzle and explore possible
+      Pokémon for each square.
+    </p>
+
+    <p>
+      Click any cell to view matching Pokémon for the current row and column
+      combination. Use it as a hint tool, a learning aid, or a quick way to
+      understand today&apos;s puzzle layout.
+    </p>
         <p>Today&apos;s puzzle - {formatDate(puzzle.date)}</p>
       </header>
 
@@ -160,6 +174,47 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           onSelect={handlePokemonSelect}
         />
       </div>
+
+      div>
+
+  <section className="content-section">
+
+    <h2>Today&apos;s Pokedoku categories</h2>
+
+    <p>
+
+      This page automatically loads the current Pokedoku puzzle constraints so
+      you can inspect every square and see which Pokémon fit. It updates each
+      day with the latest puzzle.
+    </p>
+
+  </section>
+
+  <section className="content-section faq">
+
+    <h2>FAQ</h2>
+
+    <h3>What is shown on this page?</h3>
+
+    <p>
+      This page loads today&apos;s Pokedoku categories and shows possible
+      Pokémon matches for each square.
+    </p>
+
+    <h3>Does this update automatically?</h3>
+
+    <p>
+      Yes. It is designed to load the current daily Pokedoku puzzle.
+    </p>
+
+    <h3>Can I go back to manual editing?</h3>
+
+    <p>
+      Yes. Use the back button to return to the editor and set your own row and
+      column combinations.
+    </p>
+
+  </section>
 
       <footer>
         <a href="https://pokedoku.com" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('click_pokedoku', { url: 'https://pokedoku.com' })}>Play Pokedoku</a>
