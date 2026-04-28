@@ -39,6 +39,7 @@ interface CategoryStats {
     to: string;
   };
   topCategoryCounts: CategoryCount[];
+  leastCategoryCounts: CategoryCount[];
   categoryTypeBreakdown: CategoryTypeSummary[];
   topCategoryPairs: CategoryPair[];
   pairFrequencyDistribution: PairFrequencySummary[];
@@ -341,6 +342,9 @@ function buildStats(puzzles: Puzzle[], pokemon: Pokemon[]): CategoryStats {
       to: dates[dates.length - 1] ?? "",
     },
     topCategoryCounts: allCategoryCounts.slice(0, 5),
+    leastCategoryCounts: [...allCategoryCounts]
+      .sort((a, b) => a.count - b.count || a.categoryId.localeCompare(b.categoryId))
+      .slice(0, 5),
     categoryTypeBreakdown: buildCategoryTypeBreakdown(allCategoryCounts),
     topCategoryPairs: allCategoryPairs.slice(0, 5),
     pairFrequencyDistribution: buildPairFrequencyDistribution(allCategoryPairs),

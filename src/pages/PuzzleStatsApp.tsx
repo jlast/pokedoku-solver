@@ -17,6 +17,7 @@ interface PuzzleStatsResponse {
     to: string;
   };
   topCategoryCounts: CategoryCount[];
+  leastCategoryCounts: CategoryCount[];
   categoryTypeBreakdown: CategoryTypeSummary[];
   topCategoryPairs: CategoryPair[];
   pairFrequencyDistribution: PairFrequencyDistributionItem[];
@@ -136,6 +137,7 @@ export default function PuzzleStatsApp() {
 
     return {
       mostCommonCategories: stats.topCategoryCounts,
+      leastCommonCategories: stats.leastCategoryCounts,
       oldestVisiblePokemon: stats.oldestPokemonLastUsable,
       mostCommonPairs: stats.topCategoryPairs,
       categoryTypeBreakdown,
@@ -235,6 +237,12 @@ export default function PuzzleStatsApp() {
             })}
           </ul>
         </article>
+
+        <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
+          <h2 className="mb-3 text-xl">Most common category pairs (top 5)</h2>
+          <p className="mb-2 text-sm text-slate-600">By number of occurrences</p>
+          <PairList items={derived.mostCommonPairs} showDistributionBar distributionTotal={derived.totalPairOccurrences} />
+        </article>
         
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
           <h2 className="mb-3 text-xl">Most common categories (top 5)</h2>
@@ -243,9 +251,47 @@ export default function PuzzleStatsApp() {
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-          <h2 className="mb-3 text-xl">Most common category pairs (top 5)</h2>
-          <p className="mb-2 text-sm text-slate-600">By number of occurrences</p>
-          <PairList items={derived.mostCommonPairs} showDistributionBar distributionTotal={derived.totalPairOccurrences} />
+          <h2 className="mb-3 text-xl">Least used categories (top 5)</h2>
+          <p className="mb-2 text-sm text-slate-600">By number of puzzles</p>
+          <CategoryList items={derived.leastCommonCategories} showDistributionBar distributionTotal={derived.totalCategoryCount} maxBarWidthPercent={50} />
+        </article>
+
+        <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
+          <h2 className="mb-3 text-xl">Category type breakdown</h2>
+          <p className="mb-2 text-sm text-slate-600">How often each category type appears.</p>
+          <div className="grid gap-4 md:grid-cols-[240px_1fr] md:items-center">
+            <div className="mx-auto">
+              <div className="relative h-52 w-52">
+                <DonutChart
+                  ariaLabel={derived.categoryTypeBreakdown.map((item) => `${item.label}: ${item.percent.toFixed(1)}%`).join(", ")}
+                  segments={derived.categoryTypeBreakdown.map((item) => ({
+                    value: item.count,
+                    color: CATEGORY_TYPE_COLORS[item.type] ?? CATEGORY_TYPE_COLORS.other,
+                  }))}
+                  size={208}
+                />
+                <div className="absolute inset-12 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
+                </div>
+              </div>
+            </div>
+
+            <ul className="m-0 grid list-none gap-2 p-0">
+              {derived.categoryTypeBreakdown.map((item) => {
+                const color = CATEGORY_TYPE_COLORS[item.type] ?? CATEGORY_TYPE_COLORS.other;
+                return (
+                  <li key={item.type} className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2">
+                    <p className="flex items-center gap-2 font-semibold text-slate-800">
+                      <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
+                      {item.label}
+                    </p>
+                    <p className="text-right text-slate-700">
+                      {item.count} <span className="text-sm text-slate-500">({item.percent.toFixed(1)}%)</span>
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
@@ -282,44 +328,6 @@ export default function PuzzleStatsApp() {
             </ul>
           </div>
         </article>
-      </section>
-
-      <section className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-        <h2 className="mb-3 text-xl">Category type breakdown</h2>
-        <p className="mb-2 text-sm text-slate-600">How often each category type appears.</p>
-        <div className="grid gap-4 md:grid-cols-[240px_1fr] md:items-center">
-          <div className="mx-auto">
-            <div className="relative h-52 w-52">
-              <DonutChart
-                ariaLabel={derived.categoryTypeBreakdown.map((item) => `${item.label}: ${item.percent.toFixed(1)}%`).join(", ")}
-                segments={derived.categoryTypeBreakdown.map((item) => ({
-                  value: item.count,
-                  color: CATEGORY_TYPE_COLORS[item.type] ?? CATEGORY_TYPE_COLORS.other,
-                }))}
-                size={208}
-              />
-              <div className="absolute inset-12 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
-              </div>
-            </div>
-          </div>
-
-          <ul className="m-0 grid list-none gap-2 p-0 sm:grid-cols-2">
-            {derived.categoryTypeBreakdown.map((item) => {
-              const color = CATEGORY_TYPE_COLORS[item.type] ?? CATEGORY_TYPE_COLORS.other;
-              return (
-                <li key={item.type} className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2">
-                  <p className="flex items-center gap-2 font-semibold text-slate-800">
-                    <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
-                    {item.label}
-                  </p>
-                  <p className="text-right text-slate-700">
-                    {item.count} <span className="text-sm text-slate-500">({item.percent.toFixed(1)}%)</span>
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
       </section>
 
       <Footer />
