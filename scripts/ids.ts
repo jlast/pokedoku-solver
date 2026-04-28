@@ -268,6 +268,14 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Gengar, linking cord fix
     evolutionTrigger: ["Evolved by Trade", "Evolved by Item"],
   },
+  550: {
+    // Basculin
+    evolutionStage: 'No Evolution Line',
+  },
+  10066: {
+    // Basculin
+    evolutionStage: 'No Evolution Line
+  },
   808: {
     // Meltan evolution fix
     evolutionStage: 'First Stage'
