@@ -268,6 +268,14 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Gengar, linking cord fix
     evolutionTrigger: ["Evolved by Trade", "Evolved by Item"],
   },
+  808: {
+    // Meltan evolution fix
+    evolutionStage: 'First Stage'
+  },
+  809: {
+    // Malmetal evolution fix
+    evolutionStage: 'Final Stage',
+  },
   869: {
     // Alcremie, evolved by sweet item fix
     evolutionTrigger: ["Evolved by Item"],
@@ -308,5 +316,8 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Zygarde complete
     region: 'Alola'
   }, 
-
+  10441: {
+    // Ursaluna bloodmoon
+    region: 'Paldea'
+  }
 };
