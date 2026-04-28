@@ -53,7 +53,7 @@ Resources:
               S3Key:
                 Rules:
                   - Name: prefix
-                    Value: data/puzzles/
+                    Value: data/runtime/puzzles/
                   - Name: suffix
                     Value: .json
   
@@ -93,7 +93,7 @@ Resources:
                   - s3:PutObject
             Resource:
               - !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/data/runtime/today-puzzle.json"]]
-              - !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/data/puzzles/*"]]
+              - !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/data/runtime/puzzles/*"]]
  
   DailyPuzzleFetcherFunction:
     Type: AWS::Lambda::Function

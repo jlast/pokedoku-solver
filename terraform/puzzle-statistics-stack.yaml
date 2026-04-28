@@ -44,12 +44,12 @@ Resources:
                 Condition:
                   StringLike:
                     s3:prefix:
-                      - "data/puzzles/*"
+                      - "data/runtime/puzzles/*"
 
               - Effect: Allow
                 Action:
                   - s3:GetObject
-                Resource: !Sub "arn:aws:s3:::${TargetBucketName}/data/puzzles/*"
+                Resource: !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/puzzles/*"
 
               - Effect: Allow
                 Action:

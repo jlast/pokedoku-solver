@@ -45,7 +45,7 @@ Resources:
                   - s3:PutObject
                 Resource: 
                   - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/today-puzzle.json"
-                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/puzzles/*"
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/puzzles/*"
       
   DailyPuzzleFetcherFunction:
     Type: AWS::Lambda::Function

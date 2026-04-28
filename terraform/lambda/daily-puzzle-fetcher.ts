@@ -187,7 +187,7 @@ export async function handler() {
 
   const puzzle = await fetchPuzzle();
 
-  const datedObjectKey = `data/puzzles/${puzzle.date}.json`;
+  const datedObjectKey = `data/runtime/puzzles/${puzzle.date}.json`;
 
   const s3 = new S3Client({});
 
