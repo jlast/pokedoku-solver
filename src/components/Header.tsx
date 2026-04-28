@@ -78,7 +78,17 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
       <header className="site-header text-left">
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 flex-1 items-center gap-2.5">
-            <img src={import.meta.env.BASE_URL + "logo.svg"} alt="Pokedoku Helper" className="m-0 h-8 w-8 max-[1100px]:h-7 max-[1100px]:w-7" />
+            <a
+              href={`${import.meta.env.BASE_URL}`}
+              aria-label="Go to home page"
+              onClick={() => trackEvent("click_navigate", { url: "", from: currentPage })}
+            >
+              <img
+                src={import.meta.env.BASE_URL + "logo.svg"}
+                alt="Pokedoku Helper"
+                className="m-0 h-8 w-8 cursor-pointer max-[1100px]:h-7 max-[1100px]:w-7"
+              />
+            </a>
             <span className="hidden ml-0.5 text-base leading-tight font-bold text-slate-900 max-[1100px]:inline-block">{title}</span>
 
             <nav
