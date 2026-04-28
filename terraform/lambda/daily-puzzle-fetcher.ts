@@ -111,6 +111,9 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
     case "EVOLUTION_BRANCHED":
       return { category: "category", value: "Is Branched" };
 
+    case "FOSSIL": 
+      return { category: "category", value: "Fossil" };
+
     default:
       return null;
   }
