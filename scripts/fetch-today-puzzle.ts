@@ -84,6 +84,9 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
     case 'BABY':
       return { category: 'category', value: 'Baby' };
 
+    case 'PARADOX':
+      return { category: 'category', value: 'Paradox' };
+
     case 'BRANCHED':
       if (obj === true) {
         return { category: 'branched', value: 'Yes' };
