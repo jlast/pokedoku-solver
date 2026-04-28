@@ -19,7 +19,7 @@ import { fetchWithRetry, delay } from './lib';
 import { loadPokemon, loadForm, loadSpecies, loadChain, loadPokemonList, savePokemonList, loadSpeciesList, saveSpeciesList, loadFormsList, saveFormsList, savePokemon, saveSpecies, saveForm, saveChain } from './lib/cache';
 import { getEvolutionStage } from './lib/evolution';
 import type { PokeAPIPokemon, PokeAPIForm, PokeAPISpecies, EvolutionNode } from './lib/types';
-import type { Pokemon, PokemonType } from '../src/utils/types';
+import type { Pokemon, PokemonType, DexDifficulty } from '../src/utils/types';
 import { CUSTOM_POKEMON } from './custom_pokemon';
 
 const NO_CACHE = process.argv.includes('--no-cache');
@@ -28,6 +28,69 @@ const POKEMON_API_BASE = 'https://pokeapi.co/api/v2';
 const REQUEST_DELAY = 100;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'pokemon.json');
+
+function getAllCategories(pokemon: Pokemon): string[] {
+  const categories: string[] = [];
+  
+  for (const type of pokemon.types) {
+    if (type) categories.push(type);
+  }
+  
+  const typeCount = pokemon.types.filter(t => t).length;
+  if (typeCount === 1) categories.push('Monotype');
+  else if (typeCount === 2) categories.push('Dualtype');
+  
+  if (pokemon.region) categories.push(pokemon.region);
+  if (pokemon.evolutionStage) categories.push(pokemon.evolutionStage);
+  if (pokemon.evolutionTrigger) categories.push(...pokemon.evolutionTrigger);
+  if (pokemon.isBranched) categories.push('Yes');
+  else categories.push('No');
+  if (pokemon.specialForm) categories.push(pokemon.specialForm);
+  if (pokemon.category) categories.push(pokemon.category);
+  
+  return categories;
+}
+
+function calculateDexDifficulties(pokemonList: Pokemon[]): void {
+  const categoryCounts: Record<string, number> = {};
+  
+  for (const pokemon of pokemonList) {
+    const possible = getAllCategories(pokemon);
+    for (const value of possible) {
+      categoryCounts[value] = (categoryCounts[value] || 0) + 1;
+    }
+  }
+  
+  const scores: { pokemon: Pokemon; score: number }[] = [];
+  
+  for (const pokemon of pokemonList) {
+    const possible = getAllCategories(pokemon);
+    let totalCompetition = 0;
+    
+    for (const value of possible) {
+      totalCompetition += categoryCounts[value] || 1;
+    }
+    
+    const averageCompetition = possible.length > 0 ? totalCompetition / possible.length : 1;
+    const rawScore = possible.length / averageCompetition;
+    scores.push({ pokemon, score: rawScore });
+  }
+  
+  scores.sort((a, b) => b.score - a.score);
+  
+  const total = scores.length;
+  for (let i = 0; i < total; i++) {
+    const percentile = i / total;
+    let grade: DexDifficulty;
+    if (percentile < 0.4) grade = 'Easy';
+    else if (percentile < 0.7) grade = 'Normal';
+    else if (percentile < 0.9) grade = 'Hard';
+    else if (percentile < 0.98) grade = 'Expert';
+    else grade = 'Nightmare';
+    
+    scores[i].pokemon.dexDifficulty = grade;
+  }
+}
 
 async function fetchPokemons() {
   console.log('Fetching Pokemon list...');
@@ -229,6 +292,9 @@ async function main() {
 
   output.push(...CUSTOM_POKEMON);
   output.sort((a, b) => a.id - b.id);
+
+  console.log('Calculating Dex difficulties...');
+  calculateDexDifficulties(output);
 
   console.log(`Total: ${output.length} Pokemon`);
 

@@ -375,11 +375,17 @@ header .pokemon-count {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
-  min-width: 300px;
-  max-width: 340px;
+  width: 418px;
   max-height: 500px;
   overflow-y: auto;
   margin-top: 20px;
+}
+
+@media (min-width: 900px) {
+  .suggestions-panel {
+    margin-top: 0;
+    max-height: none;
+  }
 }
 
 .suggestions-panel h3 {
@@ -413,8 +419,8 @@ header .pokemon-count {
 
 .pokemon-item {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -422,21 +428,52 @@ header .pokemon-count {
   cursor: pointer;
   transition: all 0.15s;
   text-align: left;
-  flex-wrap: wrap;
 }
 
-.pokemon-item .pokemon-sprite {
-  width: 40px;
-  height: 40px;
+.pokemon-item {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pokemon-item .pokemon-sprite,
+.pokemon-item .pokemon-sprite-placeholder {
+  width: 58px;
+  height: 58px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
 .pokemon-item .pokemon-sprite-placeholder {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
   background: var(--code-bg);
-  flex-shrink: 0;
+}
+
+.pokemon-item-top {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.pokemon-item-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 4px;
+}
+
+.pokemon-item-bottom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 8px;
+  font-size: 0.85rem;
+  color: #666;
 }
 
 .pokemon-item:hover {
@@ -444,28 +481,136 @@ header .pokemon-count {
   border-color: var(--accent-border);
 }
 
-.pokemon-item .pokemon-id {
-  flex-shrink: 0;
-  min-width: 45px;
+.pokemon-item .pokemon-name {
+  font-weight: 500;
+  flex-grow: 1;
 }
 
-.pokemon-item .pokemon-name {
-  flex-grow: 1;
-  min-width: 80px;
+.pokemon-item .pokemon-id {
+  flex-shrink: 0;
+  color: #666;
 }
 
 .pokemon-item .pokemon-types {
   flex-shrink: 0;
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
 }
 
-.region-badge-small {
+.pokemon-item .type-badge {
   font-size: 8px;
-  padding: 1px 4px;
-  border-radius: 3px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+}
+
+.pokemon-item .dex-difficulty-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
   color: white;
   font-weight: 600;
   text-transform: uppercase;
   flex-shrink: 0;
+}
+
+.pokemon-item .pokemon-sprite,
+.pokemon-item .pokemon-sprite-placeholder {
+  width: 50px;
+  height: 50px;
+  margin: 4px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.pokemon-item .pokemon-sprite-placeholder {
+  background: var(--code-bg);
+  border-radius: 100%;
+}
+
+.pokemon-item-top {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.pokemon-item-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 4px;
+  flex: 1;
+}
+
+.pokemon-item .pokemon-types {
+  flex-shrink: 0;
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.pokemon-item .type-badge {
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+}
+
+.pokemon-item:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+.pokemon-item .pokemon-name {
+  font-weight: 500;
+}
+
+.pokemon-item .pokemon-id {
+  flex-shrink: 0;
+  color: #666;
+}
+
+.pokemon-item .pokemon-types {
+  flex-shrink: 0;
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.pokemon-item .type-badge {
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+}
+
+.pokemon-item .separator {
+  color: #999;
+  margin: 0 4px;
+}
+
+.pokemon-item .dex-difficulty-bar {
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+.region-badge-small {
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  background: #666;
 }
 
 .no-pokemon {
@@ -509,7 +654,7 @@ header .pokemon-count {
   
   .suggestions-panel {
     width: 100%;
-    max-width: 320px;
+    width: 332px;
     max-height: 350px;
   }
 }
