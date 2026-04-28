@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:github": "tsc -b && vite build --base=/pokedoku-solver/ && rm -rf github-pages-dist && mv dist github-pages-dist",
+    "build:github": "tsc -b && vite build --base=/pokedoku-solver/ && rm -rf docs && mv dist docs",
     "lint": "eslint .",
     "preview": "vite preview",
     "fetch-pokemon": "tsx scripts/fetch.ts",
