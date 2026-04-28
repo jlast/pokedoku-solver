@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import type { Pokemon } from '../utils/types';
 import { GRID_SIZE, type Constraint } from '../utils/constants';
 import { matchesConstraint, parseConstraintFromParam } from '../utils/utils';
@@ -35,6 +35,18 @@ function App() {
       selectedCell: null,
     };
   });
+ const suggestionsRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+  if (grid.selectedCell && suggestionsRef.current) {
+    // small delay so panel renders first
+    setTimeout(() => {
+      suggestionsRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, 50);
+  }
+}, [grid.selectedCell]);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}pokemon.json?t=${Date.now()}`)
@@ -182,7 +194,7 @@ function App() {
           onCellClick={handleCellClick}
           onConstraintChange={handleConstraintChange}
         />
-
+<div ref={suggestionsRef}
         <SuggestionsPanel
           selectedCell={grid.selectedCell}
           rowConstraints={grid.rowConstraints}
@@ -190,6 +202,7 @@ function App() {
           possiblePokemon={selectedCellPossible}
           onSelect={handlePokemonSelect}
         />
+      </div>
       </div>
 
    <section className="content-section">
