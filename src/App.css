@@ -13,6 +13,7 @@ header {
 }
 
 header h1 {
+  height: 40px;
   margin: 0 0 8px;
   font-size: 2.5rem;
   background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FFEAA7);
@@ -422,4 +423,28 @@ header .pokemon-count {
     max-width: 320px;
     max-height: 350px;
   }
+}
+
+footer {
+  text-align: center;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+  color: #666;
+}
+
+footer a {
+  color: #4ECDC4;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+footer span {
+  margin: 0 8px;
 }
