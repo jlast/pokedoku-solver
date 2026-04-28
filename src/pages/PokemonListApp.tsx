@@ -70,10 +70,15 @@ function PokemonListApp() {
 
   const [sortBy, setSortBy] = useState<SortOption>(() => {
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem('pokedoku-sort') as SortOption) || 'number-asc';
-    }
-    return 'number-asc';
-  });
+    const params = new URLSearchParams(window.location.search);
+     const sortParam = params.get('sortBy') as SortOption | null;
+
+    if (sortParam) return sortParam;
+
+    return (localStorage.getItem('pokedoku-sort') as SortOption) || 'number-asc';
+  }
+  return 'number-asc';
+});
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}pokemon.json?t=${Date.now()}`)
@@ -106,10 +111,12 @@ function PokemonListApp() {
     else params.delete('form');
     if (filters.category.length > 0) params.set('category', filters.category.join(','));
     else params.delete('category');
+    if (sortBy) params.set('sortBy', sortBy);
+    else params.delete('sortBy');
 
     const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
     window.history.replaceState({}, '', newUrl);
-  }, [filters]);
+  }, [filters, sortBy]);
 
   const toggleFilter = (category: keyof FilterState, value: string) => {
     setFilters(prev => {
