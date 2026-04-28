@@ -36,6 +36,8 @@ const CATEGORY_TYPE_LABELS: Record<string, string> = {
   regions: "Regions",
   evolution: "Evolution",
   category: "Category",
+  ability: "Ability",
+  move: "Move",
 };
 
 function formatDate(value: string): string {
