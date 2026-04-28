@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { REGION_BY_ID, STARTER_IDS, ULTRA_BEASTS, FOSSIL_IDS, PARADOX_POKEMON, IGNORED_FORM_IDS, IGNORED_FORMS, CANT_EVOLVE_FORMS, IGNORE_SPECIAL_FORMS, NAME_REPLACEMENTS, IGNORE_EVOLVE_FORMS, EVOLUTION_METHOD_REPLACEMENTS } from './ids';
+import { REGION_BY_ID, STARTER_IDS, ULTRA_BEASTS, FOSSIL_IDS, PARADOX_POKEMON, IGNORED_FORM_IDS, IGNORED_FORMS, CANT_EVOLVE_FORMS, IGNORE_SPECIAL_FORMS, NAME_REPLACEMENTS, IGNORE_EVOLVE_FORMS, POKEMON_OVERRIDES } from './ids';
 import { fetchWithRetry } from './lib';
 import type { EvolutionMethod, EvolutionTrigger, Pokemon, PokemonType } from '../src/types';
 import { CUSTOM_POKEMON } from './custom_pokemon';
@@ -437,9 +437,6 @@ function getEntry(formId: number, added: Set<number>): Pokemon|undefined {
             if (result.branched) entry.isBranched = true;
           }
         }
-        if(EVOLUTION_METHOD_REPLACEMENTS[id]) {
-          entry.evolutionTrigger = EVOLUTION_METHOD_REPLACEMENTS[id];
-        }
       } else if(!IGNORE_EVOLVE_FORMS.has(form.form_name)) {
         entry.evolutionStage = 'No Evolution Line';
       }
@@ -451,6 +448,18 @@ function getEntry(formId: number, added: Set<number>): Pokemon|undefined {
     if(form.form_name.includes('galar')) entry.region = 'Galar';
     if(form.form_name.includes('hisui')) entry.region = 'Hisui';
     if(form.form_name.includes('paldea')) entry.region = 'Paldea';
+    
+    const formOverride = POKEMON_OVERRIDES[formId];
+    if (formOverride) {
+      if (formOverride.types) entry.types = formOverride.types;
+      if (formOverride.region) entry.region = formOverride.region;
+      if (formOverride.evolutionStage) entry.evolutionStage = formOverride.evolutionStage;
+      if (formOverride.evolutionTrigger) entry.evolutionTrigger = formOverride.evolutionTrigger;
+      if (formOverride.isBranched !== undefined) entry.isBranched = formOverride.isBranched;
+      if (formOverride.specialForm) entry.specialForm = formOverride.specialForm;
+      if (formOverride.category) entry.category = formOverride.category;
+      if (formOverride.sprite) entry.sprite = formOverride.sprite;
+    }
     
     console.log(entry.id, entry.name);
     return entry;

@@ -1,4 +1,4 @@
-import type { EvolutionTrigger, PokemonRegion } from "../src/types";
+import type { EvolutionMethod, EvolutionTrigger, PokemonType, PokemonRegion, SpecialForm, PokemonCategory } from "../src/types";
 
 
 export const REGION_BY_ID: Record<number, PokemonRegion> = {};
@@ -55,6 +55,7 @@ export const FOSSIL_IDS = new Set([
   564, 565, 566, 567,
   696, 697, 698, 699,
   880, 881, 882, 883,
+  10042,
 ]);
 
 export const IGNORED_FORM_IDS = new Set([
@@ -62,7 +63,8 @@ export const IGNORED_FORM_IDS = new Set([
   10437, 10438, 10439, 10440,  // Miraidon
   10182, 10183, 10184, 10185, 10186, 10187, 10196, 10197, 10198, 10199, 10200, 10201, 10267, 10319, // All pikachu costumes
   10103, 10104, 10105, 10106, 10107, 10108, 10109, 10110, 10111, 10112, 10113, 10114, // Flabebe, Floette and Florges special forms
-  10249, 10250, 10251, 10252, 10253, 10254,
+  10249, 10250, 10251, 10252, 10253, 10254, // Minior meteor
+  10341, 10342 // Cramorant
 ])
 
 export const IGNORED_FORMS = new Set([
@@ -70,7 +72,7 @@ export const IGNORED_FORMS = new Set([
 ]);
 
 export const IGNORE_SPECIAL_FORMS = new Set([
-  'unown', 'arceus', 'genesect', 'scatterbug', 'spewpa', 'vivillon', 'furfrou', 'xerneas', 'silvally', 'sinistea', 'polteageist', 'alcremie', 'koraidon', 'miraidon', 'poltchageist', 'sinistcha'
+  'unown', 'arceus', 'genesect', 'scatterbug', 'spewpa', 'vivillon', 'furfrou', 'xerneas', 'silvally', 'sinistea', 'polteageist', 'alcremie', 'koraidon', 'miraidon', 'poltchageist', 'sinistcha', 'mothim'
 ])
 
 export const NAME_REPLACEMENTS: Record<string, string> = {
@@ -81,8 +83,46 @@ export const NAME_REPLACEMENTS: Record<string, string> = {
   'Mimikyu disguised': 'Mimikyu',
 }
 
-export const EVOLUTION_METHOD_REPLACEMENTS: Record<string, EvolutionTrigger[]> = {
-  1013: ['Evolved by Item'],
-  1018: ['Evolved by Item'],
-  1019: ['Evolved by Level'],
+export interface PokemonOverride {
+  types?: [PokemonType, PokemonType?] | [PokemonType];
+  region?: PokemonRegion;
+  evolutionStage?: EvolutionMethod;
+  evolutionTrigger?: EvolutionTrigger[];
+  isBranched?: boolean;
+  specialForm?: SpecialForm;
+  category?: PokemonCategory;
+  sprite?: string;
+}
+
+export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
+  65: { // Alakazam, linking cord fix
+    evolutionTrigger: ['Evolved by Trade', 'Evolved by Item']
+  },
+  68: { // Machamp, linking cord fix
+    evolutionTrigger: ['Evolved by Trade', 'Evolved by Item']
+  },
+  76: { // Golem, linking cord fix
+    evolutionTrigger: ['Evolved by Trade', 'Evolved by Item']
+  },
+  94: { // Gengar, linking cord fix
+    evolutionTrigger: ['Evolved by Trade', 'Evolved by Item']
+  },
+  1013: { // sinistcha
+    evolutionTrigger: ['Evolved by Item']
+  },
+  1018: { // archaludon
+    evolutionTrigger: ['Evolved by Item']
+  },
+  1019: { // hydrapple
+    evolutionTrigger: ['Evolved by Level']
+  },
+  10414: { // palkia origin
+    region: 'Hisui'
+  },
+  10415: { // dialga origin
+    region: 'Hisui'
+  },
+  10416: { // basculin white striped
+    region: 'Hisui'
+  },
 }
