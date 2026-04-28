@@ -32,6 +32,14 @@ interface ParsedCategory {
   label: string;
 }
 
+interface PairFrequencyBucket {
+  key: string;
+  label: string;
+  min: number;
+  max: number | null;
+  color: string;
+}
+
 const CATEGORY_TYPE_LABELS: Record<string, string> = {
   types: "Types",
   regions: "Regions",
@@ -48,6 +56,14 @@ const CATEGORY_TYPE_COLORS: Record<string, string> = {
   category: "#ca8a04",
   other: "#64748b",
 };
+
+const PAIR_FREQUENCY_BUCKETS: PairFrequencyBucket[] = [
+  { key: "once", label: "1 time", min: 1, max: 1, color: "#7c3aed" },
+  { key: "twoToNine", label: "2-9 times", min: 2, max: 9, color: "#2563eb" },
+  { key: "fiveToNineteen", label: "10-19 times", min: 10, max: 19, color: "#eab308" },
+  { key: "twentyToTwentyNine", label: "20-29 times", min: 20, max: 29, color: "#f97316" },
+  { key: "thirtyPlus", label: "30+ times", min: 30, max: null, color: "#ef4444" },
+];
 
 function formatDate(value: string): string {
   const date = new Date(value);
@@ -207,6 +223,36 @@ export default function PuzzleStatsApp() {
     const mostCommonPairs = topByCount(stats.categoryPairs, (item) => item.count, pairLabel);
     const leastCommonPairs = bottomByCount(stats.categoryPairs, (item) => item.count, pairLabel);
 
+    const totalPairCombinations = stats.categoryPairs.length;
+    const totalPairOccurrences = stats.categoryPairs.reduce((sum, item) => sum + item.count, 0);
+
+    const pairFrequencyDistribution = PAIR_FREQUENCY_BUCKETS.map((bucket) => {
+      const combos = stats.categoryPairs.filter((pair) => pair.count >= bucket.min && (bucket.max === null || pair.count <= bucket.max));
+      const comboCount = combos.length;
+      const occurrenceCount = combos.reduce((sum, pair) => sum + pair.count, 0);
+
+      return {
+        ...bucket,
+        comboCount,
+        occurrenceCount,
+        comboPercent: totalPairCombinations > 0 ? (comboCount / totalPairCombinations) * 100 : 0,
+      };
+    });
+
+    let runningPairPercent = 0;
+    const pairFrequencyConicGradient =
+      pairFrequencyDistribution.some((bucket) => bucket.comboCount > 0)
+        ? `conic-gradient(${pairFrequencyDistribution
+            .filter((bucket) => bucket.comboCount > 0)
+            .map((bucket) => {
+              const start = runningPairPercent;
+              runningPairPercent += bucket.comboPercent;
+              const end = runningPairPercent;
+              return `${bucket.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
+            })
+            .join(", ")})`
+        : "conic-gradient(#e2e8f0 0% 100%)";
+
     const typeTotals = new Map<string, number>();
     for (const item of stats.categoryCounts) {
       const parsed = parseCategoryId(item.categoryId);
@@ -250,6 +296,10 @@ export default function PuzzleStatsApp() {
       categoryTypeTotal,
       categoryTypeConicGradient,
       totalCategoryCount: total,
+      totalPairCombinations,
+      totalPairOccurrences,
+      pairFrequencyDistribution,
+      pairFrequencyConicGradient,
     };
   }, [stats]);
 
@@ -307,8 +357,39 @@ export default function PuzzleStatsApp() {
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-          <h2 className="mb-3 text-xl">Least common category pairs (top 5)</h2>
-          <PairList items={derived.leastCommonPairs} />
+          <h2 className="mb-3 text-xl">Combination frequency distribution</h2>
+          <div className="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
+            <div className="mx-auto">
+              <div
+                aria-label={derived.pairFrequencyDistribution
+                  .filter((bucket) => bucket.comboCount > 0)
+                  .map((bucket) => `${bucket.label}: ${bucket.comboPercent.toFixed(1)}%`)
+                  .join(", ")}
+                className="relative h-48 w-48 rounded-full"
+                role="img"
+                style={{ background: derived.pairFrequencyConicGradient }}
+              >
+                <div className="absolute inset-8 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Unique pairs</p>
+                  <p className="text-2xl font-bold text-slate-900">{derived.totalPairCombinations}</p>
+                </div>
+              </div>
+            </div>
+
+            <ul className="m-0 flex list-none flex-col gap-2 p-0">
+              {derived.pairFrequencyDistribution.map((bucket) => (
+                <li key={bucket.key} className="rounded-lg border border-slate-200 bg-white px-3 py-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="flex items-center gap-2 font-semibold text-slate-800">
+                      <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: bucket.color }} />
+                      {bucket.label}
+                    </p>
+                    <p className="text-sm text-slate-600">{bucket.comboPercent.toFixed(1)}%</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </article>
       </section>
 
