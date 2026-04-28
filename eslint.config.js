@@ -21,6 +21,14 @@ export default defineConfig([
     },
     rules: {
       'no-empty': ['error', { allowEmptyCatch: true }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
     },
   },
 ])
