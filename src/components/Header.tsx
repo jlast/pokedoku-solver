@@ -4,7 +4,7 @@ interface HeaderProps {
   title: string;
   subtitle?: string;
   showDate?: string;
-  currentPage?: string;
+  currentPage: string;
 }
 
 interface NavButton {
