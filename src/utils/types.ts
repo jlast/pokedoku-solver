@@ -57,4 +57,5 @@ export interface Pokemon {
   category?: PokemonCategory;
   sprite?: string;
   dexDifficulty?: DexDifficulty;
+  dexDifficultyPercentile?: number;
 }

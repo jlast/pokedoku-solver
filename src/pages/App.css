@@ -379,6 +379,14 @@ header .pokemon-count {
   max-height: 500px;
   overflow-y: auto;
   margin-top: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.suggestions-panel .pokemon-list {
+  flex: 1;
+  overflow-y: visible;
 }
 
 @media (min-width: 900px) {
@@ -409,6 +417,80 @@ header .pokemon-count {
 .suggestions-panel h3 .count {
   font-weight: normal;
   color: var(--text);
+}
+
+.panel-header {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 5;
+}
+
+.sort-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-title {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.sort-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sort-icon {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.sort-select {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.column-headers {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: #999;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.column-header {
+  display: flex;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.column-header:hover {
+  color: var(--text-h);
+}
+
+.sort-arrows {
+  display: flex;
+  flex-direction: column;
+  line-height: 12px;
+}
+
+.sort-arrows .active {
+  color: var(--text-h);
+}
+
+.column-headers span:last-child {
+  text-align: right;
 }
 
 .pokemon-list {
@@ -781,9 +863,9 @@ footer span {
 }
 
 .scroll-hint {
-  position: absolute;
+  position: sticky;
   left: 50%;
-  bottom: 8px;
+  margin-top: -40px;
   width: 32px;
   height: 32px;
   background: rgba(255, 255, 255, 0.5);

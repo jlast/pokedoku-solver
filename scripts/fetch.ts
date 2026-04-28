@@ -88,6 +88,7 @@ function calculateDexDifficulties(pokemonList: Pokemon[]): void {
     else if (percentile < 0.98) grade = 'Expert';
     else grade = 'Nightmare';
     
+    scores[i].pokemon.dexDifficultyPercentile = percentile;
     scores[i].pokemon.dexDifficulty = grade;
   }
 }
