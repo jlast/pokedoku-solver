@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import type { Pokemon } from '../utils/types';
 import { GRID_SIZE, type Constraint } from '../utils/constants';
 import { matchesConstraint, formatDate } from '../utils/utils';
@@ -35,6 +35,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
     colConstraints: [...puzzle.colConstraints],
     selectedCell: null,
   }));
+  const suggestionsRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}pokemon.json`)
@@ -94,6 +95,17 @@ export function TodayApp({ puzzle }: TodayAppProps) {
       setGrid(prev => ({ ...prev, selectedCell: [row, col] }));
     }
   };
+
+  useEffect(() => {
+  if (!grid.selectedCell) return;
+
+  setTimeout(() => {
+    suggestionsRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }, 50);
+}, [grid.selectedCell]);
 
   const handlePokemonSelect = (selectedPokemon: Pokemon) => {
     if (!grid.selectedCell) return;
@@ -164,14 +176,15 @@ export function TodayApp({ puzzle }: TodayAppProps) {
           onCellClick={handleCellClick}
           onConstraintChange={() => {}}
         />
-
-        <SuggestionsPanel
+        <div ref={suggestionsRef}>
+         <SuggestionsPanel
           selectedCell={grid.selectedCell}
           rowConstraints={grid.rowConstraints}
           colConstraints={grid.colConstraints}
           possiblePokemon={selectedCellPossible}
           onSelect={handlePokemonSelect}
-        />
+         />
+      </div>
       </div>
 
       
