@@ -60,5 +60,10 @@ export const IGNORED_FORM_IDS = new Set([
 ])
 
 export const IGNORED_FORMS = new Set([
-  'totem', 'totem-alola'
+  'totem', 'totem-alola',
+  'yellow', 'blue', 'orange', 'blue', 'white'
 ]);
+
+export const IGNORE_SPECIAL_FORMS = new Set([
+  'unown', 'arceus', 'genesect', 'scatterbug', 'spewpa', 'vivillon', 'flabebe', 'florges', 'furfrou', 'xerneas', 'silvally', 'sinistea', 'polteageist', 'alcremie', 'koraidon', 'miraidon', 'poltchageist', 'sinistcha'
+])
