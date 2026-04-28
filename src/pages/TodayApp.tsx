@@ -220,7 +220,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
     }
 
     return result;
-  }, [grid.cells, grid.rowConstraints, grid.colConstraints, pokemon]);
+  }, [grid.rowConstraints, grid.colConstraints, pokemon]);
 
   const handleCellClick = (row: number, col: number) => {
     setGrid((prev) => {
@@ -276,7 +276,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
       if (!matchesConstraint(p, colConstraint)) return false;
       return true;
     });
-  }, [grid.selectedCell, grid.cells, grid.rowConstraints, grid.colConstraints, pokemon]);
+  }, [grid.selectedCell, grid.rowConstraints, grid.colConstraints, pokemon]);
 
   if (loading) {
     return (
