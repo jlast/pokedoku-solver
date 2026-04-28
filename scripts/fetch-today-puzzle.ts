@@ -18,6 +18,10 @@ const GENERATION_MAP: Record<string, string> = {
   'generation-ix': 'Paldea',
 };
 
+const EVOLUTION_MAP: Record<string, string> = {
+  'none': 'No Evolution Line'
+};
+
 interface ConstraintMapping {
   category: ConstraintCategory;
   value: string;
@@ -41,6 +45,12 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
       if (typeof obj === 'string') {
         const typeName = obj.charAt(0).toUpperCase() + obj.slice(1);
         return { category: 'type', value: typeName };
+      }
+      return null;
+      
+    case 'EVOLUTION_POSITION':
+      if (typeof obj === 'string' && EVOLUTION_MAP[obj]) {
+        return { category: 'evolution', value: EVOLUTION_MAP[obj] };
       }
       return null;
 
