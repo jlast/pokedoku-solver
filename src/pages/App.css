@@ -1037,6 +1037,7 @@ footer span {
   background: var(--accent-bg);
   border-color: var(--accent-border);
   color: var(--text-h);
+  font-weight: 600;
 }
 
 .pokemon-list-header {
@@ -1131,4 +1132,15 @@ footer span {
   color: white;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.no-results {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text);
+}
+
+.no-results p {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
 }

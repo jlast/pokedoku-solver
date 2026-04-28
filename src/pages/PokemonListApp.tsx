@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from 'react';
-import type { Pokemon, PokemonType, PokemonRegion, EvolutionMethod, SpecialForm, PokemonCategory } from '../utils/types';
-import { TYPE_COLORS, REGION_COLORS, EVOLUTION_COLORS, FORM_COLORS, CATEGORY_COLORS } from '../utils/constants';
+import type { Pokemon } from '../utils/types';
+import { TYPE_COLORS } from '../utils/constants';
+import { FILTER_CATEGORIES, parseFiltersFromUrl, getActiveFilters, getFiltersForUrl, applyFilters } from '../utils/filters';
+import type { FilterState } from '../utils/filters';
 import { trackEvent } from '../utils/analytics';
 import { Header } from '../components/Header';
 import './App.css';
@@ -14,86 +16,33 @@ const DEX_DIFFICULTY_COLORS: Record<string, string> = {
   Nightmare: '#9b59b6',
 };
 
-interface FilterState {
-  types: PokemonType[];
-  regions: PokemonRegion[];
-  evolution: EvolutionMethod[];
-  form: SpecialForm[];
-  category: PokemonCategory[];
-}
-
 type SortOption = 'number-asc' | 'number-desc' | 'difficulty-desc' | 'difficulty-asc';
-
-function parseFiltersFromUrl(): FilterState {
-  const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-  const loadedFilters: FilterState = {
-    types: [],
-    regions: [],
-    evolution: [],
-    form: [],
-    category: [],
-  };
-
-  const typeValues = params.get('types')?.split(',').filter(Boolean) || [];
-  loadedFilters.types = typeValues.filter(t => 
-    (['Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'] as const).includes(t as PokemonType)
-  ) as PokemonType[];
-
-  const regionValues = params.get('regions')?.split(',').filter(Boolean) || [];
-  loadedFilters.regions = regionValues.filter(r =>
-    (['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Alola', 'Galar', 'Hisui', 'Paldea', 'Unknown'] as const).includes(r as PokemonRegion)
-  ) as PokemonRegion[];
-
-  const evoValues = params.get('evolution')?.split(',').filter(Boolean) || [];
-  loadedFilters.evolution = evoValues.filter(e =>
-    (['First Stage', 'Middle Stage', 'Final Stage', 'No Evolution Line', 'Not Fully Evolved'] as const).includes(e as EvolutionMethod)
-  ) as EvolutionMethod[];
-
-  const formValues = params.get('form')?.split(',').filter(Boolean) || [];
-  loadedFilters.form = formValues.filter(f =>
-    (['Gigantamax', 'Mega Evolution'] as const).includes(f as SpecialForm)
-  ) as SpecialForm[];
-
-  const catValues = params.get('category')?.split(',').filter(Boolean) || [];
-  loadedFilters.category = catValues.filter(c =>
-    (['Legendary', 'Mythical', 'Ultra Beast', 'Paradox', 'Fossil', 'Starter', 'Baby'] as const).includes(c as PokemonCategory)
-  ) as PokemonCategory[];
-
-  return loadedFilters;
-}
-
-const POKEMON_TYPES_LIST: PokemonType[] = ['Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'];
-const POKEMON_REGIONS_LIST: PokemonRegion[] = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Alola', 'Galar', 'Hisui', 'Paldea', 'Unknown'];
-const EVOLUTION_METHODS_LIST: EvolutionMethod[] = ['First Stage', 'Middle Stage', 'Final Stage', 'No Evolution Line', 'Not Fully Evolved'];
-const SPECIAL_FORMS_LIST: SpecialForm[] = ['Gigantamax', 'Mega Evolution'];
-const POKEMON_CATEGORIES_LIST: PokemonCategory[] = ['Legendary', 'Mythical', 'Ultra Beast', 'Paradox', 'Fossil', 'Starter', 'Baby'];
-
-const FILTER_GROUPS = [
-  { key: 'types', label: 'Types', options: POKEMON_TYPES_LIST, colors: TYPE_COLORS },
-  { key: 'regions', label: 'Regions', options: POKEMON_REGIONS_LIST, colors: REGION_COLORS },
-  { key: 'evolution', label: 'Evolution', options: EVOLUTION_METHODS_LIST, colors: EVOLUTION_COLORS },
-  { key: 'form', label: 'Forms', options: SPECIAL_FORMS_LIST, colors: FORM_COLORS },
-  { key: 'category', label: 'Categories', options: POKEMON_CATEGORIES_LIST, colors: CATEGORY_COLORS },
-] as const;
 
 function PokemonListApp() {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedFilters, setExpandedFilters] = useState<Set<string>>(new Set([]));
 
-  const [filters, setFilters] = useState<FilterState>(parseFiltersFromUrl);
+  const [filters, setFilters] = useState<FilterState>(() => {
+    const initial: FilterState = {};
+    FILTER_CATEGORIES.forEach(cat => {
+      initial[cat.key] = [];
+    });
+    const urlFilters = parseFiltersFromUrl(new URLSearchParams(window.location.search));
+    return { ...initial, ...urlFilters };
+  });
 
   const [sortBy, setSortBy] = useState<SortOption>(() => {
     if (typeof window !== 'undefined') {
-    const params = new URLSearchParams(window.location.search);
-     const sortParam = params.get('sortBy') as SortOption | null;
+      const params = new URLSearchParams(window.location.search);
+      const sortParam = params.get('sortBy') as SortOption | null;
 
-    if (sortParam) return sortParam;
+      if (sortParam) return sortParam;
 
-    return (localStorage.getItem('pokedoku-sort') as SortOption) || 'number-asc';
-  }
-  return 'number-asc';
-});
+      return (localStorage.getItem('pokedoku-sort') as SortOption) || 'number-asc';
+    }
+    return 'number-asc';
+  });
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}pokemon.json?t=${Date.now()}`)
@@ -115,31 +64,17 @@ function PokemonListApp() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const totalFilters = filters.types.length + filters.regions.length + 
-      filters.evolution.length + filters.form.length + filters.category.length;
-    
+
+    const totalFilters = getActiveFilters(filters);
     if (totalFilters > 0) {
-      trackEvent('filter_change', {
-        types: filters.types.length,
-        regions: filters.regions.length,
-        evolution: filters.evolution.length,
-        form: filters.form.length,
-        category: filters.category.length,
-        total: totalFilters,
+      const filterCounts: Record<string, number> = {};
+      FILTER_CATEGORIES.forEach(cat => {
+        filterCounts[cat.key] = filters[cat.key]?.length ?? 0;
       });
+      trackEvent('filter_change', { ...filterCounts, total: totalFilters });
     }
 
-    if (filters.types.length > 0) params.set('types', filters.types.join(','));
-    else params.delete('types');
-    if (filters.regions.length > 0) params.set('regions', filters.regions.join(','));
-    else params.delete('regions');
-    if (filters.evolution.length > 0) params.set('evolution', filters.evolution.join(','));
-    else params.delete('evolution');
-    if (filters.form.length > 0) params.set('form', filters.form.join(','));
-    else params.delete('form');
-    if (filters.category.length > 0) params.set('category', filters.category.join(','));
-    else params.delete('category');
+    const params = getFiltersForUrl(filters);
     if (sortBy) params.set('sortBy', sortBy);
     else params.delete('sortBy');
 
@@ -147,20 +82,20 @@ function PokemonListApp() {
     window.history.replaceState({}, '', newUrl);
   }, [filters, sortBy]);
 
-  const toggleFilter = (category: keyof FilterState, value: string) => {
+  const toggleFilter = (categoryKey: string, value: string) => {
     setFilters(prev => {
-      const arr = prev[category] as string[];
+      const arr = prev[categoryKey] ?? [];
       const isRemoving = arr.includes(value);
       const newArr = isRemoving
         ? arr.filter(v => v !== value)
         : [...arr, value];
-      trackEvent('toggle_filter', { 
-        category, 
-        value, 
+      trackEvent('toggle_filter', {
+        category: categoryKey,
+        value,
         action: isRemoving ? 'remove' : 'add',
         activeCount: newArr.length,
       });
-      return { ...prev, [category]: newArr };
+      return { ...prev, [categoryKey]: newArr };
     });
   };
 
@@ -179,15 +114,12 @@ function PokemonListApp() {
   };
 
   const clearFilters = () => {
-    const activeFilters = filters.types.length + filters.regions.length + 
-      filters.evolution.length + filters.form.length + filters.category.length;
-    setFilters({
-      types: [],
-      regions: [],
-      evolution: [],
-      form: [],
-      category: [],
+    const activeFilters = getActiveFilters(filters);
+    const cleared: FilterState = {};
+    FILTER_CATEGORIES.forEach(cat => {
+      cleared[cat.key] = [];
     });
+    setFilters(cleared);
     if (typeof window !== 'undefined') {
       window.history.replaceState({}, '', window.location.pathname);
     }
@@ -196,13 +128,11 @@ function PokemonListApp() {
 
   const handleNavigate = (url: string, clearFiltersFirst?: boolean) => {
     if (clearFiltersFirst) {
-      setFilters({
-        types: [],
-        regions: [],
-        evolution: [],
-        form: [],
-        category: [],
+      const cleared: FilterState = {};
+      FILTER_CATEGORIES.forEach(cat => {
+        cleared[cat.key] = [];
       });
+      setFilters(cleared);
       if (typeof window !== 'undefined') {
         window.history.replaceState({}, '', window.location.pathname);
       }
@@ -225,28 +155,7 @@ function PokemonListApp() {
   };
 
   const filteredPokemon = useMemo(() => {
-    return pokemon.filter(p => {
-      if (filters.types.length > 0 && !filters.types.every(t => p.types.includes(t as PokemonType))) {
-        return false;
-      }
-      if (filters.regions.length > 0) {
-        if (!p.region) return false;
-        if (!filters.regions.every(r => p.region === r)) return false;
-      }
-      if (filters.evolution.length > 0) {
-        if (!p.evolutionStage) return false;
-        if (!filters.evolution.every(e => p.evolutionStage === e)) return false;
-      }
-      if (filters.form.length > 0) {
-        if (!p.specialForm) return false;
-        if (!filters.form.every(f => p.specialForm === f)) return false;
-      }
-      if (filters.category.length > 0) {
-        if (!p.category) return false;
-        if (!filters.category.every(c => p.category === c)) return false;
-      }
-      return true;
-    });
+    return applyFilters(pokemon, filters);
   }, [pokemon, filters]);
 
   const sortedPokemon = useMemo(() => {
@@ -270,8 +179,6 @@ function PokemonListApp() {
     }
     return copy;
   }, [filteredPokemon, sortBy]);
-
-  
 
   if (loading) {
     return (
@@ -300,32 +207,35 @@ function PokemonListApp() {
       </div>
 
       <div className="pokemon-list-filters">
-        {FILTER_GROUPS.map(group => {
-          const isExpanded = expandedFilters.has(group.key);
-          const activeCount = filters[group.key].length;
+        {FILTER_CATEGORIES.map(cat => {
+          const isExpanded = expandedFilters.has(cat.key);
+          const activeCount = filters[cat.key]?.length ?? 0;
           return (
-            <div key={group.key} className={`filter-group ${isExpanded ? 'expanded' : ''}`}>
-              <button 
+            <div key={cat.key} className={`filter-group ${isExpanded ? 'expanded' : ''}`}>
+              <button
                 className="filter-header"
-                onClick={() => toggleFilterExpanded(group.key)}
+                onClick={() => toggleFilterExpanded(cat.key)}
               >
-                <span className="filter-label">{group.label}</span>
+                <span className="filter-label">{cat.label}</span>
                 {activeCount > 0 && (
                   <span className="filter-count">{activeCount}</span>
                 )}
                 <span className="filter-chevron">{isExpanded ? '▼' : '▶'}</span>
               </button>
               <div className="filter-buttons">
-                {group.options.map(option => (
-                  <button
-                    key={option}
-                    className={`filter-btn ${(filters[group.key] as string[]).includes(option) ? 'active' : ''}`}
-                    style={(filters[group.key] as string[]).includes(option) ? { backgroundColor: group.colors[option], borderColor: group.colors[option] } : {}}
-                    onClick={() => toggleFilter(group.key as keyof FilterState, option)}
-                  >
-                    {option}
-                  </button>
-                ))}
+                {cat.options.map(opt => {
+                  const isActive = (filters[cat.key] ?? []).includes(opt.name);
+                  return (
+                    <button
+                      key={opt.name}
+                      className={`filter-btn ${isActive ? 'active' : ''}`}
+                      style={isActive && opt.color ? { backgroundColor: opt.color, borderColor: opt.color } : {}}
+                      onClick={() => toggleFilter(cat.key, opt.name)}
+                    >
+                      {opt.name}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           );
@@ -334,17 +244,17 @@ function PokemonListApp() {
 
       <div className="pokemon-list-header">
         <div className="sort-controls">
-          <button 
+          <button
             className={`sort-btn ${sortBy === 'number-asc' || sortBy === 'number-desc' ? 'active' : ''}`}
             onClick={() => sortByColumn('number')}
           >
-            Number {sortBy === 'number-asc' ? '▲' : sortBy === 'number-desc' ? '▼' : '↕'}
+            Number {sortBy === 'number-asc' ? '▲' : sortBy === 'number-desc' ? '▼' : '▲'}
           </button>
-          <button 
+          <button
             className={`sort-btn ${sortBy === 'difficulty-asc' || sortBy === 'difficulty-desc' ? 'active' : ''}`}
             onClick={() => sortByColumn('difficulty')}
           >
-            Dex Difficulty {sortBy === 'difficulty-asc' ? '▲' : sortBy === 'difficulty-desc' ? '▼' : '↕'}
+            Dex Difficulty {sortBy === 'difficulty-asc' ? '▲' : sortBy === 'difficulty-desc' ? '▼' : '▲'}
           </button>
         </div>
         <button onClick={clearFilters} className="clear-btn">Clear Filters</button>
@@ -353,10 +263,17 @@ function PokemonListApp() {
         </div>
       </div>
 
+      {sortedPokemon.length === 0 && (
+        <div className="no-results">
+          <p>No Pokémon match the selected filters.</p>
+          <button onClick={clearFilters} className="clear-btn">Clear Filters</button>
+        </div>
+      )}
+
       <div className="pokemon-grid">
         {sortedPokemon.map(p => (
-          <div 
-            key={`${p.id}-${p.name}`} 
+          <div
+            key={`${p.id}-${p.name}`}
             className="pokemon-card"
             onClick={() => trackEvent('select_pokemon', { name: p.name, id: p.id, types: p.types.join(',') })}
           >

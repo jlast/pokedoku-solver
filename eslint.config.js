@@ -21,6 +21,7 @@ export default defineConfig([
     },
     rules: {
       'no-empty': ['error', { allowEmptyCatch: true }],
+      'import/no-unused-modules': [2, { unusedExports: true }],
     },
   },
 ])

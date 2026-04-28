@@ -1,13 +1,14 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import type { Pokemon } from "../utils/types";
-import { GRID_SIZE, type Constraint } from "../utils/constants";
-import { matchesConstraint, formatDate } from "../utils/utils";
+import { GRID_SIZE } from "../utils/constants";
+import { formatDate } from "../utils/utils";
 import { trackEvent } from "../utils/analytics";
 import { Grid } from "../components/Grid";
 import { Header } from "../components/Header";
 import { SuggestionsPanel } from "../components/SuggestionsPanel";
 import "./App.css";
 import "../index.css";
+import { matchesConstraint, type Constraint } from "../utils/filters";
 
 export interface TodayPuzzle {
   date: string;

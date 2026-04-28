@@ -1,13 +1,19 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import type { Pokemon } from "../utils/types";
-import { GRID_SIZE, type Constraint } from "../utils/constants";
-import { matchesConstraint, parseConstraintFromParam } from "../utils/utils";
+import { GRID_SIZE } from "../utils/constants";
+import { matchesConstraint, findConstraintOption, type Constraint } from "../utils/filters";
 import { trackEvent } from "../utils/analytics";
 import { Grid } from "../components/Grid";
 import { Header } from "../components/Header";
 import { SuggestionsPanel } from "../components/SuggestionsPanel";
 import "./App.css";
 import "../index.css";
+
+function parseConstraintFromParam(value: string): Constraint | null {
+  const result = findConstraintOption(value);
+  if (!result) return null;
+  return { category: result.category, value: result.value };
+}
 
 interface GridState {
   cells: (Pokemon | null)[][];
