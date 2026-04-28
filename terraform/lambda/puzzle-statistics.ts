@@ -42,6 +42,7 @@ interface CategoryStats {
   leastCategoryCounts: CategoryCount[];
   categoryTypeBreakdown: CategoryTypeSummary[];
   topCategoryPairs: CategoryPair[];
+  leastCategoryPairs: CategoryPair[];
   pairFrequencyDistribution: PairFrequencySummary[];
   oldestPokemonLastUsable: PokemonLastUsable[];
 }
@@ -347,6 +348,16 @@ function buildStats(puzzles: Puzzle[], pokemon: Pokemon[]): CategoryStats {
       .slice(0, 5),
     categoryTypeBreakdown: buildCategoryTypeBreakdown(allCategoryCounts),
     topCategoryPairs: allCategoryPairs.slice(0, 5),
+    leastCategoryPairs: [...allCategoryPairs]
+      .sort((a, b) => {
+        if (a.count !== b.count) return a.count - b.count;
+
+        const firstCompare = a.categories[0].localeCompare(b.categories[0]);
+        if (firstCompare !== 0) return firstCompare;
+
+        return a.categories[1].localeCompare(b.categories[1]);
+      })
+      .slice(0, 5),
     pairFrequencyDistribution: buildPairFrequencyDistribution(allCategoryPairs),
     oldestPokemonLastUsable,
   };
