@@ -289,7 +289,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
   if (loading) {
     return (
       <div className="app loading">
-        <p>Loading PokÃ©mon data...</p>
+        <p>Loading Pokémon data...</p>
       </div>
     );
   }
