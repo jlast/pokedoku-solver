@@ -353,7 +353,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
 
         <p>
           This page automatically loads the current Pokedoku puzzle constraints
-          so you can inspect every square and see which PokÃ©mon fit. It updates
+          so you can inspect every square and see which Pokémon fit. It updates
           each day with the latest puzzle.
         </p>
       </section>
@@ -365,7 +365,7 @@ export function TodayApp({ puzzle }: TodayAppProps) {
 
         <p>
           This page loads today&apos;s Pokedoku categories and shows possible
-          PokÃ©mon matches for each square.
+          Pokémon matches for each square.
         </p>
 
         <h3>Does this update automatically?</h3>
