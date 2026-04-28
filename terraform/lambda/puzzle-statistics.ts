@@ -259,9 +259,6 @@ function buildCategoryTypeBreakdown(categoryCounts: CategoryCount[]): CategoryTy
   for (const item of categoryCounts) {
     const separatorIndex = item.categoryId.indexOf(":");
     const type = separatorIndex === -1 ? "other" : item.categoryId.slice(0, separatorIndex);
-    if (type === "category") {
-      continue;
-    }
     totals.set(type, (totals.get(type) ?? 0) + item.count);
   }
 
