@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://jlast.github.io/pokedoku-solver/</loc>
+    <loc>https://www.pokedoku-helper.com/</loc>
   </url>
   <url>
-    <loc>https://jlast.github.io/pokedoku-solver/today/</loc>
+    <loc>https://www.pokedoku-helper.com/today/</loc>
   </url>
   <url>
-    <loc>https://jlast.github.io/pokedoku-solver/pokemon-list/</loc>
+    <loc>https://www.pokedoku-helper.com/pokemon-list/</loc>
   </url>
 </urlset>
