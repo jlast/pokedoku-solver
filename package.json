@@ -9,7 +9,9 @@
     "build:github": "tsc -b && vite build --base=/pokedoku-solver/ && rm -r docs && cp -r dist docs",
     "lint": "eslint .",
     "preview": "vite preview",
-    "fetch-pokemon": "tsx scripts/fetch.ts"
+    "fetch-pokemon": "tsx scripts/fetch.ts",
+    "test": "vitest run --reporter=verbose",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "react": "^19.2.4",
@@ -28,6 +30,7 @@
     "tsx": "^4.21.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.0",
-    "vite": "^8.0.4"
+    "vite": "^8.0.4",
+    "vitest": "^3.1.4"
   }
 }

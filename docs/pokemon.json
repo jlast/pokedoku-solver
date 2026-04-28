@@ -413,147 +413,7 @@
   },
   {
     "id": 25,
-    "name": "Pikachu rock star",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu belle",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu pop star",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu phd",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu libre",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu cosplay",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu original cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu hoenn cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu sinnoh cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu unova cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu kalos cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu alola cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Alola",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu partner cap",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
     "name": "Pikachu starter",
-    "types": [
-      "Electric"
-    ],
-    "region": "Kanto",
-    "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Friendship"
-  },
-  {
-    "id": 25,
-    "name": "Pikachu world cap",
     "types": [
       "Electric"
     ],
@@ -848,7 +708,8 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": "Evolved by Level",
+    "isBranched": true
   },
   {
     "id": 45,
@@ -1099,7 +960,8 @@
     ],
     "region": "Kanto",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": "Evolved by Level",
+    "isBranched": true
   },
   {
     "id": 62,
@@ -4017,7 +3879,8 @@
     ],
     "region": "Hoenn",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": "Evolved by Level",
+    "isBranched": true
   },
   {
     "id": 282,
@@ -10688,7 +10551,8 @@
     "region": "Alola",
     "category": "Legendary",
     "evolutionStage": "Middle Stage",
-    "evolutionTrigger": "Evolved by Level"
+    "evolutionTrigger": "Evolved by Level",
+    "isBranched": true
   },
   {
     "id": 791,

@@ -50,7 +50,8 @@ export const FOSSIL_IDS = new Set([
 
 export const IGNORED_FORM_IDS = new Set([
   10433, 10434, 10435, 10436,  // Koraidon
-  10437, 10438, 10439, 10440  // Miraidon
+  10437, 10438, 10439, 10440,  // Miraidon
+  10182, 10183, 10184, 10185, 10186, 10187, 10196, 10197, 10198, 10199, 10200, 10201, 10267, 10319 // All pikachu costumes
 ])
 
 export const IGNORED_FORMS = new Set([

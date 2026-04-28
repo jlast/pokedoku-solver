@@ -6,6 +6,8 @@ import { fetchWithRetry } from './lib';
 import type { EvolutionMethod, Pokemon, PokemonType } from '../src/types';
 import { CUSTOM_POKEMON } from './custom_pokemon';
 
+const NO_CACHE = process.argv.includes('--no-cache');
+
 function ensureDir(dir: string) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
@@ -19,6 +21,9 @@ const POKEMON_CACHE_DIR = path.join(CACHE_DIR, 'pokemon');
 const SPECIES_CACHE_DIR = path.join(CACHE_DIR, 'species');
 const CHAIN_CACHE_DIR = path.join(CACHE_DIR, 'chains');
 const POKEMON_FORM_CACHE_DIR = path.join(CACHE_DIR, 'forms');
+const POKEMON_LIST_FILE = path.join(CACHE_DIR, 'pokemon-list.json');
+const SPECIES_LIST_FILE = path.join(CACHE_DIR, 'species-list.json');
+const FORMS_LIST_FILE = path.join(CACHE_DIR, 'forms-list.json');
 
 interface PokeAPIType {
   slot: number;
@@ -74,6 +79,7 @@ interface EvolutionNode {
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 function loadPokemon(id: number): PokeAPIPokemon | null {
+  if (NO_CACHE) return null;
   const f = path.join(POKEMON_CACHE_DIR, `${id}.json`);
   if (fs.existsSync(f)) {
     try { return JSON.parse(fs.readFileSync(f, 'utf-8')); } catch {}
@@ -82,12 +88,14 @@ function loadPokemon(id: number): PokeAPIPokemon | null {
 }
 
 function savePokemon(id: number, data: PokeAPIPokemon) {
+  if (NO_CACHE) return;
   ensureDir(POKEMON_CACHE_DIR);
   fs.writeFileSync(path.join(POKEMON_CACHE_DIR, `${id}.json`), JSON.stringify(data));
 }
 
 
 function loadForm(id: number): PokeAPIForm | null {
+  if (NO_CACHE) return null;
   const f = path.join(POKEMON_FORM_CACHE_DIR, `${id}.json`);
   if (fs.existsSync(f)) {
     try { return JSON.parse(fs.readFileSync(f, 'utf-8')); } catch {}
@@ -96,11 +104,13 @@ function loadForm(id: number): PokeAPIForm | null {
 }
 
 function saveForm(id: number, data: PokeAPIForm) {
+  if (NO_CACHE) return;
   ensureDir(POKEMON_FORM_CACHE_DIR);
   fs.writeFileSync(path.join(POKEMON_FORM_CACHE_DIR, `${id}.json`), JSON.stringify(data));
 }
 
 function loadSpecies(id: number): PokeAPISpecies | null {
+  if (NO_CACHE) return null;
   const f = path.join(SPECIES_CACHE_DIR, `${id}.json`);
   if (fs.existsSync(f)) {
     try { return JSON.parse(fs.readFileSync(f, 'utf-8')); } catch {}
@@ -109,11 +119,13 @@ function loadSpecies(id: number): PokeAPISpecies | null {
 }
 
 function saveSpecies(id: number, data: PokeAPISpecies) {
+  if (NO_CACHE) return;
   ensureDir(SPECIES_CACHE_DIR);
   fs.writeFileSync(path.join(SPECIES_CACHE_DIR, `${id}.json`), JSON.stringify(data));
 }
 
 function loadChain(id: number): EvolutionNode | null {
+  if (NO_CACHE) return null;
   const f = path.join(CHAIN_CACHE_DIR, `${id}.json`);
   if (fs.existsSync(f)) {
     try { return JSON.parse(fs.readFileSync(f, 'utf-8')); } catch {}
@@ -122,8 +134,51 @@ function loadChain(id: number): EvolutionNode | null {
 }
 
 function saveChain(id: number, data: EvolutionNode) {
+  if (NO_CACHE) return;
   ensureDir(CHAIN_CACHE_DIR);
   fs.writeFileSync(path.join(CHAIN_CACHE_DIR, `${id}.json`), JSON.stringify(data));
+}
+
+function loadPokemonList(): { count: number; results: { url: string; }[]; } | null {
+  if (NO_CACHE) return null;
+  if (fs.existsSync(POKEMON_LIST_FILE)) {
+    try { return JSON.parse(fs.readFileSync(POKEMON_LIST_FILE, 'utf-8')); } catch {}
+  }
+  return null;
+}
+
+function savePokemonList(data: { count: number; results: { url: string; }[]; }) {
+  if (NO_CACHE) return;
+  ensureDir(CACHE_DIR);
+  fs.writeFileSync(POKEMON_LIST_FILE, JSON.stringify(data));
+}
+
+function loadSpeciesList(): { count: number; results: { url: string; }[]; } | null {
+  if (NO_CACHE) return null;
+  if (fs.existsSync(SPECIES_LIST_FILE)) {
+    try { return JSON.parse(fs.readFileSync(SPECIES_LIST_FILE, 'utf-8')); } catch {}
+  }
+  return null;
+}
+
+function saveSpeciesList(data: { count: number; results: { url: string; }[]; }) {
+  if (NO_CACHE) return;
+  ensureDir(CACHE_DIR);
+  fs.writeFileSync(SPECIES_LIST_FILE, JSON.stringify(data));
+}
+
+function loadFormsList(): { count: number; results: { url: string; }[]; } | null {
+  if (NO_CACHE) return null;
+  if (fs.existsSync(FORMS_LIST_FILE)) {
+    try { return JSON.parse(fs.readFileSync(FORMS_LIST_FILE, 'utf-8')); } catch {}
+  }
+  return null;
+}
+
+function saveFormsList(data: { count: number; results: { url: string; }[]; }) {
+  if (NO_CACHE) return;
+  ensureDir(CACHE_DIR);
+  fs.writeFileSync(FORMS_LIST_FILE, JSON.stringify(data));
 }
 
 function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: EvolutionMethod; trigger: string | null; branched: boolean } {
@@ -209,15 +264,25 @@ function getEvolutionStage(chain: EvolutionNode, speciesName: string): { stage: 
     stage = 'First Stage';
   }
   else if (hasFrom && !hasTo) stage = 'Final Stage';
-  else stage = 'Middle Stage';
+  else {
+    stage = 'Middle Stage';
+    // Check if middle stage has multiple evolutions (branched)
+    if (node.evolves_to.length > 1) {
+      branched = true;
+    }
+  }
   
   return { stage, trigger, branched };
 }
 
 async function fetchPokemons() {
   console.log('Fetching Pokemon list...');
-  const list = await fetchWithRetry<{ count: number; results: { url: string; }[]; }>(`${POKEMON_API_BASE}/pokemon?limit=100000&offset=0`);
-  if (!list) throw new Error('Failed to fetch list');
+  let list = loadPokemonList();
+  if (!list) {
+    list = await fetchWithRetry<{ count: number; results: { url: string; }[]; }>(`${POKEMON_API_BASE}/pokemon?limit=100000&offset=0`);
+    if (!list) throw new Error('Failed to fetch list');
+    savePokemonList(list);
+  }
 
   const urls = list.results.map(r => r.url);
   console.log(`Found ${urls.length} entries\n`);
@@ -237,8 +302,12 @@ async function fetchPokemons() {
 }
 
 async function fetchSpecies() {
-  const speciesList = await fetchWithRetry<{ count: number; results: { url: string; }[]; }>(`${POKEMON_API_BASE}/pokemon-species?limit=100000&offset=0`);
-  if (!speciesList) throw new Error('Failed to fetch species list');
+  let speciesList = loadSpeciesList();
+  if (!speciesList) {
+    speciesList = await fetchWithRetry<{ count: number; results: { url: string; }[]; }>(`${POKEMON_API_BASE}/pokemon-species?limit=100000&offset=0`);
+    if (!speciesList) throw new Error('Failed to fetch species list');
+    saveSpeciesList(speciesList);
+  }
 
   const speciesUrls = speciesList.results.map(r => r.url);
   console.log(`Found ${speciesUrls.length} species entries\n`);
@@ -273,8 +342,12 @@ async function fetchSpecies() {
 
 async function fetchForms() {
   console.log('Fetching Pokemon forms...');
-  const list = await fetchWithRetry<{ count: number; results: { url: string; }[]; }>(`${POKEMON_API_BASE}/pokemon-form?limit=100000&offset=0`);
-  if (!list) throw new Error('Failed to fetch list');
+  let list = loadFormsList();
+  if (!list) {
+    list = await fetchWithRetry<{ count: number; results: { url: string; }[]; }>(`${POKEMON_API_BASE}/pokemon-form?limit=100000&offset=0`);
+    if (!list) throw new Error('Failed to fetch list');
+    saveFormsList(list);
+  }
 
   const urls = list.results.map(r => r.url);
   console.log(`Found ${urls.length} forms\n`);
@@ -373,9 +446,9 @@ async function main() {
   output.push(...CUSTOM_POKEMON);
   output.sort((a, b) => a.id - b.id);
   
-  // Known true branched: Eevee (multiple eeveelutions in same game)
+  // Known true branched: Eevee and Kirlia (multiple evolutions in same game)
   // Known NOT branched: form variants have regional-specific evolutions
-  const knownBranched = ['Eevee'].join('|');
+  const knownBranched = ['Eevee', 'Kirlia'].join('|');
   const knownNotBranched = ['Meowth', 'Slowpoke', 'Wooper', 'Sneasel', 'Tyrogue', 'Wurmple', 'Nincada'].join('|');
   output.forEach(function(p) {
     if (p.evolutionStage === 'First Stage') {

@@ -94,7 +94,7 @@ const CONSTRAINT_OPTIONS: { label: string; options: ConstraintOption[] }[] = [
   { label: 'Types', options: POKEMON_TYPES.map(t => ({ value: t, label: t, category: 'type' as const })) },
   { label: 'Regions', options: POKEMON_REGIONS.map(r => ({ value: r, label: r, category: 'region' as const })) },
   { label: 'Evolution', options: EVOLUTION_METHODS.map(s => ({ value: s, label: s, category: 'evolution' as const })) },
-  { label: 'Branched', options: [{ value: 'Yes', label: 'Branched (Yes)', category: 'branched' as const }] },
+  { label: 'Branched', options: [{ value: 'Yes', label: 'Branched evolutions', category: 'branched' as const }] },
   { label: 'Evolution Triggers', options: EVOLUTION_TRIGGERS.map(t => ({ value: t, label: t, category: 'trigger' as const })) },
   { label: 'Forms', options: SPECIAL_FORMS.map(f => ({ value: f, label: f, category: 'form' as const })) },
   { label: 'Categories', options: POKEMON_CATEGORIES.map(c => ({ value: c, label: c, category: 'category' as const })) },
