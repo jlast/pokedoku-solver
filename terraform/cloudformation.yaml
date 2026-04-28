@@ -164,7 +164,7 @@ Resources:
         Aliases:
           - !Sub "www.${DomainName}"
         DefaultRootObject: index.html
-        HttpVersion: http2andhttp3
+        HttpVersion: http2and3
         IPAddressType: ipv4
         PriceClass: PriceClass_All
         ViewerCertificate:
