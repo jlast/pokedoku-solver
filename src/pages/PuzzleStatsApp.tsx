@@ -2,28 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { DonutChart } from "../components/charts/DonutChart";
+import { CategoryList, type CategoryCount } from "../components/puzzle-stats/CategoryList";
+import { PairList, type CategoryPair } from "../components/puzzle-stats/PairList";
+import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { trackEvent } from "../utils/analytics";
-import {
-  CATEGORY_COLORS,
-  CATEGORY_TYPE_COLORS,
-  CATEGORY_TYPE_LABELS,
-  EVOLUTION_COLORS,
-  MOVE_TYPE_ICON_MAP,
-  REGION_COLORS,
-  TYPE_COLORS,
-} from "../utils/constants";
+import { CATEGORY_TYPE_COLORS, CATEGORY_TYPE_LABELS } from "../utils/constants";
 import "./App.css";
 import "../index.css";
-
-interface CategoryCount {
-  categoryId: string;
-  count: number;
-}
-
-interface CategoryPair {
-  categories: [string, string];
-  count: number;
-}
 
 interface PuzzleStatsResponse {
   puzzlesAnalyzed: number;
@@ -35,11 +20,6 @@ interface PuzzleStatsResponse {
   categoryPairs: CategoryPair[];
 }
 
-interface ParsedCategory {
-  raw: string;
-  type: string;
-  label: string;
-}
 
 interface PairFrequencyBucket {
   key: string;
@@ -66,25 +46,6 @@ function formatDate(value: string): string {
   }).format(date);
 }
 
-function parseCategoryId(categoryId: string): ParsedCategory {
-  const separatorIndex = categoryId.indexOf(":");
-  if (separatorIndex === -1) {
-    return {
-      raw: categoryId,
-      type: "other",
-      label: categoryId,
-    };
-  }
-
-  const type = categoryId.slice(0, separatorIndex);
-  const label = categoryId.slice(separatorIndex + 1);
-
-  return {
-    raw: categoryId,
-    type,
-    label,
-  };
-}
 
 function topByCount<T>(items: T[], getCount: (item: T) => number, getLabel: (item: T) => string): T[] {
   return [...items]
@@ -98,152 +59,6 @@ function bottomByCount<T>(items: T[], getCount: (item: T) => number, getLabel: (
     .slice(0, 5);
 }
 
-function getCategoryBarColor(parsed: ParsedCategory): string {
-  if (parsed.type === "move") {
-    const mappedType = MOVE_TYPE_ICON_MAP[parsed.label];
-    if (mappedType) {
-      const typeName = mappedType.charAt(0).toUpperCase() + mappedType.slice(1);
-      return TYPE_COLORS[typeName] ?? "#0f766e";
-    }
-  }
-  if (parsed.type === "types") return TYPE_COLORS[parsed.label] ?? "#0f766e";
-  if (parsed.type === "regions") return REGION_COLORS[parsed.label] ?? "#0f766e";
-  if (parsed.type === "evolution") return EVOLUTION_COLORS[parsed.label] ?? "#0f766e";
-  if (parsed.type === "category") return CATEGORY_COLORS[parsed.label] ?? "#0f766e";
-  return "#0f766e";
-}
-
-function getCategoryIconPath(parsed: ParsedCategory): string {
-  if (parsed.type === "move") {
-    const mappedType = MOVE_TYPE_ICON_MAP[parsed.label];
-    if (mappedType) return `/images/icons/types/${mappedType}.svg`;
-  }
-  return `/images/icons/${parsed.type}/${parsed.label.toLowerCase()}.svg`;
-}
-
-function CategoryIcon({ parsed }: { parsed: ParsedCategory }) {
-  const [hidden, setHidden] = useState(false);
-  const backgroundColor = getCategoryBarColor(parsed);
-
-  if (hidden) {
-    return <span aria-hidden className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor }} />;
-  }
-
-  return (
-    <span aria-hidden className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor }}>
-      <img
-        alt=""
-        aria-hidden
-        className="h-3 w-3"
-        loading="lazy"
-        onError={() => setHidden(true)}
-        src={getCategoryIconPath(parsed)}
-      />
-    </span>
-  );
-}
-
-function CategoryList({
-  items,
-  showDistributionBar = false,
-  distributionTotal,
-  maxBarWidthPercent = 100,
-}: {
-  items: CategoryCount[];
-  showDistributionBar?: boolean;
-  distributionTotal?: number;
-  maxBarWidthPercent?: number;
-}) {
-  const maxCount = showDistributionBar ? Math.max(...items.map((item) => item.count), 0) : 0;
-
-  return (
-    <ol className="m-0 flex list-none flex-col gap-2.5 p-0">
-      {items.map((item) => {
-        const parsed = parseCategoryId(item.categoryId);
-        const percent = showDistributionBar && distributionTotal && distributionTotal > 0 ? (item.count / distributionTotal) * 100 : 0;
-        const barWidthPercent = showDistributionBar && maxCount > 0 ? (item.count / maxCount) * 100 : 0;
-        const barColor = showDistributionBar ? getCategoryBarColor(parsed) : "#0f766e";
-        const scaledBarWidthPercent = (barWidthPercent * maxBarWidthPercent) / 100;
-        const barWidth = item.count > 0 ? `max(${scaledBarWidthPercent}%, 8px)` : "0%";
-
-        return (
-          <li key={item.categoryId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <div className="min-w-0 flex-1">
-              <p className="flex items-center gap-2 truncate font-semibold text-slate-800">
-                <CategoryIcon parsed={parsed} />
-                <span className="truncate">{parsed.label}</span>
-              </p>
-              {showDistributionBar ? (
-                <div className="mt-2">
-                  <div className="h-1.5 w-full overflow-hidden rounded-full">
-                    <div className="h-full rounded-full" style={{ width: barWidth, backgroundColor: barColor }} />
-                  </div>
-                </div>
-              ) : null}
-            </div>
-            <div className="shrink-0 text-right">
-              <span className="text-lg font-semibold text-slate-800">{item.count}</span>
-              {showDistributionBar ? <p className="text-xs text-slate-500">{percent.toFixed(1)}%</p> : null}
-            </div>
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
-
-function PairList({
-  items,
-  showDistributionBar = false,
-  distributionTotal,
-}: {
-  items: CategoryPair[];
-  showDistributionBar?: boolean;
-  distributionTotal?: number;
-}) {
-  const maxCount = showDistributionBar ? Math.max(...items.map((item) => item.count), 0) : 0;
-
-  return (
-    <ol className="m-0 flex list-none flex-col gap-2.5 p-0">
-      {items.map((item) => {
-        const left = parseCategoryId(item.categories[0]);
-        const right = parseCategoryId(item.categories[1]);
-        const percent = showDistributionBar && distributionTotal && distributionTotal > 0 ? (item.count / distributionTotal) * 100 : 0;
-        const barWidthPercent = showDistributionBar && maxCount > 0 ? (item.count / maxCount) * 100 : 0;
-        const barWidth = item.count > 0 ? `max(${barWidthPercent}%, 8px)` : "0%";
-
-        return (
-          <li key={`${item.categories[0]}||${item.categories[1]}`} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <div className="min-w-0 flex-1">
-              <p className="min-w-0 text-slate-700">
-                <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
-                  <CategoryIcon parsed={left} />
-                  {left.label}
-                </span>
-                <span className="mx-1 text-slate-400">+</span>
-                <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
-                  <CategoryIcon parsed={right} />
-                  {right.label}
-                </span>
-              </p>
-              {showDistributionBar ? (
-                <div className="mt-2">
-                  <div className="h-1.5 w-full overflow-hidden rounded-full">
-                    <div className="h-full rounded-full bg-slate-700" style={{ width: barWidth }} />
-                  </div>
-                </div>
-              ) : null}
-            </div>
-            <div className="shrink-0 text-right">
-              <span className="text-lg font-semibold text-slate-800">{item.count}</span>
-              {showDistributionBar ? <p className="text-xs text-slate-500">{percent.toFixed(1)}%</p> : null}
-            </div>
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
 
 export default function PuzzleStatsApp() {
   const [stats, setStats] = useState<PuzzleStatsResponse | null>(null);
