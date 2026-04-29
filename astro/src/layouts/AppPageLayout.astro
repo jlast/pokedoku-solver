@@ -1,0 +1,37 @@
+---
+import { DEFAULT_OG_IMAGE, SITE_NAME, absoluteUrl } from "../lib/site";
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+}
+
+const { title, description, path } = Astro.props;
+const canonical = absoluteUrl(path);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon-64.png" sizes="64x64" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={DEFAULT_OG_IMAGE} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={DEFAULT_OG_IMAGE} />
+    <link rel="canonical" href={canonical} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -5,7 +5,7 @@ import type {
   PokemonRegion,
   SpecialForm,
   PokemonCategory,
-} from "../src/utils/types";
+} from "../lib/shared/types";
 
 export const REGION_BY_ID: Record<number, PokemonRegion> = {};
 export const regions: { name: PokemonRegion; start: number; end: number }[] = [

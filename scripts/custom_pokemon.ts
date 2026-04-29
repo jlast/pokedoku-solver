@@ -1,4 +1,4 @@
-import type { Pokemon } from "../src/utils/types";
+import type { Pokemon } from "../lib/shared/types";
 
 export const CUSTOM_POKEMON: Pokemon[] = [
   {

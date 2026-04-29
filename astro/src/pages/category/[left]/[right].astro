@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import {
+  canonicalizePairSlugs,
+  getCategoryPairBySlugMap,
+  getCategoryPairs,
+  getPokemonSlug,
+} from "../../../lib/data";
+
+export function getStaticPaths() {
+  return getCategoryPairs().map((pair) => ({
+    params: { left: pair.left.slug, right: pair.right.slug },
+  }));
+}
+
+const left = Astro.params.left ?? "";
+const right = Astro.params.right ?? "";
+const canonicalSlug = canonicalizePairSlugs(left, right);
+
+if (!canonicalSlug) {
+  throw Astro.redirect("/puzzle-stats/");
+}
+
+const [canonicalLeft, canonicalRight] = canonicalSlug.split("-x-");
+if (!canonicalLeft || !canonicalRight) {
+  throw Astro.redirect("/puzzle-stats/");
+}
+
+if (left !== canonicalLeft || right !== canonicalRight) {
+  throw Astro.redirect(`/category/${canonicalLeft}/${canonicalRight}/`, 301);
+}
+
+const pair = getCategoryPairBySlugMap().get(canonicalSlug);
+if (!pair) {
+  throw Astro.redirect("/puzzle-stats/");
+}
+---
+
+<BaseLayout
+  title={`${pair.left.label} x ${pair.right.label} | Pokedoku Helper`}
+  description={`Pokemon that satisfy both ${pair.left.label} and ${pair.right.label}.`}
+  path={`/category/${pair.left.slug}/${pair.right.slug}/`}
+>
+  <section class="panel">
+    <h1>{pair.left.label} x {pair.right.label}</h1>
+    <p class="muted">{pair.count} matching Pokemon forms.</p>
+    <ul class="list">
+      {pair.pokemon.slice(0, 250).map((pokemon) => (
+        <li class="row">
+          <a href={`/pokemon/${getPokemonSlug(pokemon)}/`}>{pokemon.name}</a>
+          <span class="muted">#{pokemon.id}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

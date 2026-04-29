@@ -1,0 +1,14 @@
+---
+import AppPageLayout from "../layouts/AppPageLayout.astro";
+import { TodayLoader } from "../app/pages/TodayLoader";
+---
+
+<AppPageLayout
+  title="Today's Pokedoku Answers | Daily Suggested Picks"
+  description="See today's Pokedoku answers with suggested Pokemon for every square."
+  path="/"
+>
+  <div id="root">
+    <TodayLoader client:load />
+  </div>
+</AppPageLayout>

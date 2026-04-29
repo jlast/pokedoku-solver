@@ -4,15 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "npm run fetch-pokemon && tsc -b && vite build",
+    "dev": "npm --prefix astro run dev",
+    "build": "npm run fetch-pokemon && npm --prefix astro run build",
     "build:daily-puzzle-lambda": "mkdir -p dist-lambda && npx esbuild terraform/lambda/daily-puzzle-fetcher.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile=dist-lambda/daily-puzzle-fetcher.js",
     "package:daily-puzzle-lambda": "npm run build:daily-puzzle-lambda && zip -j dist-lambda/daily-puzzle-fetcher.zip dist-lambda/daily-puzzle-fetcher.js",
     "build:puzzle-statistics-lambda": "mkdir -p dist-lambda && npx esbuild terraform/lambda/puzzle-statistics.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile=dist-lambda/puzzle-statistics.js",
     "package:puzzle-statistics-lambda": "npm run build:puzzle-statistics-lambda && zip -j dist-lambda/puzzle-statistics.zip dist-lambda/puzzle-statistics.js",
     "fetch-today-puzzle": "tsx scripts/fetch-today-puzzle.ts",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "npm --prefix astro run preview",
     "fetch-pokemon": "tsx scripts/fetch.ts",
     "test": "vitest run --reporter=verbose",
     "test:watch": "vitest"
@@ -23,20 +23,16 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
-    "@tailwindcss/vite": "^4.2.4",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
-    "tailwindcss": "^4.2.4",
     "tsx": "^4.21.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.0",
-    "vite": "^8.0.4",
     "vitest": "^3.1.4"
   }
 }

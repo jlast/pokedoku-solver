@@ -1,0 +1,14 @@
+---
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import TipsApp from "../../app/pages/TipsApp";
+---
+
+<AppPageLayout
+  title="Pokedoku Tips & Tricks - Beginner and Advanced Q&A"
+  description="Learn Pokedoku strategy with beginner and advanced Q&A."
+  path="/tips/"
+>
+  <div id="root">
+    <TipsApp client:load />
+  </div>
+</AppPageLayout>

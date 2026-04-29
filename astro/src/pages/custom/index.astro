@@ -1,0 +1,14 @@
+---
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import CustomApp from "../../app/pages/CustomApp";
+---
+
+<AppPageLayout
+  title="Custom Pokedoku Puzzle Helper"
+  description="Build custom Pokedoku grids and view valid Pokemon matches for each square."
+  path="/custom/"
+>
+  <div id="root">
+    <CustomApp client:load />
+  </div>
+</AppPageLayout>

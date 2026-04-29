@@ -1,5 +1,5 @@
 import type { EvolutionNode } from './types';
-import type { EvolutionMethod, EvolutionTrigger } from '../../src/utils/types';
+import type { EvolutionMethod, EvolutionTrigger } from '../../lib/shared/types';
 
 export function findNode(node: EvolutionNode, name: string): EvolutionNode | null {
   if (node.species.name === name) return node;

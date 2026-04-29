@@ -4,9 +4,9 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
-import { FILTER_CATEGORIES } from "../../src/utils/filters";
-import { PAIR_FREQUENCY_BUCKETS } from "../../src/utils/pairFrequencyBuckets";
-import type { Pokemon } from "../../src/utils/types";
+import { FILTER_CATEGORIES } from "../../lib/shared/filters";
+import { PAIR_FREQUENCY_BUCKETS } from "../../lib/shared/pairFrequencyBuckets";
+import type { Pokemon } from "../../lib/shared/types";
 
 type ConstraintCategory = "regions" | "types" | "evolution" | "category";
 

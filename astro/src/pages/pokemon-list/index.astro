@@ -1,0 +1,14 @@
+---
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import PokemonListApp from "../../app/pages/PokemonListApp";
+---
+
+<AppPageLayout
+  title="Pokedoku Pokemon List – Browse All Pokemon with Filters"
+  description="Browse all Pokemon with filters for types, regions, evolution, and categories."
+  path="/pokemon-list/"
+>
+  <div id="root">
+    <PokemonListApp client:load />
+  </div>
+</AppPageLayout>

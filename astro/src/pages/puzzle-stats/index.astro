@@ -1,0 +1,14 @@
+---
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import PuzzleStatsApp from "../../app/pages/PuzzleStatsApp";
+---
+
+<AppPageLayout
+  title="Pokedoku Puzzle Stats – Category Frequency Trends"
+  description="View Pokedoku puzzle statistics, including category and pair frequency trends."
+  path="/puzzle-stats/"
+>
+  <div id="root">
+    <PuzzleStatsApp client:load />
+  </div>
+</AppPageLayout>

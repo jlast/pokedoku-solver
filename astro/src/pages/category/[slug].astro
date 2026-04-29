@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCategoryBySlugMap, getCategories, getPokemonSlug } from "../../lib/data";
+
+export function getStaticPaths() {
+  return getCategories().map((category) => ({
+    params: { slug: category.slug },
+  }));
+}
+
+const slug = Astro.params.slug ?? "";
+const category = getCategoryBySlugMap().get(slug);
+
+if (!category) {
+  throw Astro.redirect("/puzzle-stats/");
+}
+---
+
+<BaseLayout
+  title={`${category.label} Pokemon | Pokedoku Helper`}
+  description={`Browse Pokemon that match the ${category.label} category.`}
+  path={`/category/${slug}/`}
+>
+  <section class="panel">
+    <h1>{category.label}</h1>
+    <p class="muted">{category.count} matching Pokemon forms.</p>
+    <ul class="list">
+      {category.pokemon.slice(0, 200).map((pokemon) => (
+        <li class="row">
+          <a href={`/pokemon/${getPokemonSlug(pokemon)}/`}>{pokemon.name}</a>
+          <span class="muted">#{pokemon.id}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

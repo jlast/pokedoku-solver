@@ -39,7 +39,7 @@ import type {
   PokeAPISpecies,
   EvolutionNode,
 } from "./lib/types";
-import type { Pokemon, PokemonType, DexDifficulty } from "../src/utils/types";
+import type { Pokemon, PokemonType, DexDifficulty } from "../lib/shared/types";
 import { CUSTOM_POKEMON } from "./custom_pokemon";
 
 const NO_CACHE = process.argv.includes("--no-cache");
