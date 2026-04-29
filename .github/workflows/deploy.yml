@@ -3,6 +3,13 @@ name: Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: Force deploy all site and infra targets
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -49,9 +56,9 @@ jobs:
     uses: ./.github/workflows/reusable-site-deploy.yml
     secrets: inherit
     with:
-      site_changed: ${{ needs.detect-changes.outputs.site_changed }}
-      data_changed: ${{ needs.detect-changes.outputs.data_changed }}
-      images_changed: ${{ needs.detect-changes.outputs.images_changed }}
+      site_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.site_changed == 'true') && 'true' || 'false' }}
+      data_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.data_changed == 'true') && 'true' || 'false' }}
+      images_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.images_changed == 'true') && 'true' || 'false' }}
 
   infra-deploy:
     needs:
@@ -60,7 +67,7 @@ jobs:
     uses: ./.github/workflows/reusable-infra-deploy.yml
     secrets: inherit
     with:
-      daily_lambda_changed: ${{ needs.detect-changes.outputs.daily_lambda_changed }}
-      stats_lambda_changed: ${{ needs.detect-changes.outputs.stats_lambda_changed }}
-      daily_stack_changed: ${{ needs.detect-changes.outputs.daily_stack_changed }}
-      stats_stack_changed: ${{ needs.detect-changes.outputs.stats_stack_changed }}
+      daily_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.daily_lambda_changed == 'true') && 'true' || 'false' }}
+      stats_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.stats_lambda_changed == 'true') && 'true' || 'false' }}
+      daily_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.daily_stack_changed == 'true') && 'true' || 'false' }}
+      stats_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.stats_stack_changed == 'true') && 'true' || 'false' }}
