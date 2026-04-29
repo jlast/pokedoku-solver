@@ -4,6 +4,7 @@ import "../app/App.css";
 import { Header } from "../app/components/Header";
 import { Footer } from "../app/components/Footer";
 import Badge from "./Badge.astro";
+import Breadcrumb from "./Breadcrumb.astro";
 import { getPokemonSlug } from "../lib/data";
 import {
   TYPE_COLORS,
@@ -26,6 +27,11 @@ const rarityScore =
     ? Math.round(pokemon.dexDifficultyPercentile * 100)
     : null;
 const rarityDegrees = rarityScore === null ? 0 : Math.max(0, Math.min(360, Math.round((rarityScore / 100) * 360)));
+const breadcrumbItems = [
+  { label: "Home", href: "/" },
+  { label: "Pokemon", href: "/pokemon-list/" },
+  { label: pokemon.name },
+];
 ---
 
 <div id="root">
@@ -33,13 +39,7 @@ const rarityDegrees = rarityScore === null ? 0 : Math.max(0, Math.min(360, Math.
     <Header title="PokeDoku Helper" subtitle={`Details for ${pokemon.name}: type, region, evolution, and dex difficulty.`} currentPage="pokemon-list" client:load />
 
     <main class="mx-auto w-full max-w-6xl px-2 pb-10">
-      <nav class="mb-4 flex items-center gap-2 text-sm text-slate-500" aria-label="Breadcrumb">
-        <a class="hover:text-slate-700" href="/">Home</a>
-        <span>›</span>
-        <a class="hover:text-slate-700" href="/pokemon-list/">Pokemon</a>
-        <span>›</span>
-        <strong class="text-slate-700">{pokemon.name}</strong>
-      </nav>
+      <Breadcrumb items={breadcrumbItems} />
 
       <section class="mb-4 grid gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_16px_36px_rgba(15,23,42,0.08)] md:grid-cols-[190px_1fr]">
         <div class="flex min-h-[170px] items-center justify-center rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-blue-50">
@@ -242,14 +242,6 @@ const rarityDegrees = rarityScore === null ? 0 : Math.max(0, Math.min(360, Math.
           )}
         </article>
 
-        <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)] lg:col-span-2">
-          <h2>Share this Pokemon</h2>
-          <p class="text-slate-500">Use this page in your team notes or puzzle discussions.</p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <a class="rounded-xl bg-blue-600 px-3 py-2 text-sm font-bold text-white hover:bg-blue-700" href={`/pokemon/${slug}/`}>Copy page link</a>
-            <a class="rounded-xl bg-blue-50 px-3 py-2 text-sm font-bold text-blue-900 hover:bg-blue-100" href="/pokemon-list/">Back to list</a>
-          </div>
-        </article>
         </div>
       </section>
     </main>
