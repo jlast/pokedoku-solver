@@ -100,35 +100,6 @@ const breadcrumbItems = [
           
           <PokemonRuntimeStatsPanel statsKeyId={statsKeyId} variant="sections" client:load />
 
-          <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-            <div class="mb-2 flex items-center justify-between gap-3">
-              <h2>Appearances over time</h2>
-              <span class="text-xs text-slate-500">Sample timeline</span>
-            </div>
-            <div class="grid gap-3">
-              <div class="grid grid-cols-[14px_1fr] items-start gap-2">
-                <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-gradient-to-br from-blue-600 to-cyan-400"></span>
-                <div>
-                  <strong>Latest puzzle inclusion</strong>
-                  <p class="mt-1 text-sm text-slate-500">Seen recently in type and region-based grids.</p>
-                </div>
-              </div>
-              <div class="grid grid-cols-[14px_1fr] items-start gap-2">
-                <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-gradient-to-br from-blue-600 to-cyan-400"></span>
-                <div>
-                  <strong>Stable clue frequency</strong>
-                  <p class="mt-1 text-sm text-slate-500">Consistent appearance in medium-difficulty boards.</p>
-                </div>
-              </div>
-              <div class="grid grid-cols-[14px_1fr] items-start gap-2">
-                <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-gradient-to-br from-blue-600 to-cyan-400"></span>
-                <div>
-                  <strong>Long-term reliability</strong>
-                  <p class="mt-1 text-sm text-slate-500">Often viable in multi-category combinations.</p>
-                </div>
-              </div>
-            </div>
-          </article>
         </div>
 
         <div class="grid gap-4">
