@@ -24,6 +24,10 @@ interface TodayAppProps {
   puzzles: TodayPuzzle[];
 }
 
+interface TodayPuzzleBoardProps {
+  puzzle: TodayPuzzle;
+}
+
 interface GridState {
   cells: (Pokemon | null)[][];
   rowConstraints: (Constraint | null)[];
@@ -114,26 +118,16 @@ function buildSuggestedCells(
   };
 }
 
-export function TodayApp({ puzzles }: TodayAppProps) {
-  const regularPuzzle = useMemo(
-    () => puzzles.find((p) => p.type !== "BONUS") ?? puzzles[0],
-    [puzzles],
-  );
-  const bonusPuzzle = useMemo(
-    () => puzzles.find((p) => p.type === "BONUS"),
-    [puzzles],
-  );
-  const [activeTab, setActiveTab] = useState<"today" | "bonus">("today");
-  const activePuzzle = activeTab === "bonus" && bonusPuzzle ? bonusPuzzle : regularPuzzle;
-  const gridSize = activePuzzle.rowConstraints.length;
+function TodayPuzzleBoard({ puzzle }: TodayPuzzleBoardProps) {
+  const gridSize = puzzle.rowConstraints.length;
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [grid, setGrid] = useState<GridState>(() => ({
     cells: Array(gridSize)
       .fill(null)
       .map(() => Array(gridSize).fill(null)),
-    rowConstraints: [...activePuzzle.rowConstraints],
-    colConstraints: [...activePuzzle.colConstraints],
+    rowConstraints: [...puzzle.rowConstraints],
+    colConstraints: [...puzzle.colConstraints],
     selectedCell: null,
   }));
   const [suggestedPokemonKeys, setSuggestedPokemonKeys] = useState<(string | null)[][]>(
@@ -162,58 +156,27 @@ export function TodayApp({ puzzles }: TodayAppProps) {
   }, [grid.selectedCell]);
 
   useEffect(() => {
-    if (!bonusPuzzle && activeTab === "bonus") {
-      setActiveTab("today");
-    }
-  }, [bonusPuzzle, activeTab]);
-
-  useEffect(() => {
-    const freshCells = Array(gridSize)
-      .fill(null)
-      .map(() => Array(gridSize).fill(null));
-
-    if (pokemon.length === 0) {
-      setGrid({
-        cells: freshCells,
-        rowConstraints: [...activePuzzle.rowConstraints],
-        colConstraints: [...activePuzzle.colConstraints],
-        selectedCell: null,
-      });
-      setSuggestedPokemonKeys(
-        Array(gridSize)
-          .fill(null)
-          .map(() => Array(gridSize).fill(null)),
-      );
-      return;
-    }
-
-    const { cells, suggestedKeys } = buildSuggestedCells(
-      pokemon,
-      activePuzzle.rowConstraints,
-      activePuzzle.colConstraints,
-    );
-
-    setGrid({
-      cells,
-      rowConstraints: [...activePuzzle.rowConstraints],
-      colConstraints: [...activePuzzle.colConstraints],
-      selectedCell: null,
-    });
-    setSuggestedPokemonKeys(suggestedKeys);
-  }, [activePuzzle, gridSize, pokemon]);
-
-  useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/pokemon.json`)
       .then((res) => res.json())
       .then((data) => {
         setPokemon(data);
+        const { cells, suggestedKeys } = buildSuggestedCells(
+          data,
+          puzzle.rowConstraints,
+          puzzle.colConstraints,
+        );
+        setSuggestedPokemonKeys(suggestedKeys);
+        setGrid((prev) => ({
+          ...prev,
+          cells,
+        }));
         setLoading(false);
       })
       .catch((err) => {
         console.error("Failed to load Pokemon:", err);
         setLoading(false);
       });
-  }, []);
+  }, [puzzle.colConstraints, puzzle.rowConstraints]);
 
   const possiblePokemon = useMemo(() => {
     const result: Pokemon[][][] = Array(gridSize)
@@ -334,46 +297,12 @@ export function TodayApp({ puzzles }: TodayAppProps) {
 
   return (
     <div className="app">
-        <Header
-          title="Today's Answers"
-          subtitle={`Suggested answers for today's Pokedoku ${activePuzzle.bonus ? "bonus " : ""}puzzle. Multiple Pokémon will fit each square, so tap any pick to see alternatives.`}
-          showDate={formatDate(activePuzzle.date)}
-          currentPage="today"
-        />
-
-      {bonusPuzzle && (
-        <div className="today-puzzle-toggle" role="tablist" aria-label="Choose puzzle">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === "today"}
-            className={`today-puzzle-tab ${activeTab === "today" ? "active" : ""}`}
-            onClick={() => {
-              trackEvent("click_today_toggle", { tab: "today" });
-              setActiveTab("today");
-            }}
-          >
-            Today Puzzle
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === "bonus"}
-            className={`today-puzzle-tab ${activeTab === "bonus" ? "active" : ""}`}
-            onClick={() => {
-              trackEvent("click_today_toggle", { tab: "bonus" });
-              setActiveTab("bonus");
-            }}
-          >
-            <span className="today-puzzle-tab-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path d="M20 7h-2.18A2.99 2.99 0 0 0 18 6a3 3 0 0 0-5.5-1.66L12 5l-.5-.66A3 3 0 0 0 6 6c0 .35.06.69.18 1H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7h1a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1ZM9 5a1 1 0 0 1 .8.4L10.75 7H9A1 1 0 0 1 9 5Zm6 0a1 1 0 0 1 0 2h-1.75l.95-1.6A1 1 0 0 1 15 5ZM5 9h6v2H5V9Zm2 4h4v5H7v-5Zm6 5v-5h4v5h-4Zm6-7h-6V9h6v2Z" />
-              </svg>
-            </span>
-            Bonus Puzzle
-          </button>
-        </div>
-      )}
+      <Header
+        title="Today's Answers"
+        subtitle={`Suggested answers for today's Pokedoku ${puzzle.bonus ? "bonus " : ""}puzzle. Multiple Pokémon will fit each square, so tap any pick to see alternatives.`}
+        showDate={formatDate(puzzle.date)}
+        currentPage="today"
+      />
 
       <div className="main-content">
         <Grid
@@ -445,5 +374,59 @@ export function TodayApp({ puzzles }: TodayAppProps) {
 
       <Footer />
     </div>
+  );
+}
+
+export function TodayApp({ puzzles }: TodayAppProps) {
+  const regularPuzzle = useMemo(
+    () => puzzles.find((p) => p.type !== "BONUS") ?? puzzles[0],
+    [puzzles],
+  );
+  const bonusPuzzle = useMemo(
+    () => puzzles.find((p) => p.type === "BONUS"),
+    [puzzles],
+  );
+  const [activeTab, setActiveTab] = useState<"today" | "bonus">("today");
+
+  const effectiveTab = activeTab === "bonus" && bonusPuzzle ? "bonus" : "today";
+  const activePuzzle = effectiveTab === "bonus" ? bonusPuzzle! : regularPuzzle;
+
+  return (
+    <>
+      {bonusPuzzle && (
+        <div className="today-puzzle-toggle" role="tablist" aria-label="Choose puzzle">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={effectiveTab === "today"}
+            className={`today-puzzle-tab ${effectiveTab === "today" ? "active" : ""}`}
+            onClick={() => {
+              trackEvent("click_today_toggle", { tab: "today" });
+              setActiveTab("today");
+            }}
+          >
+            Today Puzzle
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={effectiveTab === "bonus"}
+            className={`today-puzzle-tab ${effectiveTab === "bonus" ? "active" : ""}`}
+            onClick={() => {
+              trackEvent("click_today_toggle", { tab: "bonus" });
+              setActiveTab("bonus");
+            }}
+          >
+            <span className="today-puzzle-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M20 7h-2.18A2.99 2.99 0 0 0 18 6a3 3 0 0 0-5.5-1.66L12 5l-.5-.66A3 3 0 0 0 6 6c0 .35.06.69.18 1H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7h1a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1ZM9 5a1 1 0 0 1 .8.4L10.75 7H9A1 1 0 0 1 9 5Zm6 0a1 1 0 0 1 0 2h-1.75l.95-1.6A1 1 0 0 1 15 5ZM5 9h6v2H5V9Zm2 4h4v5H7v-5Zm6 5v-5h4v5h-4Zm6-7h-6V9h6v2Z" />
+              </svg>
+            </span>
+            Bonus Puzzle
+          </button>
+        </div>
+      )}
+      <TodayPuzzleBoard key={`${activePuzzle.date}-${activePuzzle.type}`} puzzle={activePuzzle} />
+    </>
   );
 }
