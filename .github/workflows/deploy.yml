@@ -126,6 +126,37 @@ jobs:
             --capabilities CAPABILITY_IAM \
             --parameter-overrides ${PARAM_OVERRIDES}
 
+      - name: Run daily puzzle fetcher Lambda
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+        run: |
+          set -euo pipefail
+          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-daily-puzzle
+          FUNCTION_NAME=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query "Stacks[0].Outputs[?OutputKey=='DailyPuzzleFetcherFunctionName'].OutputValue" --output text)
+
+          if [ -z "${FUNCTION_NAME}" ] || [ "${FUNCTION_NAME}" = "None" ]; then
+            echo "DailyPuzzleFetcherFunctionName output not found on ${STACK_NAME}"
+            exit 1
+          fi
+
+          RESPONSE_FILE=$(mktemp)
+          aws lambda invoke \
+            --function-name "${FUNCTION_NAME}" \
+            --cli-binary-format raw-in-base64-out \
+            --payload '{}' \
+            "${RESPONSE_FILE}"
+
+          echo "Lambda response payload:"
+          cat "${RESPONSE_FILE}"
+
+          if jq -e '.FunctionError' "${RESPONSE_FILE}" > /dev/null; then
+            echo "Lambda invocation failed"
+            rm -f "${RESPONSE_FILE}"
+            exit 1
+          fi
+
+          rm -f "${RESPONSE_FILE}"
+
       - name: Deploy puzzle statistics CloudFormation stack
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}

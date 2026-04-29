@@ -139,6 +139,44 @@ header .pokemon-count {
   align-items: center;
 }
 
+.today-puzzle-toggle {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.today-puzzle-tab {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.today-puzzle-tab-icon {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+}
+
+.today-puzzle-tab-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.today-puzzle-tab.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--bg));
+}
+
 .type-labels-top {
   display: flex;
   gap: 4px;

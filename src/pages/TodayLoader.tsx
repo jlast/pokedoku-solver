@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { TodayApp, type TodayPuzzle } from "./TodayApp";
 
 export function TodayLoader() {
-  const [puzzle, setPuzzle] = useState<TodayPuzzle | null>(null);
+  const [puzzles, setPuzzles] = useState<TodayPuzzle[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -11,7 +11,15 @@ export function TodayLoader() {
         if (!res.ok) throw new Error('Failed to load puzzle');
         return res.json();
       })
-      .then(data => setPuzzle(data))
+      .then((data) => {
+        const puzzleList = Array.isArray(data) ? data : [data];
+        const ordered = [...puzzleList].sort((a, b) => {
+          if (a.type === "BONUS" && b.type !== "BONUS") return 1;
+          if (a.type !== "BONUS" && b.type === "BONUS") return -1;
+          return 0;
+        });
+        setPuzzles(ordered);
+      })
       .catch(err => setError(err.message));
   }, []);
 
@@ -23,7 +31,7 @@ export function TodayLoader() {
     );
   }
 
-  if (!puzzle) {
+  if (!puzzles) {
     return (
       <div className="app loading">
         <p>Loading today&apos;s puzzle...</p>
@@ -31,5 +39,5 @@ export function TodayLoader() {
     );
   }
 
-  return <TodayApp puzzle={puzzle} />;
+  return <TodayApp puzzles={puzzles} />;
 }
