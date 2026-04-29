@@ -17,6 +17,7 @@ dist-ssr
 astro/.astro/
 public/data/pokemon.json
 public/data/runtime/
+internal
 
 # Editor directories and files
 .vscode/*

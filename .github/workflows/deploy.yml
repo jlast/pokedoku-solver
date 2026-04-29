@@ -24,7 +24,7 @@ jobs:
       stats_stack_changed: ${{ steps.changes.outputs.stats_stack_changed }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
