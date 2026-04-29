@@ -67,14 +67,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
-
       - name: Install Astro dependencies
         run: npm ci --prefix astro
 
-      - name: Build Astro site
-        run: npm --prefix astro run build
+      - name: Build
+        run: npm run build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -300,37 +297,6 @@ jobs:
             echo "${CONFIG}" | head -100
             exit 1
           fi
-
-      - name: Dump CloudFormation failure events
-        if: failure()
-        env:
-          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
-        run: |
-          BASE_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
-          for STACK_NAME in ${BASE_NAME}-daily-puzzle ${BASE_NAME}-puzzle-statistics; do
-            echo "--- ${STACK_NAME} ---"
-            aws cloudformation describe-stack-events \
-              --stack-name ${STACK_NAME} \
-              --max-items 100 || true
-          done
-
-      - name: Dump CloudFormation changeset failures
-        if: failure()
-        env:
-          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
-        run: |
-          BASE_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}
-          for STACK_NAME in ${BASE_NAME}-daily-puzzle ${BASE_NAME}-puzzle-statistics; do
-            CHANGE_SET_ID=$(aws cloudformation list-change-sets --stack-name ${STACK_NAME} --query 'reverse(sort_by(Summaries,&CreationTime))[0].ChangeSetId' --output text || true)
-            if [ -n "${CHANGE_SET_ID}" ] && [ "${CHANGE_SET_ID}" != "None" ]; then
-              echo "--- ${STACK_NAME} / ${CHANGE_SET_ID} ---"
-              aws cloudformation describe-change-set \
-                --change-set-name ${CHANGE_SET_ID} \
-                --stack-name ${STACK_NAME}
-            else
-              echo "No change set found for stack ${STACK_NAME}"
-            fi
-          done
 
       - name: Sync to S3
         run: |
