@@ -172,7 +172,6 @@ export function PokemonRuntimeStatsPanel({ statsKeyId, variant = "sections" }: P
       {variant === "sections" ? <article className="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
         <div className="mb-2 flex items-center justify-between gap-3">
           <h2>Top combinations</h2>
-          <a className="text-sm font-semibold text-blue-600" href="/pokemon-list/">View all</a>
         </div>
         {comboRows.length > 0 ? (
           <ul className="grid gap-3 text-left">
