@@ -115,6 +115,7 @@ const POKEMON_STATS_PREFIX = "data/runtime/pokemon/";
 const s3 = new S3Client({});
 const constraintFilters = new Map<string, (pokemon: Pokemon) => boolean>();
 const IO_CONCURRENCY = Number(process.env.IO_CONCURRENCY ?? 20);
+const LOG_EVERY_N = Number(process.env.LOG_EVERY_N ?? 100);
 
 for (const filterCategory of FILTER_CATEGORIES) {
   for (const option of filterCategory.options) {
@@ -211,6 +212,10 @@ async function mapWithConcurrency<T, R>(
   items: T[],
   concurrency: number,
   mapper: (item: T, index: number) => Promise<R>,
+  options?: {
+    label?: string;
+    logEvery?: number;
+  },
 ): Promise<R[]> {
   if (items.length === 0) {
     return [];
@@ -218,17 +223,42 @@ async function mapWithConcurrency<T, R>(
 
   const safeConcurrency = Math.max(1, Math.min(concurrency, items.length));
   const results: R[] = new Array(items.length);
+  const startedAt = Date.now();
+  const label = options?.label ?? "mapWithConcurrency";
+  const logEvery = Math.max(1, options?.logEvery ?? LOG_EVERY_N);
   let nextIndex = 0;
+  let completed = 0;
+
+  console.log(`[${label}] start`, {
+    total: items.length,
+    concurrency: safeConcurrency,
+    logEvery,
+  });
 
   const workers = Array.from({ length: safeConcurrency }, async () => {
     while (nextIndex < items.length) {
       const currentIndex = nextIndex;
       nextIndex += 1;
       results[currentIndex] = await mapper(items[currentIndex], currentIndex);
+      completed += 1;
+
+      if (completed % logEvery === 0 || completed === items.length) {
+        const elapsedMs = Date.now() - startedAt;
+        console.log(`[${label}] progress`, {
+          completed,
+          total: items.length,
+          percent: Math.round((completed / items.length) * 100),
+          elapsedMs,
+        });
+      }
     }
   });
 
   await Promise.all(workers);
+  console.log(`[${label}] done`, {
+    total: items.length,
+    elapsedMs: Date.now() - startedAt,
+  });
   return results;
 }
 
@@ -595,21 +625,65 @@ function buildPokemonStatsFiles(
 }
 
 export async function handler() {
+  const startedAt = Date.now();
+
   if (!BUCKET_NAME) {
     throw new Error("BUCKET_NAME is required");
   }
 
+  console.log("puzzle-statistics handler started", {
+    bucket: BUCKET_NAME,
+    outputKey: OUTPUT_KEY,
+    puzzlesPrefix: PUZZLES_PREFIX,
+    pokemonStatsPrefix: POKEMON_STATS_PREFIX,
+    ioConcurrency: IO_CONCURRENCY,
+    logEvery: LOG_EVERY_N,
+  });
+
+  const listStartedAt = Date.now();
   const keys = await listPuzzleKeys();
+  console.log("listed puzzle keys", {
+    keyCount: keys.length,
+    elapsedMs: Date.now() - listStartedAt,
+  });
 
   if (keys.length === 0) {
     throw new Error(`No puzzle files found under ${PUZZLES_PREFIX}`);
   }
 
-  const puzzles = await mapWithConcurrency(keys, IO_CONCURRENCY, readPuzzle);
-  const pokemon = await readPokemonList();
-  const stats = buildStats(puzzles, pokemon);
-  const pokemonStats = buildPokemonStatsFiles(puzzles, pokemon);
+  const puzzles = await mapWithConcurrency(keys, IO_CONCURRENCY, readPuzzle, {
+    label: "readPuzzle",
+    logEvery: LOG_EVERY_N,
+  });
 
+  console.log("puzzles loaded", {
+    puzzleCount: puzzles.length,
+    uniqueDates: new Set(puzzles.map((puzzle) => puzzle.date)).size,
+  });
+
+  const pokemonReadStartedAt = Date.now();
+  const pokemon = await readPokemonList();
+  console.log("pokemon list loaded", {
+    pokemonCount: pokemon.length,
+    elapsedMs: Date.now() - pokemonReadStartedAt,
+  });
+
+  const statsStartedAt = Date.now();
+  const stats = buildStats(puzzles, pokemon);
+  console.log("overall stats built", {
+    puzzlesAnalyzed: stats.puzzlesAnalyzed,
+    elapsedMs: Date.now() - statsStartedAt,
+  });
+
+  const pokemonStatsStartedAt = Date.now();
+  const pokemonStats = buildPokemonStatsFiles(puzzles, pokemon);
+  console.log("pokemon stats files built", {
+    fileCount: pokemonStats.files.length,
+    skipped: pokemonStats.skipped,
+    elapsedMs: Date.now() - pokemonStatsStartedAt,
+  });
+
+  const writeSummaryStartedAt = Date.now();
   await s3.send(
     new PutObjectCommand({
       Bucket: BUCKET_NAME,
@@ -619,17 +693,36 @@ export async function handler() {
       CacheControl: "max-age=300, public",
     }),
   );
+  console.log("wrote summary stats file", {
+    key: OUTPUT_KEY,
+    elapsedMs: Date.now() - writeSummaryStartedAt,
+  });
 
-  await mapWithConcurrency(pokemonStats.files, IO_CONCURRENCY, async (pokemonStatsFile) => {
-    await s3.send(
-      new PutObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: `${POKEMON_STATS_PREFIX}${pokemonStatsFile.pokemonKeyId}-stats.json`,
-        Body: JSON.stringify(pokemonStatsFile, null, 2),
-        ContentType: "application/json",
-        CacheControl: "max-age=300, public",
-      }),
-    );
+  await mapWithConcurrency(
+    pokemonStats.files,
+    IO_CONCURRENCY,
+    async (pokemonStatsFile) => {
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: BUCKET_NAME,
+          Key: `${POKEMON_STATS_PREFIX}${pokemonStatsFile.pokemonKeyId}-stats.json`,
+          Body: JSON.stringify(pokemonStatsFile, null, 2),
+          ContentType: "application/json",
+          CacheControl: "max-age=300, public",
+        }),
+      );
+    },
+    {
+      label: "writePokemonStats",
+      logEvery: LOG_EVERY_N,
+    },
+  );
+
+  console.log("puzzle-statistics handler completed", {
+    totalElapsedMs: Date.now() - startedAt,
+    puzzlesAnalyzed: stats.puzzlesAnalyzed,
+    pokemonStatsWritten: pokemonStats.files.length,
+    pokemonStatsSkipped: pokemonStats.skipped,
   });
 
   return {
