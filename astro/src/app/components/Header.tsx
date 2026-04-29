@@ -76,7 +76,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
 
   return (
     <>
-      <header className="site-header text-left">
+      <header className="mx-auto mb-6 text-center">
         <div className="flex justify-center items-center gap-3 max-[1100px]:flex max-[1100px]:items-center max-[1100px]:justify-between">
           <div className="flex min-w-0 items-center justify-self-start gap-2.5">
             <a
@@ -88,7 +88,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
               <img
                 src={import.meta.env.BASE_URL + "logo.svg"}
                 alt="Pokedoku Helper"
-                className="m-0 h-8 w-8 cursor-pointer max-[1100px]:h-7 max-[1100px]:w-7"
+                className="m-0 h-7 w-7 cursor-pointer"
               />
             </a>
             <span className="hidden ml-0.5 text-base leading-tight font-bold text-slate-900 max-[1100px]:inline-block">{title}</span>
@@ -153,8 +153,8 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
           </div>
         </div>
 
-        <div className="title !hidden shrink-0 pt-4 lg:!flex">
-          <h1 className="m-0 !text-[1.55rem] leading-tight tracking-[0.01em]">{title}</h1>
+        <div className="mb-2 hidden shrink-0 items-center justify-center gap-2 pt-4 lg:!flex">
+          <h1 className="m-0 text-[1.55rem] leading-tight font-bold tracking-[0.01em] text-[#222]">{title}</h1>
         </div>
 
         {showDate && (
@@ -185,11 +185,11 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
         {mobileMenuOpen && (
           <>
             <div
-              className="fixed inset-0 z-[1099] block bg-black/50 animate-[headerFadeIn_0.2s]"
+              className="fixed inset-0 z-[1099] block bg-black/50 transition-opacity duration-200"
               onClick={() => closeMobileMenu("overlay")}
               aria-hidden="true"
             />
-            <div className="fixed top-0 bottom-0 left-0 z-[1100] block w-[85%] max-w-[320px] overflow-y-auto bg-white shadow-[10px_0_28px_rgba(15,23,42,0.2)] animate-[headerSlideIn_0.3s_ease-out]" role="dialog" aria-modal="true" aria-label="Navigation menu">
+            <div className="fixed top-0 bottom-0 left-0 z-[1100] block w-[85%] max-w-[320px] overflow-y-auto bg-white shadow-[10px_0_28px_rgba(15,23,42,0.2)] transition-transform duration-300 ease-out" role="dialog" aria-modal="true" aria-label="Navigation menu">
               <div className="sticky top-0 z-[2] flex items-center justify-between border-b border-slate-200 bg-white px-3.5 pt-3.5 pb-2.5">
                 <span className="text-base font-bold text-slate-900">Pokedoku Helper</span>
                 <button
@@ -252,7 +252,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
           </>
         )}
 
-        {subtitle && <p className="lead">{subtitle}</p>}
+        {subtitle && <p className="mx-auto mb-3 max-w-[700px] text-center text-[1.12rem] leading-[1.65] text-[#6a6477] max-[600px]:hidden">{subtitle}</p>}
       </header>
       <div className="my-6 h-1 bg-gradient-to-b from-black/10 to-transparent" />
     </>

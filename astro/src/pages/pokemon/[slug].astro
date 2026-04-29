@@ -1,5 +1,6 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import PokemonDetailPage from "../../components/PokemonDetailPage.astro";
 import { getPokemonBySlugMap, getPokemonList, getPokemonSlug } from "../../lib/data";
 
 export function getStaticPaths() {
@@ -15,26 +16,21 @@ if (!pokemon) {
   throw Astro.redirect("/pokemon-list/");
 }
 
-const subtitle = [pokemon.region, pokemon.evolutionStage, pokemon.dexDifficulty]
-  .filter(Boolean)
-  .join(" · ");
+const pokemonList = getPokemonList();
+const relatedPokemon = pokemonList
+  .filter((entry) => {
+    if ((entry.formId ?? entry.id) === (pokemon.formId ?? pokemon.id)) return false;
+    if (entry.evolutionStage && pokemon.evolutionStage && entry.evolutionStage === pokemon.evolutionStage) return true;
+    return entry.types.some((type) => pokemon.types.includes(type));
+  })
+  .slice(0, 5);
+
 ---
 
-<BaseLayout
+<AppPageLayout
   title={`${pokemon.name} | Pokedoku Helper`}
   description={`Details for ${pokemon.name}: type, region, evolution, and dex difficulty.`}
   path={`/pokemon/${slug}/`}
 >
-  <section class="panel">
-    <h1>{pokemon.name}</h1>
-    {subtitle && <p class="muted">{subtitle}</p>}
-    <ul>
-      <li><strong>National Dex:</strong> #{pokemon.id}</li>
-      <li><strong>Form ID:</strong> {pokemon.formId ?? pokemon.id}</li>
-      <li><strong>Types:</strong> {pokemon.types.join(", ")}</li>
-      {pokemon.category && <li><strong>Category:</strong> {pokemon.category}</li>}
-      {pokemon.specialForm && <li><strong>Special Form:</strong> {pokemon.specialForm}</li>}
-      {pokemon.evolutionTrigger && <li><strong>Evolution Trigger:</strong> {pokemon.evolutionTrigger.join(", ")}</li>}
-    </ul>
-  </section>
-</BaseLayout>
+  <PokemonDetailPage pokemon={pokemon} slug={slug} relatedPokemon={relatedPokemon} />
+</AppPageLayout>

@@ -1,0 +1,250 @@
+---
+import "../app/index.css";
+import "../app/App.css";
+import { Header } from "../app/components/Header";
+import { Footer } from "../app/components/Footer";
+import Badge from "./Badge.astro";
+import { getPokemonSlug } from "../lib/data";
+import {
+  TYPE_COLORS,
+  DEX_DIFFICULTY_COLORS,
+  REGION_COLORS,
+  EVOLUTION_COLORS,
+} from "../../../lib/shared/constants";
+import type { Pokemon } from "../lib/data";
+
+interface Props {
+  pokemon: Pokemon;
+  slug: string;
+  relatedPokemon: Pokemon[];
+}
+
+const { pokemon, slug, relatedPokemon } = Astro.props;
+const dexNumber = `#${String(pokemon.id).padStart(3, "0")}`;
+const rarityScore =
+  typeof pokemon.dexDifficultyPercentile === "number"
+    ? Math.round(pokemon.dexDifficultyPercentile * 100)
+    : null;
+const rarityDegrees = rarityScore === null ? 0 : Math.max(0, Math.min(360, Math.round((rarityScore / 100) * 360)));
+---
+
+<div id="root">
+  <div class="app min-h-screen px-4 py-6">
+    <Header title="PokeDoku Helper" subtitle={`Details for ${pokemon.name}: type, region, evolution, and dex difficulty.`} currentPage="pokemon-list" client:load />
+
+    <main class="mx-auto w-full max-w-6xl px-2 pb-10">
+      <nav class="mb-4 flex items-center gap-2 text-sm text-slate-500" aria-label="Breadcrumb">
+        <a class="hover:text-slate-700" href="/">Home</a>
+        <span>›</span>
+        <a class="hover:text-slate-700" href="/pokemon-list/">Pokemon</a>
+        <span>›</span>
+        <strong class="text-slate-700">{pokemon.name}</strong>
+      </nav>
+
+      <section class="mb-4 grid gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_16px_36px_rgba(15,23,42,0.08)] md:grid-cols-[190px_1fr]">
+        <div class="flex min-h-[170px] items-center justify-center rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-blue-50">
+          {pokemon.sprite ? (
+            <img src={pokemon.sprite} alt={pokemon.name} class="h-32 w-32 object-contain" loading="lazy" />
+          ) : (
+            <div class="text-4xl font-bold text-slate-700">{pokemon.name.slice(0, 1)}</div>
+          )}
+        </div>
+
+        <div>
+          <div class="flex items-baseline gap-2">
+            <h1 class="text-4xl font-bold leading-tight tracking-tight text-slate-900">{pokemon.name}</h1>
+            <span class="text-lg font-semibold text-slate-400">{dexNumber}</span>
+          </div>
+
+          <div class="mt-3 flex flex-wrap gap-2">
+            {pokemon.types.map((type) => (
+              <Badge text={type} color={TYPE_COLORS[type] ?? "#64748b"} />
+            ))}
+            {pokemon.region && (
+              <Badge text={pokemon.region} color={REGION_COLORS[pokemon.region] ?? REGION_COLORS.Unknown} />
+            )}
+            {pokemon.evolutionStage && (
+              <Badge text={pokemon.evolutionStage} color={EVOLUTION_COLORS[pokemon.evolutionStage] ?? "#64748b"} />
+            )}
+          </div>
+
+          <div class="mt-4 grid gap-3 md:grid-cols-3">
+            <article class="rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 to-slate-50 p-3 md:col-span-3">
+              <span class="block text-sm text-slate-500">Pokedoku Difficulty</span>
+              <Badge text={pokemon.dexDifficulty ?? "Unknown"} color={DEX_DIFFICULTY_COLORS[pokemon.dexDifficulty ?? "Unknown"] ?? "#64748b"} />
+              <small class="mt-1 block text-xs text-slate-500">Based on usage frequency and category spread</small>
+            </article>
+            <article class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+              <span class="block text-sm text-slate-500">National Dex</span>
+              <strong class="text-slate-900">#{pokemon.id}</strong>
+            </article>
+            <article class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+              <span class="block text-sm text-slate-500">Form ID</span>
+              <strong class="text-slate-900">{pokemon.formId ?? pokemon.id}</strong>
+            </article>
+            <article class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+              <span class="block text-sm text-slate-500">Region</span>
+              <strong style={`color:${REGION_COLORS[pokemon.region ?? ""] ?? "#334155"};`}>{pokemon.region ?? "Unknown"}</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid items-start gap-4 lg:grid-cols-2">
+        <div class="grid gap-4">
+          <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+            <div class="mb-2 flex items-center justify-between gap-3">
+              <h2>Most common categories</h2>
+            </div>
+            <ul class="grid gap-3">
+              <li class="grid items-center gap-2 text-sm md:grid-cols-[130px_1fr_auto]">
+                <span>Type overlap</span>
+                <div class="h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full bg-gradient-to-r from-blue-500 to-cyan-400" style="width:72%"></div></div>
+                <strong>72%</strong>
+              </li>
+              <li class="grid items-center gap-2 text-sm md:grid-cols-[130px_1fr_auto]">
+                <span>Evolution match</span>
+                <div class="h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full bg-gradient-to-r from-blue-500 to-cyan-400" style="width:46%"></div></div>
+                <strong>46%</strong>
+              </li>
+              <li class="grid items-center gap-2 text-sm md:grid-cols-[130px_1fr_auto]">
+                <span>Region overlap</span>
+                <div class="h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full bg-gradient-to-r from-blue-500 to-cyan-400" style="width:38%"></div></div>
+                <strong>38%</strong>
+              </li>
+            </ul>
+          </article>
+
+          <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+            <div class="mb-2 flex items-center justify-between gap-3">
+              <h2>Top combinations</h2>
+              <a class="text-sm font-semibold text-blue-600" href="/pokemon-list/">View all</a>
+            </div>
+            <ul class="grid gap-2">
+              {pokemon.types.map((type, index) => (
+                <li class="grid grid-cols-[28px_1fr_auto] items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2">
+                  <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-900">{index + 1}</span>
+                  <span class="text-sm text-slate-800">{type} + {pokemon.region ?? "Unknown"}</span>
+                  <strong class="text-blue-600">{Math.max(54 - index * 11, 16)}%</strong>
+                </li>
+              ))}
+            </ul>
+          </article>
+
+          <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+            <div class="mb-2 flex items-center justify-between gap-3">
+              <h2>Appearances over time</h2>
+              <span class="text-xs text-slate-500">Sample timeline</span>
+            </div>
+            <div class="grid gap-3">
+              <div class="grid grid-cols-[14px_1fr] items-start gap-2">
+                <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-gradient-to-br from-blue-600 to-cyan-400"></span>
+                <div>
+                  <strong>Latest puzzle inclusion</strong>
+                  <p class="mt-1 text-sm text-slate-500">Seen recently in type and region-based grids.</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-[14px_1fr] items-start gap-2">
+                <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-gradient-to-br from-blue-600 to-cyan-400"></span>
+                <div>
+                  <strong>Stable clue frequency</strong>
+                  <p class="mt-1 text-sm text-slate-500">Consistent appearance in medium-difficulty boards.</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-[14px_1fr] items-start gap-2">
+                <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-gradient-to-br from-blue-600 to-cyan-400"></span>
+                <div>
+                  <strong>Long-term reliability</strong>
+                  <p class="mt-1 text-sm text-slate-500">Often viable in multi-category combinations.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="grid gap-4">
+
+        <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)] lg:col-span-2">
+          <h2 class="text-left">Rarity score</h2>
+          <div class="mt-2 grid gap-4 md:grid-cols-[2fr_1fr]">
+            <div>
+              <div class="mt-2 flex items-center justify-center gap-3 sm:justify-start">
+                <div
+                  class="grid h-32 w-32 place-items-center rounded-full"
+                  style={`background: conic-gradient(from 0deg, #4f6fff 0deg, #70b9ff ${rarityDegrees}deg, #e7ebf7 ${rarityDegrees}deg, #e7ebf7 360deg);`}
+                >
+                  <div class="grid h-24 w-24 place-items-center rounded-full bg-white text-slate-800">
+                    <strong class="text-3xl leading-none font-bold">{rarityScore ?? "-"}</strong>
+                  </div>
+                </div>
+                <span class="ml-2 text-sm font-semibold text-slate-500">/100</span>
+              </div>
+              <p class="mt-2 text-left text-slate-500">{rarityScore === null ? "Rarity data unavailable." : `Rarer than ${rarityScore}% of all pokemon`}</p>
+            </div>
+            <div class="flex items-center justify-center border-t border-slate-200/80 pt-3 md:border-t-0 md:border-l md:pl-4 md:pt-0">
+              <Badge
+                text={pokemon.dexDifficulty ?? "Unknown"}
+                color={DEX_DIFFICULTY_COLORS[pokemon.dexDifficulty ?? ""] ?? "#64748b"}
+              />
+            </div>
+          </div>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)] lg:col-span-2">
+          <h2>Core details</h2>
+          <ul class="grid gap-2">
+            <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Region</span><strong style={`color:${REGION_COLORS[pokemon.region ?? ""] ?? "#0f172a"};`}>{pokemon.region ?? "Unknown"}</strong></li>
+            <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Evolution stage</span><strong>{pokemon.evolutionStage ?? "Unknown"}</strong></li>
+            <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Category</span><strong>{pokemon.category ?? "-"}</strong></li>
+            <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Special form</span><strong>{pokemon.specialForm ?? "-"}</strong></li>
+            <li class="flex items-center justify-between gap-3"><span class="text-slate-500">Evolution trigger</span><strong>{pokemon.evolutionTrigger?.join(", ") ?? "-"}</strong></li>
+          </ul>
+        </article>
+
+        <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <h2>About {pokemon.name}</h2>
+          <p>
+            {pokemon.name} is a {pokemon.types.join("/")}-type Pokemon from {pokemon.region ?? "an unknown region"}.
+            {pokemon.evolutionStage ? ` It is classified as ${pokemon.evolutionStage.toLowerCase()}.` : ""}
+            {pokemon.dexDifficulty ? ` In PokeDoku, its difficulty is ${pokemon.dexDifficulty.toLowerCase()}.` : ""}
+          </p>
+        </article>
+
+        <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)] lg:col-span-2">
+          <div class="mb-2 flex items-center justify-between gap-3">
+            <h2>Related Pokemon</h2>
+            <a class="text-sm font-semibold text-blue-600" href="/pokemon-list/">View all</a>
+          </div>
+          {relatedPokemon.length > 0 ? (
+            <div class="grid grid-cols-2 gap-2 md:grid-cols-3">
+              {relatedPokemon.map((entry) => (
+                <a class="flex min-h-[108px] flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-2 text-center text-sm text-slate-800" href={`/pokemon/${getPokemonSlug(entry)}/`}>
+                  {entry.sprite ? (
+                    <img src={entry.sprite} alt={entry.name} class="h-11 w-11 object-contain" loading="lazy" />
+                  ) : (
+                    <span class="inline-flex h-11 w-11 items-center justify-center font-bold text-slate-700">{entry.name.slice(0, 1)}</span>
+                 )}
+                 <span>{entry.name}</span>
+                 <small class="text-xs text-slate-500">Type match</small>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p class="text-slate-500">No related Pokemon found.</p>
+          )}
+        </article>
+
+        <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)] lg:col-span-2">
+          <h2>Share this Pokemon</h2>
+          <p class="text-slate-500">Use this page in your team notes or puzzle discussions.</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <a class="rounded-xl bg-blue-600 px-3 py-2 text-sm font-bold text-white hover:bg-blue-700" href={`/pokemon/${slug}/`}>Copy page link</a>
+            <a class="rounded-xl bg-blue-50 px-3 py-2 text-sm font-bold text-blue-900 hover:bg-blue-100" href="/pokemon-list/">Back to list</a>
+          </div>
+        </article>
+        </div>
+      </section>
+    </main>
+
+    <Footer client:load />
+  </div>
+</div>
