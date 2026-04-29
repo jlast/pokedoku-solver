@@ -34,6 +34,39 @@ const canonical = absoluteUrl(path);
   </head>
   <body>
     <slot />
-    <script data-collect-dnt="true" async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<script>
+  function myPathOverwriter({ path }) {
+    // Pokemon (name + optional form or deeper paths)
+    if (path.startsWith("/pokemon/")) {
+      return "/pokemon/***";
+    }
+
+    // Category paths
+    if (path.startsWith("/category/")) {
+      const parts = path.split("/").filter(Boolean);
+
+      // /category/<name>
+      if (parts.length === 2) {
+        return "/category/*";
+      }
+
+      // /category/<name>/<name>
+      if (parts.length === 3) {
+        return "/category/*/*";
+      }
+
+      // Anything deeper under /category/
+      return "/category/***";
+    }
+
+    return path;
+  }
+</script>
+
+<script
+  data-collect-dnt="true" async
+  data-path-overwriter="myPathOverwriter"
+  src="https://scripts.simpleanalyticscdn.com/latest.js"
+></script>
   </body>
 </html>
