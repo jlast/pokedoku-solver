@@ -615,7 +615,8 @@ function buildPokemonStatsFiles(
 
     const categoryMatches = Array.from(categoryMatchesMap.entries())
       .map(([categoryId, occurrences]) => ({ categoryId, occurrences }))
-      .sort((a, b) => b.occurrences - a.occurrences || a.categoryId.localeCompare(b.categoryId));
+      .sort((a, b) => b.occurrences - a.occurrences || a.categoryId.localeCompare(b.categoryId))
+      .slice(0, 5);
 
     const combinationMatches = Array.from(combinationMatchesMap.entries())
       .map(([pairKey, occurrences]) => ({
@@ -627,7 +628,7 @@ function buildPokemonStatsFiles(
         const firstCompare = a.categories[0].localeCompare(b.categories[0]);
         if (firstCompare !== 0) return firstCompare;
         return a.categories[1].localeCompare(b.categories[1]);
-      });
+      }).slice(0, 5);
 
     files.push({
       pokemonKeyId,

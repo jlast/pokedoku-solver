@@ -1,29 +1,7 @@
 ---
-import fs from "node:fs";
-import path from "node:path";
 import AppPageLayout from "../../layouts/AppPageLayout.astro";
 import PokemonDetailPage from "../../components/PokemonDetailPage.astro";
 import { getPokemonBySlugMap, getPokemonList, getPokemonSlug } from "../../lib/data";
-
-interface PokemonRuntimeStats {
-  puzzlesAnalyzed: number;
-  totalAppearances: {
-    count: number;
-    percentage: number;
-  };
-  lastUsable: {
-    date: string;
-    daysAgo: number;
-  };
-  categoryMatches: Array<{
-    categoryId: string;
-    occurrences: number;
-  }>;
-  combinationMatches: Array<{
-    categories: string[];
-    occurrences: number;
-  }>;
-}
 
 export function getStaticPaths() {
   return getPokemonList().map((pokemon) => ({
@@ -48,32 +26,6 @@ const relatedPokemon = pokemonList
   .slice(0, 5);
 
 const statsKeyId = pokemon.formId ?? pokemon.id;
-const statsPath = path.resolve(process.cwd(), "..", "public", "data", "runtime", "pokemon", `${statsKeyId}-stats.json`);
-
-let runtimeStats: PokemonRuntimeStats | null = null;
-try {
-  const rawStats = fs.readFileSync(statsPath, "utf8");
-  const parsedStats = JSON.parse(rawStats) as Partial<PokemonRuntimeStats>;
-  if (
-    typeof parsedStats?.puzzlesAnalyzed === "number" &&
-    typeof parsedStats?.totalAppearances?.count === "number" &&
-    typeof parsedStats?.totalAppearances?.percentage === "number" &&
-    typeof parsedStats?.lastUsable?.date === "string" &&
-    typeof parsedStats?.lastUsable?.daysAgo === "number" &&
-    Array.isArray(parsedStats?.categoryMatches) &&
-    Array.isArray(parsedStats?.combinationMatches)
-  ) {
-    runtimeStats = {
-      puzzlesAnalyzed: parsedStats.puzzlesAnalyzed,
-      totalAppearances: parsedStats.totalAppearances,
-      lastUsable: parsedStats.lastUsable,
-      categoryMatches: parsedStats.categoryMatches,
-      combinationMatches: parsedStats.combinationMatches,
-    };
-  }
-} catch {
-  runtimeStats = null;
-}
 
 ---
 
@@ -82,5 +34,5 @@ try {
   description={`Details for ${pokemon.name}: type, region, evolution, and dex difficulty.`}
   path={`/pokemon/${slug}/`}
 >
-  <PokemonDetailPage pokemon={pokemon} slug={slug} relatedPokemon={relatedPokemon} runtimeStats={runtimeStats} />
+  <PokemonDetailPage pokemon={pokemon} slug={slug} relatedPokemon={relatedPokemon} statsKeyId={statsKeyId} />
 </AppPageLayout>
