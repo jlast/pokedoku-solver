@@ -37,6 +37,10 @@ jobs:
   validate-and-pages:
     needs: detect-changes
     uses: ./.github/workflows/reusable-validate.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
 
   site-deploy:
     needs:
