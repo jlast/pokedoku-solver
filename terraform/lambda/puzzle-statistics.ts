@@ -577,26 +577,26 @@ function buildPokemonStatsFiles(
       let matchedRow = false;
       let matchedColumn = false;
 
-      for (let i = 0; i < puzzle.rowConstraints.length; i++) {
+      for (let i = 0; i < rowCategoryIds.length; i++) {
         if (rowMatches[i]) {
           matchedRow = true;
           increment(categoryMatchesMap, rowCategoryIds[i]);
         }
       }
 
-      for (let i = 0; i < puzzle.colConstraints.length; i++) {
+      for (let i = 0; i < colCategoryIds.length; i++) {
         if (colMatches[i]) {
           matchedColumn = true;
           increment(categoryMatchesMap, colCategoryIds[i]);
         }
       }
 
-      for (let r = 0; r < puzzle.rowConstraints.length; r++) {
+      for (let r = 0; r < rowCategoryIds.length; r++) {
         if (!rowMatches[r]) {
           continue;
         }
 
-        for (let c = 0; c < puzzle.colConstraints.length; c++) {
+        for (let c = 0; c < colCategoryIds.length; c++) {
           if (colMatches[c]) {
             const categories = [rowCategoryIds[r], colCategoryIds[c]].sort() as [string, string];
             increment(combinationMatchesMap, `${categories[0]}||${categories[1]}`);
