@@ -26,6 +26,7 @@ interface TodayAppProps {
 
 interface TodayPuzzleBoardProps {
   puzzle: TodayPuzzle;
+  toggle?: React.ReactNode;
 }
 
 interface GridState {
@@ -118,7 +119,7 @@ function buildSuggestedCells(
   };
 }
 
-function TodayPuzzleBoard({ puzzle }: TodayPuzzleBoardProps) {
+function TodayPuzzleBoard({ puzzle, toggle }: TodayPuzzleBoardProps) {
   const gridSize = puzzle.rowConstraints.length;
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
@@ -304,6 +305,8 @@ function TodayPuzzleBoard({ puzzle }: TodayPuzzleBoardProps) {
         currentPage="today"
       />
 
+      {toggle}
+
       <div className="main-content">
         <Grid
           cells={grid.cells}
@@ -379,11 +382,11 @@ function TodayPuzzleBoard({ puzzle }: TodayPuzzleBoardProps) {
 
 export function TodayApp({ puzzles }: TodayAppProps) {
   const regularPuzzle = useMemo(
-    () => puzzles.find((p) => p.type !== "BONUS") ?? puzzles[0],
+    () => puzzles.find((p) => p.type !== "BONUS" && p.bonus !== true) ?? puzzles[0],
     [puzzles],
   );
   const bonusPuzzle = useMemo(
-    () => puzzles.find((p) => p.type === "BONUS"),
+    () => puzzles.find((p) => p.type === "BONUS" || p.bonus === true),
     [puzzles],
   );
   const [activeTab, setActiveTab] = useState<"today" | "bonus">("today");
@@ -393,40 +396,45 @@ export function TodayApp({ puzzles }: TodayAppProps) {
 
   return (
     <>
-      {bonusPuzzle && (
-        <div className="today-puzzle-toggle" role="tablist" aria-label="Choose puzzle">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={effectiveTab === "today"}
-            className={`today-puzzle-tab ${effectiveTab === "today" ? "active" : ""}`}
-            onClick={() => {
-              trackEvent("click_today_toggle", { tab: "today" });
-              setActiveTab("today");
-            }}
-          >
-            Today Puzzle
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={effectiveTab === "bonus"}
-            className={`today-puzzle-tab ${effectiveTab === "bonus" ? "active" : ""}`}
-            onClick={() => {
-              trackEvent("click_today_toggle", { tab: "bonus" });
-              setActiveTab("bonus");
-            }}
-          >
-            <span className="today-puzzle-tab-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path d="M20 7h-2.18A2.99 2.99 0 0 0 18 6a3 3 0 0 0-5.5-1.66L12 5l-.5-.66A3 3 0 0 0 6 6c0 .35.06.69.18 1H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7h1a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1ZM9 5a1 1 0 0 1 .8.4L10.75 7H9A1 1 0 0 1 9 5Zm6 0a1 1 0 0 1 0 2h-1.75l.95-1.6A1 1 0 0 1 15 5ZM5 9h6v2H5V9Zm2 4h4v5H7v-5Zm6 5v-5h4v5h-4Zm6-7h-6V9h6v2Z" />
-              </svg>
-            </span>
-            Bonus Puzzle
-          </button>
-        </div>
-      )}
-      <TodayPuzzleBoard key={`${activePuzzle.date}-${activePuzzle.type}`} puzzle={activePuzzle} />
+      <TodayPuzzleBoard
+        key={`${activePuzzle.date}-${activePuzzle.type}`}
+        puzzle={activePuzzle}
+        toggle={
+          bonusPuzzle ? (
+            <div className="today-puzzle-toggle" role="tablist" aria-label="Choose puzzle">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={effectiveTab === "today"}
+                className={`today-puzzle-tab ${effectiveTab === "today" ? "active" : ""}`}
+                onClick={() => {
+                  trackEvent("click_today_toggle", { tab: "today" });
+                  setActiveTab("today");
+                }}
+              >
+                Today Puzzle
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={effectiveTab === "bonus"}
+                className={`today-puzzle-tab ${effectiveTab === "bonus" ? "active" : ""}`}
+                onClick={() => {
+                  trackEvent("click_today_toggle", { tab: "bonus" });
+                  setActiveTab("bonus");
+                }}
+              >
+                <span className="today-puzzle-tab-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M20 7h-2.18A2.99 2.99 0 0 0 18 6a3 3 0 0 0-5.5-1.66L12 5l-.5-.66A3 3 0 0 0 6 6c0 .35.06.69.18 1H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7h1a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1ZM9 5a1 1 0 0 1 .8.4L10.75 7H9A1 1 0 0 1 9 5Zm6 0a1 1 0 0 1 0 2h-1.75l.95-1.6A1 1 0 0 1 15 5ZM5 9h6v2H5V9Zm2 4h4v5H7v-5Zm6 5v-5h4v5h-4Zm6-7h-6V9h6v2Z" />
+                  </svg>
+                </span>
+                Bonus Puzzle
+              </button>
+            </div>
+          ) : undefined
+        }
+      />
     </>
   );
 }
