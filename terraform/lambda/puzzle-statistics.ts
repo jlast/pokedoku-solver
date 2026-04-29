@@ -82,6 +82,12 @@ interface PokemonCombinationMatch {
   occurrences: number;
 }
 
+interface PrecomputedPuzzle {
+  date: string;
+  rowCategoryIds: string[];
+  colCategoryIds: string[];
+}
+
 interface PokemonStatsFile {
   pokemonKeyId: number;
   id: number;
@@ -506,6 +512,25 @@ function roundTo(value: number, decimals: number): number {
   return Math.round(value * factor) / factor;
 }
 
+function precomputePuzzles(puzzles: Puzzle[]): PrecomputedPuzzle[] {
+  return puzzles.map((puzzle) => ({
+    date: puzzle.date,
+    rowCategoryIds: puzzle.rowConstraints.map(toCategoryId),
+    colCategoryIds: puzzle.colConstraints.map(toCategoryId),
+  }));
+}
+
+function buildAllCategoryIds(precomputedPuzzles: PrecomputedPuzzle[]): string[] {
+  const set = new Set<string>();
+
+  for (const puzzle of precomputedPuzzles) {
+    for (const categoryId of puzzle.rowCategoryIds) set.add(categoryId);
+    for (const categoryId of puzzle.colCategoryIds) set.add(categoryId);
+  }
+
+  return Array.from(set);
+}
+
 function buildPokemonStatsFiles(
   puzzles: Puzzle[],
   pokemon: Pokemon[],
@@ -516,6 +541,8 @@ function buildPokemonStatsFiles(
 
   const files: PokemonStatsFile[] = [];
   let skipped = 0;
+  const precomputedPuzzles = precomputePuzzles(puzzles);
+  const allCategoryIds = buildAllCategoryIds(precomputedPuzzles);
 
   for (const entry of pokemon) {
     const pokemonKeyId = toPokemonKeyId(entry);
@@ -533,12 +560,20 @@ function buildPokemonStatsFiles(
     const usableDates: string[] = [];
     const categoryMatchesMap = new Map<string, number>();
     const combinationMatchesMap = new Map<string, number>();
+    const matchesByCategory = new Map<string, boolean>();
 
-    for (const puzzle of puzzles) {
-      const rowCategoryIds = puzzle.rowConstraints.map(toCategoryId);
-      const colCategoryIds = puzzle.colConstraints.map(toCategoryId);
-      const rowMatches = puzzle.rowConstraints.map((constraint) => matchesConstraint(entry, constraint));
-      const colMatches = puzzle.colConstraints.map((constraint) => matchesConstraint(entry, constraint));
+    for (const categoryId of allCategoryIds) {
+      const separatorIndex = categoryId.indexOf(":");
+      const category = categoryId.slice(0, separatorIndex) as ConstraintCategory;
+      const value = categoryId.slice(separatorIndex + 1);
+      matchesByCategory.set(categoryId, matchesConstraint(entry, { category, value }));
+    }
+
+    for (const puzzle of precomputedPuzzles) {
+      const rowCategoryIds = puzzle.rowCategoryIds;
+      const colCategoryIds = puzzle.colCategoryIds;
+      const rowMatches = rowCategoryIds.map((categoryId) => matchesByCategory.get(categoryId) ?? false);
+      const colMatches = colCategoryIds.map((categoryId) => matchesByCategory.get(categoryId) ?? false);
       let matchedRow = false;
       let matchedColumn = false;
 
