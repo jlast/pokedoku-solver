@@ -46,7 +46,12 @@ function daysAgoFrom(value: string): number | null {
   return Math.max(0, Math.floor((Date.now() - date.getTime()) / msInDay));
 }
 
-export function PokemonRuntimeStatsPanel({ statsKeyId, variant = "sections" }: { statsKeyId: number; variant?: "summary" | "sections" }) {
+interface PokemonRuntimeStatsPanelProps {
+  statsKeyId: number;
+  variant?: "summary" | "sections";
+}
+
+export function PokemonRuntimeStatsPanel({ statsKeyId, variant = "sections" }: PokemonRuntimeStatsPanelProps) {
   const [stats, setStats] = useState<PokemonRuntimeStats | null>(null);
 
   useEffect(() => {
