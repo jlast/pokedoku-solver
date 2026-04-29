@@ -1,0 +1,131 @@
+name: Reusable Infra Deploy
+
+on:
+  workflow_call:
+    inputs:
+      daily_lambda_changed:
+        required: true
+        type: string
+      stats_lambda_changed:
+        required: true
+        type: string
+      daily_stack_changed:
+        required: true
+        type: string
+      stats_stack_changed:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  infra-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci && npm ci --prefix astro
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_GITHUB_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_GITHUB_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Verify CloudFormation template revision
+        run: |
+          echo "Template from commit ${GITHUB_SHA}"
+          if grep -E 'ACMValidationRecord|CloudFrontOAC' terraform/daily-puzzle-stack.yaml; then
+            echo "Found deprecated resources in daily puzzle template; aborting deploy"
+            exit 1
+          fi
+
+      - name: Package daily puzzle Lambda
+        if: inputs.daily_lambda_changed == 'true'
+        run: npm run package:daily-puzzle-lambda
+
+      - name: Upload daily puzzle Lambda artifact
+        if: inputs.daily_lambda_changed == 'true'
+        env:
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          LAMBDA_KEY=lambda/daily-puzzle-fetcher-${{ github.sha }}.zip
+          aws s3 cp dist-lambda/daily-puzzle-fetcher.zip s3://${S3_BUCKET_NAME}/${LAMBDA_KEY}
+          echo "LAMBDA_KEY=${LAMBDA_KEY}" >> "$GITHUB_ENV"
+
+      - name: Package puzzle statistics Lambda
+        if: inputs.stats_lambda_changed == 'true'
+        run: npm run package:puzzle-statistics-lambda
+
+      - name: Upload puzzle statistics Lambda artifact
+        if: inputs.stats_lambda_changed == 'true'
+        env:
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          STATS_LAMBDA_KEY=lambda/puzzle-statistics-${{ github.sha }}.zip
+          aws s3 cp dist-lambda/puzzle-statistics.zip s3://${S3_BUCKET_NAME}/${STATS_LAMBDA_KEY}
+          echo "STATS_LAMBDA_KEY=${STATS_LAMBDA_KEY}" >> "$GITHUB_ENV"
+
+      - name: Validate daily puzzle CloudFormation template
+        run: aws cloudformation validate-template --template-body file://terraform/daily-puzzle-stack.yaml
+
+      - name: Validate puzzle statistics CloudFormation template
+        run: aws cloudformation validate-template --template-body file://terraform/puzzle-statistics-stack.yaml
+
+      - name: Deploy daily puzzle CloudFormation stack
+        if: inputs.daily_lambda_changed == 'true' || inputs.daily_stack_changed == 'true'
+        env:
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+          DAILY_PUZZLE_ALERT_EMAIL: ${{ secrets.DAILY_PUZZLE_ALERT_EMAIL }}
+          DAILY_LAMBDA_CHANGED: ${{ inputs.daily_lambda_changed }}
+          LAMBDA_KEY: ${{ env.LAMBDA_KEY }}
+        run: bash .github/scripts/deploy-daily-stack.sh
+
+      - name: Run daily puzzle fetcher Lambda
+        if: inputs.daily_lambda_changed == 'true' || inputs.daily_stack_changed == 'true'
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+          OUTPUT_KEY: DailyPuzzleFetcherFunctionName
+        run: STACK_NAME="${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-daily-puzzle" bash .github/scripts/invoke-lambda.sh
+
+      - name: Deploy puzzle statistics CloudFormation stack
+        if: inputs.stats_lambda_changed == 'true' || inputs.stats_stack_changed == 'true'
+        env:
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+          STATS_LAMBDA_CHANGED: ${{ inputs.stats_lambda_changed }}
+          STATS_LAMBDA_KEY: ${{ env.STATS_LAMBDA_KEY }}
+        run: bash .github/scripts/deploy-stats-stack.sh
+
+      - name: Run puzzle statistics Lambda
+        if: inputs.stats_lambda_changed == 'true' || inputs.stats_stack_changed == 'true'
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+          OUTPUT_KEY: PuzzleStatisticsFunctionArn
+        run: STACK_NAME="${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-puzzle-statistics" bash .github/scripts/invoke-lambda.sh
+
+      - name: Configure S3 notification for puzzle statistics Lambda
+        if: inputs.stats_lambda_changed == 'true' || inputs.stats_stack_changed == 'true'
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: bash .github/scripts/configure-stats-notification.sh
+
+      - name: Verify puzzle statistics S3 notification
+        if: inputs.stats_lambda_changed == 'true' || inputs.stats_stack_changed == 'true'
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: bash .github/scripts/verify-stats-notification.sh

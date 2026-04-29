@@ -8,52 +8,20 @@ permissions:
   contents: read
 
 concurrency:
-  group: "deploy"
+  group: deploy
   cancel-in-progress: false
 
 jobs:
-  validate:
+  detect-changes:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci && npm ci --prefix astro
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Run tests
-        run: npm test
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
-
-
-  deploy-gh-pages:
-    needs: validate
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
-
-  build-and-deploy:
-    needs: validate
-    runs-on: ubuntu-latest
-    environment: production
+    outputs:
+      data_changed: ${{ steps.changes.outputs.data_changed }}
+      site_changed: ${{ steps.changes.outputs.site_changed }}
+      images_changed: ${{ steps.changes.outputs.images_changed }}
+      daily_lambda_changed: ${{ steps.changes.outputs.daily_lambda_changed }}
+      stats_lambda_changed: ${{ steps.changes.outputs.stats_lambda_changed }}
+      daily_stack_changed: ${{ steps.changes.outputs.daily_stack_changed }}
+      stats_stack_changed: ${{ steps.changes.outputs.stats_stack_changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,357 +30,33 @@ jobs:
 
       - name: Detect deploy-relevant changes
         id: changes
-        run: |
-          set -euo pipefail
-
-          BEFORE_SHA="${{ github.event.before }}"
-          CURRENT_SHA="${{ github.sha }}"
-
-          if [ -z "${BEFORE_SHA}" ] || [ "${BEFORE_SHA}" = "0000000000000000000000000000000000000000" ]; then
-            BEFORE_SHA=$(git rev-parse "${CURRENT_SHA}^" 2>/dev/null || echo "")
-          fi
-
-          if [ -n "${BEFORE_SHA}" ]; then
-            CHANGED_FILES=$(git diff --name-only "${BEFORE_SHA}" "${CURRENT_SHA}")
-          else
-            CHANGED_FILES=$(git show --pretty="" --name-only "${CURRENT_SHA}")
-          fi
-
-          echo "Changed files:"
-          printf '%s\n' "${CHANGED_FILES}"
-
-          changed_in_paths() {
-            local pattern
-            for pattern in "$@"; do
-              if printf '%s\n' "${CHANGED_FILES}" | grep -E -q "${pattern}"; then
-                return 0
-              fi
-            done
-            return 1
-          }
-
-          images_changed=false
-          data_changed=false
-          site_changed=false
-          daily_lambda_changed=false
-          stats_lambda_changed=false
-          daily_stack_changed=false
-          stats_stack_changed=false
-
-          if changed_in_paths '^public/images/'; then
-            images_changed=true
-          fi
-
-          if changed_in_paths '^public/data/' '^scripts/' '^lib/shared/' '^package.json$' '^package-lock.json$'; then
-            data_changed=true
-          fi
-
-          if changed_in_paths '^astro/' '^astro/src/pages/category/' '^astro/src/pages/pokemon/' '^src/' '^lib/browser/' '^lib/shared/' '^public/' '^package.json$' '^package-lock.json$'; then
-            site_changed=true
-          fi
-
-          if changed_in_paths '^terraform/lambda/daily-puzzle-fetcher.ts$' '^lib/puzzle-fetch-core.ts$' '^package.json$' '^package-lock.json$'; then
-            daily_lambda_changed=true
-          fi
-
-          if changed_in_paths '^terraform/lambda/puzzle-statistics.ts$' '^lib/shared/' '^package.json$' '^package-lock.json$'; then
-            stats_lambda_changed=true
-          fi
-
-          if changed_in_paths '^terraform/daily-puzzle-stack.yaml$'; then
-            daily_stack_changed=true
-          fi
-
-          if changed_in_paths '^terraform/puzzle-statistics-stack.yaml$'; then
-            stats_stack_changed=true
-          fi
-
-          echo "data_changed=${data_changed}" >> "$GITHUB_OUTPUT"
-          echo "site_changed=${site_changed}" >> "$GITHUB_OUTPUT"
-          echo "images_changed=${images_changed}" >> "$GITHUB_OUTPUT"
-          echo "daily_lambda_changed=${daily_lambda_changed}" >> "$GITHUB_OUTPUT"
-          echo "stats_lambda_changed=${stats_lambda_changed}" >> "$GITHUB_OUTPUT"
-          echo "daily_stack_changed=${daily_stack_changed}" >> "$GITHUB_OUTPUT"
-          echo "stats_stack_changed=${stats_stack_changed}" >> "$GITHUB_OUTPUT"
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci && npm ci --prefix astro
-
-      - name: Build
-        if: steps.changes.outputs.site_changed == 'true' || steps.changes.outputs.data_changed == 'true'
-        run: npm run build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_GITHUB_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_GITHUB_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Package daily puzzle Lambda
-        if: steps.changes.outputs.daily_lambda_changed == 'true'
-        run: npm run package:daily-puzzle-lambda
-
-      - name: Verify CloudFormation template revision
-        run: |
-          echo "Template from commit ${GITHUB_SHA}"
-          if grep -E 'ACMValidationRecord|CloudFrontOAC' terraform/daily-puzzle-stack.yaml; then
-            echo "Found deprecated resources in daily puzzle template; aborting deploy"
-            exit 1
-          fi
-
-      - name: Upload daily puzzle Lambda artifact
-        if: steps.changes.outputs.daily_lambda_changed == 'true'
-        run: |
-          LAMBDA_KEY=lambda/daily-puzzle-fetcher-${{ github.sha }}.zip
-          aws s3 cp dist-lambda/daily-puzzle-fetcher.zip s3://${{ secrets.S3_BUCKET_NAME }}/${LAMBDA_KEY}
-          echo "LAMBDA_KEY=${LAMBDA_KEY}" >> $GITHUB_ENV
-
-      - name: Package puzzle statistics Lambda
-        if: steps.changes.outputs.stats_lambda_changed == 'true'
-        run: npm run package:puzzle-statistics-lambda
-
-      - name: Upload puzzle statistics Lambda artifact
-        if: steps.changes.outputs.stats_lambda_changed == 'true'
-        run: |
-          STATS_LAMBDA_KEY=lambda/puzzle-statistics-${{ github.sha }}.zip
-          aws s3 cp dist-lambda/puzzle-statistics.zip s3://${{ secrets.S3_BUCKET_NAME }}/${STATS_LAMBDA_KEY}
-          echo "STATS_LAMBDA_KEY=${STATS_LAMBDA_KEY}" >> $GITHUB_ENV 
-
-      - name: Validate CloudFormation template
-        run: aws cloudformation validate-template --template-body file://terraform/daily-puzzle-stack.yaml
-
-      - name: Validate puzzle statistics CloudFormation template
-        run: aws cloudformation validate-template --template-body file://terraform/puzzle-statistics-stack.yaml
-
-      - name: Deploy CloudFormation stack
-        if: steps.changes.outputs.daily_lambda_changed == 'true' || steps.changes.outputs.daily_stack_changed == 'true'
         env:
-          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
-          DAILY_PUZZLE_ALERT_EMAIL: ${{ secrets.DAILY_PUZZLE_ALERT_EMAIL }}
-        run: |
-          echo "Deploying commit ${GITHUB_SHA}"
-          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-daily-puzzle
-          if [ "${{ steps.changes.outputs.daily_lambda_changed }}" = "true" ]; then
-            DAILY_LAMBDA_KEY="${LAMBDA_KEY}"
-          else
-            DAILY_LAMBDA_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='DailyPuzzleFetcherCodeS3Key'].ParameterValue" --output text)
-          fi
-          PARAM_OVERRIDES="TargetBucketName=${{ secrets.S3_BUCKET_NAME }} DailyPuzzleFetcherCodeS3Bucket=${{ secrets.S3_BUCKET_NAME }} DailyPuzzleFetcherCodeS3Key=${DAILY_LAMBDA_KEY}"
-          if [ -n "${DAILY_PUZZLE_ALERT_EMAIL}" ]; then
-            PARAM_OVERRIDES="${PARAM_OVERRIDES} DailyPuzzleAlertEmail=${DAILY_PUZZLE_ALERT_EMAIL}"
-          fi
-          aws cloudformation deploy \
-            --template-file terraform/daily-puzzle-stack.yaml \
-            --stack-name ${STACK_NAME} \
-            --capabilities CAPABILITY_IAM \
-            --parameter-overrides ${PARAM_OVERRIDES}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+        run: bash .github/scripts/detect-changes.sh
 
-      - name: Run daily puzzle fetcher Lambda
-        if: steps.changes.outputs.daily_lambda_changed == 'true' || steps.changes.outputs.daily_stack_changed == 'true'
-        env:
-          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
-        run: |
-          set -euo pipefail
-          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-daily-puzzle
-          FUNCTION_NAME=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query "Stacks[0].Outputs[?OutputKey=='DailyPuzzleFetcherFunctionName'].OutputValue" --output text)
+  validate-and-pages:
+    needs: detect-changes
+    uses: ./.github/workflows/reusable-validate.yml
 
-          if [ -z "${FUNCTION_NAME}" ] || [ "${FUNCTION_NAME}" = "None" ]; then
-            echo "DailyPuzzleFetcherFunctionName output not found on ${STACK_NAME}"
-            exit 1
-          fi
+  site-deploy:
+    needs:
+      - detect-changes
+      - validate-and-pages
+    uses: ./.github/workflows/reusable-site-deploy.yml
+    secrets: inherit
+    with:
+      site_changed: ${{ needs.detect-changes.outputs.site_changed }}
+      data_changed: ${{ needs.detect-changes.outputs.data_changed }}
+      images_changed: ${{ needs.detect-changes.outputs.images_changed }}
 
-          RESPONSE_FILE=$(mktemp)
-          aws lambda invoke \
-            --function-name "${FUNCTION_NAME}" \
-            --cli-binary-format raw-in-base64-out \
-            --payload '{}' \
-            "${RESPONSE_FILE}"
-
-          echo "Lambda response payload:"
-          cat "${RESPONSE_FILE}"
-
-          if jq -e '.FunctionError' "${RESPONSE_FILE}" > /dev/null; then
-            echo "Lambda invocation failed"
-            rm -f "${RESPONSE_FILE}"
-            exit 1
-          fi
-
-          rm -f "${RESPONSE_FILE}"
-
-      - name: Deploy puzzle statistics CloudFormation stack
-        if: steps.changes.outputs.stats_lambda_changed == 'true' || steps.changes.outputs.stats_stack_changed == 'true'
-        env:
-          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
-        run: |
-          echo "Deploying puzzle statistics commit ${GITHUB_SHA}"
-          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-puzzle-statistics
-          if [ "${{ steps.changes.outputs.stats_lambda_changed }}" = "true" ]; then
-            CURRENT_STATS_LAMBDA_KEY="${STATS_LAMBDA_KEY}"
-          else
-            CURRENT_STATS_LAMBDA_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='PuzzleStatisticsCodeS3Key'].ParameterValue" --output text)
-          fi
-          aws cloudformation deploy \
-            --template-file terraform/puzzle-statistics-stack.yaml \
-            --stack-name ${STACK_NAME} \
-            --capabilities CAPABILITY_IAM \
-            --parameter-overrides \
-              TargetBucketName=${{ secrets.S3_BUCKET_NAME }} \
-              PuzzleStatisticsCodeS3Bucket=${{ secrets.S3_BUCKET_NAME }} \
-              PuzzleStatisticsCodeS3Key=${CURRENT_STATS_LAMBDA_KEY} \
-              PuzzleStatisticsOutputKey=data/runtime/puzzle-stats.json
-
-      - name: Run puzzle statistics Lambda
-        if: steps.changes.outputs.stats_lambda_changed == 'true' || steps.changes.outputs.stats_stack_changed == 'true'
-        env:
-          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
-        run: |
-          set -euo pipefail
-          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-puzzle-statistics
-          FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query "Stacks[0].Outputs[?OutputKey=='PuzzleStatisticsFunctionArn'].OutputValue" --output text)
-
-          if [ -z "${FUNCTION_ARN}" ] || [ "${FUNCTION_ARN}" = "None" ]; then
-            echo "PuzzleStatisticsFunctionArn output not found on ${STACK_NAME}"
-            exit 1
-          fi
-
-          RESPONSE_FILE=$(mktemp)
-          aws lambda invoke \
-            --function-name "${FUNCTION_ARN}" \
-            --cli-binary-format raw-in-base64-out \
-            --payload '{}' \
-            "${RESPONSE_FILE}"
-
-          echo "Lambda response payload:"
-          cat "${RESPONSE_FILE}"
-
-          if jq -e '.FunctionError' "${RESPONSE_FILE}" > /dev/null; then
-            echo "Lambda invocation failed"
-            rm -f "${RESPONSE_FILE}"
-            exit 1
-          fi
-
-          rm -f "${RESPONSE_FILE}"
-
-      - name: Configure S3 notification for puzzle statistics Lambda
-        if: steps.changes.outputs.stats_lambda_changed == 'true' || steps.changes.outputs.stats_stack_changed == 'true'
-        env:
-          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
-        run: |
-          set -euo pipefail
-          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-puzzle-statistics
-          FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query "Stacks[0].Outputs[?OutputKey=='PuzzleStatisticsFunctionArn'].OutputValue" --output text)
-          if [ -z "${FUNCTION_ARN}" ] || [ "${FUNCTION_ARN}" = "None" ]; then
-            echo "PuzzleStatisticsFunctionArn output not found on ${STACK_NAME}"
-            exit 1
-          fi
-
-          echo "Target Lambda ARN: ${FUNCTION_ARN}"
-
-          # Verify Lambda has invoke permission from S3
-          echo "Checking Lambda permissions..."
-          aws lambda get-policy --function-name "${FUNCTION_ARN}" || echo "No policy attached yet"
-
-          CURRENT_CONFIG=$(aws s3api get-bucket-notification-configuration --bucket "${{ secrets.S3_BUCKET_NAME }}" --output json 2>&1 || echo '{}')
-          
-          echo "Current S3 notification config:"
-          echo "${CURRENT_CONFIG}" | head -100
-
-          UPDATED_CONFIG=$(jq -c --arg function_arn "${FUNCTION_ARN}" '
-            .LambdaFunctionConfigurations = (
-              ((.LambdaFunctionConfigurations // []) | map(select(.Id != "PuzzleStatisticsOnPuzzleUpload"))) +
-              [{
-                "Id": "PuzzleStatisticsOnPuzzleUpload",
-                "LambdaFunctionArn": $function_arn,
-                "Events": ["s3:ObjectCreated:*"],
-                "Filter": {
-                  "Key": {
-                    "FilterRules": [
-                      {"Name": "prefix", "Value": "data/runtime/puzzles/"},
-                      {"Name": "suffix", "Value": ".json"}
-                    ]
-                  }
-                }
-              }]
-            )
-          ' <<< "${CURRENT_CONFIG}")
-
-          echo "Updated config to apply:"
-          echo "${UPDATED_CONFIG}" | head -100
-
-          REQUEST_FILE=$(mktemp)
-          jq -n \
-            --arg bucket "${{ secrets.S3_BUCKET_NAME }}" \
-            --argjson config "${UPDATED_CONFIG}" \
-            '{Bucket: $bucket, NotificationConfiguration: $config}' > "${REQUEST_FILE}"
-
-          echo "Applying S3 notification configuration..."
-          aws s3api put-bucket-notification-configuration \
-            --cli-input-json "file://${REQUEST_FILE}"
-
-          rm -f "${REQUEST_FILE}"
-          sleep 1
-
-      - name: Verify puzzle statistics S3 notification
-        if: steps.changes.outputs.stats_lambda_changed == 'true' || steps.changes.outputs.stats_stack_changed == 'true'
-        env:
-          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
-        run: |
-          set +e
-          STACK_NAME=${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-puzzle-statistics
-          FUNCTION_ARN=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query "Stacks[0].Outputs[?OutputKey=='PuzzleStatisticsFunctionArn'].OutputValue" --output text)
-
-          CONFIG=$(aws s3api get-bucket-notification-configuration --bucket "${{ secrets.S3_BUCKET_NAME }}" --output json)
-          
-          echo "=== Verification Report ==="
-          echo "Expected Lambda ARN: ${FUNCTION_ARN}"
-          echo ""
-          echo "Current S3 Lambda configs:"
-          echo "${CONFIG}" | jq '.LambdaFunctionConfigurations // []' | head -50
-          echo ""
-          
-          # Check if config exists with lenient matching
-          CONFIG_EXISTS=$(echo "${CONFIG}" | jq --arg function_arn "${FUNCTION_ARN}" '
-            (.LambdaFunctionConfigurations // [])
-            | any(.Id == "PuzzleStatisticsOnPuzzleUpload")
-          ')
-          
-          if [ "${CONFIG_EXISTS}" = "true" ]; then
-            echo "✓ S3 notification configuration found!"
-            exit 0
-          else
-            echo "✗ S3 notification configuration not found"
-            echo "Full config dump:"
-            echo "${CONFIG}" | head -100
-            exit 1
-          fi
-
-      - name: Sync build output and data to S3
-        run: |
-          if [ "${{ steps.changes.outputs.site_changed }}" = "true" ]; then
-            aws s3 sync astro/dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete --exclude "lambda/*" --exclude "images/*" --exclude "data/*"
-          else
-            echo "Skipping astro/dist sync (no site changes)."
-          fi
-
-          if [ "${{ steps.changes.outputs.data_changed }}" = "true" ]; then
-            aws s3 sync public/data/ s3://${{ secrets.S3_BUCKET_NAME }}/data/ --exclude "runtime/*"
-          else
-            echo "Skipping public/data sync (no data changes)."
-          fi
-
-      - name: Sync images to S3
-        if: steps.changes.outputs.images_changed == 'true'
-        run: |
-          aws s3 sync public/images/ s3://${{ secrets.S3_BUCKET_NAME }}/images/ --cache-control "public,max-age=31536000,immutable"
-
-      - name: Invalidate CloudFront cache
-        if: steps.changes.outputs.site_changed == 'true' || steps.changes.outputs.images_changed == 'true' || steps.changes.outputs.data_changed == 'true'
-        run: |
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+  infra-deploy:
+    needs:
+      - detect-changes
+      - validate-and-pages
+    uses: ./.github/workflows/reusable-infra-deploy.yml
+    secrets: inherit
+    with:
+      daily_lambda_changed: ${{ needs.detect-changes.outputs.daily_lambda_changed }}
+      stats_lambda_changed: ${{ needs.detect-changes.outputs.stats_lambda_changed }}
+      daily_stack_changed: ${{ needs.detect-changes.outputs.daily_stack_changed }}
+      stats_stack_changed: ${{ needs.detect-changes.outputs.stats_stack_changed }}
