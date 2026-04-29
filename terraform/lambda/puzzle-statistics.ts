@@ -114,6 +114,7 @@ const POKEMON_STATS_PREFIX = "data/runtime/pokemon/";
 
 const s3 = new S3Client({});
 const constraintFilters = new Map<string, (pokemon: Pokemon) => boolean>();
+const IO_CONCURRENCY = Number(process.env.IO_CONCURRENCY ?? 20);
 
 for (const filterCategory of FILTER_CATEGORIES) {
   for (const option of filterCategory.options) {
@@ -204,6 +205,31 @@ async function readPokemonList(): Promise<Pokemon[]> {
 
 function increment(map: Map<string, number>, key: string, amount = 1): void {
   map.set(key, (map.get(key) ?? 0) + amount);
+}
+
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T, index: number) => Promise<R>,
+): Promise<R[]> {
+  if (items.length === 0) {
+    return [];
+  }
+
+  const safeConcurrency = Math.max(1, Math.min(concurrency, items.length));
+  const results: R[] = new Array(items.length);
+  let nextIndex = 0;
+
+  const workers = Array.from({ length: safeConcurrency }, async () => {
+    while (nextIndex < items.length) {
+      const currentIndex = nextIndex;
+      nextIndex += 1;
+      results[currentIndex] = await mapper(items[currentIndex], currentIndex);
+    }
+  });
+
+  await Promise.all(workers);
+  return results;
 }
 
 function startOfDayUtc(dateString: string): Date {
@@ -481,32 +507,39 @@ function buildPokemonStatsFiles(
     for (const puzzle of puzzles) {
       const rowCategoryIds = puzzle.rowConstraints.map(toCategoryId);
       const colCategoryIds = puzzle.colConstraints.map(toCategoryId);
+      const rowMatches = puzzle.rowConstraints.map((constraint) => matchesConstraint(entry, constraint));
+      const colMatches = puzzle.colConstraints.map((constraint) => matchesConstraint(entry, constraint));
+      let matchedRow = false;
+      let matchedColumn = false;
 
       for (let i = 0; i < puzzle.rowConstraints.length; i++) {
-        if (matchesConstraint(entry, puzzle.rowConstraints[i])) {
+        if (rowMatches[i]) {
+          matchedRow = true;
           increment(categoryMatchesMap, rowCategoryIds[i]);
         }
       }
 
       for (let i = 0; i < puzzle.colConstraints.length; i++) {
-        if (matchesConstraint(entry, puzzle.colConstraints[i])) {
+        if (colMatches[i]) {
+          matchedColumn = true;
           increment(categoryMatchesMap, colCategoryIds[i]);
         }
       }
 
       for (let r = 0; r < puzzle.rowConstraints.length; r++) {
+        if (!rowMatches[r]) {
+          continue;
+        }
+
         for (let c = 0; c < puzzle.colConstraints.length; c++) {
-          if (
-            matchesConstraint(entry, puzzle.rowConstraints[r]) &&
-            matchesConstraint(entry, puzzle.colConstraints[c])
-          ) {
+          if (colMatches[c]) {
             const categories = [rowCategoryIds[r], colCategoryIds[c]].sort() as [string, string];
             increment(combinationMatchesMap, `${categories[0]}||${categories[1]}`);
           }
         }
       }
 
-      if (isUsableInPuzzle(entry, puzzle)) {
+      if (matchedRow && matchedColumn) {
         usableDates.push(puzzle.date);
       }
     }
@@ -572,7 +605,7 @@ export async function handler() {
     throw new Error(`No puzzle files found under ${PUZZLES_PREFIX}`);
   }
 
-  const puzzles = await Promise.all(keys.map(readPuzzle));
+  const puzzles = await mapWithConcurrency(keys, IO_CONCURRENCY, readPuzzle);
   const pokemon = await readPokemonList();
   const stats = buildStats(puzzles, pokemon);
   const pokemonStats = buildPokemonStatsFiles(puzzles, pokemon);
@@ -587,19 +620,17 @@ export async function handler() {
     }),
   );
 
-  await Promise.all(
-    pokemonStats.files.map((pokemonStatsFile) =>
-      s3.send(
-        new PutObjectCommand({
-          Bucket: BUCKET_NAME,
-          Key: `${POKEMON_STATS_PREFIX}${pokemonStatsFile.pokemonKeyId}-stats.json`,
-          Body: JSON.stringify(pokemonStatsFile, null, 2),
-          ContentType: "application/json",
-          CacheControl: "max-age=300, public",
-        }),
-      ),
-    ),
-  );
+  await mapWithConcurrency(pokemonStats.files, IO_CONCURRENCY, async (pokemonStatsFile) => {
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: `${POKEMON_STATS_PREFIX}${pokemonStatsFile.pokemonKeyId}-stats.json`,
+        Body: JSON.stringify(pokemonStatsFile, null, 2),
+        ContentType: "application/json",
+        CacheControl: "max-age=300, public",
+      }),
+    );
+  });
 
   return {
     statusCode: 200,
