@@ -10,6 +10,7 @@ import {
 } from "../../../../lib/shared/filters";
 import type { FilterState } from "../../../../lib/shared/filters";
 import { trackEvent } from "../../../../lib/browser/analytics";
+import { slugify } from "../../lib/slug";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import "./App.css";
@@ -46,7 +47,6 @@ function PokemonListApp() {
   const [expandedFilters, setExpandedFilters] = useState<Set<string>>(
     new Set([]),
   );
-  const [flippedCardId, setFlippedCardId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState<string[]>([]);
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
@@ -205,38 +205,17 @@ function PokemonListApp() {
     return result;
   }, [pokemon, filters, searchQuery, difficultyFilter]);
 
-  const getPokemonCategories = (
-    p: Pokemon,
-  ): { label: string; name: string; color?: string }[] => {
-    const categories: { label: string; name: string; color?: string }[] = [];
-    for (const cat of FILTER_CATEGORIES) {
-      for (const opt of cat.options) {
-        if (opt.filter(p)) {
-          categories.push({
-            label: cat.label,
-            name: opt.name,
-            color: opt.color,
-          });
-        }
-      }
-    }
-    return categories;
-  };
-
   const handleCardClick = (p: Pokemon) => {
-    if (flippedCardId === `${p.id}-${p.name}`) {
-      setFlippedCardId(null);
-      trackEvent("select_pokemon", { name: p.name, action: "unflip" });
-    } else {
-      const categoryCount = getPokemonCategories(p).length;
-      setFlippedCardId(`${p.id}-${p.name}`);
-      trackEvent("select_pokemon", {
-        name: p.name,
-        id: p.id,
-        action: "flip",
-        category_count: categoryCount,
-      });
-    }
+    const pokemonKeyId = p.formId ?? p.id;
+    const slug = `${slugify(p.name)}-${pokemonKeyId}`;
+    trackEvent("click_pokemon_detail", {
+      name: p.name,
+      id: p.id,
+      form_id: p.formId,
+      slug,
+      from: "pokemon-list",
+    });
+    window.location.assign(`${import.meta.env.BASE_URL}pokemon/${slug}/`);
   };
 
   const sortedPokemon = useMemo(() => {
@@ -436,7 +415,7 @@ function PokemonListApp() {
         </div>
       </div>
 
-      <div className="header-divider" />
+      <div className="my-6 h-1 bg-gradient-to-b from-black/10 to-transparent" />
 
       <div className="pokemon-list-header">
         <div className="sort-controls">
@@ -476,73 +455,50 @@ function PokemonListApp() {
 
       <div className="pokemon-grid">
         {visiblePokemon.map((p) => {
-          const isFlipped = flippedCardId === `${p.id}-${p.name}`;
           return (
             <div
               key={`${p.id}-${p.name}`}
-              className={isFlipped ? "pokemon-card flipped" : "pokemon-card"}
+              className="pokemon-card"
               onClick={() => handleCardClick(p)}
             >
-              {isFlipped ? (
-                <div className="pokemon-card-back">
-                  <div style={{ fontSize: "0.8rem", textAlign: "center" }}>
-                    {getPokemonCategories(p).map((cat, i) => (
-                      <span
-                        key={i}
-                        className="category-badge"
-                        style={{
-                          backgroundColor: cat.color,
-                          display: "inline-block",
-                          margin: "2px",
-                        }}
-                      >
-                        {cat.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+              {p.sprite ? (
+                <img
+                  src={p.sprite}
+                  alt=""
+                  className="pokemon-sprite"
+                  loading="lazy"
+                  decoding="async"
+                  fetchPriority="low"
+                />
               ) : (
-                <>
-                  {p.sprite ? (
-                    <img
-                      src={p.sprite}
-                      alt=""
-                      className="pokemon-sprite"
-                      loading="lazy"
-                      decoding="async"
-                      fetchPriority="low"
-                    />
-                  ) : (
-                    <div className="pokemon-sprite-placeholder" />
-                  )}
-                  <div className="pokemon-card-info">
-                    <div className="pokemon-card-name">{p.name}</div>
-                    <div className="pokemon-card-id">#{p.id}</div>
-                    <div className="pokemon-types">
-                      {p.types.map((type, i) => (
-                        <span
-                          key={i}
-                          className="type-badge"
-                          style={{ backgroundColor: TYPE_COLORS[type!] }}
-                        >
-                          {type}
-                        </span>
-                      ))}
-                    </div>
-                    {p.dexDifficulty && (
-                      <span
-                        className="dex-difficulty-badge"
-                        style={{
-                          backgroundColor:
-                            DEX_DIFFICULTY_COLORS[p.dexDifficulty],
-                        }}
-                      >
-                        {p.dexDifficulty}
-                      </span>
-                    )}
-                  </div>
-                </>
+                <div className="pokemon-sprite-placeholder" />
               )}
+              <div className="pokemon-card-info">
+                <div className="pokemon-card-name">{p.name}</div>
+                <div className="pokemon-card-id">#{p.id}</div>
+                <div className="pokemon-types">
+                  {p.types.map((type, i) => (
+                    <span
+                      key={i}
+                      className="type-badge"
+                      style={{ backgroundColor: TYPE_COLORS[type!] }}
+                    >
+                      {type}
+                    </span>
+                  ))}
+                </div>
+                {p.dexDifficulty && (
+                  <span
+                    className="dex-difficulty-badge"
+                    style={{
+                      backgroundColor:
+                        DEX_DIFFICULTY_COLORS[p.dexDifficulty],
+                    }}
+                  >
+                    {p.dexDifficulty}
+                  </span>
+                )}
+              </div>
             </div>
           );
         })}

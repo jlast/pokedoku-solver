@@ -78,24 +78,38 @@ export function PokemonRuntimeStatsPanel({ statsKeyId, variant = "sections" }: {
 
   const categoryRows = useMemo(() => {
     if (!stats) return [];
-    return stats.categoryMatches.map((match) => {
+    const rows = stats.categoryMatches.map((match) => {
       const parsed = parseCategoryId(match.categoryId);
-      const percent = stats.puzzlesAnalyzed > 0 ? Math.round((match.occurrences / stats.puzzlesAnalyzed) * 100) : 0;
+      const percent = stats.puzzlesAnalyzed > 0 ? (match.occurrences / stats.puzzlesAnalyzed) * 100 : 0;
       return { parsed, percent, color: getCategoryBarColor(parsed) };
     });
+    const maxPercent = rows.reduce((max, row) => Math.max(max, row.percent), 0);
+    return rows.map((row) => ({
+      ...row,
+      widthPercent: maxPercent > 0 ? (row.percent / maxPercent) * 100 : 0,
+    }));
   }, [stats]);
 
   const comboRows = useMemo(() => {
     if (!stats) return [];
-    return stats.combinationMatches.map((match) => {
+    const rows = stats.combinationMatches.map((match) => {
       const left = parseCategoryId(match.categories[0] ?? "");
       const right = parseCategoryId(match.categories[1] ?? "");
-      const percent = stats.puzzlesAnalyzed > 0 ? Math.round((match.occurrences / stats.puzzlesAnalyzed) * 100) : 0;
+      const percent = stats.puzzlesAnalyzed > 0 ? (match.occurrences / stats.puzzlesAnalyzed) * 100 : 0;
       const leftColor = getCategoryBarColor(left);
       const rightColor = getCategoryBarColor(right);
       return { left, right, percent, gradient: `linear-gradient(90deg, ${leftColor}, ${rightColor})` };
     });
+    const maxPercent = rows.reduce((max, row) => Math.max(max, row.percent), 0);
+    return rows.map((row) => ({
+      ...row,
+      widthPercent: maxPercent > 0 ? (row.percent / maxPercent) * 100 : 0,
+    }));
   }, [stats]);
+
+  function formatPercent(value: number): string {
+    return value > 10 ? `${Math.round(value)}%` : `${value.toFixed(1)}%`;
+  }
 
   const appearanceTimeline = useMemo(() => {
     if (!stats?.usableDates?.length) return [];
@@ -137,11 +151,11 @@ export function PokemonRuntimeStatsPanel({ statsKeyId, variant = "sections" }: {
                     <CategoryIcon parsed={row.parsed} />
                     <span className="truncate">{row.parsed.label}</span>
                   </span>
-                  <div className="h-2 overflow-hidden rounded-full bg-slate-200">
-                    <div className="h-full" style={{ width: `${Math.max(0, Math.min(100, row.percent))}%`, backgroundColor: row.color }} />
+                  <div className="h-2 overflow-hidden rounded-full">
+                    <div className="h-full" style={{ width: `${Math.max(0, Math.min(100, row.widthPercent)).toFixed(1)}%`, backgroundColor: row.color }} />
                   </div>
                 </div>
-                <strong className="text-left">{row.percent}%</strong>
+                <strong className="text-left">{formatPercent(row.percent)}</strong>
               </li>
             ))}
           </ul>
@@ -167,11 +181,11 @@ export function PokemonRuntimeStatsPanel({ statsKeyId, variant = "sections" }: {
                     <CategoryIcon parsed={row.right} />
                     <span className="truncate">{row.right.label}</span>
                   </span>
-                  <div className="h-2 overflow-hidden rounded-full bg-slate-200">
-                    <div className="h-full" style={{ width: `${Math.max(0, Math.min(100, row.percent))}%`, background: row.gradient }} />
+                  <div className="h-2 overflow-hidden rounded-full">
+                    <div className="h-full" style={{ width: `${Math.max(0, Math.min(100, row.widthPercent)).toFixed(1)}%`, background: row.gradient }} />
                   </div>
                 </div>
-                <strong className="text-left">{row.percent}%</strong>
+                <strong className="text-left">{formatPercent(row.percent)}</strong>
               </li>
             ))}
           </ul>
