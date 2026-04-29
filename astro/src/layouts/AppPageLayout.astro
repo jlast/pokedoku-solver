@@ -55,7 +55,8 @@ const canonical = absoluteUrl(path);
   window.myMetadataCollector = function ({ type, path }) {
     if (type !== "pageview") return {};
 
-    const parts = path.split("/").filter(Boolean);
+    const originalPath = window.location.pathname;
+    const parts = originalPath.split("/").filter(Boolean);
 
     if (parts[0] === "pokemon" && parts[1]) {
       return {
