@@ -35,37 +35,53 @@ const canonical = absoluteUrl(path);
   <body>
     <slot />
 <script is:inline>
-  function myPathOverwriter({ path }) {
-    // Pokemon (name + optional form or deeper paths)
+  window.myPathOverwriter = function ({ path }) {
     if (path.startsWith("/pokemon/")) {
       return "/pokemon/***";
     }
 
-    // Category paths
     if (path.startsWith("/category/")) {
       const parts = path.split("/").filter(Boolean);
 
-      // /category/<name>
-      if (parts.length === 2) {
-        return "/category/*";
-      }
+      if (parts.length === 2) return "/category/*";
+      if (parts.length === 3) return "/category/*/*";
 
-      // /category/<name>/<name>
-      if (parts.length === 3) {
-        return "/category/*/*";
-      }
-
-      // Anything deeper under /category/
       return "/category/***";
     }
 
     return path;
-  }
+  };
+
+  window.myMetadataCollector = function ({ type, path }) {
+    if (type !== "pageview") return {};
+
+    const parts = path.split("/").filter(Boolean);
+
+    if (parts[0] === "pokemon" && parts[1]) {
+      return {
+        route_type: "pokemon",
+        pokemon_slug: parts.slice(1).join("/")
+      };
+    }
+
+    if (parts[0] === "category" && parts[1]) {
+      return {
+        route_type: "category",
+        category_slug: parts[1],
+        subcategory_slug: parts[2] || undefined
+      };
+    }
+
+    return {};
+  };
 </script>
 
-<script is:inline
-  data-collect-dnt="true" async
+<script
+  is:inline
+  async
+  data-collect-dnt="true"
   data-path-overwriter="myPathOverwriter"
+  data-metadata-collector="myMetadataCollector"
   src="https://scripts.simpleanalyticscdn.com/latest.js"
 ></script>
   </body>
