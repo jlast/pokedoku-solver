@@ -72,10 +72,45 @@ interface PokemonLastUsable {
   daysSinceLastUsable: number | null;
 }
 
+interface PokemonCategoryMatch {
+  categoryId: string;
+  occurrences: number;
+}
+
+interface PokemonCombinationMatch {
+  categories: [string, string];
+  occurrences: number;
+}
+
+interface PokemonStatsFile {
+  pokemonKeyId: number;
+  id: number;
+  formId: number | null;
+  name: string;
+  puzzlesAnalyzed: number;
+  dateRange: {
+    from: string;
+    to: string;
+  };
+  generatedAt: string;
+  totalAppearances: {
+    count: number;
+    percentage: number;
+  };
+  lastUsable: {
+    date: string | null;
+    daysAgo: number | null;
+  };
+  usableDates: string[];
+  categoryMatches: PokemonCategoryMatch[];
+  combinationMatches: PokemonCombinationMatch[];
+}
+
 const BUCKET_NAME = process.env.BUCKET_NAME!;
 const OUTPUT_KEY = process.env.OBJECT_KEY || "data/runtime/puzzle-stats.json";
 const PUZZLES_PREFIX = "data/runtime/puzzles/";
 const POKEMON_DATA_KEY = "data/pokemon.json";
+const POKEMON_STATS_PREFIX = "data/runtime/pokemon/";
 
 const s3 = new S3Client({});
 const constraintFilters = new Map<string, (pokemon: Pokemon) => boolean>();
@@ -390,6 +425,142 @@ function buildStats(puzzles: Puzzle[], pokemon: Pokemon[]): CategoryStats {
   };
 }
 
+function toPokemonKeyId(entry: Pokemon): number | null {
+  if (typeof entry.formId === "number" && Number.isFinite(entry.formId)) {
+    return entry.formId;
+  }
+
+  if (typeof entry.id === "number" && Number.isFinite(entry.id)) {
+    return entry.id;
+  }
+
+  return null;
+}
+
+function getDateRange(puzzles: Puzzle[]): { from: string; to: string } {
+  const dates = puzzles.map((puzzle) => puzzle.date).sort();
+  return {
+    from: dates[0] ?? "",
+    to: dates[dates.length - 1] ?? "",
+  };
+}
+
+function roundTo(value: number, decimals: number): number {
+  const factor = 10 ** decimals;
+  return Math.round(value * factor) / factor;
+}
+
+function buildPokemonStatsFiles(
+  puzzles: Puzzle[],
+  pokemon: Pokemon[],
+): { files: PokemonStatsFile[]; skipped: number } {
+  const dateRange = getDateRange(puzzles);
+  const generatedAt = new Date().toISOString();
+  const latestPuzzleDate = dateRange.to;
+
+  const files: PokemonStatsFile[] = [];
+  let skipped = 0;
+
+  for (const entry of pokemon) {
+    const pokemonKeyId = toPokemonKeyId(entry);
+
+    if (pokemonKeyId === null) {
+      skipped += 1;
+      console.warn("Skipping Pokemon with invalid identifiers", {
+        name: entry.name,
+        id: entry.id,
+        formId: entry.formId,
+      });
+      continue;
+    }
+
+    const usableDates: string[] = [];
+    const categoryMatchesMap = new Map<string, number>();
+    const combinationMatchesMap = new Map<string, number>();
+
+    for (const puzzle of puzzles) {
+      const rowCategoryIds = puzzle.rowConstraints.map(toCategoryId);
+      const colCategoryIds = puzzle.colConstraints.map(toCategoryId);
+
+      for (let i = 0; i < puzzle.rowConstraints.length; i++) {
+        if (matchesConstraint(entry, puzzle.rowConstraints[i])) {
+          increment(categoryMatchesMap, rowCategoryIds[i]);
+        }
+      }
+
+      for (let i = 0; i < puzzle.colConstraints.length; i++) {
+        if (matchesConstraint(entry, puzzle.colConstraints[i])) {
+          increment(categoryMatchesMap, colCategoryIds[i]);
+        }
+      }
+
+      for (let r = 0; r < puzzle.rowConstraints.length; r++) {
+        for (let c = 0; c < puzzle.colConstraints.length; c++) {
+          if (
+            matchesConstraint(entry, puzzle.rowConstraints[r]) &&
+            matchesConstraint(entry, puzzle.colConstraints[c])
+          ) {
+            const categories = [rowCategoryIds[r], colCategoryIds[c]].sort() as [string, string];
+            increment(combinationMatchesMap, `${categories[0]}||${categories[1]}`);
+          }
+        }
+      }
+
+      if (isUsableInPuzzle(entry, puzzle)) {
+        usableDates.push(puzzle.date);
+      }
+    }
+
+    usableDates.sort();
+    const lastUsableDate = usableDates.length > 0 ? usableDates[usableDates.length - 1] : null;
+    const totalAppearancesCount = usableDates.length;
+
+    const categoryMatches = Array.from(categoryMatchesMap.entries())
+      .map(([categoryId, occurrences]) => ({ categoryId, occurrences }))
+      .sort((a, b) => b.occurrences - a.occurrences || a.categoryId.localeCompare(b.categoryId));
+
+    const combinationMatches = Array.from(combinationMatchesMap.entries())
+      .map(([pairKey, occurrences]) => ({
+        categories: pairKey.split("||") as [string, string],
+        occurrences,
+      }))
+      .sort((a, b) => {
+        if (b.occurrences !== a.occurrences) return b.occurrences - a.occurrences;
+        const firstCompare = a.categories[0].localeCompare(b.categories[0]);
+        if (firstCompare !== 0) return firstCompare;
+        return a.categories[1].localeCompare(b.categories[1]);
+      });
+
+    files.push({
+      pokemonKeyId,
+      id: entry.id,
+      formId: typeof entry.formId === "number" ? entry.formId : null,
+      name: entry.name,
+      puzzlesAnalyzed: puzzles.length,
+      dateRange,
+      generatedAt,
+      totalAppearances: {
+        count: totalAppearancesCount,
+        percentage: puzzles.length === 0 ? 0 : roundTo((totalAppearancesCount / puzzles.length) * 100, 2),
+      },
+      lastUsable: {
+        date: lastUsableDate,
+        daysAgo:
+          lastUsableDate && latestPuzzleDate
+            ? daysBetween(lastUsableDate, latestPuzzleDate)
+            : null,
+      },
+      usableDates,
+      categoryMatches,
+      combinationMatches,
+    });
+  }
+
+  files.sort((a, b) => a.pokemonKeyId - b.pokemonKeyId);
+
+  return { files, skipped };
+}
+
 export async function handler() {
   if (!BUCKET_NAME) {
     throw new Error("BUCKET_NAME is required");
@@ -404,6 +575,7 @@ export async function handler() {
   const puzzles = await Promise.all(keys.map(readPuzzle));
   const pokemon = await readPokemonList();
   const stats = buildStats(puzzles, pokemon);
+  const pokemonStats = buildPokemonStatsFiles(puzzles, pokemon);
 
   await s3.send(
     new PutObjectCommand({
@@ -415,6 +587,20 @@ export async function handler() {
     }),
   );
 
+  await Promise.all(
+    pokemonStats.files.map((pokemonStatsFile) =>
+      s3.send(
+        new PutObjectCommand({
+          Bucket: BUCKET_NAME,
+          Key: `${POKEMON_STATS_PREFIX}${pokemonStatsFile.pokemonKeyId}-stats.json`,
+          Body: JSON.stringify(pokemonStatsFile, null, 2),
+          ContentType: "application/json",
+          CacheControl: "max-age=300, public",
+        }),
+      ),
+    ),
+  );
+
   return {
     statusCode: 200,
     body: JSON.stringify({
@@ -423,6 +609,9 @@ export async function handler() {
       key: OUTPUT_KEY,
       puzzlesAnalyzed: stats.puzzlesAnalyzed,
       dateRange: stats.dateRange,
+      pokemonStatsPrefix: POKEMON_STATS_PREFIX,
+      pokemonStatsWritten: pokemonStats.files.length,
+      pokemonStatsSkipped: pokemonStats.skipped,
     }),
   };
 }

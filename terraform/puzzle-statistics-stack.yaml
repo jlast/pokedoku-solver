@@ -49,12 +49,16 @@ Resources:
               - Effect: Allow
                 Action:
                   - s3:GetObject
-                Resource: !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/puzzles/*"
+                Resource:
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/puzzles/*"
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/pokemon.json"
 
               - Effect: Allow
                 Action:
                   - s3:PutObject
-                Resource: !Sub "arn:aws:s3:::${TargetBucketName}/${PuzzleStatisticsOutputKey}"
+                Resource:
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/${PuzzleStatisticsOutputKey}"
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/pokemon/*"
 
   PuzzleStatisticsFunction:
     Type: AWS::Lambda::Function
