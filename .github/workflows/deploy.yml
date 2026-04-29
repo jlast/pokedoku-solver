@@ -25,7 +25,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci && npm ci --prefix astro
 
       - name: Lint
         run: npm run lint
@@ -142,11 +142,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Install Astro dependencies
-        if: steps.changes.outputs.site_changed == 'true'
-        run: npm ci --prefix astro
+        run: npm ci && npm ci --prefix astro
 
       - name: Build
         if: steps.changes.outputs.site_changed == 'true' || steps.changes.outputs.data_changed == 'true'
