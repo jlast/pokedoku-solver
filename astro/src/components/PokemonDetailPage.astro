@@ -4,8 +4,10 @@ import "../app/App.css";
 import { Header } from "../app/components/Header";
 import { Footer } from "../app/components/Footer";
 import Badge from "./Badge.astro";
+import CategoryIconBadge from "./CategoryIconBadge.astro";
 import Breadcrumb from "./Breadcrumb.astro";
 import { getPokemonSlug } from "../lib/data";
+import { getCategoryBarColor, parseCategoryId } from "../app/components/puzzle-stats/categoryUtils";
 import {
   TYPE_COLORS,
   DEX_DIFFICULTY_COLORS,
@@ -18,9 +20,28 @@ interface Props {
   pokemon: Pokemon;
   slug: string;
   relatedPokemon: Pokemon[];
+  runtimeStats: {
+    puzzlesAnalyzed: number;
+    totalAppearances: {
+      count: number;
+      percentage: number;
+    };
+    lastUsable: {
+      date: string;
+      daysAgo: number;
+    };
+    categoryMatches: Array<{
+      categoryId: string;
+      occurrences: number;
+    }>;
+    combinationMatches: Array<{
+      categories: string[];
+      occurrences: number;
+    }>;
+  } | null;
 }
 
-const { pokemon, slug, relatedPokemon } = Astro.props;
+const { pokemon, slug, relatedPokemon, runtimeStats } = Astro.props;
 const dexNumber = `#${String(pokemon.id).padStart(3, "0")}`;
 const rarityScore =
   typeof pokemon.dexDifficultyPercentile === "number"
@@ -32,6 +53,16 @@ const breadcrumbItems = [
   { label: "Pokemon", href: "/pokemon-list/" },
   { label: pokemon.name },
 ];
+
+function formatCategoryLabel(categoryId: string): string {
+  const [, label] = categoryId.split(":");
+  return label ?? categoryId;
+}
+
+const topCategoryMatches = runtimeStats?.categoryMatches ?? [];
+const puzzlesAnalyzed = runtimeStats?.puzzlesAnalyzed ?? 0;
+const lastValidDaysAgo = runtimeStats?.lastUsable?.daysAgo;
+const totalAppearancePercent = runtimeStats?.totalAppearances?.percentage;
 ---
 
 <div id="root">
@@ -88,12 +119,16 @@ const breadcrumbItems = [
               <strong class="text-slate-900">#{pokemon.id}</strong>
             </article>
             <article class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-              <span class="block text-sm text-slate-500">Form ID</span>
-              <strong class="text-slate-900">{pokemon.formId ?? pokemon.id}</strong>
+              <span class="block text-sm text-slate-500">Last valid</span>
+              <strong class="text-slate-900">
+                {typeof lastValidDaysAgo === "number" ? `${lastValidDaysAgo} days ago` : "Unknown"}
+              </strong>
             </article>
             <article class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-              <span class="block text-sm text-slate-500">Region</span>
-              <strong style={`color:${REGION_COLORS[pokemon.region ?? ""] ?? "#334155"};`}>{pokemon.region ?? "Unknown"}</strong>
+              <span class="block text-sm text-slate-500">Total appearances</span>
+              <strong class="text-slate-900">
+                {typeof totalAppearancePercent === "number" ? `${totalAppearancePercent.toFixed(2)}% of puzzles` : "Unknown"}
+              </strong>
             </article>
           </div>
         </div>
@@ -105,23 +140,30 @@ const breadcrumbItems = [
             <div class="mb-2 flex items-center justify-between gap-3">
               <h2>Most common categories</h2>
             </div>
-            <ul class="grid gap-3">
-              <li class="grid items-center gap-2 text-sm md:grid-cols-[130px_1fr_auto]">
-                <span>Type overlap</span>
-                <div class="h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full bg-gradient-to-r from-blue-500 to-cyan-400" style="width:72%"></div></div>
-                <strong>72%</strong>
-              </li>
-              <li class="grid items-center gap-2 text-sm md:grid-cols-[130px_1fr_auto]">
-                <span>Evolution match</span>
-                <div class="h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full bg-gradient-to-r from-blue-500 to-cyan-400" style="width:46%"></div></div>
-                <strong>46%</strong>
-              </li>
-              <li class="grid items-center gap-2 text-sm md:grid-cols-[130px_1fr_auto]">
-                <span>Region overlap</span>
-                <div class="h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full bg-gradient-to-r from-blue-500 to-cyan-400" style="width:38%"></div></div>
-                <strong>38%</strong>
-              </li>
-            </ul>
+            {topCategoryMatches.length > 0 ? (
+              <ul class="grid gap-3 text-left">
+                {topCategoryMatches.map((match) => {
+                  const parsed = parseCategoryId(match.categoryId);
+                  const percentage = puzzlesAnalyzed > 0 ? Math.round((match.occurrences / puzzlesAnalyzed) * 100) : 0;
+                  const width = Math.max(0, Math.min(100, percentage));
+                  const barColor = getCategoryBarColor(parsed);
+                  return (
+                    <li class="grid items-center gap-2 text-sm md:grid-cols-[minmax(0,1fr)_64px]">
+                      <div class="min-w-0">
+                        <span class="mb-1 flex items-center gap-2 font-semibold text-slate-800">
+                          <CategoryIconBadge parsed={parsed} />
+                          <span class="truncate">{formatCategoryLabel(match.categoryId)}</span>
+                        </span>
+                        <div class="h-2 overflow-hidden rounded-full bg-slate-200"><div class="h-full" style={`width:${width}%;background-color:${barColor};`}></div></div>
+                      </div>
+                      <strong class="text-left">{percentage}%</strong>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p class="text-sm text-slate-500">No category stats available.</p>
+            )}
           </article>
 
           <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">

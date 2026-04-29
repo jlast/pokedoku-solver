@@ -1,0 +1,15 @@
+---
+import { getCategoryBarColor, getCategoryIconPath, type ParsedCategory } from "../app/components/puzzle-stats/categoryUtils";
+
+interface Props {
+  parsed: ParsedCategory;
+}
+
+const { parsed } = Astro.props;
+const backgroundColor = getCategoryBarColor(parsed);
+const iconPath = getCategoryIconPath(parsed);
+---
+
+<span aria-hidden class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full" style={`background-color:${backgroundColor};`}>
+  <img alt="" aria-hidden class="h-3 w-3" loading="lazy" onerror="this.style.display='none'" src={iconPath} />
+</span>
