@@ -34,7 +34,7 @@ const canonical = absoluteUrl(path);
   </head>
   <body>
     <slot />
-<script>
+<script is:inline>
   function myPathOverwriter({ path }) {
     // Pokemon (name + optional form or deeper paths)
     if (path.startsWith("/pokemon/")) {
@@ -63,7 +63,7 @@ const canonical = absoluteUrl(path);
   }
 </script>
 
-<script
+<script is:inline
   data-collect-dnt="true" async
   data-path-overwriter="myPathOverwriter"
   src="https://scripts.simpleanalyticscdn.com/latest.js"
