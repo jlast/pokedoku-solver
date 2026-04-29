@@ -1,7 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 import { fetchPuzzles } from "./puzzle-fetch-core";
 
-const PUSH_HTML = `<script>__next_f.push([1,"2:[\\\"$\\\",\\\"$L16\\\",null,{\\\"puzzle\\\":{\\\"type\\\":\\\"AUTOMATIC\\\",\\\"date\\\":\\\"2025-01-01\\\",\\\"size\\\":9,\\\"x0\\\":{\\\"type\\\":\\\"POKEMON_TYPE\\\",\\\"obj\\\":\\\"water\\\"},\\\"x1\\\":{\\\"type\\\":\\\"MONOTYPE\\\",\\\"obj\\\":true},\\\"x2\\\":{\\\"type\\\":\\\"GENERATION\\\",\\\"obj\\\":\\\"generation-i\\\"},\\\"y0\\\":{\\\"type\\\":\\\"EVOLUTION_POSITION\\\",\\\"obj\\\":\\\"final\\\"},\\\"y1\\\":{\\\"type\\\":\\\"LEGENDARY\\\",\\\"obj\\\":true},\\\"y2\\\":{\\\"type\\\":\\\"EVOLVED_BY\\\",\\\"obj\\\":\\\"trade\\\"}},\\\"isCurrentPuzzle\\\":true}])</script>`;
+const RAW_PUZZLE_JSON = JSON.stringify({
+  type: "AUTOMATIC",
+  date: "2025-01-01",
+  size: 9,
+  x0: { type: "POKEMON_TYPE", obj: "water" },
+  x1: { type: "MONOTYPE", obj: true },
+  x2: { type: "GENERATION", obj: "generation-i" },
+  y0: { type: "EVOLUTION_POSITION", obj: "final" },
+  y1: { type: "LEGENDARY", obj: true },
+  y2: { type: "EVOLVED_BY", obj: "trade" },
+});
+const ESCAPED_PUZZLE_JSON = RAW_PUZZLE_JSON.replace(/"/g, '\\"');
+const PUSH_FRAGMENT = `2:[\\"$\\",\\"$L16\\",null,{\\"puzzle\\":${ESCAPED_PUZZLE_JSON},\\"isCurrentPuzzle\\":true}`;
+const PUSH_HTML = `<script>__next_f.push([1,"${PUSH_FRAGMENT}])</script>`;
 
 describe("puzzle-fetch-core", () => {
   it("maps puzzle constraints from fetched page", async () => {

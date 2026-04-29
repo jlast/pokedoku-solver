@@ -45,6 +45,7 @@ export const IGNORE_EVOLVE_FORMS = new Set([
   "mega-x",
   "mega-y",
   "mega-z",
+  "ash"
 ]);
 
 export const ULTRA_BEASTS = new Set([
@@ -364,6 +365,10 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   28:{
     // Sandslash
     evolutionTrigger: ["Evolved by Level"]
+  },
+  83: {
+    // Farfetch'd
+    evolutionStage: 'No Evolution Line'
   },
   10204: { 
     // Alolan Sandslash
