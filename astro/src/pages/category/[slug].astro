@@ -133,12 +133,15 @@ const recentAppearanceDates = runtimeStats?.appearanceDates
           <div class="grid gap-4">
             <CategoryHeaderCard category={category} runtimeStats={runtimeStats} total={category.pokemon.length} />
 
-            <CategoryDifficultyDonutCard pokemon={category.pokemon} />
-            
             <CategoryPokemonExamplesCard pokemon={pokemonSortedByDifficulty} category={category.label} categoryType={category.type} />
+            
+            <CategoryDifficultyDonutCard pokemon={category.pokemon} />
 
             <section class="grid gap-4 lg:grid-cols-2">
-              <CategoryCombinationsCard combinations={runtimeStats?.combinationMatches ?? []} />
+              <CategoryCombinationsCard
+                combinations={runtimeStats?.combinationMatches ?? []}
+                puzzlesAnalyzed={runtimeStats?.puzzlesAnalyzed ?? 0}
+              />
               <CategoryHistoryTimelineCard dates={recentAppearanceDates} />
             </section>
 

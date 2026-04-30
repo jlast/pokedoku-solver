@@ -1,5 +1,7 @@
-import { CategoryIcon } from "./CategoryIcon";
 import { getCategoryBarColor, parseCategoryId } from "./categoryUtils";
+import { FILTER_CATEGORIES } from "../../../../../lib/shared/filters";
+import { slugify } from "../../../lib/slug";
+import { CategoryBadgeLink } from "../shared/CategoryBadgeLink";
 
 export interface CategoryCount {
   categoryId: string;
@@ -17,6 +19,17 @@ export function CategoryList({
   distributionTotal?: number;
   maxBarWidthPercent?: number;
 }) {
+  const categorySlugSet = new Set(
+    FILTER_CATEGORIES.flatMap((filterCategory) =>
+      filterCategory.options.map((option) => slugify(option.name)),
+    ),
+  );
+
+  function getCategoryHref(label: string): string | null {
+    const slug = slugify(label);
+    return categorySlugSet.has(slug) ? `/category/${slug}/` : null;
+  }
+
   const maxCount = showDistributionBar ? Math.max(...items.map((item) => item.count), 0) : 0;
 
   return (
@@ -33,8 +46,7 @@ export function CategoryList({
           <li key={item.categoryId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
             <div className="min-w-0 flex-1">
               <p className="flex items-center gap-2 truncate font-semibold text-slate-800">
-                <CategoryIcon parsed={parsed} />
-                <span className="truncate">{parsed.label}</span>
+                <CategoryBadgeLink parsed={parsed} href={getCategoryHref(parsed.label)} />
               </p>
               {showDistributionBar ? (
                 <div className="mt-2">

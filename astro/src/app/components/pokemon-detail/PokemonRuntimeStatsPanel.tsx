@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { CategoryIcon } from "../puzzle-stats/CategoryIcon";
 import { getCategoryBarColor, parseCategoryId } from "../puzzle-stats/categoryUtils";
+import { CombinationRows } from "../shared/CombinationRows";
+import { FILTER_CATEGORIES } from "../../../../../lib/shared/filters";
+import { slugify } from "../../../lib/slug";
+import { CategoryBadgeLink } from "../shared/CategoryBadgeLink";
 
 interface RuntimeCategoryMatch {
   categoryId: string;
@@ -127,6 +130,21 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
       }));
   }, [stats]);
 
+  const categorySlugSet = useMemo(
+    () =>
+      new Set(
+        FILTER_CATEGORIES.flatMap((filterCategory) =>
+          filterCategory.options.map((option) => slugify(option.name)),
+        ),
+      ),
+    [],
+  );
+
+  function getCategoryHref(label: string): string | null {
+    const slug = slugify(label);
+    return categorySlugSet.has(slug) ? `/category/${slug}/` : null;
+  }
+
   return (
     <>
       {variant === "summary" ? (
@@ -152,8 +170,7 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
               <li key={row.parsed.raw} className="grid items-center gap-2 text-sm md:grid-cols-[minmax(0,1fr)_64px]">
                 <div className="min-w-0">
                   <span className="mb-1 flex items-center gap-2 font-semibold text-slate-800">
-                    <CategoryIcon parsed={row.parsed} />
-                    <span className="truncate">{row.parsed.label}</span>
+                    <CategoryBadgeLink parsed={row.parsed} href={getCategoryHref(row.parsed.label)} />
                   </span>
                   <div className="h-2 overflow-hidden rounded-full">
                     <div className="h-full" style={{ width: `${Math.max(0, Math.min(100, row.widthPercent)).toFixed(1)}%`, backgroundColor: row.color }} />
@@ -173,25 +190,15 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
           <h2>Top combinations</h2>
         </div>
         {comboRows.length > 0 ? (
-          <ul className="grid gap-3 text-left">
-            {comboRows.map((row, index) => (
-              <li key={`${row.left.raw}-${row.right.raw}-${index}`} className="grid items-center gap-2 text-sm md:grid-cols-[minmax(0,1fr)_64px]">
-                <div className="min-w-0">
-                  <span className="mb-1 flex items-center gap-2 font-semibold text-slate-800">
-                    <CategoryIcon parsed={row.left} />
-                    <span className="truncate">{row.left.label}</span>
-                    <span className="text-slate-400">+</span>
-                    <CategoryIcon parsed={row.right} />
-                    <span className="truncate">{row.right.label}</span>
-                  </span>
-                  <div className="h-2 overflow-hidden rounded-full">
-                    <div className="h-full" style={{ width: `${Math.max(0, Math.min(100, row.widthPercent)).toFixed(1)}%`, background: row.gradient }} />
-                  </div>
-                </div>
-                <strong className="text-left">{formatPercent(row.percent)}</strong>
-              </li>
-            ))}
-          </ul>
+          <CombinationRows
+            rows={comboRows.map((row) => ({
+              leftRaw: row.left.raw,
+              rightRaw: row.right.raw,
+              percent: row.percent,
+              widthPercent: row.widthPercent,
+              gradient: row.gradient,
+            }))}
+          />
         ) : (
           <p className="text-sm text-slate-500">No combination stats available.</p>
         )}

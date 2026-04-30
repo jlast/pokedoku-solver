@@ -1,5 +1,7 @@
-import { CategoryIcon } from "./CategoryIcon";
 import { getCategoryBarColor, parseCategoryId } from "./categoryUtils";
+import { FILTER_CATEGORIES } from "../../../../../lib/shared/filters";
+import { slugify } from "../../../lib/slug";
+import { CategoryBadgeLink } from "../shared/CategoryBadgeLink";
 
 export interface CategoryPair {
   categories: [string, string];
@@ -15,6 +17,17 @@ export function PairList({
   showDistributionBar?: boolean;
   distributionTotal?: number;
 }) {
+  const categorySlugSet = new Set(
+    FILTER_CATEGORIES.flatMap((filterCategory) =>
+      filterCategory.options.map((option) => slugify(option.name)),
+    ),
+  );
+
+  function getCategoryHref(label: string): string | null {
+    const slug = slugify(label);
+    return categorySlugSet.has(slug) ? `/category/${slug}/` : null;
+  }
+
   const maxCount = showDistributionBar ? Math.max(...items.map((item) => item.count), 0) : 0;
 
   return (
@@ -33,13 +46,11 @@ export function PairList({
             <div className="min-w-0 flex-1">
               <p className="min-w-0 text-slate-700">
                 <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
-                  <CategoryIcon parsed={left} />
-                  {left.label}
+                  <CategoryBadgeLink parsed={left} href={getCategoryHref(left.label)} />
                 </span>
                 <span className="mx-1 text-slate-400">+</span>
                 <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
-                  <CategoryIcon parsed={right} />
-                  {right.label}
+                  <CategoryBadgeLink parsed={right} href={getCategoryHref(right.label)} />
                 </span>
               </p>
               {showDistributionBar ? (

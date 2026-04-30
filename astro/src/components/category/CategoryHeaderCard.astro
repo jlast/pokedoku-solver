@@ -1,5 +1,7 @@
 ---
 import CategoryIconBadge from "../CategoryIconBadge.astro";
+import Badge from "../Badge.astro";
+import { DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
 import type { CategoryPageData, CategoryRuntimeStats } from "../../lib/data";
 import { parseCategoryId } from "../../app/components/puzzle-stats/categoryUtils";
 
@@ -17,16 +19,18 @@ type DifficultyEntry = {
   percentile: number;
 };
 
-const percentileDifficultyEntries: DifficultyEntry[] = category.pokemon
-  .filter(
-    (entry): entry is { dexDifficulty: string; dexDifficultyPercentile: number } =>
-      typeof entry.dexDifficulty === "string" &&
-      typeof entry.dexDifficultyPercentile === "number",
-  )
-  .map((entry) => ({
-    difficulty: entry.dexDifficulty,
-    percentile: entry.dexDifficultyPercentile,
-  }));
+const percentileDifficultyEntries: DifficultyEntry[] = [];
+for (const entry of category.pokemon) {
+  if (
+    typeof entry.dexDifficulty === "string" &&
+    typeof entry.dexDifficultyPercentile === "number"
+  ) {
+    percentileDifficultyEntries.push({
+      difficulty: entry.dexDifficulty,
+      percentile: entry.dexDifficultyPercentile,
+    });
+  }
+}
 
 const averagePercentile =
   percentileDifficultyEntries.length > 0
@@ -70,6 +74,10 @@ function formatAverageDifficulty(): string {
   return closest.difficulty;
 }
 
+const averageDifficultyLabel = formatAverageDifficulty();
+const averageDifficultyColor =
+  DEX_DIFFICULTY_COLORS[averageDifficultyLabel] ?? "#64748b";
+
 function formatDate(value: string): string {
   const date = new Date(`${value}T00:00:00`);
   if (Number.isNaN(date.getTime())) return value;
@@ -101,7 +109,9 @@ function formatDate(value: string): string {
       </div>
       <div class="grid gap-1 rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 to-slate-50 p-3">
         <small class="text-xs font-medium text-slate-500">Average Difficulty</small>
-        <strong class="text-xl font-bold text-slate-900 tabular-nums">{formatAverageDifficulty()}</strong>
+        <div>
+          <Badge text={averageDifficultyLabel} color={averageDifficultyColor} />
+        </div>
       </div>
     </div>
   ) : null}
