@@ -10,6 +10,7 @@
     "package:daily-puzzle-lambda": "npm run build:daily-puzzle-lambda && zip -j dist-lambda/daily-puzzle-fetcher.zip dist-lambda/daily-puzzle-fetcher.js",
     "build:puzzle-statistics-lambda": "mkdir -p dist-lambda && npx esbuild terraform/lambda/puzzle-statistics.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile=dist-lambda/puzzle-statistics.js",
     "package:puzzle-statistics-lambda": "npm run build:puzzle-statistics-lambda && zip -j dist-lambda/puzzle-statistics.zip dist-lambda/puzzle-statistics.js",
+    "generate:puzzle-stats:local": "tsx scripts/generate-puzzle-statistics.ts",
     "fetch-today-puzzle": "tsx scripts/fetch-today-puzzle.ts",
     "lint": "eslint .",
     "preview": "npm --prefix astro run preview",

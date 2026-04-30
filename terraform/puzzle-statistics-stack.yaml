@@ -59,6 +59,7 @@ Resources:
                 Resource:
                   - !Sub "arn:aws:s3:::${TargetBucketName}/${PuzzleStatisticsOutputKey}"
                   - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/pokemon/*"
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/categories/*"
 
   PuzzleStatisticsFunction:
     Type: AWS::Lambda::Function
