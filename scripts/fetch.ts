@@ -287,7 +287,7 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
   
   if (ULTRA_BEASTS.has(id)) entry.category = "Ultra Beast";
   else if (FOSSIL_IDS.has(id)) entry.category = "Fossil";
-  else if (STARTER_IDS.has(formId)) entry.category = "Starter";
+  else if (STARTER_IDS.has(formId)) entry.category = "First Partner";
   else if (PARADOX_POKEMON.has(id)) entry.category = "Paradox";
   if (species) {
     if (species.is_legendary) entry.category = "Legendary";

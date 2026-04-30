@@ -44,21 +44,8 @@ function daysBetween(fromDate: string, toDate: string): number {
   return Math.floor((to - from) / millisecondsPerDay);
 }
 
-function normalizeConstraintValue(constraint: ConstraintMapping): string {
-  if (constraint.category === "evolution" && constraint.value === "Is Branched") {
-    return "Branched evolution";
-  }
-
-  if (constraint.category === "category" && constraint.value === "Starter") {
-    return "First Partner";
-  }
-
-  return constraint.value;
-}
-
 function matchesConstraint(pokemon: Pokemon, constraint: ConstraintMapping): boolean {
-  const normalizedValue = normalizeConstraintValue(constraint);
-  const filter = constraintFilters.get(`${constraint.category}:${normalizedValue}`);
+  const filter = constraintFilters.get(`${constraint.category}:${constraint}`);
   return filter?.(pokemon) ?? false;
 }
 
@@ -249,6 +236,18 @@ function buildAllCategoryIds(precomputedPuzzles: PrecomputedPuzzle[]): string[] 
   return Array.from(set);
 }
 
+function buildAllFilterCategoryIds(): string[] {
+  const set = new Set<string>();
+
+  for (const filterCategory of FILTER_CATEGORIES) {
+    for (const option of filterCategory.options) {
+      set.add(`${filterCategory.key}:${option.name}`);
+    }
+  }
+
+  return Array.from(set);
+}
+
 export function buildCategoryStatsFiles(
   puzzles: Puzzle[],
 ): { files: CategoryStatsFile[]; fileNameByCategoryId: Map<string, string> } {
@@ -256,7 +255,9 @@ export function buildCategoryStatsFiles(
   const generatedAt = new Date().toISOString();
   const latestPuzzleDate = dateRange.to;
   const precomputedPuzzles = precomputePuzzles(puzzles);
-  const allCategoryIds = buildAllCategoryIds(precomputedPuzzles);
+  const allCategoryIds = Array.from(
+    new Set<string>([...buildAllFilterCategoryIds(), ...buildAllCategoryIds(precomputedPuzzles)]),
+  );
   const fileNameByCategoryId = buildCategoryOutputFileNames(allCategoryIds);
   const files: CategoryStatsFile[] = [];
 

@@ -47,7 +47,7 @@ export const EVOLUTION_COLORS: Record<string, string> = {
   'Evolved by Item': '#F4D03F',
   'Evolved by Trade': '#5DADE2',
   'Evolved by Friendship': '#F5B7B1',
-  'Is Branched': '#AF7AC5',
+  'Branched evolution': '#AF7AC5',
 };
 
 export const CATEGORY_COLORS: Record<string, string> = {

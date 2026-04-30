@@ -30,7 +30,7 @@ export const EVOLUTION_TRIGGERS = [
   'Evolved by Friendship',
 ] as const;
 
-export const EVOLUTION_BRANCHED = ['Is Branched'] as const;
+export const EVOLUTION_BRANCHED = ['Branched evolution'] as const;
 
 export type EvolutionMethod = typeof EVOLUTION_METHODS[number];
 export type EvolutionBranched = typeof EVOLUTION_BRANCHED[number];
@@ -41,7 +41,7 @@ export const SPECIAL_FORMS = ['Gigantamax', 'Mega Evolution'] as const;
 export type SpecialForm = typeof SPECIAL_FORMS[number];
 
 export const POKEMON_CATEGORIES = [
-  'Legendary', 'Mythical', 'Ultra Beast', 'Paradox', 'Fossil', 'Starter', 'Baby', 'Gigantamax', 'Mega Evolution'
+  'Legendary', 'Mythical', 'Ultra Beast', 'Paradox', 'Fossil', 'First Partner', 'Baby', 'Gigantamax', 'Mega Evolution'
 ] as const;
 
 export type PokemonCategory = typeof POKEMON_CATEGORIES[number];

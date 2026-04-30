@@ -64,7 +64,7 @@ export const FILTER_CATEGORIES: FilterCategory[] = [
         filter: (p: Pokemon) => p.evolutionTrigger?.includes(trigger) ?? false,
         color: EVOLUTION_COLORS[trigger],
       })),
-      { name: 'Branched evolution', filter: (p) => p.isBranched === true, color: EVOLUTION_COLORS['Is Branched'] },
+      { name: 'Branched evolution', filter: (p) => p.isBranched === true, color: EVOLUTION_COLORS['Branched evolution'] },
     ],
   },
   {

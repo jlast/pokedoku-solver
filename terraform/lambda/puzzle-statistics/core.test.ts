@@ -68,4 +68,15 @@ describe("buildCategoryStatsFiles", () => {
     expect(result.fileNameByCategoryId.get("types:Fire")).toBe("fire-stats.json");
     expect(result.fileNameByCategoryId.get("regions:Kanto")).toBe("kanto-stats.json");
   });
+
+  it("includes categories that never appeared in puzzle history", () => {
+    const result = buildCategoryStatsFiles(puzzles);
+    const bugStats = result.files.find((file) => file.categoryId === "types:Bug");
+
+    expect(bugStats).toBeDefined();
+    expect(bugStats?.totalAppearances.count).toBe(0);
+    expect(bugStats?.appearanceDates).toEqual([]);
+    expect(bugStats?.lastAppeared.date).toBeNull();
+    expect(bugStats?.combinationMatches).toEqual([]);
+  });
 });
