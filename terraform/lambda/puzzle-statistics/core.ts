@@ -63,12 +63,36 @@ function isUsableInPuzzle(pokemon: Pokemon, puzzle: Puzzle): boolean {
   return puzzle.colConstraints.some((constraint) => matchesConstraint(pokemon, constraint));
 }
 
+export function summarizeFormIdQuality(pokemon: Pokemon[]): {
+  total: number;
+  missingFormIdCount: number;
+  missingFormIdSampleIds: number[];
+} {
+  const missingFormIdSampleIds: number[] = [];
+  let missingFormIdCount = 0;
+
+  for (const entry of pokemon) {
+    if (typeof entry.formId === "number" && Number.isFinite(entry.formId)) continue;
+    missingFormIdCount += 1;
+    if (missingFormIdSampleIds.length < 10) {
+      missingFormIdSampleIds.push(entry.id);
+    }
+  }
+
+  return {
+    total: pokemon.length,
+    missingFormIdCount,
+    missingFormIdSampleIds,
+  };
+}
+
 function buildPokemonLastUsableStats(puzzles: Puzzle[], pokemon: Pokemon[]): PokemonLastUsable[] {
   const latestPuzzleDate = puzzles.reduce((latest, puzzle) => (puzzle.date > latest ? puzzle.date : latest), "");
 
   return pokemon
-    .filter((entry): entry is Pokemon & { formId: number } => typeof entry.formId === "number")
     .map((entry) => {
+      const pokemonKeyId = toPokemonKeyId(entry);
+      if (pokemonKeyId === null) return null;
       const latestUsableDate = puzzles.reduce<string | null>((latest, puzzle) => {
         if (!isUsableInPuzzle(entry, puzzle)) return latest;
         if (!latest || puzzle.date > latest) return puzzle.date;
@@ -76,12 +100,13 @@ function buildPokemonLastUsableStats(puzzles: Puzzle[], pokemon: Pokemon[]): Pok
       }, null);
 
       return {
-        formId: entry.formId,
+        formId: pokemonKeyId,
         lastUsableDate: latestUsableDate,
         daysSinceLastUsable:
           latestUsableDate && latestPuzzleDate ? daysBetween(latestUsableDate, latestPuzzleDate) : null,
       };
     })
+    .filter((entry): entry is PokemonLastUsable => entry !== null)
     .sort((a, b) => {
       if (a.lastUsableDate === b.lastUsableDate) return a.formId - b.formId;
       if (a.lastUsableDate === null) return 1;

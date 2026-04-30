@@ -1,5 +1,5 @@
 import { S3Client } from "@aws-sdk/client-s3";
-import { buildCategoryStatsFiles, buildPokemonStatsFiles, buildStats } from "./core";
+import { buildCategoryStatsFiles, buildPokemonStatsFiles, buildStats, summarizeFormIdQuality } from "./core";
 import {
   listPuzzleKeys,
   mapWithConcurrency,
@@ -16,6 +16,8 @@ const POKEMON_STATS_PREFIX = "data/runtime/pokemon/";
 const CATEGORY_STATS_PREFIX = "data/runtime/categories/";
 const IO_CONCURRENCY = Number(process.env.IO_CONCURRENCY ?? 20);
 const LOG_EVERY_N = Number(process.env.LOG_EVERY_N ?? 100);
+const FORM_ID_MISSING_WARN_THRESHOLD = Number(process.env.FORM_ID_MISSING_WARN_THRESHOLD ?? 1);
+const FORM_ID_MISSING_FAIL_THRESHOLD = Number(process.env.FORM_ID_MISSING_FAIL_THRESHOLD ?? 0);
 
 export async function handler() {
   const startedAt = Date.now();
@@ -51,6 +53,22 @@ export async function handler() {
   const pokemonReadStartedAt = Date.now();
   const pokemon = await readPokemonListFromS3(s3, BUCKET_NAME, POKEMON_DATA_KEY);
   console.log("pokemon list loaded", { pokemonCount: pokemon.length, elapsedMs: Date.now() - pokemonReadStartedAt });
+
+  const formIdQuality = summarizeFormIdQuality(pokemon);
+  if (formIdQuality.missingFormIdCount >= FORM_ID_MISSING_WARN_THRESHOLD) {
+    console.warn("pokemon formId quality warning", {
+      totalPokemon: formIdQuality.total,
+      missingFormIdCount: formIdQuality.missingFormIdCount,
+      missingFormIdSampleIds: formIdQuality.missingFormIdSampleIds,
+      warnThreshold: FORM_ID_MISSING_WARN_THRESHOLD,
+      failThreshold: FORM_ID_MISSING_FAIL_THRESHOLD,
+    });
+  }
+  if (formIdQuality.missingFormIdCount > FORM_ID_MISSING_FAIL_THRESHOLD) {
+    throw new Error(
+      `pokemon formId quality check failed: missingFormIdCount=${formIdQuality.missingFormIdCount}, failThreshold=${FORM_ID_MISSING_FAIL_THRESHOLD}`,
+    );
+  }
 
   const statsStartedAt = Date.now();
   const stats = buildStats(puzzles, pokemon);

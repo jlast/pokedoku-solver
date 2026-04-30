@@ -35,14 +35,42 @@ export interface CategoryPairPageData {
   pokemon: Pokemon[];
 }
 
+export interface CategoryRuntimeCombinationMatch {
+  categories: [string, string];
+  occurrences: number;
+}
+
+export interface CategoryRuntimeStats {
+  categoryId: string;
+  categoryValue: string;
+  puzzlesAnalyzed: number;
+  dateRange: {
+    from: string;
+    to: string;
+  };
+  generatedAt: string;
+  totalAppearances: {
+    count: number;
+    percentage: number;
+  };
+  lastAppeared: {
+    date: string | null;
+    daysAgo: number | null;
+  };
+  appearanceDates: string[];
+  combinationMatches: CategoryRuntimeCombinationMatch[];
+}
+
 const ROOT_DIR = path.resolve(process.cwd(), "..");
 const POKEMON_PATH = path.join(ROOT_DIR, "public", "data", "pokemon.json");
+const CATEGORY_STATS_DIR = path.join(ROOT_DIR, "public", "data", "runtime", "categories");
 
 let pokemonCache: Pokemon[] | null = null;
 let categoriesCache: CategoryPageData[] | null = null;
 let categoryBySlugCache: Map<string, CategoryPageData> | null = null;
 let pairsCache: CategoryPairPageData[] | null = null;
 let pairBySlugCache: Map<string, CategoryPairPageData> | null = null;
+let categoryRuntimeStatsByIdCache: Map<string, CategoryRuntimeStats> | null = null;
 
 export function getPokemonList(): Pokemon[] {
   if (pokemonCache) return pokemonCache;
@@ -164,4 +192,38 @@ export function getCategoryPairBySlugs(leftSlug: string, rightSlug: string): Cat
   const canonicalSlug = canonicalizePairSlugs(leftSlug, rightSlug);
   if (!canonicalSlug) return null;
   return getCategoryPairBySlugMap().get(canonicalSlug) ?? null;
+}
+
+function buildCategoryRuntimeStatsMap(): Map<string, CategoryRuntimeStats> {
+  const map = new Map<string, CategoryRuntimeStats>();
+
+  if (!fs.existsSync(CATEGORY_STATS_DIR)) {
+    return map;
+  }
+
+  const files = fs.readdirSync(CATEGORY_STATS_DIR).filter((fileName) => fileName.endsWith(".json"));
+
+  for (const fileName of files) {
+    const filePath = path.join(CATEGORY_STATS_DIR, fileName);
+    const raw = fs.readFileSync(filePath, "utf8");
+    const parsed = JSON.parse(raw) as CategoryRuntimeStats;
+
+    if (parsed && typeof parsed.categoryId === "string") {
+      map.set(parsed.categoryId, parsed);
+    }
+  }
+
+  return map;
+}
+
+export function getCategoryRuntimeStatsByIdMap(): Map<string, CategoryRuntimeStats> {
+  if (!categoryRuntimeStatsByIdCache) {
+    categoryRuntimeStatsByIdCache = buildCategoryRuntimeStatsMap();
+  }
+
+  return categoryRuntimeStatsByIdCache;
+}
+
+export function getCategoryRuntimeStatsByCategoryId(categoryId: string): CategoryRuntimeStats | null {
+  return getCategoryRuntimeStatsByIdMap().get(categoryId) ?? null;
 }

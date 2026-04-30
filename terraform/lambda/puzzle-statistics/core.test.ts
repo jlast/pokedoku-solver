@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildCategoryStatsFiles, buildStats } from "./core";
+import { buildCategoryStatsFiles, buildStats, summarizeFormIdQuality } from "./core";
 import type { Puzzle } from "./types";
 
 const puzzles: Puzzle[] = [
@@ -119,5 +119,34 @@ describe("buildStats", () => {
     ]);
 
     expect(stats.withoutLegacy.oldestPokemonLastUsable.length).toBe(1);
+  });
+
+  it("falls back to id when formId is missing", () => {
+    const stats = buildStats(puzzles, [
+      {
+        id: 6,
+        name: "Charizard",
+        types: ["Fire", "Flying"],
+        region: "Kanto",
+        evolutionStage: "Final Stage",
+      },
+    ]);
+
+    expect(stats.withoutLegacy.oldestPokemonLastUsable.length).toBe(1);
+    expect(stats.withoutLegacy.oldestPokemonLastUsable[0]?.formId).toBe(6);
+  });
+});
+
+describe("summarizeFormIdQuality", () => {
+  it("reports missing formIds with sample ids", () => {
+    const summary = summarizeFormIdQuality([
+      { id: 1, name: "Bulbasaur", types: ["Grass", "Poison"], formId: 1 },
+      { id: 4, name: "Charmander", types: ["Fire"] },
+      { id: 7, name: "Squirtle", types: ["Water"] },
+    ]);
+
+    expect(summary.total).toBe(3);
+    expect(summary.missingFormIdCount).toBe(2);
+    expect(summary.missingFormIdSampleIds).toEqual([4, 7]);
   });
 });
