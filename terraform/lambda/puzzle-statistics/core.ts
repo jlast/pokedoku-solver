@@ -26,7 +26,14 @@ for (const filterCategory of FILTER_CATEGORIES) {
 }
 
 export function toCategoryId(constraint: ConstraintMapping): string {
-  return `${constraint.category}:${constraint.value}`;
+  return `${toCanonicalConstraintCategory(constraint.category)}:${constraint.value}`;
+}
+
+function toCanonicalConstraintCategory(category: string): ConstraintCategory {
+  if (category === "type" || category === "types") return "types";
+  if (category === "region" || category === "regions") return "regions";
+  if (category === "evolution") return "evolution";
+  return "category";
 }
 
 function increment(map: Map<string, number>, key: string, amount = 1): void {
@@ -45,7 +52,8 @@ function daysBetween(fromDate: string, toDate: string): number {
 }
 
 function matchesConstraint(pokemon: Pokemon, constraint: ConstraintMapping): boolean {
-  const filter = constraintFilters.get(`${constraint.category}:${constraint}`);
+  const normalizedCategory = toCanonicalConstraintCategory(constraint.category);
+  const filter = constraintFilters.get(`${normalizedCategory}:${constraint.value}`);
   return filter?.(pokemon) ?? false;
 }
 
@@ -350,7 +358,7 @@ export function buildPokemonStatsFiles(
 
     for (const categoryId of allCategoryIds) {
       const separatorIndex = categoryId.indexOf(":");
-      const category = categoryId.slice(0, separatorIndex) as ConstraintCategory;
+      const category = toCanonicalConstraintCategory(categoryId.slice(0, separatorIndex));
       const value = categoryId.slice(separatorIndex + 1);
       matchesByCategory.set(categoryId, matchesConstraint(entry, { category, value }));
     }

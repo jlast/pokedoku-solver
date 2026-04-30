@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildCategoryStatsFiles } from "./core";
+import { buildCategoryStatsFiles, buildStats } from "./core";
 import type { Puzzle } from "./types";
 
 const puzzles: Puzzle[] = [
@@ -78,5 +78,46 @@ describe("buildCategoryStatsFiles", () => {
     expect(bugStats?.appearanceDates).toEqual([]);
     expect(bugStats?.lastAppeared.date).toBeNull();
     expect(bugStats?.combinationMatches).toEqual([]);
+  });
+});
+
+describe("buildStats", () => {
+  it("populates oldestPokemonLastUsable when Pokemon match puzzle constraints", () => {
+    const stats = buildStats(puzzles, [
+      {
+        id: 6,
+        name: "Charizard",
+        types: ["Fire", "Flying"],
+        region: "Kanto",
+        evolutionStage: "Final Stage",
+        formId: 6,
+      },
+    ]);
+
+    expect(stats.withoutLegacy.oldestPokemonLastUsable.length).toBeGreaterThan(0);
+    expect(stats.withoutLegacy.oldestPokemonLastUsable[0]?.formId).toBe(6);
+  });
+
+  it("supports legacy singular constraint categories", () => {
+    const legacyPuzzles: Puzzle[] = [
+      {
+        date: "2026-04-04",
+        type: "AUTOMATIC",
+        rowConstraints: [{ category: "type" as never, value: "Fire" }],
+        colConstraints: [{ category: "evolution", value: "Final Stage" }],
+      },
+    ];
+
+    const stats = buildStats(legacyPuzzles, [
+      {
+        id: 6,
+        name: "Charizard",
+        types: ["Fire", "Flying"],
+        evolutionStage: "Final Stage",
+        formId: 6,
+      },
+    ]);
+
+    expect(stats.withoutLegacy.oldestPokemonLastUsable.length).toBe(1);
   });
 });
