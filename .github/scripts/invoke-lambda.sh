@@ -18,6 +18,7 @@ aws lambda invoke \
   --function-name "${FUNCTION_VALUE}" \
   --cli-binary-format raw-in-base64-out \
   --payload '{}' \
+  --cli-read-timeout 360 
   "${RESPONSE_FILE}"
 
 echo "Lambda response payload:"
