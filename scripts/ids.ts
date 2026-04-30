@@ -207,6 +207,8 @@ export const NAME_REPLACEMENTS: Record<string, string> = {
   "Zygarde 10": "Zygarde 10%",
   "Zygarde 50": "Zygarde 50%",
   "Alcremie vanilla cream strawberry sweet": "Alcremie",
+  "Pikachu starter": "Pikachu Partner",
+  "Eevee starter": "Eevee Partner",
 };
 
 export interface PokemonOverride {

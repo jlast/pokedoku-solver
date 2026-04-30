@@ -664,14 +664,6 @@
   transition: all 0.15s;
 }
 
-.pokemon-item .pokemon-sprite,
-.pokemon-item .pokemon-sprite-placeholder {
-  width: 58px;
-  height: 58px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
 .pokemon-item .pokemon-sprite-placeholder {
   background: var(--code-bg);
 }
@@ -742,7 +734,7 @@
 .pokemon-item .pokemon-sprite-placeholder {
   width: 50px;
   height: 50px;
-  margin: 4px;
+  margin: 12px 4px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -868,7 +860,7 @@
   }
   
   .pokemon-name {
-    font-size: 10px;
+    font-size: 12px;
   }
   
   .type-badge {

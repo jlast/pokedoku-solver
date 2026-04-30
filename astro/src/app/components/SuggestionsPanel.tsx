@@ -127,6 +127,7 @@ export function SuggestionsPanel({
                 )}
                 <div className="pokemon-item-top">
                   <div className="pokemon-item-name-row">
+                    <span className="pokemon-id">#{p.id}</span>
                     <span className="pokemon-name">{p.name}</span>
                     {p.dexDifficulty && (
                       <span
@@ -142,7 +143,6 @@ export function SuggestionsPanel({
                     )}
                   </div>
                   <div className="pokemon-item-bottom">
-                    <span className="pokemon-id">#{p.id}</span>
                      <div className="pokemon-types">
                        {p.types.map((type, i) => (
                          <CategoryBadgeLink
