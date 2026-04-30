@@ -5,16 +5,17 @@ import { getPokemonSlug, type Pokemon } from "../../lib/data";
 
 interface Props {
   pokemon: Pokemon[];
+  category: string;
+  categoryType: string;
 }
 
-const { pokemon } = Astro.props;
+const { pokemon, categoryType, category } = Astro.props;
 ---
 
 <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
   <h2 class="text-xl font-semibold tracking-tight text-slate-900">Pokemon examples</h2>
-  <p class="mt-1 text-slate-500">Top 5, sorted by difficulty (hardest first).</p>
   <div class="pokemon-grid mt-3">
-    {pokemon.slice(0, 5).map((entry) => (
+    {pokemon.slice(0, 4).map((entry) => (
       <a
         href={`/pokemon/${getPokemonSlug(entry)}/`}
         class="pokemon-card block no-underline"
@@ -55,4 +56,9 @@ const { pokemon } = Astro.props;
       </a>
     ))}
   </div>
+    <div class="mt-2 flex items-right justify-end w-full">
+      <a href={`/pokemon-list/?${categoryType}=${category}`} class="underline text-sm text-slate-600">
+         See all Pokemon
+      </a>
+    </div>
 </article>

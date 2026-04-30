@@ -10,7 +10,9 @@ import {
   REGION_COLORS,
   EVOLUTION_COLORS,
 } from "../../../lib/shared/constants";
+import { FILTER_CATEGORIES } from "../../../lib/shared/filters";
 import type { Pokemon } from "../lib/data";
+import { slugify } from "../lib/slug";
 
 interface Props {
   pokemon: Pokemon;
@@ -30,6 +32,17 @@ const breadcrumbItems = [
   { label: "Pokemon", href: "/pokemon-list/" },
   { label: pokemon.name },
 ];
+
+const categorySlugSet = new Set(
+  FILTER_CATEGORIES.flatMap((filterCategory) =>
+    filterCategory.options.map((option) => slugify(option.name)),
+  ),
+);
+
+function getCategoryHref(label: string): string | null {
+  const slug = slugify(label);
+  return categorySlugSet.has(slug) ? `/category/${slug}/` : null;
+}
 
 ---
 
@@ -56,24 +69,36 @@ const breadcrumbItems = [
           </div>
 
           <div class="mt-3 flex flex-wrap gap-2">
-            {pokemon.types.map((type) => (
-              <Badge text={type} color={TYPE_COLORS[type] ?? "#64748b"} />
-            ))}
-            {pokemon.region && (
-              <Badge text={pokemon.region} color={REGION_COLORS[pokemon.region] ?? REGION_COLORS.Unknown} />
-            )}
-            {pokemon.evolutionStage && (
-              <Badge text={pokemon.evolutionStage} color={EVOLUTION_COLORS[pokemon.evolutionStage] ?? "#64748b"} />
-            )}
-            {pokemon.evolutionTrigger?.map((trigger) => (
-              <Badge text={trigger} color={EVOLUTION_COLORS[trigger] ?? "#64748b"} />
-            ))}
-            {pokemon.category && (
-              <Badge text={pokemon.category} color="#f59e0b" />
-            )}
-            {pokemon.specialForm && (
-              <Badge text={pokemon.specialForm} color="#ec4899" />
-            )}
+            {pokemon.types.map((type) => {
+              const href = getCategoryHref(type);
+              const badge = <Badge text={type} color={TYPE_COLORS[type] ?? "#64748b"} />;
+              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${type} category`}>{badge}</a> : badge;
+            })}
+            {pokemon.region && (() => {
+              const href = getCategoryHref(pokemon.region!);
+              const badge = <Badge text={pokemon.region!} color={REGION_COLORS[pokemon.region!] ?? REGION_COLORS.Unknown} />;
+              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${pokemon.region} category`}>{badge}</a> : badge;
+            })()}
+            {pokemon.evolutionStage && (() => {
+              const href = getCategoryHref(pokemon.evolutionStage!);
+              const badge = <Badge text={pokemon.evolutionStage!} color={EVOLUTION_COLORS[pokemon.evolutionStage!] ?? "#64748b"} />;
+              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${pokemon.evolutionStage} category`}>{badge}</a> : badge;
+            })()}
+            {pokemon.evolutionTrigger?.map((trigger) => {
+              const href = getCategoryHref(trigger);
+              const badge = <Badge text={trigger} color={EVOLUTION_COLORS[trigger] ?? "#64748b"} />;
+              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${trigger} category`}>{badge}</a> : badge;
+            })}
+            {pokemon.category && (() => {
+              const href = getCategoryHref(pokemon.category!);
+              const badge = <Badge text={pokemon.category!} color="#f59e0b" />;
+              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${pokemon.category} category`}>{badge}</a> : badge;
+            })()}
+            {pokemon.specialForm && (() => {
+              const href = getCategoryHref(pokemon.specialForm!);
+              const badge = <Badge text={pokemon.specialForm!} color="#ec4899" />;
+              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${pokemon.specialForm} category`}>{badge}</a> : badge;
+            })()}
           </div>
 
           <div class="mt-4 grid gap-3 md:grid-cols-3">

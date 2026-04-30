@@ -21,6 +21,7 @@ export interface Pokemon {
 
 export interface CategoryPageData {
   key: string;
+  type: string;
   label: string;
   count: number;
   pokemon: Pokemon[];
@@ -109,6 +110,7 @@ function buildCategories(): CategoryPageData[] {
       seenSlugs.set(slug, key);
       categories.push({
         key,
+        type: category.key,
         label: option.name,
         count: filtered.length,
         pokemon: filtered,
