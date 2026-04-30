@@ -7,8 +7,6 @@ import { Grid } from "../components/Grid";
 import { Header } from "../components/Header";
 import { SuggestionsPanel } from "../components/SuggestionsPanel";
 import { Footer } from "../components/Footer";
-import "./App.css";
-import "../index.css";
 import { matchesConstraint, type Constraint } from "../../../../lib/shared/filters";
 
 export interface TodayPuzzle {

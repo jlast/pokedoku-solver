@@ -13,8 +13,6 @@ import { trackEvent } from "../../../../lib/browser/analytics";
 import { slugify } from "../../lib/slug";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import "./App.css";
-import "../index.css";
 
 type SortOption =
   | "number-asc"

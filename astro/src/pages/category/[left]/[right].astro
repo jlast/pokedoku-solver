@@ -1,5 +1,7 @@
 ---
-import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AppPageLayout from "../../../layouts/AppPageLayout.astro";
+import { Header } from "../../../app/components/Header";
+import { Footer } from "../../../app/components/Footer";
 import {
   canonicalizePairSlugs,
   getCategoryPairBySlugMap,
@@ -36,21 +38,36 @@ if (!pair) {
 }
 ---
 
-<BaseLayout
+<AppPageLayout
   title={`${pair.left.label} x ${pair.right.label} | Pokedoku Helper`}
   description={`Pokemon that satisfy both ${pair.left.label} and ${pair.right.label}.`}
   path={`/category/${pair.left.slug}/${pair.right.slug}/`}
 >
-  <section class="panel">
-    <h1>{pair.left.label} x {pair.right.label}</h1>
-    <p class="muted">{pair.count} matching Pokemon forms.</p>
-    <ul class="list">
-      {pair.pokemon.slice(0, 250).map((pokemon) => (
-        <li class="row">
-          <a href={`/pokemon/${getPokemonSlug(pokemon)}/`}>{pokemon.name}</a>
-          <span class="muted">#{pokemon.id}</span>
-        </li>
-      ))}
-    </ul>
-  </section>
-</BaseLayout>
+  <div id="root">
+    <div class="app min-h-screen px-4 py-6">
+      <Header
+        title="PokeDoku Category Pair"
+        subtitle={`Pokemon that satisfy both ${pair.left.label} and ${pair.right.label}.`}
+        currentPage="puzzle-stats"
+        client:load
+      />
+
+      <main class="mx-auto w-full max-w-6xl px-2 pb-10">
+        <section class="panel">
+          <h1>{pair.left.label} x {pair.right.label}</h1>
+          <p class="muted">{pair.count} matching Pokemon forms.</p>
+          <ul class="list">
+            {pair.pokemon.slice(0, 250).map((pokemon) => (
+              <li class="row">
+                <a href={`/pokemon/${getPokemonSlug(pokemon)}/`}>{pokemon.name}</a>
+                <span class="muted">#{pokemon.id}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </main>
+
+      <Footer client:load />
+    </div>
+  </div>
+</AppPageLayout>

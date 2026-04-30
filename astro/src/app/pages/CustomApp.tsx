@@ -8,8 +8,6 @@ import { Header } from "../components/Header";
 import { SuggestionsPanel } from "../components/SuggestionsPanel";
 import { Footer } from "../components/Footer";
 import { InfoBox } from "../components/InfoBox";
-import "./App.css";
-import "../index.css";
 
 function parseConstraintFromParam(value: string): Constraint | null {
   const result = findConstraintOption(value);

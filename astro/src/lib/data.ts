@@ -117,7 +117,6 @@ function buildCategories(): CategoryPageData[] {
     }
   }
 
-  categories.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
   return categories;
 }
 
@@ -209,7 +208,14 @@ function buildCategoryRuntimeStatsMap(): Map<string, CategoryRuntimeStats> {
     const parsed = JSON.parse(raw) as CategoryRuntimeStats;
 
     if (parsed && typeof parsed.categoryId === "string") {
-      map.set(parsed.categoryId, parsed);
+      const appearanceDates = Array.isArray(parsed.appearanceDates)
+        ? [...parsed.appearanceDates].sort((a, b) => b.localeCompare(a)).slice(0, 5)
+        : [];
+
+      map.set(parsed.categoryId, {
+        ...parsed,
+        appearanceDates,
+      });
     }
   }
 

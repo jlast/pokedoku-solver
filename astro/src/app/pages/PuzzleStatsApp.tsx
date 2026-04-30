@@ -7,8 +7,6 @@ import { PairList, type CategoryPair } from "../components/puzzle-stats/PairList
 import { trackEvent } from "../../../../lib/browser/analytics";
 import { CATEGORY_TYPE_COLORS, CATEGORY_TYPE_LABELS, TYPE_COLORS } from "../../../../lib/shared/constants";
 import { PAIR_FREQUENCY_BUCKETS } from "../../../../lib/shared/pairFrequencyBuckets";
-import "./App.css";
-import "../index.css";
 
 interface PuzzleStatsResponse {
   puzzlesAnalyzed: number;
@@ -335,7 +333,7 @@ export default function PuzzleStatsApp() {
           <p className="mb-2 text-sm text-slate-600">How often each category type appears.</p>
           <div className="grid gap-4 md:grid-cols-[240px_1fr] md:items-center">
             <div className="mx-auto">
-              <div className="relative h-52 w-52">
+              <div className="h-52 w-52">
                 <DonutChart
                   ariaLabel={derived.categoryTypeBreakdown.map((item) => `${item.label}: ${item.percent.toFixed(1)}%`).join(", ")}
                   segments={derived.categoryTypeBreakdown.map((item) => ({
@@ -344,8 +342,6 @@ export default function PuzzleStatsApp() {
                   }))}
                   size={208}
                 />
-                <div className="absolute inset-12 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
-                </div>
               </div>
             </div>
 
@@ -373,7 +369,7 @@ export default function PuzzleStatsApp() {
           <p className="mb-2 text-sm text-slate-600">How often each unique category pair appears.</p>
           <div className="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
             <div className="mx-auto">
-              <div className="relative h-48 w-48">
+              <div className="h-48 w-48">
                 <DonutChart
                   ariaLabel={derived.pairFrequencyDistribution
                     .filter((bucket) => bucket.comboCount > 0)
@@ -382,8 +378,6 @@ export default function PuzzleStatsApp() {
                   segments={derived.pairFrequencyDistribution.map((bucket) => ({ value: bucket.comboCount, color: bucket.color }))}
                   size={192}
                 />
-                <div className="absolute inset-12 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
-                </div>
               </div>
             </div>
 

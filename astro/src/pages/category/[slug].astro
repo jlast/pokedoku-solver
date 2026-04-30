@@ -1,6 +1,21 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCategoryBySlugMap, getCategories, getPokemonSlug } from "../../lib/data";
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import { Header } from "../../app/components/Header";
+import { Footer } from "../../app/components/Footer";
+import { parseCategoryId } from "../../app/components/puzzle-stats/categoryUtils";
+import CategorySidebar from "../../components/category/CategorySidebar.astro";
+import CategoryHeaderCard from "../../components/category/CategoryHeaderCard.astro";
+import CategoryCombinationsCard from "../../components/category/CategoryCombinationsCard.astro";
+import CategoryHistoryTimelineCard from "../../components/category/CategoryHistoryTimelineCard.astro";
+import CategoryPokemonExamplesCard from "../../components/category/CategoryPokemonExamplesCard.astro";
+import CategoryDifficultyDonutCard from "../../components/category/CategoryDifficultyDonutCard.astro";
+import {
+  getCategoryBySlugMap,
+  getCategories,
+  getCategoryRuntimeStatsByCategoryId,
+  type CategoryPageData,
+  type Pokemon,
+} from "../../lib/data";
 
 export function getStaticPaths() {
   return getCategories().map((category) => ({
@@ -14,23 +29,124 @@ const category = getCategoryBySlugMap().get(slug);
 if (!category) {
   throw Astro.redirect("/puzzle-stats/");
 }
+
+const categories = getCategories();
+const runtimeStats = getCategoryRuntimeStatsByCategoryId(category.key);
+
+const categoryTypeOrder: Record<string, number> = {
+  types: 0,
+  regions: 1,
+  evolution: 2,
+  category: 3,
+};
+
+const categoriesByType = [...categories].sort((a, b) => {
+  const parsedA = parseCategoryId(a.key);
+  const parsedB = parseCategoryId(b.key);
+  const typeRankA = categoryTypeOrder[parsedA.type] ?? 99;
+  const typeRankB = categoryTypeOrder[parsedB.type] ?? 99;
+
+  if (typeRankA !== typeRankB) return typeRankA - typeRankB;
+  if (b.count !== a.count) return b.count - a.count;
+  return a.label.localeCompare(b.label);
+});
+
+const categoryTypeLabel: Record<string, string> = {
+  types: "Types",
+  regions: "Regions",
+  evolution: "Evolution",
+  category: "Categories",
+};
+
+const groupedCategories = categoriesByType.reduce<
+  Array<{ type: string; label: string; items: CategoryPageData[] }>
+>((groups, item) => {
+  const parsed = parseCategoryId(item.key);
+  const type = parsed.type || "other";
+  const group = groups.find((entry) => entry.type === type);
+
+  if (group) {
+    group.items.push(item);
+  } else {
+    groups.push({
+      type,
+      label: categoryTypeLabel[type] ?? "Other",
+      items: [item],
+    });
+  }
+
+  return groups;
+}, []);
+
+const difficultyRank: Record<string, number> = {
+  Impossible: 6,
+  Nightmare: 5,
+  Expert: 4,
+  Hard: 3,
+  Normal: 2,
+  Easy: 1,
+};
+
+const pokemonSortedByDifficulty = [...category.pokemon].sort(
+  (a: Pokemon, b: Pokemon) => {
+    const rankA = a.dexDifficulty ? (difficultyRank[a.dexDifficulty] ?? 0) : 0;
+    const rankB = b.dexDifficulty ? (difficultyRank[b.dexDifficulty] ?? 0) : 0;
+    if (rankB !== rankA) return rankB - rankA;
+
+    const percentileA =
+      typeof a.dexDifficultyPercentile === "number"
+        ? a.dexDifficultyPercentile
+        : -1;
+    const percentileB =
+      typeof b.dexDifficultyPercentile === "number"
+        ? b.dexDifficultyPercentile
+        : -1;
+    if (percentileB !== percentileA) return percentileB - percentileA;
+
+    return a.name.localeCompare(b.name);
+  },
+);
+
+const recentAppearanceDates = runtimeStats?.appearanceDates
+  ? [...runtimeStats.appearanceDates]
+  : [];
 ---
 
-<BaseLayout
+<AppPageLayout
   title={`${category.label} Pokemon | Pokedoku Helper`}
   description={`Browse Pokemon that match the ${category.label} category.`}
   path={`/category/${slug}/`}
 >
-  <section class="panel">
-    <h1>{category.label}</h1>
-    <p class="muted">{category.count} matching Pokemon forms.</p>
-    <ul class="list">
-      {category.pokemon.slice(0, 200).map((pokemon) => (
-        <li class="row">
-          <a href={`/pokemon/${getPokemonSlug(pokemon)}/`}>{pokemon.name}</a>
-          <span class="muted">#{pokemon.id}</span>
-        </li>
-      ))}
-    </ul>
-  </section>
-</BaseLayout>
+  <div id="root">
+    <div class="app min-h-screen px-4 py-6">
+      <Header
+        title="PokeDoku Category Explorer"
+        subtitle={`History, combinations, and hardest examples for ${category.label}.`}
+        currentPage="puzzle-stats"
+        client:load
+      />
+
+      <main class="mx-auto w-full max-w-6xl px-2 pb-10">
+        <section class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[300px_1fr]">
+          <CategorySidebar groups={groupedCategories} activeSlug={slug} />
+
+          <div class="grid gap-4">
+            <CategoryHeaderCard category={category} runtimeStats={runtimeStats} total={category.pokemon.length} />
+
+            <CategoryDifficultyDonutCard pokemon={category.pokemon} />
+            
+            <CategoryPokemonExamplesCard pokemon={pokemonSortedByDifficulty} />
+
+            <section class="grid gap-4 lg:grid-cols-2">
+              <CategoryCombinationsCard combinations={runtimeStats?.combinationMatches ?? []} />
+              <CategoryHistoryTimelineCard dates={recentAppearanceDates} />
+            </section>
+
+          </div>
+        </section>
+      </main>
+
+      <Footer client:load />
+    </div>
+  </div>
+</AppPageLayout>

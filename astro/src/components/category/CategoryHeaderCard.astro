@@ -1,0 +1,108 @@
+---
+import CategoryIconBadge from "../CategoryIconBadge.astro";
+import type { CategoryPageData, CategoryRuntimeStats } from "../../lib/data";
+import { parseCategoryId } from "../../app/components/puzzle-stats/categoryUtils";
+
+interface Props {
+  total: number;
+  category: CategoryPageData;
+  runtimeStats: CategoryRuntimeStats | null;
+}
+
+const { category, runtimeStats, total } = Astro.props;
+const parsedCurrentCategory = parseCategoryId(category.key);
+
+type DifficultyEntry = {
+  difficulty: string;
+  percentile: number;
+};
+
+const percentileDifficultyEntries: DifficultyEntry[] = category.pokemon
+  .filter(
+    (entry): entry is { dexDifficulty: string; dexDifficultyPercentile: number } =>
+      typeof entry.dexDifficulty === "string" &&
+      typeof entry.dexDifficultyPercentile === "number",
+  )
+  .map((entry) => ({
+    difficulty: entry.dexDifficulty,
+    percentile: entry.dexDifficultyPercentile,
+  }));
+
+const averagePercentile =
+  percentileDifficultyEntries.length > 0
+    ? percentileDifficultyEntries.reduce((sum, entry) => sum + entry.percentile, 0) /
+      percentileDifficultyEntries.length
+    : null;
+
+function modeDifficulty(): string | null {
+  const counts = new Map<string, number>();
+  for (const entry of category.pokemon) {
+    if (!entry.dexDifficulty) continue;
+    counts.set(entry.dexDifficulty, (counts.get(entry.dexDifficulty) ?? 0) + 1);
+  }
+
+  let best: string | null = null;
+  let bestCount = -1;
+  for (const [difficulty, count] of counts.entries()) {
+    if (count > bestCount) {
+      best = difficulty;
+      bestCount = count;
+    }
+  }
+
+  return best;
+}
+
+function formatAverageDifficulty(): string {
+  if (averagePercentile === null) {
+    return modeDifficulty() ?? "Unknown";
+  }
+
+  const closest = percentileDifficultyEntries.reduce((best, current) => {
+    const bestDistance = Math.abs(best.percentile - averagePercentile);
+    const currentDistance = Math.abs(current.percentile - averagePercentile);
+
+    if (currentDistance < bestDistance) return current;
+    if (currentDistance > bestDistance) return best;
+    return current.percentile > best.percentile ? current : best;
+  });
+
+  return closest.difficulty;
+}
+
+function formatDate(value: string): string {
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+---
+
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_16px_36px_rgba(15,23,42,0.08)]">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="inline-flex items-center gap-2.5">
+      <CategoryIconBadge parsed={parsedCurrentCategory} />
+      <h1 class="m-0 text-3xl font-bold leading-tight tracking-tight text-slate-900">{category.label}</h1>
+    </div>
+  </div>
+
+  {runtimeStats ? (
+    <div class="mt-3 grid gap-2.5 sm:grid-cols-3">
+      <div class="grid gap-1 rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 to-slate-50 p-3">
+        <small class="text-xs font-medium text-slate-500">Total Pokémon</small>
+        <strong class="text-xl font-bold text-slate-900 tabular-nums">{total}</strong>
+      </div>
+      <div class="grid gap-1 rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 to-slate-50 p-3">
+        <small class="text-xs font-medium text-slate-500">Last appeared</small>
+        <strong class="text-xl font-bold text-slate-900">{runtimeStats.lastAppeared.date ? formatDate(runtimeStats.lastAppeared.date) : "Never"}</strong>
+      </div>
+      <div class="grid gap-1 rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 to-slate-50 p-3">
+        <small class="text-xs font-medium text-slate-500">Average Difficulty</small>
+        <strong class="text-xl font-bold text-slate-900 tabular-nums">{formatAverageDifficulty()}</strong>
+      </div>
+    </div>
+  ) : null}
+</article>

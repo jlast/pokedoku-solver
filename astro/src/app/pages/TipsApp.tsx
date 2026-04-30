@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { trackEvent } from "../../../../lib/browser/analytics";
-import "./App.css";
-import "../index.css";
 
 type TipLevel = "beginner" | "advanced" | "gotcha";
 

@@ -50,12 +50,16 @@ export function DonutChart({ segments, ariaLabel, size }: { segments: DonutSegme
   ).slices;
 
   return (
-    <div aria-label={ariaLabel} className="h-full w-full" role="img">
-      <svg className="h-full w-full" viewBox={`0 0 ${size} ${size}`}>
-        {resolvedSlices.map((slice) => (
-          <path d={slice.path} fill={slice.color} key={slice.key} stroke="rgba(255,255,255,0.9)" strokeWidth={2} />
-        ))}
-      </svg>
+    <div className="relative">
+      <div aria-label={ariaLabel} className="h-full w-full" role="img">
+        <svg className="h-full w-full" viewBox={`0 0 ${size} ${size}`}>
+          {resolvedSlices.map((slice) => (
+            <path d={slice.path} fill={slice.color} key={slice.key} stroke="rgba(255,255,255,0.9)" strokeWidth={2} />
+          ))}
+        </svg>
+      </div>
+      <div className="absolute inset-12 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
+      </div>
     </div>
   );
 }

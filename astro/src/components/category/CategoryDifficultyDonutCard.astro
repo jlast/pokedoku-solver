@@ -1,0 +1,75 @@
+---
+import { DonutChart, type DonutSegment } from "../../app/components/charts/DonutChart";
+import { DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
+import type { Pokemon } from "../../lib/data";
+
+interface Props {
+  pokemon: Pokemon[];
+}
+
+const { pokemon } = Astro.props;
+
+const orderedDifficulties = ["Easy", "Normal", "Hard", "Expert", "Nightmare", "Impossible"] as const;
+const unknownColor = "#94a3b8";
+
+const counts = new Map<string, number>();
+for (const difficulty of orderedDifficulties) counts.set(difficulty, 0);
+counts.set("Unknown", 0);
+
+for (const entry of pokemon) {
+  const difficulty = entry.dexDifficulty;
+  if (difficulty && counts.has(difficulty)) {
+    counts.set(difficulty, (counts.get(difficulty) ?? 0) + 1);
+  } else {
+    counts.set("Unknown", (counts.get("Unknown") ?? 0) + 1);
+  }
+}
+
+const total = pokemon.length;
+
+const legendRows = [
+  ...orderedDifficulties.map((difficulty) => ({
+    label: difficulty,
+    count: counts.get(difficulty) ?? 0,
+    color: DEX_DIFFICULTY_COLORS[difficulty],
+  })),
+  {
+    label: "Unknown",
+    count: counts.get("Unknown") ?? 0,
+    color: unknownColor,
+  },
+].filter((row) => row.count > 0);
+
+const segments: DonutSegment[] = legendRows.map((row) => ({
+  value: row.count,
+  color: row.color,
+}));
+---
+
+<article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+  <div class="mb-3 flex items-center justify-between gap-3">
+    <h2 class="text-xl font-semibold tracking-tight text-slate-900">Difficulty distribution</h2>
+    <span class="text-xs font-medium text-slate-500">{total} Pokemon</span>
+  </div>
+
+  <div class="grid items-center gap-4 sm:grid-cols-[180px_1fr]">
+    <div class="mx-auto h-40 w-40">
+      <DonutChart segments={segments} ariaLabel="Category difficulty distribution" size={180} />
+    </div>
+
+    <ul class="grid gap-2">
+      {legendRows.map((row) => {
+        const percent = total > 0 ? (row.count / total) * 100 : 0;
+        return (
+          <li class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+            <span class="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
+              <span class="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: row.color }}></span>
+              {row.label}
+            </span>
+            <span class="text-sm font-semibold tabular-nums text-slate-900">{row.count} ({percent.toFixed(1)}%)</span>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</article>
