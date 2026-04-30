@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import type { Pokemon } from "../../../../lib/shared/types";
-import { TYPE_COLORS, DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
+import { DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
 import {
   FILTER_CATEGORIES,
   parseFiltersFromUrl,
@@ -13,6 +13,8 @@ import { trackEvent } from "../../../../lib/browser/analytics";
 import { slugify } from "../../lib/slug";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
+import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 
 type SortOption =
   | "number-asc"
@@ -476,13 +478,11 @@ function PokemonListApp() {
                 <div className="pokemon-card-id">#{p.id}</div>
                 <div className="pokemon-types">
                   {p.types.map((type, i) => (
-                    <span
-                      key={i}
-                      className="type-badge"
-                      style={{ backgroundColor: TYPE_COLORS[type!] }}
-                    >
-                      {type}
-                    </span>
+                    <CategoryBadgeLink
+                      key={`${p.id}-${type}-${i}`}
+                      parsed={parseCategoryId(`types:${type}`)}
+                      href={null}
+                    />
                   ))}
                 </div>
                 {p.dexDifficulty && (

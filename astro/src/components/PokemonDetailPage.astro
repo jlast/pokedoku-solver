@@ -3,6 +3,8 @@ import { Header } from "../app/components/Header";
 import { Footer } from "../app/components/Footer";
 import Badge from "./Badge.astro";
 import Breadcrumb from "./Breadcrumb.astro";
+import { CategoryBadgeLink } from "../app/components/shared/CategoryBadgeLink";
+import { parseCategoryId } from "../app/components/puzzle-stats/categoryUtils";
 import { PokemonRuntimeStatsSectionsPanel, PokemonRuntimeStatsSummaryPanel } from "../app/components/pokemon-detail/PokemonRuntimeStatsPanel";
 import {
   TYPE_COLORS,
@@ -69,35 +71,23 @@ function getCategoryHref(label: string): string | null {
           </div>
 
           <div class="mt-3 flex flex-wrap gap-2">
-            {pokemon.types.map((type) => {
-              const href = getCategoryHref(type);
-              const badge = <Badge text={type} color={TYPE_COLORS[type] ?? "#64748b"} />;
-              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${type} category`}>{badge}</a> : badge;
-            })}
+            {pokemon.types.map((type) => (
+              <CategoryBadgeLink parsed={parseCategoryId(`types:${type}`)} href={getCategoryHref(type)} />
+            ))}
             {pokemon.region && (() => {
-              const href = getCategoryHref(pokemon.region!);
-              const badge = <Badge text={pokemon.region!} color={REGION_COLORS[pokemon.region!] ?? REGION_COLORS.Unknown} />;
-              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${pokemon.region} category`}>{badge}</a> : badge;
+              return <CategoryBadgeLink parsed={parseCategoryId(`regions:${pokemon.region!}`)} href={getCategoryHref(pokemon.region!)} />;
             })()}
             {pokemon.evolutionStage && (() => {
-              const href = getCategoryHref(pokemon.evolutionStage!);
-              const badge = <Badge text={pokemon.evolutionStage!} color={EVOLUTION_COLORS[pokemon.evolutionStage!] ?? "#64748b"} />;
-              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${pokemon.evolutionStage} category`}>{badge}</a> : badge;
+              return <CategoryBadgeLink parsed={parseCategoryId(`evolution:${pokemon.evolutionStage!}`)} href={getCategoryHref(pokemon.evolutionStage!)} />;
             })()}
-            {pokemon.evolutionTrigger?.map((trigger) => {
-              const href = getCategoryHref(trigger);
-              const badge = <Badge text={trigger} color={EVOLUTION_COLORS[trigger] ?? "#64748b"} />;
-              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${trigger} category`}>{badge}</a> : badge;
-            })}
+            {pokemon.evolutionTrigger?.map((trigger) => (
+              <CategoryBadgeLink parsed={parseCategoryId(`evolution:${trigger}`)} href={getCategoryHref(trigger)} />
+            ))}
             {pokemon.category && (() => {
-              const href = getCategoryHref(pokemon.category!);
-              const badge = <Badge text={pokemon.category!} color="#f59e0b" />;
-              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${pokemon.category} category`}>{badge}</a> : badge;
+              return <CategoryBadgeLink parsed={parseCategoryId(`category:${pokemon.category!}`)} href={getCategoryHref(pokemon.category!)} />;
             })()}
             {pokemon.specialForm && (() => {
-              const href = getCategoryHref(pokemon.specialForm!);
-              const badge = <Badge text={pokemon.specialForm!} color="#ec4899" />;
-              return href ? <a href={href} class="inline-flex no-underline" title={`Open ${pokemon.specialForm} category`}>{badge}</a> : badge;
+              return <CategoryBadgeLink parsed={parseCategoryId(`category:${pokemon.specialForm!}`)} href={getCategoryHref(pokemon.specialForm!)} />;
             })()}
           </div>
 

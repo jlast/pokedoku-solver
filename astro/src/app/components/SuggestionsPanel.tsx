@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import type { Pokemon } from "../../../../lib/shared/types";
-import { TYPE_COLORS, DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
+import { DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
 import { trackEvent } from "../../../../lib/browser/analytics";
+import { CategoryBadgeLink } from "./shared/CategoryBadgeLink";
+import { parseCategoryId } from "./puzzle-stats/categoryUtils";
 
 type SortBy = "number-asc" | "number-desc" | "difficulty-desc" | "difficulty-asc";
 
@@ -141,17 +143,15 @@ export function SuggestionsPanel({
                   </div>
                   <div className="pokemon-item-bottom">
                     <span className="pokemon-id">#{p.id}</span>
-                    <div className="pokemon-types">
-                      {p.types.map((type, i) => (
-                        <span
-                          key={i}
-                          className="type-badge"
-                          style={{ backgroundColor: TYPE_COLORS[type!] }}
-                        >
-                          {type}
-                        </span>
-                      ))}
-                    </div>
+                     <div className="pokemon-types">
+                       {p.types.map((type, i) => (
+                         <CategoryBadgeLink
+                           key={`${p.id}-${type}-${i}`}
+                           parsed={parseCategoryId(`types:${type}`)}
+                           href={null}
+                         />
+                       ))}
+                     </div>
                   </div>
                 </div>
               </button>
