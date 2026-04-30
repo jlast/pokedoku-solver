@@ -44,20 +44,6 @@
   box-sizing: border-box;
 }
 
-
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-
 code,
 .counter {
   font-family: var(--mono);

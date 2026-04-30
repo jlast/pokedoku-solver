@@ -1,6 +1,6 @@
 ---
 import CategoryIconBadge from "../CategoryIconBadge.astro";
-import Badge from "../Badge.astro";
+import CategoryPairTopStats from "./CategoryPairTopStats.astro";
 import { DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
 import type { CategoryPageData, CategoryRuntimeStats } from "../../lib/data";
 import { parseCategoryId } from "../../app/components/puzzle-stats/categoryUtils";
@@ -93,26 +93,17 @@ function formatDate(value: string): string {
   <div class="flex flex-wrap items-center justify-between gap-3">
     <div class="inline-flex items-center gap-2.5">
       <CategoryIconBadge parsed={parsedCurrentCategory} />
-      <h1 class="m-0 text-3xl font-bold leading-tight tracking-tight text-slate-900">{category.label}</h1>
+      <h2 class="m-0 text-3xl font-bold leading-tight tracking-tight text-slate-900">{category.label}</h2>
     </div>
   </div>
 
   {runtimeStats ? (
-    <div class="mt-3 grid gap-2.5 sm:grid-cols-3">
-      <div class="grid gap-1 rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 to-slate-50 p-3">
-        <small class="text-xs font-medium text-slate-500">Total Pokémon</small>
-        <strong class="text-xl font-bold text-slate-900 tabular-nums">{total}</strong>
-      </div>
-      <div class="grid gap-1 rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 to-slate-50 p-3">
-        <small class="text-xs font-medium text-slate-500">Last appeared</small>
-        <strong class="text-xl font-bold text-slate-900">{runtimeStats.lastAppeared.date ? formatDate(runtimeStats.lastAppeared.date) : "Never"}</strong>
-      </div>
-      <div class="grid gap-1 rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 to-slate-50 p-3">
-        <small class="text-xs font-medium text-slate-500">Average Difficulty</small>
-        <div>
-          <Badge text={averageDifficultyLabel} color={averageDifficultyColor} />
-        </div>
-      </div>
-    </div>
+    <CategoryPairTopStats
+      items={[
+        { label: "Total Pokemon", text: String(total) },
+        { label: "Last appeared", text: runtimeStats.lastAppeared.date ? formatDate(runtimeStats.lastAppeared.date) : "Never" },
+        { label: "Average Difficulty", badgeText: averageDifficultyLabel, badgeColor: averageDifficultyColor },
+      ]}
+    />
   ) : null}
 </article>

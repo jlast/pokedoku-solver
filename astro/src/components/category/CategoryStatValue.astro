@@ -1,0 +1,17 @@
+---
+interface Props {
+  text?: string;
+  badgeText?: string;
+  badgeColor?: string;
+}
+
+const { text = "", badgeText, badgeColor = "#64748b" } = Astro.props;
+---
+
+{badgeText ? (
+  <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold text-white" style={{ backgroundColor: badgeColor }}>
+    {badgeText}
+  </span>
+) : (
+  <p class="m-0 mt-1 text-sm font-semibold text-slate-900">{text}</p>
+)}

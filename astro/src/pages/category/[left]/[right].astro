@@ -2,17 +2,44 @@
 import AppPageLayout from "../../../layouts/AppPageLayout.astro";
 import { Header } from "../../../app/components/Header";
 import { Footer } from "../../../app/components/Footer";
+import { CategoryBadgeLink } from "../../../app/components/shared/CategoryBadgeLink";
+import { parseCategoryId } from "../../../app/components/puzzle-stats/categoryUtils";
+import CategoryIconBadge from "../../../components/CategoryIconBadge.astro";
+import CategorySidebar from "../../../components/category/CategorySidebar.astro";
+import CategoryPokemonExamplesCard from "../../../components/category/CategoryPokemonExamplesCard.astro";
+import CategoryDifficultyDonutCard from "../../../components/category/CategoryDifficultyDonutCard.astro";
+import CategoryHistoryTimelineCard from "../../../components/category/CategoryHistoryTimelineCard.astro";
+import CategoryPairTopStats from "../../../components/category/CategoryPairTopStats.astro";
+import { DEX_DIFFICULTY_COLORS } from "../../../../../lib/shared/constants";
 import {
   canonicalizePairSlugs,
-  getCategoryPairBySlugMap,
+  getCategories,
   getCategoryPairs,
-  getPokemonSlug,
+  getCategoryPairBySlugMap,
+  getCategoryRuntimeStatsByCategoryId,
+  type CategoryPageData,
+  type Pokemon,
 } from "../../../lib/data";
 
 export function getStaticPaths() {
-  return getCategoryPairs().map((pair) => ({
-    params: { left: pair.left.slug, right: pair.right.slug },
-  }));
+  const seen = new Set<string>();
+  const paths: Array<{ params: { left: string; right: string } }> = [];
+
+  for (const pair of getCategoryPairs()) {
+    const variants: Array<{ left: string; right: string }> = [
+      { left: pair.left.slug, right: pair.right.slug },
+      { left: pair.right.slug, right: pair.left.slug },
+    ];
+
+    for (const variant of variants) {
+      const key = `${variant.left}::${variant.right}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      paths.push({ params: variant });
+    }
+  }
+
+  return paths;
 }
 
 const left = Astro.params.left ?? "";
@@ -20,50 +47,217 @@ const right = Astro.params.right ?? "";
 const canonicalSlug = canonicalizePairSlugs(left, right);
 
 if (!canonicalSlug) {
-  throw Astro.redirect("/puzzle-stats/");
+  return Astro.redirect("/puzzle-stats/");
 }
 
 const [canonicalLeft, canonicalRight] = canonicalSlug.split("-x-");
 if (!canonicalLeft || !canonicalRight) {
-  throw Astro.redirect("/puzzle-stats/");
+  return Astro.redirect("/puzzle-stats/");
 }
 
 if (left !== canonicalLeft || right !== canonicalRight) {
-  throw Astro.redirect(`/category/${canonicalLeft}/${canonicalRight}/`, 301);
+  return Astro.redirect(`/category/${canonicalLeft}/${canonicalRight}/`, 301);
 }
 
-const pair = getCategoryPairBySlugMap().get(canonicalSlug);
-if (!pair) {
-  throw Astro.redirect("/puzzle-stats/");
+const pair = getCategoryPairBySlugMap().get(canonicalSlug) ?? null;
+if (pair === null) {
+  return Astro.redirect("/puzzle-stats/");
+}
+const resolvedPair = pair;
+
+const categories = getCategories();
+const categoryTypeOrder: Record<string, number> = {
+  types: 0,
+  regions: 1,
+  evolution: 2,
+  category: 3,
+};
+
+const categoriesByType = [...categories].sort((a, b) => {
+  const parsedA = parseCategoryId(a.key);
+  const parsedB = parseCategoryId(b.key);
+  const typeRankA = categoryTypeOrder[parsedA.type] ?? 99;
+  const typeRankB = categoryTypeOrder[parsedB.type] ?? 99;
+
+  if (typeRankA !== typeRankB) return typeRankA - typeRankB;
+  if (b.count !== a.count) return b.count - a.count;
+  return a.label.localeCompare(b.label);
+});
+
+const categoryTypeLabel: Record<string, string> = {
+  types: "Types",
+  regions: "Regions",
+  evolution: "Evolution",
+  category: "Categories",
+};
+
+const groupedCategories = categoriesByType.reduce<
+  Array<{ type: string; label: string; items: CategoryPageData[] }>
+>((groups, item) => {
+  const parsed = parseCategoryId(item.key);
+  const type = parsed.type || "other";
+  const group = groups.find((entry) => entry.type === type);
+
+  if (group) {
+    group.items.push(item);
+  } else {
+    groups.push({
+      type,
+      label: categoryTypeLabel[type] ?? "Other",
+      items: [item],
+    });
+  }
+
+  return groups;
+}, []);
+
+const difficultyRank: Record<string, number> = {
+  Impossible: 6,
+  Nightmare: 5,
+  Expert: 4,
+  Hard: 3,
+  Normal: 2,
+  Easy: 1,
+};
+
+const pokemonSortedByDifficulty = [...pair.pokemon].sort((a: Pokemon, b: Pokemon) => {
+  const rankA = a.dexDifficulty ? (difficultyRank[a.dexDifficulty] ?? 0) : 0;
+  const rankB = b.dexDifficulty ? (difficultyRank[b.dexDifficulty] ?? 0) : 0;
+  if (rankB !== rankA) return rankB - rankA;
+
+  const percentileA = typeof a.dexDifficultyPercentile === "number" ? a.dexDifficultyPercentile : -1;
+  const percentileB = typeof b.dexDifficultyPercentile === "number" ? b.dexDifficultyPercentile : -1;
+  if (percentileB !== percentileA) return percentileB - percentileA;
+
+  return a.name.localeCompare(b.name);
+});
+
+type DifficultyEntry = {
+  difficulty: string;
+  percentile: number;
+};
+
+const percentileDifficultyEntries: DifficultyEntry[] = [];
+for (const entry of resolvedPair.pokemon) {
+  if (typeof entry.dexDifficulty === "string" && typeof entry.dexDifficultyPercentile === "number") {
+    percentileDifficultyEntries.push({
+      difficulty: entry.dexDifficulty,
+      percentile: entry.dexDifficultyPercentile,
+    });
+  }
+}
+
+const averagePercentile =
+  percentileDifficultyEntries.length > 0
+    ? percentileDifficultyEntries.reduce((sum, entry) => sum + entry.percentile, 0) / percentileDifficultyEntries.length
+    : null;
+
+function modeDifficulty(): string | null {
+  const counts = new Map<string, number>();
+  for (const entry of resolvedPair.pokemon) {
+    if (!entry.dexDifficulty) continue;
+    counts.set(entry.dexDifficulty, (counts.get(entry.dexDifficulty) ?? 0) + 1);
+  }
+
+  let best: string | null = null;
+  let bestCount = -1;
+  for (const [difficulty, count] of counts.entries()) {
+    if (count > bestCount) {
+      best = difficulty;
+      bestCount = count;
+    }
+  }
+
+  return best;
+}
+
+function formatAverageDifficulty(): string {
+  if (averagePercentile === null) {
+    return modeDifficulty() ?? "Unknown";
+  }
+
+  const closest = percentileDifficultyEntries.reduce((best, current) => {
+    const bestDistance = Math.abs(best.percentile - averagePercentile);
+    const currentDistance = Math.abs(current.percentile - averagePercentile);
+
+    if (currentDistance < bestDistance) return current;
+    if (currentDistance > bestDistance) return best;
+    return current.percentile > best.percentile ? current : best;
+  });
+
+  return closest.difficulty;
+}
+
+const averageDifficultyLabel = formatAverageDifficulty();
+const averageDifficultyColor = DEX_DIFFICULTY_COLORS[averageDifficultyLabel] ?? "#64748b";
+
+const leftRuntime = getCategoryRuntimeStatsByCategoryId(resolvedPair.left.key);
+const rightRuntime = getCategoryRuntimeStatsByCategoryId(resolvedPair.right.key);
+const commonAppearanceDates =
+  leftRuntime && rightRuntime
+    ? leftRuntime.appearanceDates.filter((date) => rightRuntime.appearanceDates.includes(date)).slice(0, 5)
+    : [];
+const lastAppearedDate = commonAppearanceDates.length > 0 ? commonAppearanceDates[0] : null;
+const parsedLeftCategory = parseCategoryId(resolvedPair.left.key);
+const parsedRightCategory = parseCategoryId(resolvedPair.right.key);
+
+function formatDate(value: string): string {
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
 }
 ---
 
 <AppPageLayout
-  title={`${pair.left.label} x ${pair.right.label} | Pokedoku Helper`}
-  description={`Pokemon that satisfy both ${pair.left.label} and ${pair.right.label}.`}
-  path={`/category/${pair.left.slug}/${pair.right.slug}/`}
+  title={`${resolvedPair.left.label} x ${resolvedPair.right.label} | Pokedoku Helper`}
+  description={`Pokemon that satisfy both ${resolvedPair.left.label} and ${resolvedPair.right.label}.`}
+  path={`/category/${resolvedPair.left.slug}/${resolvedPair.right.slug}/`}
 >
   <div id="root">
     <div class="app min-h-screen px-4 py-6">
       <Header
-        title="PokeDoku Category Pair"
-        subtitle={`Pokemon that satisfy both ${pair.left.label} and ${pair.right.label}.`}
+        title="PokeDoku Category Explorer"
         currentPage="puzzle-stats"
         client:load
       />
 
       <main class="mx-auto w-full max-w-6xl px-2 pb-10">
-        <section class="panel">
-          <h1>{pair.left.label} x {pair.right.label}</h1>
-          <p class="muted">{pair.count} matching Pokemon forms.</p>
-          <ul class="list">
-            {pair.pokemon.slice(0, 250).map((pokemon) => (
-              <li class="row">
-                <a href={`/pokemon/${getPokemonSlug(pokemon)}/`}>{pokemon.name}</a>
-                <span class="muted">#{pokemon.id}</span>
-              </li>
-            ))}
-          </ul>
+        <section class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[300px_1fr]">
+          <CategorySidebar groups={groupedCategories} activeSlug={resolvedPair.left.slug} />
+
+          <div class="grid gap-4">
+            <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_18px_34px_rgba(15,23,42,0.08)]">
+              <div class="mt-1 flex flex-wrap items-center gap-2.5">
+                <CategoryIconBadge parsed={parsedLeftCategory} />
+                <h1 class="m-0 text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">{resolvedPair.left.label}</h1>
+                <span class="text-slate-400">+</span>
+                <CategoryIconBadge parsed={parsedRightCategory} />
+                <h1 class="m-0 text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">{resolvedPair.right.label}</h1>
+              </div>
+              <CategoryPairTopStats
+                items={[
+                  { label: "Matching Pokemon", text: String(resolvedPair.count) },
+                  { label: "Last appeared", text: lastAppearedDate ? formatDate(lastAppearedDate) : "Unknown" },
+                  { label: "Average Difficulty", badgeText: averageDifficultyLabel, badgeColor: averageDifficultyColor },
+                ]}
+              />
+            </section>
+
+            <CategoryPokemonExamplesCard
+              pokemon={pokemonSortedByDifficulty}
+              category={resolvedPair.left.label}
+              categoryType={resolvedPair.left.type}
+              seeAllHref={`/pokemon-list/?${resolvedPair.left.type}=${encodeURIComponent(resolvedPair.left.label)}&${resolvedPair.right.type}=${encodeURIComponent(resolvedPair.right.label)}`}
+            />
+
+            <CategoryHistoryTimelineCard dates={commonAppearanceDates} />
+
+            <CategoryDifficultyDonutCard pokemon={resolvedPair.pokemon} />
+          </div>
         </section>
       </main>
 

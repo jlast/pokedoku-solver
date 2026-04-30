@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { trackEvent } from "../../../../lib/browser/analytics";
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   showDate?: string;
   currentPage: string;

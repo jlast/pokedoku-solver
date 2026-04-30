@@ -1,0 +1,25 @@
+---
+import CategoryStatValue from "./CategoryStatValue.astro";
+
+interface StatItem {
+  label: string;
+  text?: string;
+  badgeText?: string;
+  badgeColor?: string;
+}
+
+interface Props {
+  items: StatItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+  {items.map((item) => (
+    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
+      <p class="m-0 text-xs uppercase tracking-[0.12em] text-slate-500">{item.label}</p>
+      <CategoryStatValue text={item.text} badgeText={item.badgeText} badgeColor={item.badgeColor} />
+    </div>
+  ))}
+</div>
