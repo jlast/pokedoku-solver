@@ -94,7 +94,7 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
       return { category: "category", value: "Ultra Beast" };
     case "STARTER":
     case "FIRST_PARTNER":
-      return { category: "category", value: "Starter" };
+      return { category: "category", value: "First Partner" };
     case "BABY":
       return { category: "category", value: "Baby" };
     case "PARADOX":
