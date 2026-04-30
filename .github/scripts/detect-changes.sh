@@ -22,6 +22,14 @@ fi
 echo "Changed files:"
 printf '%s\n' "${CHANGED_FILES}"
 
+CHANGED_FILES_LIST_FILE=$(mktemp)
+printf '%s\n' "${CHANGED_FILES}" > "${CHANGED_FILES_LIST_FILE}"
+
+cleanup() {
+  rm -f "${CHANGED_FILES_LIST_FILE}" "${DAILY_META_FILE:-}" "${STATS_META_FILE:-}" "${DAILY_BUNDLE_FILE:-}" "${STATS_BUNDLE_FILE:-}"
+}
+trap cleanup EXIT
+
 changed_in_paths() {
   local pattern
   for pattern in "$@"; do
@@ -52,12 +60,45 @@ if changed_in_paths '^astro/' '^astro/src/pages/category/' '^astro/src/pages/pok
   site_changed=true
 fi
 
-if changed_in_paths '^terraform/lambda/daily-puzzle-fetcher.ts$' '^lib/puzzle-fetch-core.ts$' '^package.json$' '^package-lock.json$'; then
+if changed_in_paths '^package.json$' '^package-lock.json$'; then
   daily_lambda_changed=true
-fi
-
-if changed_in_paths '^terraform/lambda/puzzle-statistics.ts$' '^lib/shared/' '^package.json$' '^package-lock.json$'; then
   stats_lambda_changed=true
+else
+  DAILY_META_FILE=$(mktemp)
+  STATS_META_FILE=$(mktemp)
+  DAILY_BUNDLE_FILE=$(mktemp)
+  STATS_BUNDLE_FILE=$(mktemp)
+
+  npx esbuild terraform/lambda/daily-puzzle-fetcher.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile="${DAILY_BUNDLE_FILE}" --metafile="${DAILY_META_FILE}" --log-level=error >/dev/null
+  npx esbuild terraform/lambda/puzzle-statistics.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile="${STATS_BUNDLE_FILE}" --metafile="${STATS_META_FILE}" --log-level=error >/dev/null
+
+  daily_lambda_changed=$(node -e '
+const fs = require("fs");
+const changed = new Set(fs.readFileSync(process.argv[1], "utf8").split(/\r?\n/).filter(Boolean));
+const meta = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const normalize = (p) => p.replace(/\\\\/g, "/").replace(/^\.\//, "");
+for (const inputPath of Object.keys(meta.inputs || {})) {
+  if (changed.has(normalize(inputPath))) {
+    process.stdout.write("true");
+    process.exit(0);
+  }
+}
+process.stdout.write("false");
+' "${CHANGED_FILES_LIST_FILE}" "${DAILY_META_FILE}")
+
+  stats_lambda_changed=$(node -e '
+const fs = require("fs");
+const changed = new Set(fs.readFileSync(process.argv[1], "utf8").split(/\r?\n/).filter(Boolean));
+const meta = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const normalize = (p) => p.replace(/\\\\/g, "/").replace(/^\.\//, "");
+for (const inputPath of Object.keys(meta.inputs || {})) {
+  if (changed.has(normalize(inputPath))) {
+    process.stdout.write("true");
+    process.exit(0);
+  }
+}
+process.stdout.write("false");
+' "${CHANGED_FILES_LIST_FILE}" "${STATS_META_FILE}")
 fi
 
 if changed_in_paths '^terraform/daily-puzzle-stack.yaml$'; then
