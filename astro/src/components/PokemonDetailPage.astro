@@ -46,6 +46,16 @@ function getCategoryHref(label: string): string | null {
   return categorySlugSet.has(slug) ? `/category/${slug}/` : null;
 }
 
+const applicableCategoryIds = Array.from(
+  new Set(
+    FILTER_CATEGORIES.flatMap((filterCategory) =>
+      filterCategory.options
+        .filter((option) => option.filter(pokemon))
+        .map((option) => `${filterCategory.key}:${option.name}`),
+    ),
+  ),
+);
+
 ---
 
 <div id="root">
@@ -71,24 +81,10 @@ function getCategoryHref(label: string): string | null {
           </div>
 
           <div class="mt-3 flex flex-wrap gap-2">
-            {pokemon.types.map((type) => (
-              <CategoryBadgeLink parsed={parseCategoryId(`types:${type}`)} href={getCategoryHref(type)} />
-            ))}
-            {pokemon.region && (() => {
-              return <CategoryBadgeLink parsed={parseCategoryId(`regions:${pokemon.region!}`)} href={getCategoryHref(pokemon.region!)} />;
-            })()}
-            {pokemon.evolutionStage && (() => {
-              return <CategoryBadgeLink parsed={parseCategoryId(`evolution:${pokemon.evolutionStage!}`)} href={getCategoryHref(pokemon.evolutionStage!)} />;
-            })()}
-            {pokemon.evolutionTrigger?.map((trigger) => (
-              <CategoryBadgeLink parsed={parseCategoryId(`evolution:${trigger}`)} href={getCategoryHref(trigger)} />
-            ))}
-            {pokemon.category && (() => {
-              return <CategoryBadgeLink parsed={parseCategoryId(`category:${pokemon.category!}`)} href={getCategoryHref(pokemon.category!)} />;
-            })()}
-            {pokemon.specialForm && (() => {
-              return <CategoryBadgeLink parsed={parseCategoryId(`category:${pokemon.specialForm!}`)} href={getCategoryHref(pokemon.specialForm!)} />;
-            })()}
+            {applicableCategoryIds.map((categoryId) => {
+              const parsed = parseCategoryId(categoryId);
+              return <CategoryBadgeLink parsed={parsed} href={getCategoryHref(parsed.label)} />;
+            })}
           </div>
 
           <div class="mt-4 grid gap-3 md:grid-cols-3">

@@ -4,8 +4,12 @@ import { Footer } from "../components/Footer";
 import { DonutChart } from "../components/charts/DonutChart";
 import { CategoryList, type CategoryCount } from "../components/puzzle-stats/CategoryList";
 import { PairList, type CategoryPair } from "../components/puzzle-stats/PairList";
+import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
+import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
+import { slugify } from "../../lib/slug";
 import { trackEvent } from "../../../../lib/browser/analytics";
-import { CATEGORY_TYPE_COLORS, CATEGORY_TYPE_LABELS, TYPE_COLORS } from "../../../../lib/shared/constants";
+import { CATEGORY_TYPE_COLORS, CATEGORY_TYPE_LABELS } from "../../../../lib/shared/constants";
+import { FILTER_CATEGORIES } from "../../../../lib/shared/filters";
 import { PAIR_FREQUENCY_BUCKETS } from "../../../../lib/shared/pairFrequencyBuckets";
 
 interface PuzzleStatsResponse {
@@ -75,6 +79,16 @@ export default function PuzzleStatsApp() {
   const [mostUsedMode, setMostUsedMode] = useState<"categories" | "pairs">("categories");
   const [showLegacyFilters, setShowLegacyFilters] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const categorySlugSet = useMemo(
+    () => new Set(FILTER_CATEGORIES.flatMap((filterCategory) => filterCategory.options.map((option) => slugify(option.name)))),
+    [],
+  );
+
+  function getCategoryHref(label: string): string | null {
+    const slug = slugify(label);
+    return categorySlugSet.has(slug) ? `/category/${slug}/` : null;
+  }
 
   useEffect(() => {
     trackEvent("view_puzzle_stats_page");
@@ -241,22 +255,35 @@ export default function PuzzleStatsApp() {
           <ul className="m-0 grid list-none gap-2 p-0">
             {derived.oldestVisiblePokemon.map((item) => {
               const pokemon = pokemonByFormId.get(item.formId);
+              const pokemonSlug = pokemon ? `${slugify(pokemon.name)}-${pokemon.formId ?? pokemon.id}` : null;
               return (
                 <li key={item.formId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
                   <div className="flex items-center gap-3">
-                    {pokemon?.sprite ? (
+                    {pokemonSlug ? (
+                      <a href={`/pokemon/${pokemonSlug}/`} className="block">
+                        {pokemon?.sprite ? (
+                          <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md" loading="lazy" />
+                        ) : (
+                          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-500">#{item.formId}</div>
+                        )}
+                      </a>
+                    ) : pokemon?.sprite ? (
                       <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md" loading="lazy" />
                     ) : (
                       <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-500">#{item.formId}</div>
                     )}
                     <div>
-                      <p className="m-0 font-semibold text-slate-900">{pokemon?.name ?? "Unknown Pokemon"}</p>
+                      <p className="m-0 font-semibold text-slate-900">
+                        {pokemonSlug ? <a href={`/pokemon/${pokemonSlug}/`}>{pokemon?.name ?? "Unknown Pokemon"}</a> : (pokemon?.name ?? "Unknown Pokemon")}
+                      </p>
                       {pokemon?.types?.length ? (
                         <div className="mt-1 flex flex-wrap gap-1">
                           {pokemon.types.map((type) => (
-                            <span key={`${item.formId}-${type}`} className="type-badge" style={{ backgroundColor: TYPE_COLORS[type] }}>
-                              {type}
-                            </span>
+                            <CategoryBadgeLink
+                              key={`${item.formId}-${type}`}
+                              parsed={parseCategoryId(`types:${type}`)}
+                              href={getCategoryHref(type)}
+                            />
                           ))}
                         </div>
                       ) : (

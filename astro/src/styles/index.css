@@ -44,9 +44,6 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-}
 
 h2 {
   font-family: var(--heading);

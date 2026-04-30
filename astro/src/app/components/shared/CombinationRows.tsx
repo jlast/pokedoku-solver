@@ -38,7 +38,7 @@ export function CombinationRows({ rows }: { rows: CombinationRow[] }) {
                 <CategoryBadgeLink parsed={right} href={getCategoryHref(right.label)} />
               </span>
               <div className="h-2 overflow-hidden rounded-full">
-                <div className="h-full" style={{ width: `${Math.max(0, Math.min(100, row.widthPercent)).toFixed(1)}%`, background: row.gradient }} />
+                <div className="h-full rounded-full" style={{ width: `${Math.max(0, Math.min(100, row.widthPercent)).toFixed(1)}%`, background: row.gradient }} />
               </div>
             </div>
             <strong className="text-left">{row.percent > 10 ? `${Math.round(row.percent)}%` : `${row.percent.toFixed(1)}%`}</strong>

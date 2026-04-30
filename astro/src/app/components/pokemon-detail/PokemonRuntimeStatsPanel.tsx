@@ -173,7 +173,7 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
                     <CategoryBadgeLink parsed={row.parsed} href={getCategoryHref(row.parsed.label)} />
                   </span>
                   <div className="h-2 overflow-hidden rounded-full">
-                    <div className="h-full" style={{ width: `${Math.max(0, Math.min(100, row.widthPercent)).toFixed(1)}%`, backgroundColor: row.color }} />
+                    <div className="h-full rounded-full" style={{ width: `${Math.max(0, Math.min(100, row.widthPercent)).toFixed(1)}%`, backgroundColor: row.color }} />
                   </div>
                 </div>
                 <strong className="text-left">{formatPercent(row.percent)}</strong>
