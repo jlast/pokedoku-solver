@@ -48,10 +48,9 @@ function daysAgoFrom(value: string): number | null {
 
 interface PokemonRuntimeStatsPanelProps {
   statsKeyId: number;
-  variant?: "summary" | "sections";
 }
 
-export function PokemonRuntimeStatsPanel({ statsKeyId, variant = "sections" }: PokemonRuntimeStatsPanelProps) {
+function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntimeStatsPanelProps & { variant: "summary" | "sections" }) {
   const [stats, setStats] = useState<PokemonRuntimeStats | null>(null);
 
   useEffect(() => {
@@ -223,4 +222,12 @@ export function PokemonRuntimeStatsPanel({ statsKeyId, variant = "sections" }: P
       </article> : null}
     </>
   );
+}
+
+export function PokemonRuntimeStatsSummaryPanel({ statsKeyId }: PokemonRuntimeStatsPanelProps) {
+  return <PokemonRuntimeStatsPanelContent statsKeyId={statsKeyId} variant="summary" />;
+}
+
+export function PokemonRuntimeStatsSectionsPanel({ statsKeyId }: PokemonRuntimeStatsPanelProps) {
+  return <PokemonRuntimeStatsPanelContent statsKeyId={statsKeyId} variant="sections" />;
 }

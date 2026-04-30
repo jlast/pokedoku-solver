@@ -5,8 +5,7 @@ import { Header } from "../app/components/Header";
 import { Footer } from "../app/components/Footer";
 import Badge from "./Badge.astro";
 import Breadcrumb from "./Breadcrumb.astro";
-import { getPokemonSlug } from "../lib/data";
-import { PokemonRuntimeStatsPanel } from "../app/components/pokemon-detail/PokemonRuntimeStatsPanel";
+import { PokemonRuntimeStatsSectionsPanel, PokemonRuntimeStatsSummaryPanel } from "../app/components/pokemon-detail/PokemonRuntimeStatsPanel";
 import {
   TYPE_COLORS,
   DEX_DIFFICULTY_COLORS,
@@ -18,11 +17,10 @@ import type { Pokemon } from "../lib/data";
 interface Props {
   pokemon: Pokemon;
   slug: string;
-  relatedPokemon: Pokemon[];
   statsKeyId: number;
 }
 
-const { pokemon, slug, relatedPokemon, statsKeyId } = Astro.props;
+const { pokemon, slug, statsKeyId } = Astro.props;
 const dexNumber = `#${String(pokemon.id).padStart(3, "0")}`;
 const rarityScore =
   typeof pokemon.dexDifficultyPercentile === "number"
@@ -90,7 +88,7 @@ const breadcrumbItems = [
               <span class="block text-sm text-slate-500">National Dex</span>
               <strong class="text-slate-900">#{pokemon.id}</strong>
             </article>
-            <PokemonRuntimeStatsPanel statsKeyId={statsKeyId} variant="summary" client:load />
+            <PokemonRuntimeStatsSummaryPanel statsKeyId={statsKeyId} client:load />
           </div>
         </div>
       </section>
@@ -98,7 +96,7 @@ const breadcrumbItems = [
       <section class="grid items-start gap-4 lg:grid-cols-2">
         <div class="grid gap-4">
           
-          <PokemonRuntimeStatsPanel statsKeyId={statsKeyId} variant="sections" client:load />
+          <PokemonRuntimeStatsSectionsPanel statsKeyId={statsKeyId} client:load />
 
         </div>
 
