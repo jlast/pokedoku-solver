@@ -8,7 +8,8 @@ export const CUSTOM_POKEMON: Pokemon[] = [
       "Bug"
     ],
     "region": "Kanto",
-    "evolutionStage": "First Stage"
+    "evolutionStage": "First Stage",
+    "formId": 100010
   }, 
   {
     "id": 449,
@@ -18,7 +19,8 @@ export const CUSTOM_POKEMON: Pokemon[] = [
     ],
     "region": "Sinnoh",
     "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/female/449.png",
-    "evolutionStage": "First Stage"
+    "evolutionStage": "First Stage",
+    "formId": 100449
   },
   {
     "id": 450,
@@ -31,7 +33,8 @@ export const CUSTOM_POKEMON: Pokemon[] = [
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
       "Evolved by Level"
-    ]
+    ],
+    "formId": 100450
   },
   {
     "id": 521,
@@ -45,6 +48,7 @@ export const CUSTOM_POKEMON: Pokemon[] = [
     "evolutionStage": "Final Stage",
     "evolutionTrigger": [
       "Evolved by Level"
-    ]
+    ],
+    "formId": 100521
   },
 ]
