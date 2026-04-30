@@ -33,6 +33,8 @@ function toCanonicalConstraintCategory(category: string): ConstraintCategory {
   if (category === "type" || category === "types") return "types";
   if (category === "region" || category === "regions") return "regions";
   if (category === "evolution") return "evolution";
+  if (category === "move") return "move";
+  if (category === "ability") return "ability";
   return "category";
 }
 
