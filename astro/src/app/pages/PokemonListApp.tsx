@@ -46,8 +46,14 @@ function PokemonListApp() {
   const [expandedFilters, setExpandedFilters] = useState<Set<string>>(
     new Set([]),
   );
-  const [searchQuery, setSearchQuery] = useState("");
-  const [difficultyFilter, setDifficultyFilter] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return new URLSearchParams(window.location.search).get("search") ?? "";
+  });
+  const [difficultyFilter, setDifficultyFilter] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    return new URLSearchParams(window.location.search).getAll("difficulty");
+  });
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [visibleCount, setVisibleCount] = useState(INITIAL_RENDER_COUNT);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
@@ -103,12 +109,20 @@ function PokemonListApp() {
     }
 
     const params = getFiltersForUrl(filters);
+    const trimmedSearch = searchQuery.trim();
+
+    if (trimmedSearch) params.set("search", trimmedSearch);
+    else params.delete("search");
+
+    params.delete("difficulty");
+    difficultyFilter.forEach((value) => params.append("difficulty", value));
+
     if (sortBy) params.set("sortBy", sortBy);
     else params.delete("sortBy");
 
     const newUrl = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
     window.history.replaceState({}, "", newUrl);
-  }, [filters, sortBy]);
+  }, [filters, sortBy, searchQuery, difficultyFilter]);
 
   const toggleFilter = (categoryKey: string, value: string) => {
     resetVisibleCount();
