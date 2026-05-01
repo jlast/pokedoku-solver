@@ -191,6 +191,20 @@ const averageDifficultyColor = DEX_DIFFICULTY_COLORS[averageDifficultyLabel] ?? 
 const parsedLeftCategory = parseCategoryId(resolvedPair.left.key);
 const parsedRightCategory = parseCategoryId(resolvedPair.right.key);
 
+const { left, right } = resolvedPair;
+
+let query = "";
+
+if (left.type === right.type) {
+  // Same type → comma-separated
+  query = `${left.type}=${encodeURIComponent(left.label)},${encodeURIComponent(right.label)}`;
+} else {
+  // Different types → separate params
+  query = `${left.type}=${encodeURIComponent(left.label)}&${right.type}=${encodeURIComponent(right.label)}`;
+}
+
+const seeAllHref = `/pokemon-list/?sortBy=difficulty-asc&${query}`;
+
 ---
 
 <AppPageLayout
@@ -241,7 +255,7 @@ const parsedRightCategory = parseCategoryId(resolvedPair.right.key);
               pokemon={pokemonSortedByDifficulty}
               category={resolvedPair.left.label}
               categoryType={resolvedPair.left.type}
-              seeAllHref={`/pokemon-list/?sortBy=difficulty-asc&${resolvedPair.left.type}=${encodeURIComponent(resolvedPair.left.label)}&${resolvedPair.right.type}=${encodeURIComponent(resolvedPair.right.label)}`}
+              seeAllHref={seeAllHref}
             />
 
             <CategoryPairHistoryTimelineCard pairSlug={canonicalSlug} client:load />
