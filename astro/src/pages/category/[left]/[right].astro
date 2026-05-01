@@ -8,12 +8,10 @@ import CategoryIconBadge from "../../../components/CategoryIconBadge.astro";
 import CategorySidebar from "../../../components/category/CategorySidebar.astro";
 import CategoryPokemonExamplesCard from "../../../components/category/CategoryPokemonExamplesCard.astro";
 import CategoryDifficultyDonutCard from "../../../components/category/CategoryDifficultyDonutCard.astro";
-import CategoryHistoryTimelineCard from "../../../components/category/CategoryHistoryTimelineCard.astro";
-import CategoryPairTopStats from "../../../components/category/CategoryPairTopStats.astro";
+import CategoryPairHistoryTimelineCard from "../../../app/components/category/CategoryPairHistoryTimelineCard";
 import { DEX_DIFFICULTY_COLORS } from "../../../../../lib/shared/constants";
 import {
   canonicalizePairSlugs,
-  fetchCategoryRuntimeStatsByCategoryId,
   getCategories,
   getCategoryPairs,
   getCategoryPairBySlugMap,
@@ -190,27 +188,9 @@ function formatAverageDifficulty(): string {
 const averageDifficultyLabel = formatAverageDifficulty();
 const averageDifficultyColor = DEX_DIFFICULTY_COLORS[averageDifficultyLabel] ?? "#64748b";
 
-const [leftRuntime, rightRuntime] = await Promise.all([
-  fetchCategoryRuntimeStatsByCategoryId(resolvedPair.left.key),
-  fetchCategoryRuntimeStatsByCategoryId(resolvedPair.right.key),
-]);
-const commonAppearanceDates =
-  leftRuntime && rightRuntime
-    ? leftRuntime.appearanceDates.filter((date: string) => rightRuntime.appearanceDates.includes(date)).slice(0, 5)
-    : [];
-const lastAppearedDate = commonAppearanceDates.length > 0 ? commonAppearanceDates[0] : null;
 const parsedLeftCategory = parseCategoryId(resolvedPair.left.key);
 const parsedRightCategory = parseCategoryId(resolvedPair.right.key);
 
-function formatDate(value: string): string {
-  const date = new Date(`${value}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
-}
 ---
 
 <AppPageLayout
@@ -239,13 +219,22 @@ function formatDate(value: string): string {
                 <CategoryIconBadge parsed={parsedRightCategory} />
                 <h1 class="m-0 text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">{resolvedPair.right.label}</h1>
               </div>
-              <CategoryPairTopStats
-                items={[
-                  { label: "Matching Pokemon", text: String(resolvedPair.count) },
-                  { label: "Last appeared", text: lastAppearedDate ? formatDate(lastAppearedDate) : "Unknown" },
-                  { label: "Average Difficulty", badgeText: averageDifficultyLabel, badgeColor: averageDifficultyColor },
-                ]}
-              />
+              <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
+                  <p class="m-0 text-xs uppercase tracking-[0.12em] text-slate-500">Matching Pokemon</p>
+                  <p class="m-0 mt-1 text-sm font-semibold text-slate-900">{String(resolvedPair.count)}</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
+                  <p class="m-0 text-xs uppercase tracking-[0.12em] text-slate-500">Last appeared</p>
+                  <p id="pair-last-appeared" class="m-0 mt-1 text-sm font-semibold text-slate-900">Loading...</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
+                  <p class="m-0 text-xs uppercase tracking-[0.12em] text-slate-500">Average Difficulty</p>
+                  <span class="mt-1 inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold text-white" style={`background-color: ${averageDifficultyColor}`}>
+                    {averageDifficultyLabel}
+                  </span>
+                </div>
+              </div>
             </section>
 
             <CategoryPokemonExamplesCard
@@ -255,7 +244,7 @@ function formatDate(value: string): string {
               seeAllHref={`/pokemon-list/?${resolvedPair.left.type}=${encodeURIComponent(resolvedPair.left.label)}&${resolvedPair.right.type}=${encodeURIComponent(resolvedPair.right.label)}`}
             />
 
-            <CategoryHistoryTimelineCard dates={commonAppearanceDates} />
+            <CategoryPairHistoryTimelineCard pairSlug={canonicalSlug} client:load />
 
             <CategoryDifficultyDonutCard pokemon={resolvedPair.pokemon} />
           </div>
@@ -265,4 +254,34 @@ function formatDate(value: string): string {
       <Footer client:load />
     </div>
   </div>
+  <script is:inline define:vars={{ canonicalSlug }}>
+    (() => {
+      const pairSlug = canonicalSlug;
+      const target = document.getElementById("pair-last-appeared");
+      if (!target) return;
+
+      const formatDate = (value) => {
+        const [year, month, day] = value.split("-").map(Number);
+        const date = Number.isFinite(year) && Number.isFinite(month) && Number.isFinite(day)
+          ? new Date(year, month - 1, day)
+          : new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(date);
+      };
+
+      fetch(`/data/runtime/category-pairs/${pairSlug}-stats.json?t=${Date.now()}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          const date = typeof data?.lastAppeared?.date === "string"
+            ? data.lastAppeared.date
+            : Array.isArray(data?.appearanceDates) && data.appearanceDates.length > 0
+              ? data.appearanceDates[0]
+              : null;
+          target.textContent = date ? formatDate(date) : "Unknown";
+        })
+        .catch(() => {
+          target.textContent = "Unknown";
+        });
+    })();
+  </script>
 </AppPageLayout>

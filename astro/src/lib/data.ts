@@ -48,6 +48,26 @@ export interface CategoryRuntimeStats {
   combinationMatches: CategoryRuntimeCombinationMatch[];
 }
 
+export interface CategoryPairRuntimeStats {
+  pairSlug: string;
+  categories: [string, string];
+  puzzlesAnalyzed: number;
+  dateRange: {
+    from: string;
+    to: string;
+  };
+  generatedAt: string;
+  totalAppearances: {
+    count: number;
+    percentage: number;
+  };
+  lastAppeared: {
+    date: string | null;
+    daysAgo: number | null;
+  };
+  appearanceDates: string[];
+}
+
 const ROOT_DIR = path.resolve(process.cwd(), "..");
 const POKEMON_PATH = path.join(ROOT_DIR, "public", "data", "pokemon.json");
 
@@ -210,6 +230,12 @@ export function getCategoryStatsFileNameByCategoryId(categoryId: string): string
   return fileName ?? null;
 }
 
+export function getCategoryPairStatsFileNameByPairSlug(pairSlug: string): string | null {
+  const pair = getCategoryPairBySlugMap().get(pairSlug);
+  if (!pair) return null;
+  return `${pair.slug}-stats.json`;
+}
+
 export async function fetchCategoryRuntimeStatsByCategoryId(categoryId: string): Promise<CategoryRuntimeStats | null> {
   const fileName = getCategoryStatsFileNameByCategoryId(categoryId);
   if (!fileName) return null;
@@ -223,6 +249,33 @@ export async function fetchCategoryRuntimeStatsByCategoryId(categoryId: string):
 
     const parsed = (await response.json()) as CategoryRuntimeStats;
     if (!parsed || typeof parsed.categoryId !== "string") return null;
+
+    const appearanceDates = Array.isArray(parsed.appearanceDates)
+      ? [...parsed.appearanceDates].sort((a, b) => b.localeCompare(a)).slice(0, 5)
+      : [];
+
+    return {
+      ...parsed,
+      appearanceDates,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchCategoryPairRuntimeStatsByPairSlug(pairSlug: string): Promise<CategoryPairRuntimeStats | null> {
+  const fileName = getCategoryPairStatsFileNameByPairSlug(pairSlug);
+  if (!fileName) return null;
+
+  const statsPath = `/data/runtime/category-pairs/${fileName}`;
+  const statsUrl = typeof window === "undefined" ? new URL(statsPath, SITE_URL).toString() : statsPath;
+
+  try {
+    const response = await fetch(`${statsUrl}?t=${Date.now()}`);
+    if (!response.ok) return null;
+
+    const parsed = (await response.json()) as CategoryPairRuntimeStats;
+    if (!parsed || typeof parsed.pairSlug !== "string") return null;
 
     const appearanceDates = Array.isArray(parsed.appearanceDates)
       ? [...parsed.appearanceDates].sort((a, b) => b.localeCompare(a)).slice(0, 5)
