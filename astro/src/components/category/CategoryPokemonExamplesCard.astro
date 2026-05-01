@@ -1,7 +1,7 @@
 ---
-import Badge from "../Badge.astro";
-import { DEX_DIFFICULTY_COLORS, TYPE_COLORS } from "../../../../lib/shared/constants";
-import { getPokemonSlug, type Pokemon } from "../../lib/data";
+import { PokemonCard } from "../../app/components/shared/PokemonCard";
+import { slugify } from "../../lib/slug";
+import type { Pokemon } from "../../../../lib/shared/types";
 
 interface Props {
   pokemon: Pokemon[];
@@ -24,44 +24,7 @@ const resolvedSeeAllHref = seeAllHref ?? `/pokemon-list/?${categoryType}=${categ
   {pokemon.length > 0 ? (
     <div class="pokemon-grid mt-3">
       {pokemon.slice(0, 4).map((entry) => (
-      <a
-        href={`/pokemon/${getPokemonSlug(entry)}/`}
-        class="pokemon-card block no-underline"
-      >
-        {entry.sprite ? (
-          <img
-            src={entry.sprite}
-            alt=""
-            class="pokemon-sprite"
-            loading="lazy"
-            decoding="async"
-            fetchpriority="low"
-          />
-        ) : (
-          <div class="pokemon-sprite-placeholder" />
-        )}
-        <div class="pokemon-card-info">
-          <div class="pokemon-card-name">{entry.name}</div>
-          <div class="pokemon-card-id">#{entry.id}</div>
-          <div class="pokemon-types">
-            {entry.types.map((type) => (
-              <span class="type-badge" style={{ backgroundColor: TYPE_COLORS[type!] }}>
-                {type}
-              </span>
-            ))}
-          </div>
-          {entry.dexDifficulty ? (
-            <span
-              class="dex-difficulty-badge"
-              style={{ backgroundColor: DEX_DIFFICULTY_COLORS[entry.dexDifficulty] }}
-            >
-              {entry.dexDifficulty}
-            </span>
-          ) : (
-            <Badge text="Unknown" color="#64748b" />
-          )}
-        </div>
-      </a>
+        <PokemonCard pokemon={entry} href={`/pokemon/${slugify(entry.name)}-${entry.formId ?? entry.id}/`} />
       ))}
     </div>
   ) : (

@@ -13,8 +13,7 @@ import { trackEvent } from "../../../../lib/browser/analytics";
 import { slugify } from "../../lib/slug";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
-import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
+import { PokemonCard } from "../components/shared/PokemonCard";
 
 type SortOption =
   | "number-asc"
@@ -456,48 +455,11 @@ function PokemonListApp() {
       <div className="pokemon-grid">
         {visiblePokemon.map((p) => {
           return (
-            <div
+            <PokemonCard
               key={`${p.id}-${p.name}`}
-              className="pokemon-card"
+              pokemon={p}
               onClick={() => handleCardClick(p)}
-            >
-              {p.sprite ? (
-                <img
-                  src={p.sprite}
-                  alt=""
-                  className="pokemon-sprite"
-                  loading="lazy"
-                  decoding="async"
-                  fetchPriority="low"
-                />
-              ) : (
-                <div className="pokemon-sprite-placeholder" />
-              )}
-              <div className="pokemon-card-info">
-                <div className="pokemon-card-name">{p.name}</div>
-                <div className="pokemon-card-id">#{p.id}</div>
-                <div className="pokemon-types">
-                  {p.types.map((type, i) => (
-                    <CategoryBadgeLink
-                      key={`${p.id}-${type}-${i}`}
-                      parsed={parseCategoryId(`types:${type}`)}
-                      href={null}
-                    />
-                  ))}
-                </div>
-                {p.dexDifficulty && (
-                  <span
-                    className="dex-difficulty-badge"
-                    style={{
-                      backgroundColor:
-                        DEX_DIFFICULTY_COLORS[p.dexDifficulty],
-                    }}
-                  >
-                    {p.dexDifficulty}
-                  </span>
-                )}
-              </div>
-            </div>
+            />
           );
         })}
       </div>

@@ -130,27 +130,27 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
         <h3 class="px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Selected</h3>
         <ul class="list gap-1.5">
           {activeEntries.map((activeEntry) => (
-            <li class="rounded-xl border border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)]">
-              <button
-                type="button"
-                data-mobile-category-item
-                data-search-label={activeEntry.label.toLowerCase()}
-                data-slug={activeEntry.slug}
-                class="flex w-full items-center justify-between gap-3 px-3 py-2 text-left"
-              >
-                <span class="inline-flex min-w-0 items-center gap-2 text-slate-900">
-                  <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ring-sky-300 bg-sky-100">
-                    <CategoryIconBadge parsed={parseCategoryId(activeEntry.key)} />
+            <li class="mb-1 flex w-full min-w-0 items-stretch">
+              <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)] ${activeEntries.length === 2 ? "rounded-e-none" : ""}`}>
+                <a
+                  href={`/category/${activeEntry.slug}/`}
+                  data-mobile-category-item
+                  data-search-label={activeEntry.label.toLowerCase()}
+                  data-slug={activeEntry.slug}
+                  class="flex w-full items-center justify-between gap-3 px-3 py-2 text-left no-underline"
+                >
+                  <span class="inline-flex min-w-0 items-center gap-2 text-slate-900">
+                    <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ring-sky-300 bg-sky-100">
+                      <CategoryIconBadge parsed={parseCategoryId(activeEntry.key)} />
+                    </span>
+                    <span class="truncate text-base font-medium">{activeEntry.label}</span>
                   </span>
-                  <span class="truncate text-base font-medium">{activeEntry.label}</span>
-                </span>
-                <span class="inline-flex items-center gap-1">
                   <span class="text-blue-600">✓</span>
-                  {activeEntries.length === 2 ? (
-                    <button type="button" data-mobile-remove-slug={activeEntry.slug} class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-600 cursor-pointer">-</button>
-                  ) : null}
-                </span>
-              </button>
+                </a>
+              </div>
+              {activeEntries.length === 2 ? (
+                <button type="button" data-mobile-remove-slug={activeEntry.slug} class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-slate-200 bg-white text-slate-700 cursor-pointer">-</button>
+              ) : null}
             </li>
           ))}
         </ul>
@@ -163,31 +163,27 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
               const parsed = parseCategoryId(entry.key);
               const isActive = activeSlugs.includes(entry.slug);
               return (
-                <li
-                  data-mobile-category-item-wrap
-                  data-search-label={entry.label.toLowerCase()}
-                  class={`rounded-xl border transition-all duration-150 ${isActive ? "border-sky-300 bg-sky-50/80" : "border-slate-200 bg-white"}`}
-                >
-                  <button
-                    type="button"
-                    data-mobile-category-item
-                    data-slug={entry.slug}
-                    data-search-label={entry.label.toLowerCase()}
-                    class="flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left"
-                  >
-                    <span class="inline-flex min-w-0 items-center gap-2 text-slate-900">
-                      <span class={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ${isActive ? "ring-sky-300 bg-sky-100" : "ring-slate-200 bg-slate-50"}`}>
-                        <CategoryIconBadge parsed={parsed} />
+                <li data-mobile-category-item-wrap data-search-label={entry.label.toLowerCase()} class="mb-1 flex w-full min-w-0 items-stretch">
+                  <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border transition-all duration-150 ${!isActive && activeSlugs.length === 1 ? "rounded-e-none" : ""} ${isActive ? "border-sky-300 bg-sky-50/80" : "border-slate-200 bg-white"}`}>
+                    <a
+                      href={`/category/${entry.slug}/`}
+                      data-mobile-category-item
+                      data-slug={entry.slug}
+                      data-search-label={entry.label.toLowerCase()}
+                      class="flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left no-underline"
+                    >
+                      <span class="inline-flex min-w-0 items-center gap-2 text-slate-900">
+                        <span class={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ${isActive ? "ring-sky-300 bg-sky-100" : "ring-slate-200 bg-slate-50"}`}>
+                          <CategoryIconBadge parsed={parsed} />
+                        </span>
+                        <span class="truncate text-base font-medium">{entry.label}</span>
                       </span>
-                      <span class="truncate text-base font-medium">{entry.label}</span>
-                    </span>
-                    <span class="inline-flex items-center gap-1">
                       <span class={`text-blue-600 ${isActive ? "" : "hidden"}`} data-mobile-check>✓</span>
-                      {!isActive && activeSlugs.length === 1 ? (
-                        <button type="button" data-mobile-add-slug={entry.slug} class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-700">+</button>
-                      ) : null}
-                    </span>
-                  </button>
+                    </a>
+                  </div>
+                  {!isActive && activeSlugs.length === 1 ? (
+                    <button type="button" data-mobile-add-slug={entry.slug} class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-slate-200 bg-white text-slate-700">+</button>
+                  ) : null}
                 </li>
               );
             })}
@@ -333,6 +329,7 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
       if (!(button instanceof HTMLElement)) return;
       const nextSlug = button.getAttribute("data-slug");
       if (!nextSlug) return;
+      event.preventDefault();
       if (selectedSlugs.length === 1 && nextSlug === selectedSlugs[0]) {
         closeSheet();
         return;

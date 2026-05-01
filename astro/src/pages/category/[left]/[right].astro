@@ -19,7 +19,6 @@ import {
   getCategoryPairBySlugMap,
   type CategoryPageData,
 } from "../../../lib/data";
-import type { Pokemon } from "../../../../../lib/shared/types";
 
 export function getStaticPaths() {
   const seen = new Set<string>();
@@ -120,7 +119,7 @@ const difficultyRank: Record<string, number> = {
   Easy: 1,
 };
 
-const pokemonSortedByDifficulty = [...pair.pokemon].sort((a: Pokemon, b: Pokemon) => {
+const pokemonSortedByDifficulty = [...pair.pokemon].sort((a, b) => {
   const rankA = a.dexDifficulty ? (difficultyRank[a.dexDifficulty] ?? 0) : 0;
   const rankB = b.dexDifficulty ? (difficultyRank[b.dexDifficulty] ?? 0) : 0;
   if (rankB !== rankA) return rankB - rankA;
