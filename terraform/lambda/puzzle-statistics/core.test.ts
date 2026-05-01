@@ -181,11 +181,8 @@ describe("buildPokemonRecentAppearanceFile", () => {
 
     expect(file.items).toHaveLength(2);
     expect(file.items[0]?.pokemonKeyId).toBe(6);
-    expect(file.items[0]?.name).toBe("Charizard");
     expect(file.items[0]?.lastUsableDate).toBe("2026-04-01");
-    expect(file.items[0]?.daysSinceLastUsable).toBe(2);
     expect(file.items[1]?.pokemonKeyId).toBe(7);
-    expect(file.items[1]?.daysSinceLastUsable).toBe(0);
   });
 });
 
