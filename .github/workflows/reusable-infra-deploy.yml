@@ -111,7 +111,7 @@ jobs:
 
       - name: Run puzzle statistics Lambda
         if: inputs.stats_lambda_changed == 'true' || inputs.stats_stack_changed == 'true'
-        timeout-minutes: 6
+        timeout-minutes: 15
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
           OUTPUT_KEY: PuzzleStatisticsFunctionArn

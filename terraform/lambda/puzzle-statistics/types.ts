@@ -114,6 +114,26 @@ export interface CategoryStatsFile {
   combinationMatches: CategoryCombinationMatch[];
 }
 
+export interface CategoryPairStatsFile {
+  pairSlug: string;
+  categories: [string, string];
+  puzzlesAnalyzed: number;
+  dateRange: {
+    from: string;
+    to: string;
+  };
+  generatedAt: string;
+  totalAppearances: {
+    count: number;
+    percentage: number;
+  };
+  lastAppeared: {
+    date: string | null;
+    daysAgo: number | null;
+  };
+  appearanceDates: string[];
+}
+
 export interface PrecomputedPuzzle {
   date: string;
   rowCategoryIds: string[];
@@ -148,6 +168,7 @@ export interface RuntimeDataBundle {
   stats: CategoryStats;
   pokemonStats: { files: PokemonStatsFile[]; skipped: number };
   categoryStats: { files: CategoryStatsFile[]; fileNameByCategoryId: Map<string, string> };
+  categoryPairStats: { files: CategoryPairStatsFile[]; fileNameByPairSlug: Map<string, string> };
   pokemon: Pokemon[];
   puzzles: Puzzle[];
 }

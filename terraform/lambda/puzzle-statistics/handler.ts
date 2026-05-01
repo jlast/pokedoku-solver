@@ -1,5 +1,6 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import {
+  buildCategoryPairStatsFiles,
   buildCategoryStatsFiles,
   buildPokemonRecentAppearanceFile,
   buildPokemonStatsFiles,
@@ -20,6 +21,7 @@ const PUZZLES_PREFIX = "data/runtime/puzzles/";
 const POKEMON_DATA_KEY = "data/pokemon.json";
 const POKEMON_STATS_PREFIX = "data/runtime/pokemon/";
 const CATEGORY_STATS_PREFIX = "data/runtime/categories/";
+const CATEGORY_PAIR_STATS_PREFIX = "data/runtime/category-pairs/";
 const POKEMON_LAST_USABLE_KEY = "data/runtime/pokemon-last-usable.json";
 const IO_CONCURRENCY = Number(process.env.IO_CONCURRENCY ?? 20);
 const LOG_EVERY_N = Number(process.env.LOG_EVERY_N ?? 100);
@@ -36,6 +38,7 @@ export async function handler() {
     puzzlesPrefix: PUZZLES_PREFIX,
     pokemonStatsPrefix: POKEMON_STATS_PREFIX,
     categoryStatsPrefix: CATEGORY_STATS_PREFIX,
+    categoryPairStatsPrefix: CATEGORY_PAIR_STATS_PREFIX,
     ioConcurrency: IO_CONCURRENCY,
     logEvery: LOG_EVERY_N,
   });
@@ -96,6 +99,13 @@ export async function handler() {
     elapsedMs: Date.now() - categoryStatsStartedAt,
   });
 
+  const categoryPairStatsStartedAt = Date.now();
+  const categoryPairStats = buildCategoryPairStatsFiles(puzzles);
+  console.log("category pair stats files built", {
+    fileCount: categoryPairStats.files.length,
+    elapsedMs: Date.now() - categoryPairStatsStartedAt,
+  });
+
   const writeSummaryStartedAt = Date.now();
   await putJsonToS3(s3, BUCKET_NAME, OUTPUT_KEY, stats);
   console.log("wrote summary stats file", { key: OUTPUT_KEY, elapsedMs: Date.now() - writeSummaryStartedAt });
@@ -127,12 +137,24 @@ export async function handler() {
     { label: "writeCategoryStats", logEvery: LOG_EVERY_N },
   );
 
+  await mapWithConcurrency(
+    categoryPairStats.files,
+    IO_CONCURRENCY,
+    async (categoryPairStatsFile) => {
+      const fileName = categoryPairStats.fileNameByPairSlug.get(categoryPairStatsFile.pairSlug);
+      if (!fileName) throw new Error(`Missing output filename for pair ${categoryPairStatsFile.pairSlug}`);
+      await putJsonToS3(s3, BUCKET_NAME, `${CATEGORY_PAIR_STATS_PREFIX}${fileName}`, categoryPairStatsFile);
+    },
+    { label: "writeCategoryPairStats", logEvery: LOG_EVERY_N },
+  );
+
   console.log("puzzle-statistics handler completed", {
     totalElapsedMs: Date.now() - startedAt,
     puzzlesAnalyzed: stats.puzzlesAnalyzed,
     pokemonStatsWritten: pokemonStats.files.length,
     pokemonStatsSkipped: pokemonStats.skipped,
     categoryStatsWritten: categoryStats.files.length,
+    categoryPairStatsWritten: categoryPairStats.files.length,
   });
 
   return {
@@ -148,6 +170,8 @@ export async function handler() {
       pokemonStatsSkipped: pokemonStats.skipped,
       categoryStatsPrefix: CATEGORY_STATS_PREFIX,
       categoryStatsWritten: categoryStats.files.length,
+      categoryPairStatsPrefix: CATEGORY_PAIR_STATS_PREFIX,
+      categoryPairStatsWritten: categoryPairStats.files.length,
       pokemonRecentAppearanceKey: POKEMON_LAST_USABLE_KEY,
     }),
   };

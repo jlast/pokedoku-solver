@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { buildCategoryStatsFiles, buildPokemonRecentAppearanceFile, buildStats, summarizeFormIdQuality } from "./core";
+import {
+  buildCategoryPairStatsFiles,
+  buildCategoryStatsFiles,
+  buildPokemonRecentAppearanceFile,
+  buildStats,
+  summarizeFormIdQuality,
+} from "./core";
 import type { Puzzle } from "./types";
 
 const puzzles: Puzzle[] = [
@@ -78,6 +84,22 @@ describe("buildCategoryStatsFiles", () => {
     expect(bugStats?.appearanceDates).toEqual([]);
     expect(bugStats?.lastAppeared.date).toBeNull();
     expect(bugStats?.combinationMatches).toEqual([]);
+  });
+});
+
+describe("buildCategoryPairStatsFiles", () => {
+  it("builds per-pair appearance history using canonical pair slugs", () => {
+    const result = buildCategoryPairStatsFiles(puzzles);
+    const pairStats = result.files.find((file) => file.pairSlug === "starter-x-fire");
+
+    expect(pairStats).toBeDefined();
+    expect(pairStats?.categories).toEqual(["category:Starter", "types:Fire"]);
+    expect(pairStats?.totalAppearances.count).toBe(1);
+    expect(pairStats?.totalAppearances.percentage).toBeCloseTo(33.33, 2);
+    expect(pairStats?.appearanceDates).toEqual(["2026-04-01"]);
+    expect(pairStats?.lastAppeared.date).toBe("2026-04-01");
+    expect(pairStats?.lastAppeared.daysAgo).toBe(2);
+    expect(result.fileNameByPairSlug.get("starter-x-fire")).toBe("starter-x-fire-stats.json");
   });
 });
 

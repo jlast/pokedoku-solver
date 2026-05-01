@@ -67,7 +67,7 @@ Resources:
       Runtime: nodejs20.x
       Handler: puzzle-statistics.handler
       Role: !GetAtt PuzzleStatisticsRole.Arn
-      Timeout: 300
+      Timeout: 900
       MemorySize: 256
       Environment:
         Variables:

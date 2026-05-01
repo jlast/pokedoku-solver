@@ -1,10 +1,11 @@
 import { FILTER_CATEGORIES } from "../../../lib/shared/filters";
 import { PAIR_FREQUENCY_BUCKETS } from "../../../lib/shared/pairFrequencyBuckets";
 import type { Pokemon } from "../../../lib/shared/types";
-import { buildCategoryOutputFileNames, parseCategoryId } from "./category-filenames";
+import { buildCategoryOutputFileNames, parseCategoryId, slugify } from "./category-filenames";
 import type {
   CategoryCount,
   CategoryPair,
+  CategoryPairStatsFile,
   CategoryStats,
   CategoryStatsFile,
   CategoryStatsSection,
@@ -263,6 +264,16 @@ function precomputePuzzles(puzzles: Puzzle[]): PrecomputedPuzzle[] {
   }));
 }
 
+function toCategoryValueSlug(categoryId: string): string {
+  const { value } = parseCategoryId(categoryId);
+  return slugify(value);
+}
+
+function toPairSlug(categories: [string, string]): string {
+  const [left, right] = categories;
+  return `${toCategoryValueSlug(left)}-x-${toCategoryValueSlug(right)}`;
+}
+
 function buildAllCategoryIds(precomputedPuzzles: PrecomputedPuzzle[]): string[] {
   const set = new Set<string>();
   for (const puzzle of precomputedPuzzles) {
@@ -324,6 +335,7 @@ export function buildCategoryStatsFiles(
       }
     }
 
+    const appearanceCount = appearanceDates.length;
     appearanceDates = appearanceDates.sort().reverse().slice(0, 5);
     const lastAppearedDate = appearanceDates.length > 0 ? appearanceDates[0] : null;
     const combinationMatches = Array.from(combinationMatchesMap.entries())
@@ -343,8 +355,8 @@ export function buildCategoryStatsFiles(
       dateRange,
       generatedAt,
       totalAppearances: {
-        count: appearanceDates.length,
-        percentage: puzzles.length === 0 ? 0 : roundTo((appearanceDates.length / puzzles.length) * 100, 2),
+        count: appearanceCount,
+        percentage: puzzles.length === 0 ? 0 : roundTo((appearanceCount / puzzles.length) * 100, 2),
       },
       lastAppeared: {
         date: lastAppearedDate,
@@ -357,6 +369,65 @@ export function buildCategoryStatsFiles(
 
   files.sort((a, b) => a.categoryId.localeCompare(b.categoryId));
   return { files, fileNameByCategoryId };
+}
+
+export function buildCategoryPairStatsFiles(
+  puzzles: Puzzle[],
+): { files: CategoryPairStatsFile[]; fileNameByPairSlug: Map<string, string> } {
+  const dateRange = getDateRange(puzzles);
+  const generatedAt = new Date().toISOString();
+  const latestPuzzleDate = dateRange.to;
+  const precomputedPuzzles = precomputePuzzles(puzzles);
+  const occurrencesByPair = new Map<string, number>();
+  const datesByPair = new Map<string, string[]>();
+
+  for (const puzzle of precomputedPuzzles) {
+    for (const rowCategoryId of puzzle.rowCategoryIds) {
+      for (const colCategoryId of puzzle.colCategoryIds) {
+        const categories = [rowCategoryId, colCategoryId].sort() as [string, string];
+        const pairKey = `${categories[0]}||${categories[1]}`;
+        increment(occurrencesByPair, pairKey);
+        const existingDates = datesByPair.get(pairKey);
+        if (existingDates) {
+          existingDates.push(puzzle.date);
+        } else {
+          datesByPair.set(pairKey, [puzzle.date]);
+        }
+      }
+    }
+  }
+
+  const files: CategoryPairStatsFile[] = [];
+  const fileNameByPairSlug = new Map<string, string>();
+
+  for (const [pairKey, count] of occurrencesByPair.entries()) {
+    const categories = pairKey.split("||") as [string, string];
+    const pairSlug = toPairSlug(categories);
+    const sortedDates = [...(datesByPair.get(pairKey) ?? [])].sort().reverse();
+    const appearanceDates = sortedDates.slice(0, 5);
+    const lastAppearedDate = appearanceDates.length > 0 ? appearanceDates[0] : null;
+
+    files.push({
+      pairSlug,
+      categories,
+      puzzlesAnalyzed: puzzles.length,
+      dateRange,
+      generatedAt,
+      totalAppearances: {
+        count,
+        percentage: puzzles.length === 0 ? 0 : roundTo((count / puzzles.length) * 100, 2),
+      },
+      lastAppeared: {
+        date: lastAppearedDate,
+        daysAgo: lastAppearedDate && latestPuzzleDate ? daysBetween(lastAppearedDate, latestPuzzleDate) : null,
+      },
+      appearanceDates,
+    });
+    fileNameByPairSlug.set(pairSlug, `${pairSlug}-stats.json`);
+  }
+
+  files.sort((a, b) => a.pairSlug.localeCompare(b.pairSlug));
+  return { files, fileNameByPairSlug };
 }
 
 export function buildPokemonStatsFiles(

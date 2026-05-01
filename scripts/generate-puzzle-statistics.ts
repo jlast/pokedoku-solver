@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import type { Pokemon } from "../lib/shared/types";
 import {
+  buildCategoryPairStatsFiles,
   buildCategoryStatsFiles,
   buildPokemonRecentAppearanceFile,
   buildPokemonStatsFiles,
@@ -16,6 +17,7 @@ const runtimeDir = path.join(rootDir, "public", "data", "runtime");
 const puzzlesDir = path.join(runtimeDir, "puzzles");
 const pokemonStatsDir = path.join(runtimeDir, "pokemon");
 const categoriesStatsDir = path.join(runtimeDir, "categories");
+const categoryPairsStatsDir = path.join(runtimeDir, "category-pairs");
 const summaryPath = path.join(runtimeDir, "puzzle-stats.json");
 const pokemonRecentAppearancePath = path.join(runtimeDir, "pokemon-last-usable.json");
 const pokemonPath = path.join(rootDir, "public", "data", "pokemon.json");
@@ -54,6 +56,7 @@ async function main() {
   const stats = buildStats(puzzles, pokemon);
   const pokemonStats = buildPokemonStatsFiles(puzzles, pokemon);
   const categoryStats = buildCategoryStatsFiles(puzzles);
+  const categoryPairStats = buildCategoryPairStatsFiles(puzzles);
   const pokemonRecentAppearance = buildPokemonRecentAppearanceFile(puzzles, pokemon);
 
   await mkdir(runtimeDir, { recursive: true });
@@ -79,6 +82,18 @@ async function main() {
     }),
   );
 
+  await resetDirectory(categoryPairsStatsDir);
+  await Promise.all(
+    categoryPairStats.files.map((file) => {
+      const fileName = categoryPairStats.fileNameByPairSlug.get(file.pairSlug);
+      if (!fileName) {
+        throw new Error(`Missing output filename for pair ${file.pairSlug}`);
+      }
+
+      return writeFile(path.join(categoryPairsStatsDir, fileName), JSON.stringify(file, null, 2), "utf8");
+    }),
+  );
+
   console.log("Puzzle statistics generated locally", {
     puzzlesAnalyzed: stats.puzzlesAnalyzed,
     summaryPath,
@@ -88,6 +103,8 @@ async function main() {
     pokemonRecentAppearanceCount: pokemonRecentAppearance.items.length,
     categoryStatsDir: categoriesStatsDir,
     categoryStatsCount: categoryStats.files.length,
+    categoryPairStatsDir: categoryPairsStatsDir,
+    categoryPairStatsCount: categoryPairStats.files.length,
   });
 }
 
