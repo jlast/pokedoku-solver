@@ -20,7 +20,7 @@ const NAV_BUTTONS: NavButton[] = [
   { page: "custom", label: "Custom Puzzle", url: "custom/", icon: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" },
   { page: "pokemon-list", label: "All Pokemon", url: "pokemon-list/", icon: "M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z" },
   { page: "category", label: "Categories", url: "category/", icon: "M21.41 11.58 12.42 2.59A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .53.21 1.04.59 1.41l8.99 8.99a2 2 0 0 0 2.83 0l6.99-6.99a2 2 0 0 0 0-2.83zM6.5 8A1.5 1.5 0 1 1 8 6.5 1.5 1.5 0 0 1 6.5 8z" },
-  { page: "puzzle-stats", label: "Rarity Stats", url: "puzzle-stats/", icon: "M3 17h3V9H3v8zm5 0h3V5H8v12zm5 0h3v-4h-3v4zm5 2H2v2h16v-2z" },
+  { page: "puzzle-stats", label: "Pokedoku Insights", url: "puzzle-stats/", icon: "M3 17h3V9H3v8zm5 0h3V5H8v12zm5 0h3v-4h-3v4zm5 2H2v2h16v-2z" },
   { page: "tips", label: "Tips & Tricks", url: "tips/", icon: "M9 21h6v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2 11.7-.5.3V16h-3v-2h-1v2H10v-1.99l-.5-.3C7.99 12.79 7 11.01 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.01-.99 3.79-2.5 4.7z" },
 ];
 
