@@ -334,14 +334,23 @@
 }
 
 .cell.selected {
-  background: #475569;
-  color: #f1f5f9;
-  box-shadow: 0 0 0 3px #334155;
+  background: #bfdbfe;
+  color: #1e3a8a;
+  box-shadow: 0 0 0 4px #1d4ed8, inset 0 0 0 2px #ffffff;
+}
+
+.cell.filled.selected {
+  background: #dbeafe;
+  color: #1e3a8a;
 }
 
 .cell.selected .possible-count,
 .cell.selected .tap-hint {
-  color: #f1f5f9;
+  color: #1e3a8a;
+}
+
+.cell.selected .pokemon-name {
+  color: #1e3a8a;
 }
 
 .cell.filled {
