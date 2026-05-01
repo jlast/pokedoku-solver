@@ -9,6 +9,7 @@ import CategoryHeaderCard from "../../components/category/CategoryHeaderCard.ast
 import CategoryPokemonExamplesCard from "../../components/category/CategoryPokemonExamplesCard.astro";
 import CategoryDifficultyDonutCard from "../../components/category/CategoryDifficultyDonutCard.astro";
 import {
+  fetchCategoryRuntimeStatsByCategoryId,
   getCategoryBySlugMap,
   getCategories,
   getCategoryStatsFileNameByCategoryId,
@@ -30,6 +31,7 @@ if (!category) {
 
 const categories = getCategories();
 const statsFileName = getCategoryStatsFileNameByCategoryId(category.key);
+const runtimeStats = await fetchCategoryRuntimeStatsByCategoryId(category.key);
 
 const categoryTypeOrder: Record<string, number> = {
   types: 0,
@@ -104,18 +106,6 @@ const pokemonSortedByDifficulty = [...category.pokemon].sort(
     return a.name.localeCompare(b.name);
   },
 );
-
-const runtimeStats = {
-  categoryId: category.key,
-  categoryValue: category.label,
-  puzzlesAnalyzed: 0,
-  dateRange: { from: "", to: "" },
-  generatedAt: "",
-  totalAppearances: { count: 0, percentage: 0 },
-  lastAppeared: { date: null, daysAgo: null },
-  appearanceDates: [],
-  combinationMatches: [],
-};
 
 ---
 
