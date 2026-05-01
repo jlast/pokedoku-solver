@@ -192,8 +192,6 @@ export const IGNORE_SPECIAL_FORMS = new Set([
   "silvally",
   "sinistea",
   "polteageist",
-  "koraidon",
-  "miraidon",
   "poltchageist",
   "sinistcha",
   "mothim",
