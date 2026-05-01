@@ -122,6 +122,17 @@ function PokemonListApp() {
 
     const newUrl = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
     window.history.replaceState({}, "", newUrl);
+
+    const fullUrl = window.location.href;
+    const canonicalEl = document.querySelector('link[rel="canonical"]');
+    if (canonicalEl) {
+      canonicalEl.setAttribute("href", fullUrl);
+    }
+
+    const ogUrlEl = document.querySelector('meta[property="og:url"]');
+    if (ogUrlEl) {
+      ogUrlEl.setAttribute("content", fullUrl);
+    }
   }, [filters, sortBy, searchQuery, difficultyFilter]);
 
   const toggleFilter = (categoryKey: string, value: string) => {
