@@ -191,16 +191,16 @@ const averageDifficultyColor = DEX_DIFFICULTY_COLORS[averageDifficultyLabel] ?? 
 const parsedLeftCategory = parseCategoryId(resolvedPair.left.key);
 const parsedRightCategory = parseCategoryId(resolvedPair.right.key);
 
-const { left, right } = resolvedPair;
+const { resolvedLeft, resolvedRight } = resolvedPair;
 
 let query = "";
 
-if (left.type === right.type) {
+if (resolvedLeft.type === resolvedRight.type) {
   // Same type → comma-separated
-  query = `${left.type}=${encodeURIComponent(left.label)},${encodeURIComponent(right.label)}`;
+  query = `${resolvedLeft.type}=${encodeURIComponent(resolvedLeft.label)},${encodeURIComponent(resolvedRight.label)}`;
 } else {
   // Different types → separate params
-  query = `${left.type}=${encodeURIComponent(left.label)}&${right.type}=${encodeURIComponent(right.label)}`;
+  query = `${resolvedLeft.type}=${encodeURIComponent(resolvedLeft.label)}&${resolvedRight.type}=${encodeURIComponent(resolvedRight.label)}`;
 }
 
 const seeAllHref = `/pokemon-list/?sortBy=difficulty-asc&${query}`;
