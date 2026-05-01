@@ -70,11 +70,6 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
     };
   }, [mobileMenuOpen]);
 
-  const navigateTo = (url: string) => {
-    trackEvent("click_navigate", { url, from: currentPage });
-    window.location.assign(`${import.meta.env.BASE_URL}${url}`);
-  };
-
   return (
     <>
       <header className="mx-auto mb-6 text-center">
@@ -104,11 +99,10 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
               const isActive = btn.page === currentPage;
 
               return (
-                  <button
+                  <a
                     key={btn.label}
-                    onClick={() => {
-                      navigateTo(btn.url);
-                    }}
+                    href={`${import.meta.env.BASE_URL}${btn.url}`}
+                    onClick={() => trackEvent("click_navigate", { url: btn.url, from: currentPage })}
                     className={desktopNavButtonClass(isActive)}
                     aria-current={isActive ? "page" : undefined}
                   >
@@ -116,9 +110,9 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                     <path d={btn.icon} />
                   </svg>
                   {btn.label}
-                </button>
-              );
-            })}
+                  </a>
+                );
+              })}
           </nav>
 
           <div className="flex shrink-0 items-center justify-self-end gap-2">
@@ -209,10 +203,11 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                     const isActive = btn.page === currentPage;
 
                     return (
-                      <button
+                      <a
                         key={`mobile-${btn.label}`}
+                        href={`${import.meta.env.BASE_URL}${btn.url}`}
                         onClick={() => {
-                          navigateTo(btn.url);
+                          trackEvent("click_navigate", { url: btn.url, from: currentPage });
                           closeMobileMenu("navigate");
                         }}
                         className={mobileNavButtonClass(isActive)}
@@ -222,7 +217,7 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                           <path d={btn.icon} />
                         </svg>
                         {btn.label}
-                      </button>
+                      </a>
                     );
                   })}
 
