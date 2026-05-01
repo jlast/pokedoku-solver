@@ -1,0 +1,138 @@
+---
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import { Header } from "../../app/components/Header";
+import { Footer } from "../../app/components/Footer";
+import CategoryIconBadge from "../../components/CategoryIconBadge.astro";
+import { parseCategoryId } from "../../app/components/puzzle-stats/categoryUtils";
+import { getCategories, type CategoryPageData } from "../../lib/data";
+
+const categoryTypeOrder: Record<string, number> = {
+  types: 0,
+  regions: 1,
+  evolution: 2,
+  category: 3,
+};
+
+const categoryTypeLabel: Record<string, string> = {
+  types: "Types",
+  regions: "Regions",
+  evolution: "Evolution",
+  category: "Categories",
+};
+
+const categoriesByType = [...getCategories()].sort((a, b) => {
+  const parsedA = parseCategoryId(a.key);
+  const parsedB = parseCategoryId(b.key);
+  const typeRankA = categoryTypeOrder[parsedA.type] ?? 99;
+  const typeRankB = categoryTypeOrder[parsedB.type] ?? 99;
+
+  if (typeRankA !== typeRankB) return typeRankA - typeRankB;
+  if (b.count !== a.count) return b.count - a.count;
+  return a.label.localeCompare(b.label);
+});
+
+const groupedCategories = categoriesByType.reduce<
+  Array<{ type: string; label: string; items: CategoryPageData[] }>
+>((groups, item) => {
+  const parsed = parseCategoryId(item.key);
+  const type = parsed.type || "other";
+  const group = groups.find((entry) => entry.type === type);
+
+  if (group) {
+    group.items.push(item);
+  } else {
+    groups.push({
+      type,
+      label: categoryTypeLabel[type] ?? "Other",
+      items: [item],
+    });
+  }
+
+  return groups;
+}, []);
+---
+
+<AppPageLayout
+  title="Categories | Pokedoku Helper"
+  description="Browse Pokedoku categories and navigate to category pages."
+  path="/category/"
+>
+  <div id="root">
+    <div class="app min-h-screen px-4 py-6">
+      <Header
+        title="PokeDoku Category Explorer"
+        currentPage="category"
+        client:load
+      />
+
+      <main class="mx-auto w-full max-w-6xl px-2 pb-10">
+        <section class="mb-5 rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-sky-50/50 p-6 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <h1 class="m-0 text-4xl font-bold tracking-tight text-slate-900 max-md:text-3xl">Explore Categories</h1>
+          <p class="mt-2 mb-0 max-w-2xl text-lg leading-relaxed text-slate-600 max-md:text-base">
+            Pick a category to jump into detailed stats, examples, and combinations.
+          </p>
+          <div class="mt-5">
+            <label for="category-landing-search" class="sr-only">Search categories</label>
+            <input
+              id="category-landing-search"
+              type="search"
+              placeholder="Search categories..."
+              class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-800 outline-none ring-0 transition focus:border-sky-300 focus:shadow-[0_0_0_3px_rgba(56,189,248,0.15)]"
+            />
+          </div>
+        </section>
+
+        <section class="grid grid-cols-1 gap-4 lg:grid-cols-2" id="category-groups-grid">
+          {groupedCategories.map((group) => (
+            <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]" data-category-group>
+              <h2 class="m-0 px-1 pb-3 text-3xl font-semibold tracking-tight text-slate-900 max-md:text-2xl">{group.label}</h2>
+              <div class="grid grid-cols-2 gap-3 sm:grid-cols-3" data-category-tiles>
+                {group.items.map((entry) => (
+                  <a
+                    href={`/category/${entry.slug}/`}
+                    class="group flex min-h-[150px] flex-col items-center rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-3 text-center no-underline shadow-sm transition-all duration-150 hover:-translate-y-px hover:border-sky-300 hover:shadow-[0_12px_24px_rgba(14,116,144,0.15)]"
+                    data-category-tile
+                    data-search-label={entry.label.toLowerCase()}
+                  >
+                    <span class="mb-3 inline-flex items-center justify-center">
+                      <CategoryIconBadge parsed={parseCategoryId(entry.key)} size="lg" />
+                    </span>
+                    <span class="min-h-[2.5rem] text-sm leading-tight font-semibold text-slate-800">{entry.label}</span>
+                    <span class="mt-2 block text-xs font-medium text-slate-500">{entry.count} Pokemon</span>
+                  </a>
+                ))}
+              </div>
+            </article>
+          ))}
+        </section>
+      </main>
+
+      <Footer client:load />
+    </div>
+  </div>
+</AppPageLayout>
+
+<script>
+  const searchInput = document.getElementById("category-landing-search");
+  if (searchInput instanceof HTMLInputElement) {
+    const groups = Array.from(document.querySelectorAll("[data-category-group]"));
+    const tiles = Array.from(document.querySelectorAll("[data-category-tile]"));
+
+    const applyFilter = () => {
+      const query = searchInput.value.trim().toLowerCase();
+
+      for (const tile of tiles) {
+        const label = tile.getAttribute("data-search-label") ?? "";
+        const matches = query.length === 0 || label.includes(query);
+        tile.classList.toggle("hidden", !matches);
+      }
+
+      for (const group of groups) {
+        const visibleTiles = group.querySelectorAll("[data-category-tile]:not(.hidden)").length;
+        group.classList.toggle("hidden", visibleTiles === 0);
+      }
+    };
+
+    searchInput.addEventListener("input", applyFilter);
+  }
+</script>

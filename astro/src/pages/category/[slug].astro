@@ -121,13 +121,13 @@ const recentAppearanceDates = runtimeStats?.appearanceDates
     <div class="app min-h-screen px-4 py-6">
       <Header
         title="PokeDoku Category Explorer"
-        currentPage="puzzle-stats"
+        currentPage="category"
         client:load
       />
 
       <main class="mx-auto w-full max-w-6xl px-2 pb-10">
         <section class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[300px_1fr]">
-          <CategorySidebar groups={groupedCategories} activeSlug={slug} />
+          <CategorySidebar groups={groupedCategories} activeSlug={[slug]} />
 
           <div class="grid gap-4">
             <CategoryHeaderCard category={category} runtimeStats={runtimeStats} total={category.pokemon.length} />

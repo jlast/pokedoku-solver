@@ -5,14 +5,16 @@ import type { CategoryPageData } from "../../lib/data";
 
 interface Props {
   groups: Array<{ type: string; label: string; items: CategoryPageData[] }>;
-  activeSlug: string[];
+  activeSlug: string | string[];
 }
 
 const { groups, activeSlug } = Astro.props;
-const activeEntries = groups.flatMap((group) => group.items).filter((entry) => activeSlug.includes(entry.slug));
+const activeSlugs = Array.isArray(activeSlug) ? activeSlug : [activeSlug];
+const activeEntries = groups.flatMap((group) => group.items).filter((entry) => activeSlugs.includes(entry.slug));
+const activeSlugsJson = JSON.stringify(activeSlugs);
 ---
 
-<aside class="rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-4 shadow-[0_16px_34px_rgba(15,23,42,0.08)] lg:sticky lg:top-4" data-category-sidebar data-active-slug={activeSlug}>
+<aside class="rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-4 shadow-[0_16px_34px_rgba(15,23,42,0.08)] lg:sticky lg:top-4" data-category-sidebar data-active-slugs={activeSlugsJson}>
   <div class="mb-3 px-1 py-1 hidden lg:block">
     <h2 class="m-0 text-xl font-semibold tracking-tight text-slate-900">Categories</h2>
   </div>
@@ -51,15 +53,25 @@ const activeEntries = groups.flatMap((group) => group.items).filter((entry) => a
         <ul class="list gap-1.5">
         {
           activeEntries.map((activeEntry) => (
-            <li class="rounded-xl border border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)]">
-              <a href={`/category/${activeEntry.slug}/`} class="group flex items-center justify-between gap-3 px-3 py-2 no-underline">
-                <span class="inline-flex min-w-0 items-center gap-2 text-slate-800">
+            <li class="mb-1 flex w-full min-w-0 items-stretch">
+              <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)] ${activeEntries.length === 2 ? "rounded-e-none" : ""}`}>
+                <a href={`/category/${activeEntry.slug}/`} class="inline-flex w-full min-w-0 items-center gap-2 px-3 py-2 text-slate-800 no-underline">
                   <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ring-sky-300 bg-sky-100">
                     <CategoryIconBadge parsed={parseCategoryId(activeEntry.key)} />
                   </span>
                   <span class="truncate text-sm font-medium">{activeEntry.label}</span>
-                </span>
-              </a>
+                </a>
+              </div>
+              {activeEntries.length === 2 ? (
+                <button
+                  type="button"
+                  data-remove-slug={activeEntry.slug}
+                  class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-slate-200 bg-white text-slate-700 hover:-translate-y-px hover:border-slate-300 hover:shadow-sm cursor-pointer"
+                  aria-label={`Remove ${activeEntry.label}`}
+                >
+                  -
+                </button>
+              ) : null}
             </li>
           ))
         }
@@ -72,22 +84,28 @@ const activeEntries = groups.flatMap((group) => group.items).filter((entry) => a
         <ul class="list gap-1.5">
           {group.items.map((entry) => {
             const parsed = parseCategoryId(entry.key);
-            const isActive = activeSlug.includes(entry.slug);
+            const isActive = activeSlugs.includes(entry.slug);
 
             return (
-              <li
-                data-category-item
-                data-search-label={entry.label.toLowerCase()}
-                class={`rounded-xl border transition-all duration-150 ${isActive ? "border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)]" : "border-slate-200 bg-white hover:-translate-y-px hover:border-slate-300 hover:shadow-sm"}`}
-              >
-                <a href={`/category/${entry.slug}/`} class="group flex items-center justify-between gap-3 px-3 py-2 no-underline">
-                  <span class="inline-flex min-w-0 items-center gap-2 text-slate-800">
+              <li data-category-item data-search-label={entry.label.toLowerCase()} class="mb-1 flex w-full min-w-0 items-stretch">
+                <div
+                  class={`mr-[1px] min-w-0 flex-1 rounded-xl border transition-all duration-150 ${!isActive && activeSlugs.length === 1 ? "rounded-e-none" : ""} ${isActive ? "border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)]" : "border-slate-200 bg-white hover:-translate-y-px hover:border-slate-300 hover:shadow-sm"}`}
+                >
+                  <a href={`/category/${entry.slug}/`} class="inline-flex w-full min-w-0 items-center gap-2 px-3 py-2 text-slate-800 no-underline">
                     <span class={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ${isActive ? "ring-sky-300 bg-sky-100" : "ring-slate-200 bg-slate-50"}`}>
                       <CategoryIconBadge parsed={parsed} />
                     </span>
                     <span class="truncate text-sm font-medium">{entry.label}</span>
-                  </span>
-                </a>
+                  </a>
+                </div>
+                {!isActive && activeSlugs.length === 1 ? (
+                  <a href={`/category/${activeSlugs[0]}/${entry.slug}/`}
+                    class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-slate-200 bg-white text-slate-700 hover:-translate-y-px hover:border-slate-300 hover:shadow-sm"
+                    aria-label={`Add ${entry.label}`}
+                  >
+                    +
+                  </a>
+                ) : null}
               </li>
             );
           })}
@@ -126,7 +144,12 @@ const activeEntries = groups.flatMap((group) => group.items).filter((entry) => a
                   </span>
                   <span class="truncate text-base font-medium">{activeEntry.label}</span>
                 </span>
-                <span class="text-blue-600">✓</span>
+                <span class="inline-flex items-center gap-1">
+                  <span class="text-blue-600">✓</span>
+                  {activeEntries.length === 2 ? (
+                    <button type="button" data-mobile-remove-slug={activeEntry.slug} class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-600 cursor-pointer">-</button>
+                  ) : null}
+                </span>
               </button>
             </li>
           ))}
@@ -138,7 +161,7 @@ const activeEntries = groups.flatMap((group) => group.items).filter((entry) => a
           <ul class="list gap-1.5">
             {group.items.map((entry) => {
               const parsed = parseCategoryId(entry.key);
-              const isActive = activeSlug.includes(entry.slug);
+              const isActive = activeSlugs.includes(entry.slug);
               return (
                 <li
                   data-mobile-category-item-wrap
@@ -158,7 +181,12 @@ const activeEntries = groups.flatMap((group) => group.items).filter((entry) => a
                       </span>
                       <span class="truncate text-base font-medium">{entry.label}</span>
                     </span>
-                    <span class={`text-blue-600 ${isActive ? "" : "hidden"}`} data-mobile-check>✓</span>
+                    <span class="inline-flex items-center gap-1">
+                      <span class={`text-blue-600 ${isActive ? "" : "hidden"}`} data-mobile-check>✓</span>
+                      {!isActive && activeSlugs.length === 1 ? (
+                        <button type="button" data-mobile-add-slug={entry.slug} class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-700">+</button>
+                      ) : null}
+                    </span>
                   </button>
                 </li>
               );
@@ -178,7 +206,22 @@ const activeEntries = groups.flatMap((group) => group.items).filter((entry) => a
   const mobileSheet = document.getElementById("category-mobile-sheet");
   const mobileOverlay = document.getElementById("category-mobile-overlay");
   const mobileClose = document.getElementById("category-mobile-close");
-  const activeSlug = root instanceof HTMLElement ? (root.dataset.activeSlug ?? "") : "";
+  const initialActiveSlugs = root instanceof HTMLElement ? (root.dataset.activeSlugs ?? "[]") : "[]";
+  let selectedSlugs: string[] = [];
+  try {
+    const parsed = JSON.parse(initialActiveSlugs);
+    if (Array.isArray(parsed)) selectedSlugs = parsed.filter((value) => typeof value === "string");
+  } catch {
+    selectedSlugs = [];
+  }
+
+  const goSingle = (slug: string) => {
+    window.location.href = `/category/${slug}/`;
+  };
+
+  const goPair = (left: string, right: string) => {
+    window.location.href = `/category/${left}/${right}/`;
+  };
 
   if (searchInput instanceof HTMLInputElement) {
     const groups = Array.from(document.querySelectorAll("[data-category-group]"));
@@ -267,14 +310,68 @@ const activeEntries = groups.flatMap((group) => group.items).filter((entry) => a
     mobileList.addEventListener("click", (event) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
+      const removeButton = target.closest("[data-mobile-remove-slug]");
+      if (removeButton instanceof HTMLElement) {
+        event.stopPropagation();
+        const removeSlug = removeButton.getAttribute("data-mobile-remove-slug");
+        if (!removeSlug) return;
+        if (selectedSlugs.length === 2) {
+          const remaining = selectedSlugs.find((slug) => slug !== removeSlug);
+          if (remaining) goSingle(remaining);
+        }
+        return;
+      }
+      const addButton = target.closest("[data-mobile-add-slug]");
+      if (addButton instanceof HTMLElement) {
+        event.stopPropagation();
+        const addSlug = addButton.getAttribute("data-mobile-add-slug");
+        if (!addSlug || selectedSlugs.length !== 1) return;
+        goPair(selectedSlugs[0], addSlug);
+        return;
+      }
       const button = target.closest("[data-mobile-category-item]");
       if (!(button instanceof HTMLElement)) return;
       const nextSlug = button.getAttribute("data-slug");
-      if (!nextSlug || nextSlug === activeSlug) {
+      if (!nextSlug) return;
+      if (selectedSlugs.length === 1 && nextSlug === selectedSlugs[0]) {
         closeSheet();
         return;
       }
-      window.location.href = `/category/${nextSlug}/`;
+      if (selectedSlugs.length === 1) {
+        goSingle(nextSlug);
+        return;
+      }
+      if (selectedSlugs.length === 2) {
+        if (selectedSlugs.includes(nextSlug)) {
+          closeSheet();
+          return;
+        }
+        goSingle(nextSlug);
+      }
+    });
+  }
+
+  const desktopRoot = document.getElementById("category-desktop-list");
+  if (desktopRoot instanceof HTMLElement) {
+    desktopRoot.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const addButton = target.closest("[data-add-slug]");
+      if (addButton instanceof HTMLElement) {
+        event.preventDefault();
+        const addSlug = addButton.getAttribute("data-add-slug");
+        if (!addSlug || selectedSlugs.length !== 1) return;
+        goPair(selectedSlugs[0], addSlug);
+        return;
+      }
+      const removeButton = target.closest("[data-remove-slug]");
+      if (removeButton instanceof HTMLElement) {
+        event.preventDefault();
+        const removeSlug = removeButton.getAttribute("data-remove-slug");
+        if (!removeSlug || selectedSlugs.length !== 2) return;
+        const remaining = selectedSlugs.find((slug) => slug !== removeSlug);
+        if (remaining) goSingle(remaining);
+      }
     });
   }
 </script>

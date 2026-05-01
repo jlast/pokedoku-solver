@@ -3,13 +3,16 @@ import { getCategoryBarColor, getCategoryIconPath, type ParsedCategory } from ".
 
 interface Props {
   parsed: ParsedCategory;
+  size?: "sm" | "lg";
 }
 
-const { parsed } = Astro.props;
+const { parsed, size = "sm" } = Astro.props;
 const backgroundColor = getCategoryBarColor(parsed);
 const iconPath = getCategoryIconPath(parsed);
+const sizeClass = size === "lg" ? "h-12 w-12" : "h-5 w-5";
+const iconSizeClass = size === "lg" ? "h-7 w-7" : "h-3 w-3";
 ---
 
-<span aria-hidden class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full" style={`background-color:${backgroundColor};`}>
-  <img alt="" aria-hidden class="h-3 w-3" loading="lazy" onerror="this.style.display='none'" src={iconPath} />
+<span aria-hidden class={`inline-flex ${sizeClass} shrink-0 items-center justify-center rounded-full`} style={`background-color:${backgroundColor};`}>
+  <img alt="" aria-hidden class={`${iconSizeClass} object-contain`} loading="lazy" onerror="this.style.display='none'" src={iconPath} />
 </span>
