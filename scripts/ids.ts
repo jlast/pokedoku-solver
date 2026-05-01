@@ -351,7 +351,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // basculin white striped
     region: "Hisui",
   },
-  10220: {
+  10340: {
     // Zygarde 10%
     region: 'Alola'
   },
