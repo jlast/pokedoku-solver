@@ -134,7 +134,6 @@ function buildCategoryPairs(): CategoryPairPageData[] {
       const [left, right] = canonicalPairOrder(categories[i], categories[j]);
       const rightIds = new Set(right.pokemon.map((pokemon) => pokemon.formId ?? pokemon.id));
       const overlap = left.pokemon.filter((pokemon) => rightIds.has(pokemon.formId ?? pokemon.id));
-      if (overlap.length === 0) continue;
 
       pairs.push({
         left,
