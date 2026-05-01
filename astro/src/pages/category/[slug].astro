@@ -130,10 +130,13 @@ const pokemonSortedByDifficulty = [...category.pokemon].sort(
             <CategoryHeaderCard category={category} runtimeStats={runtimeStats} total={category.pokemon.length} />
 
             <CategoryPokemonExamplesCard pokemon={pokemonSortedByDifficulty} category={category.label} categoryType={category.type} />
-            
-            <CategoryDifficultyDonutCard pokemon={category.pokemon} />
 
-            <CategoryRuntimeCards statsFileName={statsFileName} client:load />
+            <section class="grid gap-4 lg:grid-cols-2">
+              <CategoryDifficultyDonutCard pokemon={category.pokemon} legendBelow={true} />
+              <CategoryRuntimeCards statsFileName={statsFileName} showCombinations={false} client:load />
+            </section>
+
+            <CategoryRuntimeCards statsFileName={statsFileName} showHistory={false} client:load />
 
           </div>
         </section>

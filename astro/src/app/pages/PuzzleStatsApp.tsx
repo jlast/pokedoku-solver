@@ -5,6 +5,7 @@ import { DonutChart } from "../components/charts/DonutChart";
 import { CategoryList, type CategoryCount } from "../components/puzzle-stats/CategoryList";
 import { PairList, type CategoryPair } from "../components/puzzle-stats/PairList";
 import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
+import { InfoTooltipIcon } from "../components/shared/InfoTooltipIcon";
 import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { slugify } from "../../lib/slug";
 import { trackEvent } from "../../../../lib/browser/analytics";
@@ -235,11 +236,11 @@ export default function PuzzleStatsApp() {
       </section>
 
       <section className="mb-5 grid gap-3 sm:grid-cols-2">
-        <article className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left shadow-sm">
+        <article className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
           <p className="text-sm text-slate-500">Puzzles analyzed</p>
           <p className="text-3xl font-bold text-slate-900">{stats.puzzlesAnalyzed}</p>
         </article>
-        <article className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left shadow-sm">
+        <article className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
           <p className="text-sm text-slate-500">Date range</p>
           <p className="text-lg font-semibold text-slate-900">
             {formatDate(stats.dateRange.from)} - {formatDate(stats.dateRange.to)}
@@ -249,7 +250,7 @@ export default function PuzzleStatsApp() {
 
       <section className="grid gap-4 lg:grid-cols-2">
 
-        <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
+        <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
           <h2 className="mb-3 text-xl">When Was This Pokemon Last Valid?</h2>
           <p className="mb-2 text-sm text-slate-600">Pokemon that have gone the longest without being usable in PokeDoku.</p>
           <ul className="m-0 grid list-none gap-2 p-0 mb-3">
@@ -310,8 +311,11 @@ export default function PuzzleStatsApp() {
           </div>
         </article>
 
-        <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-          <h2 className="mb-3 text-xl">Most used (top 5)</h2>
+        <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <div className="mb-3 flex items-center gap-2">
+            <h2 className="text-xl">Most used (top 5)</h2>
+            <InfoTooltipIcon text="Shows how often this item appears in puzzles. Higher percentages mean you're more likely to encounter it." />
+          </div>
           <div className="mb-3 inline-flex rounded-lg border border-slate-300 bg-white p-1">
             <button
               type="button"
@@ -335,8 +339,11 @@ export default function PuzzleStatsApp() {
           )}
         </article>
 
-        <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-          <h2 className="mb-3 text-xl">Least used (top 5)</h2>
+        <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <div className="mb-3 flex items-center gap-2">
+            <h2 className="text-xl">Least used (top 5)</h2>
+            <InfoTooltipIcon text="Shows how often this item appears in puzzles. Lower percentages mean you're less likely to encounter it." />
+          </div>
           <div className="mb-3 inline-flex rounded-lg border border-slate-300 bg-white p-1">
             <button
               type="button"
@@ -360,7 +367,7 @@ export default function PuzzleStatsApp() {
           )}
         </article>
 
-        <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
+        <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
           <h2 className="mb-3 text-xl">Category type breakdown</h2>
           <p className="mb-2 text-sm text-slate-600">How often each category type appears.</p>
           <div className="grid gap-4 md:grid-cols-[240px_1fr] md:items-center">
@@ -396,7 +403,7 @@ export default function PuzzleStatsApp() {
           </div>
         </article>
 
-        <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
+        <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
           <h2 className="mb-3 text-xl">Combination frequency distribution</h2>
           <p className="mb-2 text-sm text-slate-600">How often each unique category pair appears.</p>
           <div className="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">

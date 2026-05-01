@@ -12,6 +12,12 @@ const { groups, activeSlug } = Astro.props;
 const activeSlugs = Array.isArray(activeSlug) ? activeSlug : [activeSlug];
 const activeEntries = groups.flatMap((group) => group.items).filter((entry) => activeSlugs.includes(entry.slug));
 const activeSlugsJson = JSON.stringify(activeSlugs);
+const activeTypes = new Set(
+  groups
+    .filter((group) => group.items.some((entry) => activeSlugs.includes(entry.slug)))
+    .map((group) => group.type),
+);
+const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] ? [groups[0].type] : []);
 ---
 
 <aside class="rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-4 shadow-[0_16px_34px_rgba(15,23,42,0.08)] lg:sticky lg:top-4" data-category-sidebar data-active-slugs={activeSlugsJson}>
@@ -78,10 +84,20 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
         </ul>
       </section>
 
-    {groups.map((group) => (
-      <section class="grid gap-2" data-category-group>
-        <h3 class="px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">{group.label}</h3>
-        <ul class="list gap-1.5">
+    {groups.map((group) => {
+      const isInitiallyOpen = initialOpenTypes.has(group.type);
+      return (
+      <section class="grid gap-2" data-category-group data-group-type={group.type}>
+        <button
+          type="button"
+          class="flex items-center justify-between rounded-lg px-1 py-1 text-left"
+          data-group-toggle
+          aria-expanded={isInitiallyOpen ? "true" : "false"}
+        >
+          <h3 class="m-0 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">{group.label}</h3>
+          <span class="text-xs text-slate-400" data-group-chevron>{isInitiallyOpen ? "▼" : "▶"}</span>
+        </button>
+        <ul class={`list gap-1.5 ${isInitiallyOpen ? "" : "hidden"}`} data-group-content>
           {group.items.map((entry) => {
             const parsed = parseCategoryId(entry.key);
             const isActive = activeSlugs.includes(entry.slug);
@@ -111,7 +127,7 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
           })}
         </ul>
       </section>
-    ))}
+    )})}
   </div>
 
   <div id="category-mobile-overlay" class="fixed inset-0 z-[1200] hidden bg-slate-900/45"></div>
@@ -155,10 +171,20 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
           ))}
         </ul>
       </section>
-      {groups.map((group) => (
-        <section class="mb-4 grid gap-2" data-mobile-category-group>
-          <h3 class="px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">{group.label}</h3>
-          <ul class="list gap-1.5">
+      {groups.map((group) => {
+        const isInitiallyOpen = initialOpenTypes.has(group.type);
+        return (
+        <section class="mb-4 grid gap-2" data-mobile-category-group data-group-type={group.type}>
+          <button
+            type="button"
+            class="flex items-center justify-between rounded-lg px-1 py-1 text-left"
+            data-mobile-group-toggle
+            aria-expanded={isInitiallyOpen ? "true" : "false"}
+          >
+            <h3 class="m-0 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">{group.label}</h3>
+            <span class="text-xs text-slate-400" data-mobile-group-chevron>{isInitiallyOpen ? "▼" : "▶"}</span>
+          </button>
+          <ul class={`list gap-1.5 ${isInitiallyOpen ? "" : "hidden"}`} data-mobile-group-content>
             {group.items.map((entry) => {
               const parsed = parseCategoryId(entry.key);
               const isActive = activeSlugs.includes(entry.slug);
@@ -189,7 +215,7 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
             })}
           </ul>
         </section>
-      ))}
+      )})}
     </div>
   </div>
 </aside>
@@ -219,6 +245,46 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
     window.location.href = `/category/${left}/${right}/`;
   };
 
+  const setDesktopGroupExpanded = (group: Element, expanded: boolean) => {
+    const toggle = group.querySelector("[data-group-toggle]");
+    const content = group.querySelector("[data-group-content]");
+    const chevron = group.querySelector("[data-group-chevron]");
+    if (!(toggle instanceof HTMLElement) || !(content instanceof HTMLElement) || !(chevron instanceof HTMLElement)) return;
+    toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+    content.classList.toggle("hidden", !expanded);
+    chevron.textContent = expanded ? "▼" : "▶";
+  };
+
+  const setMobileGroupExpanded = (group: Element, expanded: boolean) => {
+    const toggle = group.querySelector("[data-mobile-group-toggle]");
+    const content = group.querySelector("[data-mobile-group-content]");
+    const chevron = group.querySelector("[data-mobile-group-chevron]");
+    if (!(toggle instanceof HTMLElement) || !(content instanceof HTMLElement) || !(chevron instanceof HTMLElement)) return;
+    toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+    content.classList.toggle("hidden", !expanded);
+    chevron.textContent = expanded ? "▼" : "▶";
+  };
+
+  const desktopGroups = Array.from(document.querySelectorAll("[data-category-group][data-group-type]"));
+  for (const group of desktopGroups) {
+    const toggle = group.querySelector("[data-group-toggle]");
+    if (!(toggle instanceof HTMLElement)) continue;
+    toggle.addEventListener("click", () => {
+      const expanded = toggle.getAttribute("aria-expanded") === "true";
+      setDesktopGroupExpanded(group, !expanded);
+    });
+  }
+
+  const mobileGroups = Array.from(document.querySelectorAll("[data-mobile-category-group][data-group-type]"));
+  for (const group of mobileGroups) {
+    const toggle = group.querySelector("[data-mobile-group-toggle]");
+    if (!(toggle instanceof HTMLElement)) continue;
+    toggle.addEventListener("click", () => {
+      const expanded = toggle.getAttribute("aria-expanded") === "true";
+      setMobileGroupExpanded(group, !expanded);
+    });
+  }
+
   if (searchInput instanceof HTMLInputElement) {
     const groups = Array.from(document.querySelectorAll("[data-category-group]"));
     const items = Array.from(document.querySelectorAll("[data-category-item]"));
@@ -235,6 +301,9 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
       for (const group of groups) {
         const visibleItems = group.querySelectorAll("[data-category-item]:not(.hidden)").length;
         group.classList.toggle("hidden", visibleItems === 0);
+        if (query.length > 0 && visibleItems > 0) {
+          setDesktopGroupExpanded(group, true);
+        }
       }
     };
 
@@ -257,6 +326,9 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
         const isSelectedGroup = group.querySelector("h3")?.textContent?.trim().toLowerCase() === "selected";
         if (isSelectedGroup) continue;
         group.classList.toggle("hidden", visibleItems === 0);
+        if (query.length > 0 && visibleItems > 0) {
+          setMobileGroupExpanded(group, true);
+        }
       }
     };
 

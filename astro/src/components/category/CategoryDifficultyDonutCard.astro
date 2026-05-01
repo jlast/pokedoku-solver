@@ -5,9 +5,10 @@ import type { Pokemon } from "../../lib/data";
 
 interface Props {
   pokemon: Pokemon[];
+  legendBelow?: boolean;
 }
 
-const { pokemon } = Astro.props;
+const { pokemon, legendBelow = false } = Astro.props;
 
 const orderedDifficulties = ["Easy", "Normal", "Hard", "Expert", "Nightmare", "Impossible"] as const;
 const unknownColor = "#94a3b8";
@@ -53,7 +54,7 @@ const segments: DonutSegment[] = legendRows.map((row) => ({
   </div>
 
   {total > 0 ? (
-    <div class="grid items-center gap-4 sm:grid-cols-[180px_1fr]">
+    <div class={`grid items-center gap-4 ${legendBelow ? "" : "sm:grid-cols-[180px_1fr]"}`}>
       <div class="mx-auto h-40 w-40">
         <DonutChart segments={segments} ariaLabel="Category difficulty distribution" size={180} />
       </div>

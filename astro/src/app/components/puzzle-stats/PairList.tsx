@@ -23,9 +23,12 @@ export function PairList({
     ),
   );
 
-  function getCategoryHref(label: string): string | null {
-    const slug = slugify(label);
-    return categorySlugSet.has(slug) ? `/category/${slug}/` : null;
+  function getPairHref(leftLabel: string, rightLabel: string): string | null {
+    const leftSlug = slugify(leftLabel);
+    const rightSlug = slugify(rightLabel);
+    if (!categorySlugSet.has(leftSlug) || !categorySlugSet.has(rightSlug)) return null;
+    const [a, b] = [leftSlug, rightSlug].sort((x, y) => x.localeCompare(y));
+    return `/category/${a}/${b}/`;
   }
 
   const maxCount = showDistributionBar ? Math.max(...items.map((item) => item.count), 0) : 0;
@@ -37,41 +40,56 @@ export function PairList({
         const right = parseCategoryId(item.categories[1]);
         const leftColor = getCategoryBarColor(left);
         const rightColor = getCategoryBarColor(right);
+        const pairHref = getPairHref(left.label, right.label);
         const percent = showDistributionBar && distributionTotal && distributionTotal > 0 ? (item.count / distributionTotal) * 100 : 0;
         const barWidthPercent = showDistributionBar && maxCount > 0 ? (item.count / maxCount) * 100 : 0;
         const barWidth = item.count > 0 ? `max(${barWidthPercent}%, 8px)` : "0%";
 
         return (
-          <li key={`${item.categories[0]}||${item.categories[1]}`} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <div className="min-w-0 flex-1">
-              <p className="min-w-0 text-slate-700">
-                <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
-                  <CategoryBadgeLink parsed={left} href={getCategoryHref(left.label)} />
-                </span>
-                <span className="mx-1 text-slate-400">+</span>
-                <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
-                  <CategoryBadgeLink parsed={right} href={getCategoryHref(right.label)} />
-                </span>
-              </p>
-              {showDistributionBar ? (
-                <div className="mt-2">
-                  <div className="h-1.5 w-full overflow-hidden rounded-full">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: barWidth,
-                        backgroundColor: leftColor,
-                        backgroundImage: `linear-gradient(90deg, ${leftColor} 0%, ${rightColor} 100%)`,
-                      }}
-                    />
+          <li key={`${item.categories[0]}||${item.categories[1]}`}>
+            <a
+              href={pairHref ?? "#"}
+              className={`flex items-center gap-3 rounded-lg border border-slate-200 px-3 py-2 no-underline transition ${
+                pairHref ? "hover:border-slate-300" : "pointer-events-none"
+              }`}
+              style={{ background: `linear-gradient(90deg, ${leftColor}18 0%, ${rightColor}18 100%), #ffffff` }}
+              aria-label={`Open ${left.label} and ${right.label} combination page`}
+            >
+              <div className="min-w-0 flex-1">
+                <p className="min-w-0 text-slate-700">
+                  <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
+                    <CategoryBadgeLink parsed={left} href={null} />
+                  </span>
+                  <span className="mx-1 text-slate-400">+</span>
+                  <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
+                    <CategoryBadgeLink parsed={right} href={null} />
+                  </span>
+                </p>
+                {showDistributionBar ? (
+                  <div className="mt-2">
+                    <div className="h-1.5 w-full overflow-hidden rounded-full">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: barWidth,
+                          backgroundColor: leftColor,
+                          backgroundImage: `linear-gradient(90deg, ${leftColor} 0%, ${rightColor} 100%)`,
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              ) : null}
-            </div>
-            <div className="shrink-0 text-right">
-              <span className="text-lg font-semibold text-slate-800">{item.count}</span>
-              {showDistributionBar ? <p className="text-xs text-slate-500">{percent.toFixed(1)}%</p> : null}
-            </div>
+                ) : null}
+              </div>
+              <div className="shrink-0 text-right">
+                <span className="text-lg font-semibold text-slate-800">{item.count}</span>
+                {showDistributionBar ? <p className="text-xs text-slate-500">{percent.toFixed(1)}%</p> : null}
+              </div>
+              <span className="shrink-0 text-slate-400">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </a>
           </li>
         );
       })}
