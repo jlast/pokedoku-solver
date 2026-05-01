@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildCategoryStatsFiles, buildStats, summarizeFormIdQuality } from "./core";
+import { buildCategoryStatsFiles, buildPokemonRecentAppearanceFile, buildStats, summarizeFormIdQuality } from "./core";
 import type { Puzzle } from "./types";
 
 const puzzles: Puzzle[] = [
@@ -134,6 +134,36 @@ describe("buildStats", () => {
 
     expect(stats.withoutLegacy.oldestPokemonLastUsable.length).toBe(1);
     expect(stats.withoutLegacy.oldestPokemonLastUsable[0]?.formId).toBe(6);
+  });
+});
+
+describe("buildPokemonRecentAppearanceFile", () => {
+  it("builds a stale-first list keyed by form id", () => {
+    const file = buildPokemonRecentAppearanceFile(puzzles, [
+      {
+        id: 6,
+        name: "Charizard",
+        types: ["Fire", "Flying"],
+        region: "Kanto",
+        evolutionStage: "Final Stage",
+        formId: 6,
+      },
+      {
+        id: 7,
+        name: "Squirtle",
+        types: ["Water"],
+        region: "Kanto",
+        formId: 7,
+      },
+    ]);
+
+    expect(file.items).toHaveLength(2);
+    expect(file.items[0]?.pokemonKeyId).toBe(6);
+    expect(file.items[0]?.name).toBe("Charizard");
+    expect(file.items[0]?.lastUsableDate).toBe("2026-04-01");
+    expect(file.items[0]?.daysSinceLastUsable).toBe(2);
+    expect(file.items[1]?.pokemonKeyId).toBe(7);
+    expect(file.items[1]?.daysSinceLastUsable).toBe(0);
   });
 });
 

@@ -13,6 +13,7 @@ import type {
   ConstraintMapping,
   PairFrequencySummary,
   PokemonLastUsable,
+  PokemonRecentAppearanceFile,
   PokemonStatsFile,
   PrecomputedPuzzle,
   Puzzle,
@@ -468,4 +469,39 @@ export function buildPokemonStatsFiles(
 
   files.sort((a, b) => a.pokemonKeyId - b.pokemonKeyId);
   return { files, skipped };
+}
+
+export function buildPokemonRecentAppearanceFile(
+  puzzles: Puzzle[],
+  pokemon: Pokemon[],
+): PokemonRecentAppearanceFile {
+  const generatedAt = new Date().toISOString();
+  const dateRange = getDateRange(puzzles);
+  const nameByPokemonKeyId = new Map<number, string>();
+
+  for (const entry of pokemon) {
+    const pokemonKeyId = toPokemonKeyId(entry);
+    if (pokemonKeyId === null || nameByPokemonKeyId.has(pokemonKeyId)) continue;
+    nameByPokemonKeyId.set(pokemonKeyId, entry.name);
+  }
+
+  const items = buildPokemonLastUsableStats(puzzles, pokemon)
+    .map((item) => ({
+      pokemonKeyId: item.formId,
+      lastUsableDate: item.lastUsableDate,
+    }))
+    .sort((a, b) => {
+      if (a.lastUsableDate !== b.lastUsableDate) {
+        if (a.lastUsableDate === null) return -1;
+        if (b.lastUsableDate === null) return 1;
+        return a.lastUsableDate.localeCompare(b.lastUsableDate);
+      }
+      return a.pokemonKeyId - b.pokemonKeyId;
+    });
+
+  return {
+    generatedAt,
+    dateRange,
+    items,
+  };
 }

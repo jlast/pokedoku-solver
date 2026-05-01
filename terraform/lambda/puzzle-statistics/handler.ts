@@ -1,5 +1,11 @@
 import { S3Client } from "@aws-sdk/client-s3";
-import { buildCategoryStatsFiles, buildPokemonStatsFiles, buildStats, summarizeFormIdQuality } from "./core";
+import {
+  buildCategoryStatsFiles,
+  buildPokemonRecentAppearanceFile,
+  buildPokemonStatsFiles,
+  buildStats,
+  summarizeFormIdQuality,
+} from "./core";
 import {
   listPuzzleKeys,
   mapWithConcurrency,
@@ -14,6 +20,7 @@ const PUZZLES_PREFIX = "data/runtime/puzzles/";
 const POKEMON_DATA_KEY = "data/pokemon.json";
 const POKEMON_STATS_PREFIX = "data/runtime/pokemon/";
 const CATEGORY_STATS_PREFIX = "data/runtime/categories/";
+const POKEMON_LAST_USABLE_KEY = "data/runtime/pokemon-last-usable.json";
 const IO_CONCURRENCY = Number(process.env.IO_CONCURRENCY ?? 20);
 const LOG_EVERY_N = Number(process.env.LOG_EVERY_N ?? 100);
 const FORM_ID_MISSING_WARN_THRESHOLD = Number(process.env.FORM_ID_MISSING_WARN_THRESHOLD ?? 1);
@@ -93,6 +100,15 @@ export async function handler() {
   await putJsonToS3(s3, BUCKET_NAME, OUTPUT_KEY, stats);
   console.log("wrote summary stats file", { key: OUTPUT_KEY, elapsedMs: Date.now() - writeSummaryStartedAt });
 
+  const pokemonRecentAppearanceStartedAt = Date.now();
+  const pokemonRecentAppearance = buildPokemonRecentAppearanceFile(puzzles, pokemon);
+  await putJsonToS3(s3, BUCKET_NAME, POKEMON_LAST_USABLE_KEY, pokemonRecentAppearance);
+  console.log("wrote pokemon recent appearance file", {
+    key: POKEMON_LAST_USABLE_KEY,
+    itemCount: pokemonRecentAppearance.items.length,
+    elapsedMs: Date.now() - pokemonRecentAppearanceStartedAt,
+  });
+
   await mapWithConcurrency(
     pokemonStats.files,
     IO_CONCURRENCY,
@@ -132,6 +148,7 @@ export async function handler() {
       pokemonStatsSkipped: pokemonStats.skipped,
       categoryStatsPrefix: CATEGORY_STATS_PREFIX,
       categoryStatsWritten: categoryStats.files.length,
+      pokemonRecentAppearanceKey: POKEMON_LAST_USABLE_KEY,
     }),
   };
 }

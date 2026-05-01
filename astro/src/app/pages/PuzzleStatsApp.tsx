@@ -252,7 +252,7 @@ export default function PuzzleStatsApp() {
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
           <h2 className="mb-3 text-xl">When Was This Pokemon Last Valid?</h2>
           <p className="mb-2 text-sm text-slate-600">Pokemon that have gone the longest without being usable in PokeDoku.</p>
-          <ul className="m-0 grid list-none gap-2 p-0">
+          <ul className="m-0 grid list-none gap-2 p-0 mb-3">
             {derived.oldestVisiblePokemon.map((item) => {
               const pokemon = pokemonByFormId.get(item.formId);
               const pokemonSlug = pokemon ? `${slugify(pokemon.name)}-${pokemon.formId ?? pokemon.id}` : null;
@@ -303,6 +303,11 @@ export default function PuzzleStatsApp() {
               );
             })}
           </ul>
+          <div className="w-full flex justify-end">
+            <a href="/pokemon-list/?sortBy=recent-appearance" className="underline text-sm text-slate-600">
+                See all Pokemon
+            </a>
+          </div>
         </article>
 
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">

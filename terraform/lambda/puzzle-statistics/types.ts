@@ -1,6 +1,6 @@
 import type { Pokemon } from "../../../lib/shared/types";
 
-export type ConstraintCategory = "regions" | "types" | "evolution" | "category";
+export type ConstraintCategory = "regions" | "types" | "evolution" | "category" | "move" | "ability";
 
 export interface ConstraintMapping {
   category: ConstraintCategory;
@@ -62,6 +62,20 @@ export interface PokemonLastUsable {
   formId: number;
   lastUsableDate: string | null;
   daysSinceLastUsable: number | null;
+}
+
+export interface PokemonRecentAppearance {
+  pokemonKeyId: number;
+  lastUsableDate: string | null;
+}
+
+export interface PokemonRecentAppearanceFile {
+  generatedAt: string;
+  dateRange: {
+    from: string;
+    to: string;
+  };
+  items: PokemonRecentAppearance[];
 }
 
 export interface PokemonCategoryMatch {

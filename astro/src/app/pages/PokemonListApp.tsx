@@ -19,7 +19,36 @@ type SortOption =
   | "number-asc"
   | "number-desc"
   | "difficulty-desc"
-  | "difficulty-asc";
+  | "difficulty-asc"
+  | "recent-appearance"
+  | "recent-appearance-newest";
+
+interface PokemonRecentAppearanceItem {
+  pokemonKeyId: number;
+  daysSinceLastUsable?: number | null;
+  lastUsableDate?: string | null;
+}
+
+interface PokemonRecentAppearanceFile {
+  dateRange?: {
+    to?: string;
+  };
+  items: PokemonRecentAppearanceItem[];
+}
+
+function parseDay(dateString: string): number {
+  return new Date(`${dateString}T00:00:00.000Z`).getTime();
+}
+
+function toDaysSinceLastUsable(
+  item: PokemonRecentAppearanceItem,
+  latestPuzzleDate: string | undefined,
+): number | null {
+  if (typeof item.daysSinceLastUsable === "number") return item.daysSinceLastUsable;
+  if (!item.lastUsableDate || !latestPuzzleDate) return null;
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  return Math.floor((parseDay(latestPuzzleDate) - parseDay(item.lastUsableDate)) / millisecondsPerDay);
+}
 
 const INITIAL_RENDER_COUNT = 120;
 const RENDER_BATCH_SIZE = 80;
@@ -56,6 +85,9 @@ function PokemonListApp() {
   });
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [visibleCount, setVisibleCount] = useState(INITIAL_RENDER_COUNT);
+  const [daysSinceLastUsableByKeyId, setDaysSinceLastUsableByKeyId] = useState<Map<number, number | null>>(
+    new Map(),
+  );
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const resetVisibleCount = () => {
@@ -89,6 +121,22 @@ function PokemonListApp() {
       .catch((err) => {
         console.error("Failed to load Pokemon:", err);
         setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}data/runtime/pokemon-last-usable.json?t=${Date.now()}`)
+      .then((res) => res.json())
+      .then((data: PokemonRecentAppearanceFile) => {
+        const byKeyId = new Map<number, number | null>();
+        const latestPuzzleDate = data.dateRange?.to;
+        for (const item of data.items ?? []) {
+          byKeyId.set(item.pokemonKeyId, toDaysSinceLastUsable(item, latestPuzzleDate));
+        }
+        setDaysSinceLastUsableByKeyId(byKeyId);
+      })
+      .catch((err) => {
+        console.error("Failed to load Pokemon recent appearance:", err);
       });
   }, []);
 
@@ -187,7 +235,11 @@ function PokemonListApp() {
   const handleSortChange = (newSort: SortOption) => {
     setSortBy(newSort);
     resetVisibleCount();
-    const column = newSort.startsWith("number") ? "number" : "difficulty";
+    const column = newSort.startsWith("number")
+      ? "number"
+      : newSort.startsWith("difficulty")
+        ? "difficulty"
+        : "recent-appearance";
     trackEvent("change_sort", { column, sort: newSort });
   };
 
@@ -228,7 +280,7 @@ function PokemonListApp() {
     trackEvent("click_pokemon_detail", {
       name: p.name,
       id: p.id,
-      form_id: p.formId,
+      form_id: `${p.formId}`,
       slug,
       from: "pokemon-list",
     });
@@ -253,9 +305,23 @@ function PokemonListApp() {
         const bPercentile = b.dexDifficultyPercentile ?? 0;
         return aPercentile - bPercentile;
       });
+    } else if (sortBy === "recent-appearance") {
+      return copy.sort((a, b) => {
+        const aDays = daysSinceLastUsableByKeyId.get(a.formId ?? a.id) ?? Number.POSITIVE_INFINITY;
+        const bDays = daysSinceLastUsableByKeyId.get(b.formId ?? b.id) ?? Number.POSITIVE_INFINITY;
+        if (bDays !== aDays) return bDays - aDays;
+        return a.id - b.id;
+      });
+    } else if (sortBy === "recent-appearance-newest") {
+      return copy.sort((a, b) => {
+        const aDays = daysSinceLastUsableByKeyId.get(a.formId ?? a.id) ?? Number.POSITIVE_INFINITY;
+        const bDays = daysSinceLastUsableByKeyId.get(b.formId ?? b.id) ?? Number.POSITIVE_INFINITY;
+        if (aDays !== bDays) return aDays - bDays;
+        return a.id - b.id;
+      });
     }
     return copy;
-  }, [filteredPokemon, sortBy]);
+  }, [daysSinceLastUsableByKeyId, filteredPokemon, sortBy]);
 
   const visiblePokemon = useMemo(
     () => sortedPokemon.slice(0, visibleCount),
@@ -461,6 +527,8 @@ function PokemonListApp() {
                 <option value="number-desc">Pokemon # (high to low)</option>
                 <option value="difficulty-asc">Dex difficulty (hard to easy)</option>
                 <option value="difficulty-desc">Dex difficulty (easy to hard)</option>
+                <option value="recent-appearance">Recent appearance (oldest first)</option>
+                <option value="recent-appearance-newest">Recent appearance (newest first)</option>
               </select>
               <span className="sort-select-arrow" aria-hidden="true">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">

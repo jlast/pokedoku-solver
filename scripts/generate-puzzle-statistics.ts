@@ -2,7 +2,12 @@ import { mkdir, readdir, readFile, rm, writeFile } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import type { Pokemon } from "../lib/shared/types";
-import { buildCategoryStatsFiles, buildPokemonStatsFiles, buildStats } from "../terraform/lambda/puzzle-statistics/core";
+import {
+  buildCategoryStatsFiles,
+  buildPokemonRecentAppearanceFile,
+  buildPokemonStatsFiles,
+  buildStats,
+} from "../terraform/lambda/puzzle-statistics/core";
 import type { Puzzle } from "../terraform/lambda/puzzle-statistics/types";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -12,6 +17,7 @@ const puzzlesDir = path.join(runtimeDir, "puzzles");
 const pokemonStatsDir = path.join(runtimeDir, "pokemon");
 const categoriesStatsDir = path.join(runtimeDir, "categories");
 const summaryPath = path.join(runtimeDir, "puzzle-stats.json");
+const pokemonRecentAppearancePath = path.join(runtimeDir, "pokemon-last-usable.json");
 const pokemonPath = path.join(rootDir, "public", "data", "pokemon.json");
 
 async function readJsonFile<T>(filePath: string): Promise<T> {
@@ -48,9 +54,11 @@ async function main() {
   const stats = buildStats(puzzles, pokemon);
   const pokemonStats = buildPokemonStatsFiles(puzzles, pokemon);
   const categoryStats = buildCategoryStatsFiles(puzzles);
+  const pokemonRecentAppearance = buildPokemonRecentAppearanceFile(puzzles, pokemon);
 
   await mkdir(runtimeDir, { recursive: true });
   await writeFile(summaryPath, JSON.stringify(stats, null, 2), "utf8");
+  await writeFile(pokemonRecentAppearancePath, JSON.stringify(pokemonRecentAppearance, null, 2), "utf8");
 
   await resetDirectory(pokemonStatsDir);
   await Promise.all(
@@ -76,6 +84,8 @@ async function main() {
     summaryPath,
     pokemonStatsDir,
     pokemonStatsCount: pokemonStats.files.length,
+    pokemonRecentAppearancePath,
+    pokemonRecentAppearanceCount: pokemonRecentAppearance.items.length,
     categoryStatsDir: categoriesStatsDir,
     categoryStatsCount: categoryStats.files.length,
   });
