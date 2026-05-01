@@ -190,6 +190,8 @@ export const IGNORE_SPECIAL_FORMS = new Set([
   "furfrou",
   "xerneas",
   "silvally",
+  "koraidon",
+  "miraidon",
   "sinistea",
   "polteageist",
   "poltchageist",
