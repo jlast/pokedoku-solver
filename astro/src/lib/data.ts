@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { FILTER_CATEGORIES } from "../../../lib/shared/filters";
 import { makePairSlug, slugify } from "./slug";
+import { SITE_URL } from "./site";
 import type { Pokemon } from "../../../lib/shared/types";
 
 export interface CategoryPageData {
@@ -49,14 +50,13 @@ export interface CategoryRuntimeStats {
 
 const ROOT_DIR = path.resolve(process.cwd(), "..");
 const POKEMON_PATH = path.join(ROOT_DIR, "public", "data", "pokemon.json");
-const CATEGORY_STATS_DIR = path.join(ROOT_DIR, "public", "data", "runtime", "categories");
 
 let pokemonCache: Pokemon[] | null = null;
 let categoriesCache: CategoryPageData[] | null = null;
 let categoryBySlugCache: Map<string, CategoryPageData> | null = null;
 let pairsCache: CategoryPairPageData[] | null = null;
 let pairBySlugCache: Map<string, CategoryPairPageData> | null = null;
-let categoryRuntimeStatsByIdCache: Map<string, CategoryRuntimeStats> | null = null;
+let categoryStatsFileNameByIdCache: Map<string, string> | null = null;
 
 export function getPokemonList(): Pokemon[] {
   if (pokemonCache) return pokemonCache;
@@ -180,43 +180,60 @@ export function getCategoryPairBySlugs(leftSlug: string, rightSlug: string): Cat
   return getCategoryPairBySlugMap().get(canonicalSlug) ?? null;
 }
 
-function buildCategoryRuntimeStatsMap(): Map<string, CategoryRuntimeStats> {
-  const map = new Map<string, CategoryRuntimeStats>();
+function buildCategoryStatsFileNameByIdMap(): Map<string, string> {
+  const categoryIds = getCategories().map((category) => category.key).sort((a, b) => a.localeCompare(b));
+  const usedCounts = new Map<string, number>();
+  const map = new Map<string, string>();
 
-  if (!fs.existsSync(CATEGORY_STATS_DIR)) {
-    return map;
-  }
-
-  const files = fs.readdirSync(CATEGORY_STATS_DIR).filter((fileName) => fileName.endsWith(".json"));
-
-  for (const fileName of files) {
-    const filePath = path.join(CATEGORY_STATS_DIR, fileName);
-    const raw = fs.readFileSync(filePath, "utf8");
-    const parsed = JSON.parse(raw) as CategoryRuntimeStats;
-
-    if (parsed && typeof parsed.categoryId === "string") {
-      const appearanceDates = Array.isArray(parsed.appearanceDates)
-        ? [...parsed.appearanceDates].sort((a, b) => b.localeCompare(a)).slice(0, 5)
-        : [];
-
-      map.set(parsed.categoryId, {
-        ...parsed,
-        appearanceDates,
-      });
-    }
+  for (const categoryId of categoryIds) {
+    const categoryValue = categoryId.includes(":") ? categoryId.split(":").slice(1).join(":") : categoryId;
+    const base = slugify(categoryValue);
+    const seenCount = usedCounts.get(base) ?? 0;
+    const nextCount = seenCount + 1;
+    usedCounts.set(base, nextCount);
+    const fileName = nextCount === 1 ? `${base}-stats.json` : `${base}-${nextCount}-stats.json`;
+    map.set(categoryId, fileName);
   }
 
   return map;
 }
 
-export function getCategoryRuntimeStatsByIdMap(): Map<string, CategoryRuntimeStats> {
-  if (!categoryRuntimeStatsByIdCache) {
-    categoryRuntimeStatsByIdCache = buildCategoryRuntimeStatsMap();
+function getCategoryStatsFileNameByIdMap(): Map<string, string> {
+  if (!categoryStatsFileNameByIdCache) {
+    categoryStatsFileNameByIdCache = buildCategoryStatsFileNameByIdMap();
   }
 
-  return categoryRuntimeStatsByIdCache;
+  return categoryStatsFileNameByIdCache;
 }
 
-export function getCategoryRuntimeStatsByCategoryId(categoryId: string): CategoryRuntimeStats | null {
-  return getCategoryRuntimeStatsByIdMap().get(categoryId) ?? null;
+export function getCategoryStatsFileNameByCategoryId(categoryId: string): string | null {
+  const fileName = getCategoryStatsFileNameByIdMap().get(categoryId);
+  return fileName ?? null;
+}
+
+export async function fetchCategoryRuntimeStatsByCategoryId(categoryId: string): Promise<CategoryRuntimeStats | null> {
+  const fileName = getCategoryStatsFileNameByCategoryId(categoryId);
+  if (!fileName) return null;
+
+  const statsPath = `/data/runtime/categories/${fileName}`;
+  const statsUrl = typeof window === "undefined" ? new URL(statsPath, SITE_URL).toString() : statsPath;
+
+  try {
+    const response = await fetch(`${statsUrl}?t=${Date.now()}`);
+    if (!response.ok) return null;
+
+    const parsed = (await response.json()) as CategoryRuntimeStats;
+    if (!parsed || typeof parsed.categoryId !== "string") return null;
+
+    const appearanceDates = Array.isArray(parsed.appearanceDates)
+      ? [...parsed.appearanceDates].sort((a, b) => b.localeCompare(a)).slice(0, 5)
+      : [];
+
+    return {
+      ...parsed,
+      appearanceDates,
+    };
+  } catch {
+    return null;
+  }
 }

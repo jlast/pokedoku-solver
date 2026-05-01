@@ -2,19 +2,17 @@
 import AppPageLayout from "../../layouts/AppPageLayout.astro";
 import { Header } from "../../app/components/Header";
 import { Footer } from "../../app/components/Footer";
+import { CategoryRuntimeCards } from "../../app/components/category/CategoryRuntimeCards";
 import { parseCategoryId } from "../../app/components/puzzle-stats/categoryUtils";
 import CategorySidebar from "../../components/category/CategorySidebar.astro";
 import CategoryHeaderCard from "../../components/category/CategoryHeaderCard.astro";
-import CategoryCombinationsCard from "../../components/category/CategoryCombinationsCard.astro";
-import CategoryHistoryTimelineCard from "../../components/category/CategoryHistoryTimelineCard.astro";
 import CategoryPokemonExamplesCard from "../../components/category/CategoryPokemonExamplesCard.astro";
 import CategoryDifficultyDonutCard from "../../components/category/CategoryDifficultyDonutCard.astro";
 import {
   getCategoryBySlugMap,
   getCategories,
-  getCategoryRuntimeStatsByCategoryId,
+  getCategoryStatsFileNameByCategoryId,
   type CategoryPageData,
-  type Pokemon,
 } from "../../lib/data";
 
 export function getStaticPaths() {
@@ -31,7 +29,7 @@ if (!category) {
 }
 
 const categories = getCategories();
-const runtimeStats = getCategoryRuntimeStatsByCategoryId(category.key);
+const statsFileName = getCategoryStatsFileNameByCategoryId(category.key);
 
 const categoryTypeOrder: Record<string, number> = {
   types: 0,
@@ -88,7 +86,7 @@ const difficultyRank: Record<string, number> = {
 };
 
 const pokemonSortedByDifficulty = [...category.pokemon].sort(
-  (a: Pokemon, b: Pokemon) => {
+  (a, b) => {
     const rankA = a.dexDifficulty ? (difficultyRank[a.dexDifficulty] ?? 0) : 0;
     const rankB = b.dexDifficulty ? (difficultyRank[b.dexDifficulty] ?? 0) : 0;
     if (rankB !== rankA) return rankB - rankA;
@@ -107,9 +105,18 @@ const pokemonSortedByDifficulty = [...category.pokemon].sort(
   },
 );
 
-const recentAppearanceDates = runtimeStats?.appearanceDates
-  ? [...runtimeStats.appearanceDates]
-  : [];
+const runtimeStats = {
+  categoryId: category.key,
+  categoryValue: category.label,
+  puzzlesAnalyzed: 0,
+  dateRange: { from: "", to: "" },
+  generatedAt: "",
+  totalAppearances: { count: 0, percentage: 0 },
+  lastAppeared: { date: null, daysAgo: null },
+  appearanceDates: [],
+  combinationMatches: [],
+};
+
 ---
 
 <AppPageLayout
@@ -127,7 +134,7 @@ const recentAppearanceDates = runtimeStats?.appearanceDates
 
       <main class="mx-auto w-full max-w-6xl px-2 pb-10">
         <section class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[300px_1fr]">
-          <CategorySidebar groups={groupedCategories} activeSlug={[slug]} />
+          <CategorySidebar groups={groupedCategories} activeSlug={slug} />
 
           <div class="grid gap-4">
             <CategoryHeaderCard category={category} runtimeStats={runtimeStats} total={category.pokemon.length} />
@@ -136,13 +143,7 @@ const recentAppearanceDates = runtimeStats?.appearanceDates
             
             <CategoryDifficultyDonutCard pokemon={category.pokemon} />
 
-            <section class="grid gap-4 lg:grid-cols-2">
-              <CategoryCombinationsCard
-                combinations={runtimeStats?.combinationMatches ?? []}
-                puzzlesAnalyzed={runtimeStats?.puzzlesAnalyzed ?? 0}
-              />
-              <CategoryHistoryTimelineCard dates={recentAppearanceDates} />
-            </section>
+            <CategoryRuntimeCards statsFileName={statsFileName} client:load />
 
           </div>
         </section>
@@ -151,4 +152,5 @@ const recentAppearanceDates = runtimeStats?.appearanceDates
       <Footer client:load />
     </div>
   </div>
+
 </AppPageLayout>

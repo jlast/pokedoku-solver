@@ -13,13 +13,13 @@ import CategoryPairTopStats from "../../../components/category/CategoryPairTopSt
 import { DEX_DIFFICULTY_COLORS } from "../../../../../lib/shared/constants";
 import {
   canonicalizePairSlugs,
+  fetchCategoryRuntimeStatsByCategoryId,
   getCategories,
   getCategoryPairs,
   getCategoryPairBySlugMap,
-  getCategoryRuntimeStatsByCategoryId,
   type CategoryPageData,
-  type Pokemon,
 } from "../../../lib/data";
+import type { Pokemon } from "../../../../../lib/shared/types";
 
 export function getStaticPaths() {
   const seen = new Set<string>();
@@ -191,11 +191,13 @@ function formatAverageDifficulty(): string {
 const averageDifficultyLabel = formatAverageDifficulty();
 const averageDifficultyColor = DEX_DIFFICULTY_COLORS[averageDifficultyLabel] ?? "#64748b";
 
-const leftRuntime = getCategoryRuntimeStatsByCategoryId(resolvedPair.left.key);
-const rightRuntime = getCategoryRuntimeStatsByCategoryId(resolvedPair.right.key);
+const [leftRuntime, rightRuntime] = await Promise.all([
+  fetchCategoryRuntimeStatsByCategoryId(resolvedPair.left.key),
+  fetchCategoryRuntimeStatsByCategoryId(resolvedPair.right.key),
+]);
 const commonAppearanceDates =
   leftRuntime && rightRuntime
-    ? leftRuntime.appearanceDates.filter((date) => rightRuntime.appearanceDates.includes(date)).slice(0, 5)
+    ? leftRuntime.appearanceDates.filter((date: string) => rightRuntime.appearanceDates.includes(date)).slice(0, 5)
     : [];
 const lastAppearedDate = commonAppearanceDates.length > 0 ? commonAppearanceDates[0] : null;
 const parsedLeftCategory = parseCategoryId(resolvedPair.left.key);

@@ -16,15 +16,6 @@ if (!pokemon) {
   throw Astro.redirect("/pokemon-list/");
 }
 
-const pokemonList = getPokemonList();
-const relatedPokemon = pokemonList
-  .filter((entry) => {
-    if ((entry.formId ?? entry.id) === (pokemon.formId ?? pokemon.id)) return false;
-    if (entry.evolutionStage && pokemon.evolutionStage && entry.evolutionStage === pokemon.evolutionStage) return true;
-    return entry.types.some((type) => pokemon.types.includes(type));
-  })
-  .slice(0, 5);
-
 const statsKeyId = pokemon.formId ?? pokemon.id;
 
 ---
@@ -34,5 +25,5 @@ const statsKeyId = pokemon.formId ?? pokemon.id;
   description={`Details for ${pokemon.name}: type, region, evolution, and dex difficulty.`}
   path={`/pokemon/${slug}/`}
 >
-  <PokemonDetailPage pokemon={pokemon} slug={slug} relatedPokemon={relatedPokemon} statsKeyId={statsKeyId} />
+  <PokemonDetailPage pokemon={pokemon} slug={slug} statsKeyId={statsKeyId} />
 </AppPageLayout>

@@ -48,7 +48,7 @@ export type DexDifficulty = typeof DEX_DIFFICULTIES[number];
 export interface Pokemon {
   id: number;
   name: string;
-  types: [PokemonType, PokemonType?] | [PokemonType];
+  types: [PokemonType, PokemonType] | [PokemonType];
   region?: PokemonRegion;
   evolutionStage?: EvolutionMethod;
   evolutionTrigger?: EvolutionTrigger[];

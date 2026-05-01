@@ -298,7 +298,7 @@ export function buildCategoryStatsFiles(
 
   for (const categoryId of allCategoryIds) {
     const { value: categoryValue } = parseCategoryId(categoryId);
-    const appearanceDates: string[] = [];
+    let appearanceDates: string[] = [];
     const combinationMatchesMap = new Map<string, number>();
 
     for (const puzzle of precomputedPuzzles) {
@@ -323,8 +323,8 @@ export function buildCategoryStatsFiles(
       }
     }
 
-    appearanceDates.sort();
-    const lastAppearedDate = appearanceDates.length > 0 ? appearanceDates[appearanceDates.length - 1] : null;
+    appearanceDates = appearanceDates.sort().reverse().slice(0, 5);
+    const lastAppearedDate = appearanceDates.length > 0 ? appearanceDates[0] : null;
     const combinationMatches = Array.from(combinationMatchesMap.entries())
       .map(([pairKey, occurrences]) => ({ categories: pairKey.split("||") as [string, string], occurrences }))
       .sort((a, b) => {
