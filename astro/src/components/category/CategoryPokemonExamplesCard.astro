@@ -21,8 +21,9 @@ const resolvedSeeAllHref = seeAllHref ?? `/pokemon-list/?${categoryType}=${categ
         See all Pokemon
     </a>
   </div>
-  <div class="pokemon-grid mt-3">
-    {pokemon.slice(0, 4).map((entry) => (
+  {pokemon.length > 0 ? (
+    <div class="pokemon-grid mt-3">
+      {pokemon.slice(0, 4).map((entry) => (
       <a
         href={`/pokemon/${getPokemonSlug(entry)}/`}
         class="pokemon-card block no-underline"
@@ -61,6 +62,11 @@ const resolvedSeeAllHref = seeAllHref ?? `/pokemon-list/?${categoryType}=${categ
           )}
         </div>
       </a>
-    ))}
-  </div>
+      ))}
+    </div>
+  ) : (
+    <div class="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
+      No Pokemon currently match this category combination. Try another category or browse all Pokemon.
+    </div>
+  )}
 </article>
