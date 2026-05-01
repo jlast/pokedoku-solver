@@ -1,0 +1,96 @@
+---
+import AppPageLayout from "../layouts/AppPageLayout.astro";
+import { Header } from "../app/components/Header";
+import { Footer } from "../app/components/Footer";
+---
+
+<AppPageLayout
+  title="Page Not Found | Pokedoku Helper"
+  description="The page you tried to open does not exist on Pokedoku Helper."
+  path="/404"
+>
+  <main id="root" class="not-found-page">
+    <Header title="Pokedoku Helper" currentPage="today" />
+    <section class="not-found-card">
+      <img src="/images/content/sad_pikachu.png" alt="Sad Pikachu" class="sad-pikachu" />
+      <h1>That page is missing.</h1>
+      <p>
+        The URL may be outdated, or the page may have moved. Use the button below to
+        jump back to today's puzzle helper.
+      </p>
+      <a href="/" class="home-link">Go to homepage</a>
+    </section>
+    <Footer />
+  </main>
+</AppPageLayout>
+
+<style>
+  .not-found-page {
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 2rem;
+  }
+
+  .not-found-card {
+    margin: 1rem auto 0;
+    max-width: 38rem;
+    padding: 2.25rem;
+  }
+
+  .sad-pikachu {
+    display: block;
+    width: min(260px, 100%);
+    margin: 0 auto 1rem;
+    border: 6px solid #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(8, 6, 13, 0.12);
+    object-fit: cover;
+  }
+
+  .status {
+    display: inline-flex;
+    margin: 0 0 0.9rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
+    color: var(--text-h);
+    font-weight: 600;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--text-h);
+    font-family: var(--heading);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 1rem 0 0;
+  }
+
+  .home-link {
+    display: inline-flex;
+    margin-top: 1.4rem;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--accent-border);
+    background: var(--accent-bg);
+    color: var(--text-h);
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 160ms ease;
+  }
+
+  .home-link:hover {
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 720px) {
+    .not-found-card {
+      padding: 1.5rem;
+      border-radius: 14px;
+    }
+  }
+</style>
