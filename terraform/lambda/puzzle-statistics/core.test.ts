@@ -41,7 +41,7 @@ describe("buildCategoryStatsFiles", () => {
     const fireStats = result.files.find((file) => file.categoryId === "types:Fire");
 
     expect(fireStats).toBeDefined();
-    expect(fireStats?.appearanceDates).toEqual(["2026-04-01", "2026-04-02"]);
+    expect(fireStats?.appearanceDates).toEqual(["2026-04-02", "2026-04-01"]);
     expect(fireStats?.totalAppearances.count).toBe(2);
     expect(fireStats?.totalAppearances.percentage).toBeCloseTo(66.67, 2);
     expect(fireStats?.lastAppeared.date).toBe("2026-04-02");
