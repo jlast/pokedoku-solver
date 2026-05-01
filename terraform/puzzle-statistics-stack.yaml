@@ -18,6 +18,11 @@ Parameters:
     Type: String
     Default: "data/runtime/puzzle-stats.json"
     Description: "S3 key where puzzle statistics are written"
+  
+  PokemonLastUsableOutputKey:
+    Type: String
+    Default: "data/runtime/pokemon-last-usable.json"
+    Description: "S3 key where the last usable date for each Pokemon is stored"
 
 Resources:
   PuzzleStatisticsRole:
@@ -58,8 +63,10 @@ Resources:
                   - s3:PutObject
                 Resource:
                   - !Sub "arn:aws:s3:::${TargetBucketName}/${PuzzleStatisticsOutputKey}"
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/${PokemonLastUsableOutputKey}"
                   - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/pokemon/*"
                   - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/categories/*"
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/category-pairs/*"
 
   PuzzleStatisticsFunction:
     Type: AWS::Lambda::Function
