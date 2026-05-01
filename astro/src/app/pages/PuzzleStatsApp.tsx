@@ -191,7 +191,7 @@ export default function PuzzleStatsApp() {
   return (
     <div className="app">
       <Header
-        title="PokeDoku Rarity Stats"
+        title="Pokedoku Insights"
         subtitle="Explore historical category trends across past Pokedoku puzzles."
         currentPage="puzzle-stats"
       />
