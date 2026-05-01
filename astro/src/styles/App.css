@@ -1559,11 +1559,148 @@ footer span {
 }
 
 .filter-drawer-overlay {
-  display: none;
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: fadeIn 0.2s;
 }
 
 .filter-drawer {
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 85%;
+  max-width: 320px;
+  background: var(--bg);
+  z-index: 1000;
+  overflow-y: auto;
+  animation: slideIn 0.3s ease-out;
+}
+
+.controls-panel > .search-bar,
+.controls-panel > .pokemon-list-filters {
   display: none;
+}
+
+.filter-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+}
+
+.filter-drawer-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.filter-drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text);
+}
+
+.filter-drawer-content {
+  padding: 16px;
+}
+
+.filter-drawer-content .search-bar {
+  display: block;
+  margin-bottom: 16px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.filter-drawer-content .filter-group {
+  margin-bottom: 16px;
+}
+
+.filter-drawer-content .filter-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.filter-drawer-content .filter-header:hover {
+  background: var(--accent-bg);
+}
+
+.filter-drawer-content .filter-label {
+  font-weight: 600;
+  color: var(--text-h);
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.filter-drawer-content .filter-count {
+  background: var(--accent);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.filter-drawer-content .filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px;
+}
+
+.filter-drawer-content .filter-btn {
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filter-drawer-content .filter-btn.active {
+  color: white;
+}
+
+.filter-drawer-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  position: sticky;
+  bottom: 0;
+  background: var(--bg);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }
 
 @media (max-width: 600px) {
@@ -1571,151 +1708,6 @@ footer span {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-  }
-
-  .search-bar,
-  .pokemon-list-filters {
-    display: none;
-  }
-
-  .filter-drawer-overlay {
-    display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    animation: fadeIn 0.2s;
-  }
-
-  .filter-drawer {
-    display: block;
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 85%;
-    max-width: 320px;
-    background: var(--bg);
-    z-index: 1000;
-    overflow-y: auto;
-    animation: slideIn 0.3s ease-out;
-  }
-
-  .filter-drawer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-  }
-
-  .filter-drawer-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
-
-  .filter-drawer-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    color: var(--text);
-  }
-
-  .filter-drawer-content {
-    padding: 16px;
-  }
-
-  .filter-drawer-content .search-bar {
-    display: block;
-    margin-bottom: 16px;
-    padding: 0;
-    border: none;
-    background: none;
-  }
-
-  .filter-drawer-content .filter-group {
-    margin-bottom: 16px;
-  }
-
-  .filter-drawer-content .filter-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
-  }
-
-  .filter-drawer-content .filter-header:hover {
-    background: var(--accent-bg);
-  }
-
-  .filter-drawer-content .filter-label {
-    font-weight: 600;
-    color: var(--text-h);
-    font-size: 0.9rem;
-    flex: 1;
-  }
-
-  .filter-drawer-content .filter-count {
-    background: var(--accent);
-    color: white;
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 10px;
-  }
-
-  .filter-drawer-content .filter-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 12px;
-  }
-
-  .filter-drawer-content .filter-btn {
-    padding: 6px 12px;
-    border-radius: 16px;
-    border: 2px solid var(--border);
-    background: var(--bg);
-    color: var(--text);
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .filter-drawer-content .filter-btn.active {
-    color: white;
-  }
-
-  .filter-drawer-footer {
-    padding: 16px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    position: sticky;
-    bottom: 0;
-    background: var(--bg);
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes slideIn {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(0); }
   }
 }
 
@@ -1754,7 +1746,7 @@ footer span {
 }
 
 .filter-controls .filter-btn-main {
-  display: none;
+  display: inline-flex;
 }
 
 @media (max-width: 600px) {

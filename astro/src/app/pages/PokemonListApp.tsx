@@ -294,7 +294,7 @@ function PokemonListApp() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
             </svg>
-            Filters{" "}
+            Filter{" "}
             {getActiveFilters(filters) + difficultyFilter.length > 0 && (
               <span className="filter-count">
                 {getActiveFilters(filters) + difficultyFilter.length}

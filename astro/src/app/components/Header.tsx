@@ -30,14 +30,14 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
   const desktopNavButtonClass = (isActive: boolean) =>
     `inline-flex min-h-10 items-center gap-1.5 rounded-[10px] border px-2.5 text-[0.8rem] whitespace-nowrap transition-colors ${
       isActive
-        ? "cursor-default border-slate-700 bg-slate-700 text-white"
+        ? "cursor-pointer border-slate-700 bg-slate-700 text-white"
         : "cursor-pointer border-transparent bg-transparent text-slate-700 hover:border-indigo-200 hover:bg-indigo-50"
     }`;
 
   const mobileNavButtonClass = (isActive: boolean) =>
     `inline-flex w-full items-center justify-start gap-2 rounded-lg border-none px-3 py-2.5 text-left text-sm transition-colors ${
       isActive
-        ? "cursor-default bg-slate-500 text-white"
+        ? "cursor-pointer bg-slate-500 text-white"
         : "cursor-pointer bg-transparent text-slate-700 hover:bg-slate-50"
     }`;
 
@@ -104,16 +104,14 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
               const isActive = btn.page === currentPage;
 
               return (
-                <button
-                  key={btn.label}
-                  onClick={() => {
-                    if (isActive) return;
-                    navigateTo(btn.url);
-                  }}
-                  className={desktopNavButtonClass(isActive)}
-                  disabled={isActive}
-                  aria-current={isActive ? "page" : undefined}
-                >
+                  <button
+                    key={btn.label}
+                    onClick={() => {
+                      navigateTo(btn.url);
+                    }}
+                    className={desktopNavButtonClass(isActive)}
+                    aria-current={isActive ? "page" : undefined}
+                  >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d={btn.icon} />
                   </svg>
@@ -214,12 +212,10 @@ export function Header({ title, subtitle, showDate, currentPage }: HeaderProps) 
                       <button
                         key={`mobile-${btn.label}`}
                         onClick={() => {
-                          if (isActive) return;
                           navigateTo(btn.url);
                           closeMobileMenu("navigate");
                         }}
                         className={mobileNavButtonClass(isActive)}
-                        disabled={isActive}
                         aria-current={isActive ? "page" : undefined}
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
