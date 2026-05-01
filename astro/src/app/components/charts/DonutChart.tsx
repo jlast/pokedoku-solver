@@ -26,7 +26,9 @@ export function DonutChart({ segments, ariaLabel, size }: { segments: DonutSegme
     return <div aria-label={ariaLabel} className="h-full w-full rounded-full bg-slate-200" role="img" />;
   }
 
-  const resolvedSlices = segments.filter((segment) => segment.value > 0).reduce<{
+  const nonZeroSegments = segments.filter((segment) => segment.value > 0);
+
+  const resolvedSlices = nonZeroSegments.reduce<{
     runningDeg: number;
     slices: { path: string; color: string; key: string }[];
   }>(
@@ -53,9 +55,13 @@ export function DonutChart({ segments, ariaLabel, size }: { segments: DonutSegme
     <div className="relative">
       <div aria-label={ariaLabel} className="h-full w-full" role="img">
         <svg className="h-full w-full" viewBox={`0 0 ${size} ${size}`}>
-          {resolvedSlices.map((slice) => (
-            <path d={slice.path} fill={slice.color} key={slice.key} stroke="rgba(255,255,255,0.9)" strokeWidth={2} />
-          ))}
+          {nonZeroSegments.length === 1 ? (
+            <circle cx={radius} cy={radius} r={radius} fill={nonZeroSegments[0].color} />
+          ) : (
+            resolvedSlices.map((slice) => (
+              <path d={slice.path} fill={slice.color} key={slice.key} stroke="rgba(255,255,255,0.9)" strokeWidth={2} />
+            ))
+          )}
         </svg>
       </div>
       <div className="absolute inset-12 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
