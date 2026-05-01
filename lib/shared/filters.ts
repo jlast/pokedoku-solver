@@ -1,4 +1,4 @@
-import type { Pokemon } from './types';
+import type { Pokemon, PokemonCategory } from './types';
 import { TYPE_COLORS, REGION_COLORS, EVOLUTION_COLORS, CATEGORY_COLORS } from './constants';
 import { EVOLUTION_TRIGGERS } from './types';
 
@@ -73,11 +73,7 @@ export const FILTER_CATEGORIES: FilterCategory[] = [
     options: [
       ...Object.keys(CATEGORY_COLORS).map(name => ({
         name,
-        filter: (p: Pokemon) => {
-          if (name === 'Gigantamax') return p.specialForm === 'Gigantamax';
-          if (name === 'Mega Evolution') return p.specialForm === 'Mega Evolution';
-          return p.category === name;
-        },
+        filter: (p: Pokemon) => p.categories?.includes(name as PokemonCategory) ?? false,
         color: CATEGORY_COLORS[name],
       })),
     ],

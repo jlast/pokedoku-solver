@@ -36,10 +36,6 @@ export type EvolutionMethod = typeof EVOLUTION_METHODS[number];
 export type EvolutionBranched = typeof EVOLUTION_BRANCHED[number];
 export type EvolutionTrigger = typeof EVOLUTION_TRIGGERS[number];
 
-export const SPECIAL_FORMS = ['Gigantamax', 'Mega Evolution'] as const;
-
-export type SpecialForm = typeof SPECIAL_FORMS[number];
-
 export const POKEMON_CATEGORIES = [
   'Legendary', 'Mythical', 'Ultra Beast', 'Paradox', 'Fossil', 'First Partner', 'Baby', 'Gigantamax', 'Mega Evolution'
 ] as const;
@@ -57,8 +53,7 @@ export interface Pokemon {
   evolutionStage?: EvolutionMethod;
   evolutionTrigger?: EvolutionTrigger[];
   isBranched?: boolean;
-  specialForm?: SpecialForm;
-  category?: PokemonCategory;
+  categories?: PokemonCategory[];
   sprite?: string;
   dexDifficulty?: DexDifficulty;
   dexDifficultyPercentile?: number;

@@ -3,7 +3,6 @@ import type {
   EvolutionTrigger,
   PokemonType,
   PokemonRegion,
-  SpecialForm,
   PokemonCategory,
 } from "../lib/shared/types";
 
@@ -217,8 +216,7 @@ export interface PokemonOverride {
   evolutionStage?: EvolutionMethod;
   evolutionTrigger?: EvolutionTrigger[];
   isBranched?: boolean;
-  specialForm?: SpecialForm;
-  category?: PokemonCategory;
+  categories?: PokemonCategory[];
   sprite?: string;
 }
 

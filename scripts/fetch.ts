@@ -39,7 +39,7 @@ import type {
   PokeAPISpecies,
   EvolutionNode,
 } from "./lib/types";
-import type { Pokemon, PokemonType, DexDifficulty } from "../lib/shared/types";
+import type { Pokemon, PokemonType, DexDifficulty, PokemonCategory } from "../lib/shared/types";
 import { CUSTOM_POKEMON } from "./custom_pokemon";
 
 const NO_CACHE = process.argv.includes("--no-cache");
@@ -70,10 +70,14 @@ function getAllCategories(pokemon: Pokemon): string[] {
     categories.push("not fully evolved");
   if (pokemon.evolutionTrigger) categories.push(...pokemon.evolutionTrigger);
   if (pokemon.isBranched) categories.push("branched");
-  if (pokemon.specialForm) categories.push(pokemon.specialForm);
-  if (pokemon.category) categories.push(pokemon.category);
+  if (pokemon.categories?.length) categories.push(...pokemon.categories);
 
   return categories;
+}
+
+function addPokemonCategory(entry: Pokemon, category: PokemonCategory): void {
+  if (!entry.categories) entry.categories = [];
+  if (!entry.categories.includes(category)) entry.categories.push(category);
 }
 
 function calculateDexDifficulties(pokemonList: Pokemon[]): void {
@@ -285,14 +289,14 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
     formId,
   };
   
-  if (ULTRA_BEASTS.has(id)) entry.category = "Ultra Beast";
-  else if (FOSSIL_IDS.has(id)) entry.category = "Fossil";
-  else if (STARTER_IDS.has(formId)) entry.category = "First Partner";
-  else if (PARADOX_POKEMON.has(id)) entry.category = "Paradox";
+  if (ULTRA_BEASTS.has(id)) addPokemonCategory(entry, "Ultra Beast");
+  else if (FOSSIL_IDS.has(id)) addPokemonCategory(entry, "Fossil");
+  else if (STARTER_IDS.has(formId)) addPokemonCategory(entry, "First Partner");
+  else if (PARADOX_POKEMON.has(id)) addPokemonCategory(entry, "Paradox");
   if (species) {
-    if (species.is_legendary) entry.category = "Legendary";
-    if (species.is_mythical) entry.category = "Mythical";
-    if (species.is_baby) entry.category = "Baby";
+    if (species.is_legendary) addPokemonCategory(entry, "Legendary");
+    if (species.is_mythical) addPokemonCategory(entry, "Mythical");
+    if (species.is_baby) addPokemonCategory(entry, "Baby");
 
     if (
       !CANT_EVOLVE_FORMS.has(form.form_name) &&
@@ -319,8 +323,8 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
     }
   }
 
-  if (form.is_mega) entry.specialForm = "Mega Evolution";
-  if (form.form_name === "gmax") entry.specialForm = "Gigantamax";
+  if (form.is_mega) addPokemonCategory(entry, "Mega Evolution");
+  if (form.form_name === "gmax") addPokemonCategory(entry, "Gigantamax");
   if (form.form_name.includes("alola")) entry.region = "Alola";
   if (form.form_name.includes("galar")) entry.region = "Galar";
   if (form.form_name.includes("hisui")) entry.region = "Hisui";
@@ -336,8 +340,9 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
       entry.evolutionTrigger = formOverride.evolutionTrigger;
     if (formOverride.isBranched !== undefined)
       entry.isBranched = formOverride.isBranched;
-    if (formOverride.specialForm) entry.specialForm = formOverride.specialForm;
-    if (formOverride.category) entry.category = formOverride.category;
+    if (formOverride.categories?.length) {
+      entry.categories = formOverride.categories;
+    }
     if (formOverride.sprite) entry.sprite = formOverride.sprite;
   }
   if(!formOverride?.sprite) {

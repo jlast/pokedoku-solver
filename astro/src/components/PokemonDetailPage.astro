@@ -7,13 +7,11 @@ import { CategoryBadgeLink } from "../app/components/shared/CategoryBadgeLink";
 import { parseCategoryId } from "../app/components/puzzle-stats/categoryUtils";
 import { PokemonRuntimeStatsSectionsPanel, PokemonRuntimeStatsSummaryPanel } from "../app/components/pokemon-detail/PokemonRuntimeStatsPanel";
 import {
-  TYPE_COLORS,
   DEX_DIFFICULTY_COLORS,
   REGION_COLORS,
-  EVOLUTION_COLORS,
 } from "../../../lib/shared/constants";
 import { FILTER_CATEGORIES } from "../../../lib/shared/filters";
-import type { Pokemon } from "../lib/data";
+import type { Pokemon } from "../../../lib/shared/types";
 import { slugify } from "../lib/slug";
 
 interface Props {
@@ -22,7 +20,7 @@ interface Props {
   statsKeyId: number;
 }
 
-const { pokemon, slug, statsKeyId } = Astro.props;
+const { pokemon, slug, statsKeyId } = Astro.props as Props;
 const dexNumber = `#${String(pokemon.id).padStart(3, "0")}`;
 const rarityScore =
   typeof pokemon.dexDifficultyPercentile === "number"
@@ -55,6 +53,8 @@ const applicableCategoryIds = Array.from(
     ),
   ),
 );
+
+const categoryLabel = pokemon.categories?.length ? pokemon.categories.join(", ") : "-";
 
 ---
 
@@ -141,8 +141,7 @@ const applicableCategoryIds = Array.from(
           <ul class="grid gap-2">
             <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Region</span><strong style={`color:${REGION_COLORS[pokemon.region ?? ""] ?? "#0f172a"};`}>{pokemon.region ?? "Unknown"}</strong></li>
             <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Evolution stage</span><strong>{pokemon.evolutionStage ?? "Unknown"}</strong></li>
-            <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Category</span><strong>{pokemon.category ?? "-"}</strong></li>
-            <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Special form</span><strong>{pokemon.specialForm ?? "-"}</strong></li>
+            <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Categories</span><strong>{categoryLabel}</strong></li>
             <li class="flex items-center justify-between gap-3"><span class="text-slate-500">Evolution trigger</span><strong>{pokemon.evolutionTrigger?.join(", ") ?? "-"}</strong></li>
           </ul>
         </article>

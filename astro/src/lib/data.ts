@@ -2,22 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { FILTER_CATEGORIES } from "../../../lib/shared/filters";
 import { makePairSlug, slugify } from "./slug";
-
-export interface Pokemon {
-  id: number;
-  name: string;
-  types: string[];
-  region?: string;
-  evolutionStage?: string;
-  evolutionTrigger?: string[];
-  isBranched?: boolean;
-  specialForm?: string;
-  category?: string;
-  sprite?: string;
-  dexDifficulty?: string;
-  dexDifficultyPercentile?: number;
-  formId?: number;
-}
+import type { Pokemon } from "../../../lib/shared/types";
 
 export interface CategoryPageData {
   key: string;
