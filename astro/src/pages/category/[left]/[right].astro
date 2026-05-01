@@ -241,7 +241,7 @@ const parsedRightCategory = parseCategoryId(resolvedPair.right.key);
               pokemon={pokemonSortedByDifficulty}
               category={resolvedPair.left.label}
               categoryType={resolvedPair.left.type}
-              seeAllHref={`/pokemon-list/?${resolvedPair.left.type}=${encodeURIComponent(resolvedPair.left.label)}&${resolvedPair.right.type}=${encodeURIComponent(resolvedPair.right.label)}`}
+              seeAllHref={`/pokemon-list/?sortBy=difficulty-asc&${resolvedPair.left.type}=${encodeURIComponent(resolvedPair.left.label)}&${resolvedPair.right.type}=${encodeURIComponent(resolvedPair.right.label)}`}
             />
 
             <CategoryPairHistoryTimelineCard pairSlug={canonicalSlug} client:load />
