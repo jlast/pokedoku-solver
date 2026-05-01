@@ -159,17 +159,10 @@ function PokemonListApp() {
     trackEvent("clear_filters", { count: activeFilters });
   };
 
-  const sortByColumn = (column: "number" | "difficulty") => {
-    const newSort =
-      column === "number"
-        ? sortBy === "number-asc"
-          ? "number-desc"
-          : "number-asc"
-        : sortBy === "difficulty-asc"
-          ? "difficulty-desc"
-          : "difficulty-asc";
-    setSortBy(newSort as SortOption);
+  const handleSortChange = (newSort: SortOption) => {
+    setSortBy(newSort);
     resetVisibleCount();
+    const column = newSort.startsWith("number") ? "number" : "difficulty";
     trackEvent("change_sort", { column, sort: newSort });
   };
 
@@ -418,28 +411,45 @@ function PokemonListApp() {
 
       <div className="pokemon-list-header">
         <div className="sort-controls">
-          <button
-            className={`sort-btn ${sortBy === "number-asc" || sortBy === "number-desc" ? "active" : ""}`}
-            onClick={() => sortByColumn("number")}
-          >
-            Number{" "}
-            {sortBy === "number-asc"
-              ? "▲"
-              : sortBy === "number-desc"
-                ? "▼"
-                : "▲"}
-          </button>
-          <button
-            className={`sort-btn ${sortBy === "difficulty-asc" || sortBy === "difficulty-desc" ? "active" : ""}`}
-            onClick={() => sortByColumn("difficulty")}
-          >
-            Dex Difficulty{" "}
-            {sortBy === "difficulty-asc"
-              ? "▲"
-              : sortBy === "difficulty-desc"
-                ? "▼"
-                : "▲"}
-          </button>
+          <label className="sort-label">
+            <span className="sort-icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M7 4v14m0 0-3-3m3 3 3-3M17 20V6m0 0-3 3m3-3 3 3"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            <span className="sort-select-wrap">
+              <select
+                className="sort-select"
+                aria-label="Sort Pokemon list"
+                value={sortBy}
+                onChange={(event) =>
+                  handleSortChange(event.target.value as SortOption)
+                }
+              >
+                <option value="number-asc">Pokemon # (low to high)</option>
+                <option value="number-desc">Pokemon # (high to low)</option>
+                <option value="difficulty-asc">Dex difficulty (hard to easy)</option>
+                <option value="difficulty-desc">Dex difficulty (easy to hard)</option>
+              </select>
+              <span className="sort-select-arrow" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="m6 9 6 6 6-6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </span>
+          </label>
         </div>
         <div className="results-count">
           {sortedPokemon.length} of {pokemon.length} Pokemon
