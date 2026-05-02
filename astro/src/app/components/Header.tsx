@@ -88,7 +88,7 @@ export function Header({ title, subtitle, showDate, alwaysShowSubheader, current
                 className="m-0 h-7 w-7 cursor-pointer"
               />
             </a>
-            <span className={ (alwaysShowSubheader ? "inline-block" : "hidden") + " ml-0.5 text-base leading-tight font-bold text-slate-900 max-[1100px]:inline-block"}>{title}</span>
+            <span className="hidden ml-0.5 text-base leading-tight font-bold text-slate-900 max-[1100px]:inline-block">{title}</span>
 
           </div>
 
@@ -245,7 +245,7 @@ export function Header({ title, subtitle, showDate, alwaysShowSubheader, current
           </>
         )}
 
-        {subtitle && <p className="mx-auto mb-3 max-w-[700px] text-center text-[1.12rem] leading-[1.65] text-[#6a6477] max-[600px]:hidden">{subtitle}</p>}
+        {subtitle && <p className={ (alwaysShowSubheader ? "" : "max-[600px]:hidden") + " mx-auto mb-3 max-w-[700px] text-center text-[1.12rem] leading-[1.65] text-[#6a6477] max-[600px]:hidden" }>{subtitle}</p>}
       </header>
       <div className="my-6 h-1 bg-gradient-to-b from-black/10 to-transparent" />
     </>
