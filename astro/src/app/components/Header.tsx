@@ -5,7 +5,7 @@ interface HeaderProps {
   title?: string;
   subtitle?: string;
   showDate?: string;
-  alwaysShowSubheader: boolean;
+  alwaysShowSubheader?: boolean;
   currentPage: string;
 }
 
