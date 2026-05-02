@@ -321,7 +321,7 @@ function TodayPuzzleBoard({ puzzle, toggle }: TodayPuzzleBoardProps) {
           onSwapClick={handleCellClick}
           onConstraintChange={() => {}}
         />
-        <InfoBox>These are suggested Pokedoku answers highlighting rarer, harder Pokémon. Tap a square for all options.</InfoBox>
+        <InfoBox>These are strategic Pokedoku answers that prioritize harder-to-place Pokémon for Pokédex completion. Tap a square for all options.</InfoBox>
         <div ref={suggestionsRef}>
           <SuggestionsPanel
             selectedCell={grid.selectedCell}
