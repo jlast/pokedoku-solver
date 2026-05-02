@@ -88,7 +88,7 @@ export function Header({ title, subtitle, showDate, alwaysShowSubheader, current
                 className="m-0 h-7 w-7 cursor-pointer"
               />
             </a>
-            <span className="hidden ml-0.5 text-base leading-tight font-bold text-slate-900 max-[1100px]:inline-block">{title}</span>
+            <span className={ (alwaysShowSubheader ? "inline-block" : "hidden") + " ml-0.5 text-base leading-tight font-bold text-slate-900 max-[1100px]:inline-block">{title}</span>
 
           </div>
 
