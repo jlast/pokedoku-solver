@@ -298,8 +298,9 @@ function TodayPuzzleBoard({ puzzle, toggle }: TodayPuzzleBoardProps) {
     <div className="app">
       <Header
         title={`Today's Answers (${formatDate(puzzle.date)})`}
-        subtitle={`Suggested answers for today's Pokedoku ${puzzle.bonus ? "bonus " : ""}puzzle. Multiple Pokémon will fit each square, so tap any pick to see alternatives.`}
+        subtitle={`Get all 9 Pokedoku answers for today with strategic Pokémon picks to optimize your Pokédex completion.`}
         showDate={formatDate(puzzle.date)}
+        alwaysShowSubheader={true}
         currentPage="today"
       />
 
