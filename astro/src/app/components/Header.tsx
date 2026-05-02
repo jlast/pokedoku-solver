@@ -245,7 +245,7 @@ export function Header({ title, subtitle, showDate, alwaysShowSubheader, current
           </>
         )}
 
-        {subtitle && <p className={ (alwaysShowSubheader ? "" : "max-[600px]:hidden") + " mx-auto mb-3 max-w-[700px] text-center text-[1.12rem] leading-[1.65] text-[#6a6477] max-[600px]:hidden" }>{subtitle}</p>}
+        {subtitle && <p className={ (alwaysShowSubheader ? "" : "max-[600px]:hidden") + " mx-auto mb-3 max-w-[700px] text-center text-[1.12rem] leading-[1.65] text-[#6a6477]" }>{subtitle}</p>}
       </header>
       <div className="my-6 h-1 bg-gradient-to-b from-black/10 to-transparent" />
     </>
