@@ -215,7 +215,9 @@ const seeAllHref = `/pokemon-list/?sortBy=difficulty-asc&${query}`;
       <Header
         title={`${resolvedPair.left.label} Pokémon with ${resolvedPair.right.label}`}
         currentPage="category"
-        subTitle={`This page lists all Pokémon that match both ${resolvedPair.left.label} and ${resolvedPair.right.label}. These combinations are commonly used in Pokedoku puzzles, where each square requires Pokémon that satisfy multiple constraints.`}
+        subtitle={`This page lists all Pokémon that match both ${resolvedPair.left.label} and ${resolvedPair.right.label}.`}
+        alwaysShowSubheader={true}
+        introText="These combinations are commonly used in Pokedoku puzzles, where each square requires Pokémon that satisfy multiple constraints."
         client:load
       />
 
