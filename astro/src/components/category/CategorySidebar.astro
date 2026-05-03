@@ -30,7 +30,7 @@ const activeSlugsJson = JSON.stringify(activeSlugs);
       <span class="inline-flex min-w-0 items-center gap-2 text-slate-900">
         { activeEntries.map((entry) => (
           <CategoryIconBadge parsed={parseCategoryId(entry.key)} />
-          <span class="truncate text-sm font-medium">{entry?.label ?? "Select category"}</span>
+          <span class="truncate text-sm font-medium mr-2">{entry?.label ?? "Select category"}</span>
         ))}
       </span>
       <span class="text-slate-400">▾</span>
