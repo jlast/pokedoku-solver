@@ -300,11 +300,10 @@ function TodayPuzzleBoard({ puzzle, toggle }: TodayPuzzleBoardProps) {
         title={`Today's Answers (${formatDate(puzzle.date)})`}
         subtitle={`Get all 9 Pokedoku answers for today with strategic Pokémon picks to optimize your Pokédex completion.`}
         showDate={formatDate(puzzle.date)}
+        introText="Includes all category combinations from today’s puzzle with optimized picks for each square."
         alwaysShowSubheader={true}
         currentPage="today"
       />
-
-      <p class="mt-1 text-[0.95rem] leading-snug text-slate-600">Includes all category combinations from today’s puzzle.</p>
 
       {toggle}
 
