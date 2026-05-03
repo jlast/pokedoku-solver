@@ -4,6 +4,7 @@ import { trackEvent } from "../../../../lib/browser/analytics";
 interface HeaderProps {
   title?: string;
   subtitle?: string;
+  introText?: string;
   showDate?: string;
   alwaysShowSubheader?: boolean;
   currentPage: string;
@@ -25,7 +26,7 @@ const NAV_BUTTONS: NavButton[] = [
   { page: "tips", label: "Tips & Tricks", url: "tips/", icon: "M9 21h6v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2 11.7-.5.3V16h-3v-2h-1v2H10v-1.99l-.5-.3C7.99 12.79 7 11.01 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.01-.99 3.79-2.5 4.7z" },
 ];
 
-export function Header({ title, subtitle, showDate, alwaysShowSubheader, currentPage }: HeaderProps) {
+export function Header({ title, subtitle, introText, showDate, alwaysShowSubheader, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const desktopNavButtonClass = (isActive: boolean) =>
@@ -246,6 +247,7 @@ export function Header({ title, subtitle, showDate, alwaysShowSubheader, current
         )}
 
         {subtitle && <p className={ (alwaysShowSubheader ? "" : "max-[600px]:hidden") + " mx-auto mb-3 max-w-[700px] text-center text-[1.12rem] leading-[1.65] text-[#6a6477]" }>{subtitle}</p>}
+        {introText && <p class="mt-1 text-[0.95rem] leading-snug text-slate-600">{introText}</p>
       </header>
       <div className="my-6 h-1 bg-gradient-to-b from-black/10 to-transparent" />
     </>
