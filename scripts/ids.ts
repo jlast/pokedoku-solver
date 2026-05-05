@@ -376,6 +376,10 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     evolutionStage: 'No Evolution Line',
     evolutionTrigger: []
   },
+  10331: { 
+    // Galarian Slowking
+    evolutionTrigger: ["Evolved by Item"]
+  },
   10204: { 
     // Alolan Sandslash
     evolutionTrigger: ["Evolved by Item"]
