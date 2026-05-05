@@ -367,6 +367,22 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Sandslash
     evolutionTrigger: ["Evolved by Level"]
   },
+  555: {
+    // Darmanitan
+    evolutionTrigger: ["Evolved by Level"]
+  },
+  10336: {
+    // Darmanitan Galar
+    evolutionTrigger: ["Evolved by Item"]
+  },
+  10067: {
+    // Darmanitan zen
+    evolutionTrigger: ["Evolved by Level"]
+  },
+  10337: {
+    // Darmanitan Galar zen
+    evolutionTrigger: ["Evolved by Item"]
+  },
   83: {
     // Farfetch'd
     evolutionStage: 'No Evolution Line'
