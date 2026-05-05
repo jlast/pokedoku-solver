@@ -4,54 +4,27 @@ interface Props {
 }
 
 const { text } = Astro.props;
-const id = `info-${crypto.randomUUID()}`;
 ---
 
-<span class="relative inline-flex" data-info>
+<div class="relative inline-block group">
+  <!-- Icon -->
   <button
     type="button"
-    class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-slate-300 bg-white text-xs font-semibold leading-none text-slate-600 transition-colors hover:border-slate-400 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
-    aria-label="More information"
-    aria-expanded="false"
-    aria-controls={id}
-    data-info-button
+    class="flex items-center justify-center w-5 h-5 rounded-full border border-gray-400 text-gray-600 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+    aria-label="More info"
   >
-    <span class="font-serif text-sm font-bold">i</span>
+    i
   </button>
 
-  <span
-    id={id}
-    role="dialog"
-    class="absolute left-1/2 top-full z-20 mt-2 hidden w-72 -translate-x-1/2 rounded-xl bg-slate-900 px-3 py-2 text-xs font-medium leading-relaxed text-white shadow-lg"
-    data-info-panel
+  <div
+    class="absolute z-10 bottom-full left-1/2 -translate-x-1/2 mb-2 
+           w-max max-w-xs px-3 py-2 rounded-md 
+           bg-gray-800 text-white text-sm text-center
+           opacity-0 pointer-events-none 
+           transition-opacity duration-200
+           group-hover:opacity-100 group-hover:pointer-events-auto
+           group-focus-within:opacity-100 group-focus-within:pointer-events-auto"
   >
     {text}
-  </span>
-</span>
-
-<script is:inline>
-  document.addEventListener("click", function (event) {
-    const clickedButton = event.target.closest("[data-info-button]");
-    const clickedPanel = event.target.closest("[data-info-panel]");
-
-    document.querySelectorAll("[data-info]").forEach(function (wrapper) {
-      const button = wrapper.querySelector("[data-info-button]");
-      const panel = wrapper.querySelector("[data-info-panel]");
-
-      if (!button || !panel) return;
-
-      const isThisButton = clickedButton === button;
-      const isOpen = button.getAttribute("aria-expanded") === "true";
-
-      if (clickedPanel && wrapper.contains(clickedPanel)) {
-        return;
-      }
-
-      const shouldOpen = isThisButton && !isOpen;
-
-      button.setAttribute("aria-expanded", String(shouldOpen));
-      panel.hidden = !shouldOpen;
-      panel.classList.toggle("hidden", !shouldOpen);
-    });
-  });
-</script>
+  </div>
+</div>
