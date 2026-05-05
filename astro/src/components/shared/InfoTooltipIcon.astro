@@ -4,7 +4,7 @@ interface Props {
 }
 
 const { text } = Astro.props;
-const id = `tooltip-${Math.random().toString(36).slice(2)}`;
+const id = `tooltip-${crypto.randomUUID()}`;
 ---
 
 <span class="group relative inline-flex" data-tooltip-wrapper>
@@ -22,45 +22,27 @@ const id = `tooltip-${Math.random().toString(36).slice(2)}`;
   <span
     id={id}
     role="tooltip"
-    class="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-72 -translate-x-1/2 rounded-xl bg-slate-900 px-3 py-2 text-xs font-medium leading-relaxed text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+    class="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-72 -translate-x-1/2 rounded-xl bg-slate-900 px-3 py-2 text-xs font-medium leading-relaxed text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100"
     data-tooltip
   >
     {text}
   </span>
 </span>
 
-<script>
-  document.querySelectorAll("[data-tooltip-wrapper]").forEach((wrapper) => {
-    const button = wrapper.querySelector("[data-tooltip-button]");
-    const tooltip = wrapper.querySelector("[data-tooltip]");
+<script is:inline>
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-tooltip-button]");
 
-    if (!button || !tooltip) return;
+    document.querySelectorAll("[data-tooltip-wrapper]").forEach((wrapper) => {
+      const wrapperButton = wrapper.querySelector("[data-tooltip-button]");
+      const tooltip = wrapper.querySelector("[data-tooltip]");
 
-    button.addEventListener("click", (event) => {
-      event.stopPropagation();
+      if (!wrapperButton || !tooltip) return;
 
-      const isOpen = button.getAttribute("aria-expanded") === "true";
+      const shouldOpen = button === wrapperButton && wrapperButton.getAttribute("aria-expanded") !== "true";
 
-      document.querySelectorAll("[data-tooltip-button]").forEach((otherButton) => {
-        otherButton.setAttribute("aria-expanded", "false");
-      });
-
-      document.querySelectorAll("[data-tooltip]").forEach((otherTooltip) => {
-        otherTooltip.classList.remove("opacity-100");
-      });
-
-      button.setAttribute("aria-expanded", String(!isOpen));
-      tooltip.classList.toggle("opacity-100", !isOpen);
-    });
-  });
-
-  document.addEventListener("click", () => {
-    document.querySelectorAll("[data-tooltip-button]").forEach((button) => {
-      button.setAttribute("aria-expanded", "false");
-    });
-
-    document.querySelectorAll("[data-tooltip]").forEach((tooltip) => {
-      tooltip.classList.remove("opacity-100");
+      wrapperButton.setAttribute("aria-expanded", String(shouldOpen));
+      tooltip.classList.toggle("opacity-100", shouldOpen);
     });
   });
 </script>
