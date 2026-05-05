@@ -6,24 +6,54 @@ interface Props {
 const { text } = Astro.props;
 ---
 
-<div class="relative inline-block group">
+<div class="relative inline-block">
   <button
     type="button"
-    class="flex items-center justify-center w-5 h-5 rounded-full border border-gray-400 text-gray-600 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+    class="info-tooltip-trigger flex h-5 w-5 items-center justify-center rounded-full border border-gray-400 text-xs font-semibold text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
     aria-label="More info"
+    aria-expanded="false"
   >
     i
   </button>
 
   <div
-    class="absolute z-10 bottom-full left-1/2 -translate-x-1/2 mb-2 
-           w-max max-w-xs px-3 py-2 rounded-md 
-           bg-gray-800 text-white text-sm text-center
-           opacity-0 pointer-events-none 
-           transition-opacity duration-200
-           group-hover:opacity-100 group-hover:pointer-events-auto
-           group-focus-within:opacity-100 group-focus-within:pointer-events-auto"
+    class="info-tooltip absolute bottom-full left-1/2 z-10 mb-2 hidden w-max max-w-[260px] -translate-x-1/2 rounded-md bg-gray-800 px-3 py-2 text-center text-sm text-white shadow-lg"
   >
     {text}
   </div>
 </div>
+
+<script>
+  document.querySelectorAll(".info-tooltip-trigger").forEach((button) => {
+    const tooltip = button.nextElementSibling;
+
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+
+      const isOpen = button.getAttribute("aria-expanded") === "true";
+
+      document.querySelectorAll(".info-tooltip").forEach((item) => {
+        item.classList.add("hidden");
+      });
+
+      document.querySelectorAll(".info-tooltip-trigger").forEach((item) => {
+        item.setAttribute("aria-expanded", "false");
+      });
+
+      if (!isOpen) {
+        tooltip?.classList.remove("hidden");
+        button.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
+
+  document.addEventListener("click", () => {
+    document.querySelectorAll(".info-tooltip").forEach((tooltip) => {
+      tooltip.classList.add("hidden");
+    });
+
+    document.querySelectorAll(".info-tooltip-trigger").forEach((button) => {
+      button.setAttribute("aria-expanded", "false");
+    });
+  });
+</script>
