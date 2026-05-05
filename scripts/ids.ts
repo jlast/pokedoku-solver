@@ -371,6 +371,10 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Farfetch'd
     evolutionStage: 'No Evolution Line'
   },
+  10163: {
+    // Floette Eternal
+    evolutionStage: 'No Evolution Line'
+  },
   10204: { 
     // Alolan Sandslash
     evolutionTrigger: ["Evolved by Item"]
