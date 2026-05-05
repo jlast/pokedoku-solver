@@ -7,14 +7,14 @@ const { text } = Astro.props;
 const id = `tooltip-${crypto.randomUUID()}`;
 ---
 
-<span class="group relative inline-flex" data-tooltip-wrapper>
+<span class="group relative inline-flex" data-info-tooltip>
   <button
     type="button"
     class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-slate-300 bg-white text-xs font-semibold leading-none text-slate-600 transition-colors hover:border-slate-400 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
     aria-label="More information"
     aria-expanded="false"
-    aria-describedby={id}
-    data-tooltip-button
+    aria-controls={id}
+    data-info-tooltip-button
   >
     <span class="font-serif text-sm font-bold">i</span>
   </button>
@@ -22,27 +22,30 @@ const id = `tooltip-${crypto.randomUUID()}`;
   <span
     id={id}
     role="tooltip"
-    class="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-72 -translate-x-1/2 rounded-xl bg-slate-900 px-3 py-2 text-xs font-medium leading-relaxed text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100"
-    data-tooltip
+    class="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-72 -translate-x-1/2 rounded-xl bg-slate-900 px-3 py-2 text-xs font-medium leading-relaxed text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 data-[open=true]:opacity-100"
+    data-info-tooltip-content
+    data-open="false"
   >
     {text}
   </span>
 </span>
 
 <script is:inline>
-  document.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-tooltip-button]");
+  document.addEventListener("click", function (event) {
+    const clickedButton = event.target.closest("[data-info-tooltip-button]");
 
-    document.querySelectorAll("[data-tooltip-wrapper]").forEach((wrapper) => {
-      const wrapperButton = wrapper.querySelector("[data-tooltip-button]");
-      const tooltip = wrapper.querySelector("[data-tooltip]");
+    document.querySelectorAll("[data-info-tooltip]").forEach(function (wrapper) {
+      const button = wrapper.querySelector("[data-info-tooltip-button]");
+      const tooltip = wrapper.querySelector("[data-info-tooltip-content]");
 
-      if (!wrapperButton || !tooltip) return;
+      if (!button || !tooltip) return;
 
-      const shouldOpen = button === wrapperButton && wrapperButton.getAttribute("aria-expanded") !== "true";
+      const shouldOpen =
+        clickedButton === button &&
+        button.getAttribute("aria-expanded") !== "true";
 
-      wrapperButton.setAttribute("aria-expanded", String(shouldOpen));
-      tooltip.classList.toggle("opacity-100", shouldOpen);
+      button.setAttribute("aria-expanded", String(shouldOpen));
+      tooltip.dataset.open = String(shouldOpen);
     });
   });
 </script>
