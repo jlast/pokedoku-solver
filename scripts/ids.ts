@@ -373,7 +373,8 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   10163: {
     // Floette Eternal
-    evolutionStage: 'No Evolution Line'
+    evolutionStage: 'No Evolution Line',
+    evolutionTrigger: []
   },
   10204: { 
     // Alolan Sandslash
