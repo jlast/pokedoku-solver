@@ -2,7 +2,7 @@ import { trackEvent } from "../../../../lib/browser/analytics";
 
 export function Footer() {
   return (
-    <footer className="mt-8 flex flex-wrap items-center justify-center gap-2 border-t border-[#eee] pt-4 text-center text-[#666]">
+    <footer className="relative left-1/2 mt-8 flex w-screen -translate-x-1/2 flex-wrap items-center justify-center gap-2 border-t border-[#eee] px-4 pt-4 text-center text-[#666]">
       <a
         className="inline-flex items-center gap-1.5 text-[#4ECDC4] no-underline hover:underline"
         href="https://pokedoku.com"

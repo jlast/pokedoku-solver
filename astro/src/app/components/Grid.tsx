@@ -2,6 +2,8 @@ import type { Pokemon } from '../../../../lib/shared/types';
 import { TYPE_COLORS, CATEGORY_COLORS } from '../../../../lib/shared/constants';
 import { FILTER_CATEGORIES, findConstraintOption, type Constraint } from '../../../../lib/shared/filters';
 import { trackEvent } from '../../../../lib/browser/analytics';
+import { CategoryIcon } from './puzzle-stats/CategoryIcon';
+import type { ParsedCategory } from './puzzle-stats/categoryUtils';
 
 interface GridProps {
   cells: (Pokemon | null)[][];
@@ -33,6 +35,29 @@ function getConstraintColor(constraint: Constraint | null): string | undefined {
   }
   if (constraint.category === 'category') return CATEGORY_COLORS[constraint.value];
   return undefined;
+}
+
+function getConstraintParsedCategory(constraint: Constraint | null): ParsedCategory | null {
+  if (!constraint) return null;
+
+  const typeMap: Record<string, string> = {
+    type: 'types',
+    types: 'types',
+    typeline: 'types',
+    region: 'regions',
+    regions: 'regions',
+    evolution: 'evolution',
+    category: 'category',
+  };
+
+  const mappedType = typeMap[constraint.category];
+  if (!mappedType) return null;
+
+  return {
+    raw: `${mappedType}:${constraint.value}`,
+    type: mappedType,
+    label: constraint.value,
+  };
 }
 
 function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: Constraint | null; index: number; isRow: boolean; onChange: GridProps['onConstraintChange'] }) {
@@ -69,6 +94,20 @@ function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: 
 
 export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, suggestedPokemonKeys, swapOptionCounts, selectedCell, editable = true, showSuggestedMeta = false, onCellClick, onSwapClick, onConstraintChange }: GridProps) {
   const getPokemonKey = (pokemon: Pokemon): string => pokemon.sprite || pokemon.name;
+  const renderConstraintDisplay = (constraint: Constraint | null) => {
+    const parsed = getConstraintParsedCategory(constraint);
+
+    return (
+      <div className={`constraint-display${parsed ? ' constraint-display-with-icon' : ''}`} style={{ borderColor: getConstraintColor(constraint) }}>
+        <span>{constraint?.value || '-'}</span>
+        {parsed && (
+          <span className="constraint-icon-wrap" aria-hidden>
+            <CategoryIcon parsed={parsed} />
+          </span>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="grid-wrapper">
@@ -80,9 +119,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
             {editable ? (
               <ConstraintSelect constraint={constraint} index={colIndex} isRow={false} onChange={onConstraintChange} />
             ) : (
-              <div className="constraint-display" style={{ borderColor: getConstraintColor(constraint) }}>
-                {constraint?.value || '-'}
-              </div>
+              renderConstraintDisplay(constraint)
             )}
           </div>
         ))}
@@ -95,9 +132,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
               {editable ? (
                 <ConstraintSelect constraint={constraint} index={rowIndex} isRow={true} onChange={onConstraintChange} />
               ) : (
-                <div className="constraint-display" style={{ borderColor: getConstraintColor(constraint) }}>
-                  {constraint?.value || '-'}
-                </div>
+                renderConstraintDisplay(constraint)
               )}
             </div>
           ))}

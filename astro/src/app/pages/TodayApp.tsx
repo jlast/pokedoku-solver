@@ -332,6 +332,16 @@ function TodayPuzzleBoard({ puzzle, toggle }: TodayPuzzleBoardProps) {
         </div>
 
         <button onClick={clearCells} className="clear-btn" disabled={!hasGridData}>Clear selected Pokémon</button>
+
+        <div className="mt-2 text-center">
+          <a
+            href={`${import.meta.env.BASE_URL}custom/`}
+            className="text-sm font-medium text-slate-600 hover:text-slate-900 underline"
+            onClick={() => trackEvent("click_navigate", { url: "custom/", from: "today_suggestions" })}
+          >
+            Need a different board? Open Custom puzzle
+          </a>
+        </div>
       </div>
 
       <section className="content-section">

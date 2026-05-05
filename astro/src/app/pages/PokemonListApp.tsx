@@ -498,8 +498,6 @@ function PokemonListApp() {
         </div>
       </div>
 
-      <div className="my-6 h-1 bg-gradient-to-b from-black/10 to-transparent" />
-
       <div className="pokemon-list-header">
         <div className="sort-controls">
           <label className="sort-label">

@@ -18,8 +18,8 @@ interface NavButton {
 }
 
 const NAV_BUTTONS: NavButton[] = [
-  { page: "today", label: "Today's Answers", url: "", icon: "M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z" },
-  { page: "custom", label: "Custom Puzzle", url: "custom/", icon: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" },
+  { page: "home", label: "Home", url: "", icon: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" },
+  { page: "today", label: "Today's Answers", url: "pokedoku-answers-today/", icon: "M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z" },
   { page: "pokemon-list", label: "All Pokemon", url: "pokemon-list/", icon: "M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z" },
   { page: "category", label: "Categories", url: "category/", icon: "M21.41 11.58 12.42 2.59A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .53.21 1.04.59 1.41l8.99 8.99a2 2 0 0 0 2.83 0l6.99-6.99a2 2 0 0 0 0-2.83zM6.5 8A1.5 1.5 0 1 1 8 6.5 1.5 1.5 0 0 1 6.5 8z" },
   { page: "puzzle-stats", label: "Pokedoku Insights", url: "puzzle-stats/", icon: "M3 17h3V9H3v8zm5 0h3V5H8v12zm5 0h3v-4h-3v4zm5 2H2v2h16v-2z" },
@@ -74,7 +74,8 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
 
   return (
     <>
-      <header className="mx-auto mb-6 text-center">
+      <header className="mb-6 text-center">
+        <div className="mx-auto w-full max-w-6xl px-4">
         <div className="flex justify-center items-center gap-3 max-[1100px]:flex max-[1100px]:items-center max-[1100px]:justify-between">
           <div className="flex min-w-0 items-center justify-self-start gap-2.5">
             <a
@@ -248,8 +249,9 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
 
         {subtitle && <p className={ (alwaysShowSubheader ? "" : "max-[600px]:hidden") + " mx-auto mb-3 max-w-[700px] text-center text-[1.12rem] leading-[1.65] text-[#6a6477]" }>{subtitle}</p>}
         {introText && <p class="mt-1 text-[0.95rem] leading-snug text-slate-600">{introText}</p>}
+        </div>
+        <div className="relative left-1/2 mt-4 w-screen -translate-x-1/2 border-t border-slate-200" aria-hidden="true" />
       </header>
-      <div className="my-6 h-1 bg-gradient-to-b from-black/10 to-transparent" />
     </>
   );
 }

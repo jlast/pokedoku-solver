@@ -207,6 +207,26 @@
   font-weight: 500;
 }
 
+.constraint-display-with-icon {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.constraint-icon-wrap {
+  display: inline-flex;
+  justify-content: center;
+}
+
+.constraint-icon-wrap > span {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.constraint-icon-wrap > span img {
+  width: 24px !important;
+  height: 24px !important;
+}
+
 .grid-with-row-labels {
   display: flex;
   gap: 4px;

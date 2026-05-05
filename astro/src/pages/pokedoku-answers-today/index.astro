@@ -1,0 +1,12 @@
+---
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import { TodayLoader } from "../../app/pages/TodayLoader";
+---
+
+<AppPageLayout
+  title="Pokedoku Answers Today – All 9 Solutions + Rarest Pokémon Picks"
+  description="Get today's Pokedoku answers with all 9 solutions and strategic Pokémon picks to help optimize your Pokédex completion. Updated daily."
+  path="/pokedoku-answers-today"
+>
+    <TodayLoader client:load />
+</AppPageLayout>

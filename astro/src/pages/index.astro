@@ -1,14 +1,116 @@
 ---
 import AppPageLayout from "../layouts/AppPageLayout.astro";
-import { TodayLoader } from "../app/pages/TodayLoader";
+import { Header } from "../app/components/Header";
+import { Footer } from "../app/components/Footer";
+import { HomeTodayGridPreview } from "../app/pages/HomeTodayGridPreview";
+import { HomeQuickStats } from "../app/pages/HomeQuickStats";
 ---
 
 <AppPageLayout
-  title="Pokedoku Answers Today – All 9 Solutions + Rarest Pokémon Picks"
-  description="Get today's Pokedoku answers with all 9 solutions and strategic Pokémon picks to help optimize your Pokédex completion. Updated daily."
+  title="Pokedoku Helper"
+  description="Pokedoku Helper"
   path="/"
 >
-  <div id="root">
-    <TodayLoader client:load />
+  <div class="app overflow-x-hidden">
+    <Header
+      title="Pokedoku Helper"
+      subtitle="Tools and insights to help solve daily Pokedoku grids faster."
+      currentPage="home"
+      client:load
+    />
+
+    <main class="mx-auto max-w-6xl px-4 pb-8">
+      <section class="grid gap-6 lg:grid-cols-[1.05fr_1.25fr]">
+        <div class="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-7 shadow-sm">
+          <h1 class="m-0 text-5xl font-extrabold leading-tight text-slate-900 md:text-6xl">
+            Solve Today&apos;s
+            <span class="block bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">Pokédoku</span>
+            Smarter
+          </h1>
+          <p class="mt-5 max-w-md text-lg leading-relaxed text-slate-600">
+            Use data, stats, and smart tools to make better picks and maximize your score.
+            You solve it. We help you win.
+          </p>
+
+          <div class="mt-6 flex flex-col gap-3 sm:max-w-sm">
+            <a href="/pokedoku-answers-today/" class="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-violet-500 px-5 py-3 text-lg font-semibold text-white no-underline shadow-[0_10px_24px_rgba(79,70,229,0.28)] transition hover:brightness-105">
+              Open Today&apos;s Grid
+            </a>
+          </div>
+
+          <HomeQuickStats client:load />
+        </div>
+
+        <div class="bg-transparent p-0 shadow-none max-md:-mx-6 md:mx-0 md:rounded-3xl md:border md:border-slate-200 md:bg-white md:p-5 md:shadow-sm">
+          <div class="mb-4 flex items-center justify-between">
+            <h2 class="m-0 px-6 text-3xl font-extrabold text-slate-900 md:px-0">Today&apos;s Grid</h2>
+          </div>
+
+          <HomeTodayGridPreview client:load />
+        </div>
+      </section>
+
+      <section class="mt-12">
+        <div class="text-center">
+          <p class="m-0 text-sm font-semibold tracking-[0.12em] text-indigo-600 uppercase">Play Better</p>
+          <h2 class="mt-2 mb-0 text-center text-4xl font-extrabold text-slate-900">Tools to play smarter</h2>
+          <p class="mx-auto mt-3 mb-0 max-w-2xl text-slate-600">Everything you need to find stronger picks, read the board faster, and improve your Pokedoku strategy.</p>
+        </div>
+
+        <div class="mt-6 grid gap-5 md:grid-cols-3">
+          <article class="rounded-3xl border border-violet-100 bg-white p-6 shadow-sm">
+            <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-100 text-violet-700">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm4.29 7.71-5 5a1 1 0 0 1-1.42 0l-2-2 1.42-1.42L10.5 12.5l4.29-4.29z"/></svg>
+            </div>
+            <h3 class="mt-4 mb-0 text-2xl font-bold text-slate-900">Smarter Picks</h3>
+            <p class="mt-2 mb-0 text-slate-600">See which Pokemon are rare and which picks are commonly used, so you can stand out.</p>
+          </article>
+
+          <article class="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm">
+            <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 2a8 8 0 1 0 4.9 14.3l4.4 4.4 1.4-1.4-4.4-4.4A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>
+            </div>
+            <h3 class="mt-4 mb-0 text-2xl font-bold text-slate-900">Explore Everything</h3>
+            <p class="mt-2 mb-0 text-slate-600">Browse every valid Pokemon for any category combination. Never guess blindly again.</p>
+          </article>
+
+          <article class="rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm">
+            <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m3 17 6-6 4 4 7-7 1.5 1.5-8.5 8.5-4-4-4.5 4.5z"/></svg>
+            </div>
+            <h3 class="mt-4 mb-0 text-2xl font-bold text-slate-900">Track &amp; Improve</h3>
+            <p class="mt-2 mb-0 text-slate-600">Discover usage trends, spot patterns, and learn what works over time.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="mt-12">
+        <div class="text-center">
+          <h2 class="m-0 text-4xl font-extrabold text-slate-900">Everything you need, no spoilers</h2>
+        </div>
+
+        <div class="mt-6 grid gap-5 md:grid-cols-3">
+          <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 class="m-0 text-2xl font-bold text-slate-900">All Pokemon</h3>
+            <p class="mt-2 mb-0 text-slate-600">Reveal a hint to get moving without spoiling the fun.</p>
+            <a href="/pokedoku-answers-today/" class="mt-5 inline-flex rounded-xl bg-gradient-to-r from-indigo-600 to-violet-500 px-4 py-2 text-sm font-semibold text-white no-underline">Get a Hint</a>
+          </article>
+
+          <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 class="m-0 text-2xl font-bold text-slate-900">Category Explorer</h3>
+            <p class="mt-2 mb-0 text-slate-600">See all Pokemon that fit any category combo.</p>
+            <a href="/category/" class="mt-5 inline-flex rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white no-underline">Explore Categories</a>
+          </article>
+
+          <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 class="m-0 text-2xl font-bold text-slate-900">Usage Insights</h3>
+            <p class="mt-2 mb-0 text-slate-600">See what&apos;s hot, what&apos;s not, and what to avoid.</p>
+            <a href="/puzzle-stats/" class="mt-5 inline-flex rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white no-underline">View Insights</a>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <Footer client:load />
   </div>
 </AppPageLayout>

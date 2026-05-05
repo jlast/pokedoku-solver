@@ -114,7 +114,6 @@ const pokemonSortedByDifficulty = [...category.pokemon].sort(
   description={`Browse Pokemon that match the ${category.label} category.`}
   path={`/category/${slug}/`}
 >
-  <div id="root">
     <div class="app min-h-screen px-4 py-6">
       <Header
         title={`${category.label} Pokémon`}
@@ -144,6 +143,5 @@ const pokemonSortedByDifficulty = [...category.pokemon].sort(
 
       <Footer client:load />
     </div>
-  </div>
 
 </AppPageLayout>
