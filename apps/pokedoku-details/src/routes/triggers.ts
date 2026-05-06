@@ -9,15 +9,12 @@ import type {
 } from '@devvit/web/shared';
 import { reddit } from '@devvit/web/server';
 import { isT1, isT3 } from '@devvit/shared-types/tid.js';
+import type { T1 } from '@devvit/shared-types/tid.js';
+import { getPokemonMap } from '../core/pokemonCache';
 
 export const triggers = new Hono();
 
-const BRACKET_TOKEN_REGEX = /\[\[([^\]]+)\]\]/g;
-
-const POKEMON_DETAILS: Record<string, string> = {
-  pikachu: 'Electric',
-};
-
+const BRACKET_TOKEN_REGEX = /(?:\\\[\\\[|\[\[)(.+?)(?:\\\]\\\]|\]\])/g;
 
 const extractBracketTokens = (input: string): string[] => {
   const matches = input.matchAll(BRACKET_TOKEN_REGEX);
@@ -33,11 +30,44 @@ const extractBracketTokens = (input: string): string[] => {
   return [...tokens];
 };
 
-const getResponseText = (input: string): string | null => {
+const normalizeCommentId = (id: string | undefined): T1 | null => {
+  if (!id) {
+    return null;
+  }
+
+  if (isT1(id)) {
+    return id;
+  }
+
+  const prefixed = `t1_${id}`;
+  if (isT1(prefixed)) {
+    return prefixed;
+  }
+
+  return null;
+};
+
+const getPokemonResponseText = async (input: string): Promise<string | null> => {
   const tokens = extractBracketTokens(input);
-  const responses = tokens
-    .map((token) => POKEMON_DETAILS[token])
-    .filter((value): value is string => Boolean(value));
+  if (tokens.length === 0) {
+    console.log('pokemon-match tokens=none');
+    return null;
+  }
+
+  const pokemonMap = await getPokemonMap();
+  const responses: string[] = [];
+  const matchedTokens: string[] = [];
+  for (const token of tokens) {
+    const type = pokemonMap.get(token)?.types[0];
+    if (type) {
+      responses.push(type);
+      matchedTokens.push(token);
+    }
+  }
+
+  console.log(
+    `pokemon-match tokens=${tokens.join(',')} matched=${matchedTokens.join(',') || 'none'}`
+  );
 
   if (responses.length === 0) {
     return null;
@@ -57,9 +87,13 @@ const handleCommentEvent = async (
   input: OnCommentSubmitRequest | OnCommentCreateRequest
 ) => {
   const body = input.comment?.body ?? '';
-  const commentId = input.comment?.id;
+  const rawCommentId = input.comment?.id;
+  const commentId = normalizeCommentId(rawCommentId);
 
-  if (!body || !commentId || !isT1(commentId)) {
+  if (!body || !commentId) {
+    console.log(
+      `on-comment skipped body=${body ? 'yes' : 'no'} rawCommentId=${rawCommentId ?? 'missing'}`
+    );
     return;
   }
 
@@ -70,10 +104,13 @@ const handleCommentEvent = async (
     return;
   }
 
-  const responseText = getResponseText(body);
+  const responseText = await getPokemonResponseText(body);
   console.log(
-    `on-comment-submit commentId=${commentId} matched=${responseText ? 'yes' : 'no'}`
+    `on-comment commentId=${commentId} rawCommentId=${rawCommentId} matched=${responseText ? 'yes' : 'no'}`
   );
+  if (!responseText) {
+    console.log(`on-comment body=${JSON.stringify(body)}`);
+  }
 
   if (!responseText) {
     return;
@@ -114,7 +151,7 @@ const handlePostEvent = async (
   }
 
   const postText = `${input.post?.title ?? ''}\n${input.post?.selftext ?? ''}`;
-  const responseText = getResponseText(postText);
+  const responseText = await getPokemonResponseText(postText);
   console.log(
     `on-post-submit postId=${postId} matched=${responseText ? 'yes' : 'no'}`
   );

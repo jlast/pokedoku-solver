@@ -17,6 +17,12 @@
     "dev": "vite build --watch"
   },
   "permissions": {
+    "http": {
+      "enable": true,
+      "domains": [
+        "www.pokedoku-helper.com"
+      ]
+    },
     "reddit": true
   },
   "dev": {
