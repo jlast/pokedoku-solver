@@ -52,17 +52,20 @@ if changed_in_paths '^public/images/'; then
   images_changed=true
 fi
 
-if changed_in_paths '^public/data/' '^scripts/' '^lib/shared/' '^package.json$' '^package-lock.json$'; then
+if changed_in_paths '^public/data/' '^scripts/' '^lib/shared/' '^packages/shared-types/' '^package.json$' '^pnpm-lock.yaml$' '^package-lock.json$'; then
   data_changed=true
 fi
 
-if changed_in_paths '^astro/' '^astro/src/pages/category/' '^astro/src/pages/pokemon/' '^src/' '^lib/browser/' '^lib/shared/' '^public/' '^package.json$' '^package-lock.json$'; then
+if changed_in_paths '^astro/' '^astro/src/pages/category/' '^astro/src/pages/pokemon/' '^src/' '^lib/browser/' '^lib/shared/' '^packages/shared-types/' '^public/' '^package.json$' '^pnpm-lock.yaml$' '^package-lock.json$'; then
   site_changed=true
 fi
 
-if changed_in_paths '^package.json$' '^package-lock.json$'; then
+if changed_in_paths '^package.json$' '^pnpm-lock.yaml$' '^package-lock.json$'; then
   daily_lambda_changed=true
   stats_lambda_changed=true
+elif ! changed_in_paths '^terraform/lambda/' '^lib/shared/' '^scripts/' '^packages/shared-types/' '^tsconfig' '^package.json$'; then
+  daily_lambda_changed=false
+  stats_lambda_changed=false
 else
   DAILY_META_FILE=$(mktemp)
   STATS_META_FILE=$(mktemp)
