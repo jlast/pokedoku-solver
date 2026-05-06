@@ -3,7 +3,7 @@ import path from "node:path";
 import { FILTER_CATEGORIES } from "../../../lib/shared/filters";
 import { makePairSlug, slugify } from "./slug";
 import { SITE_URL } from "./site";
-import type { Pokemon } from "../../../lib/shared/types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 
 export interface CategoryPageData {
   key: string;

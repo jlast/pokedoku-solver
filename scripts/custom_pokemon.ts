@@ -1,4 +1,4 @@
-import type { Pokemon } from "../lib/shared/types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 
 export const CUSTOM_POKEMON: Pokemon[] = [
   {

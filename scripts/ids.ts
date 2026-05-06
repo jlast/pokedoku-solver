@@ -4,7 +4,7 @@ import type {
   PokemonType,
   PokemonRegion,
   PokemonCategory,
-} from "../lib/shared/types";
+} from "@pokedoku-helper/shared-types";
 
 export const REGION_BY_ID: Record<number, PokemonRegion> = {};
 export const regions: { name: PokemonRegion; start: number; end: number }[] = [

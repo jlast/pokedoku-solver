@@ -1,6 +1,6 @@
-import type { Pokemon, PokemonCategory } from './types';
+import { EVOLUTION_TRIGGERS } from "@pokedoku-helper/shared-types";
+import type { Pokemon, PokemonCategory } from "@pokedoku-helper/shared-types";
 import { TYPE_COLORS, REGION_COLORS, EVOLUTION_COLORS, CATEGORY_COLORS } from './constants';
-import { EVOLUTION_TRIGGERS } from './types';
 
 export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category';
 

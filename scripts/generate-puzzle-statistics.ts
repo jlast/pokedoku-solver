@@ -1,7 +1,7 @@
 import { mkdir, readdir, readFile, rm, writeFile } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import type { Pokemon } from "../lib/shared/types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 import {
   buildCategoryPairStatsFiles,
   buildCategoryStatsFiles,

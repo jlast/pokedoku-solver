@@ -1,5 +1,5 @@
 import type { MouseEventHandler } from "react";
-import type { Pokemon } from "../../../../../lib/shared/types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { DEX_DIFFICULTY_COLORS } from "../../../../../lib/shared/constants";
 import { CategoryBadgeLink } from "./CategoryBadgeLink";
 import { parseCategoryId } from "../puzzle-stats/categoryUtils";

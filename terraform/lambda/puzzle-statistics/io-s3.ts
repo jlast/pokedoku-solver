@@ -1,5 +1,5 @@
 import { GetObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import type { Pokemon } from "../../../lib/shared/types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 import type { Puzzle } from "./types";
 
 export async function streamToString(stream: unknown): Promise<string> {

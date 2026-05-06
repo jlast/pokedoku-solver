@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm --prefix astro run dev",
-    "build": "npm run fetch-pokemon && npm --prefix astro run build",
+    "dev": "pnpm --dir astro dev",
+    "build": "pnpm fetch-pokemon && pnpm --dir astro build",
     "build:daily-puzzle-lambda": "mkdir -p dist-lambda && npx esbuild terraform/lambda/daily-puzzle-fetcher.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile=dist-lambda/daily-puzzle-fetcher.js",
     "package:daily-puzzle-lambda": "npm run build:daily-puzzle-lambda && zip -j dist-lambda/daily-puzzle-fetcher.zip dist-lambda/daily-puzzle-fetcher.js",
     "build:puzzle-statistics-lambda": "mkdir -p dist-lambda && npx esbuild terraform/lambda/puzzle-statistics.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile=dist-lambda/puzzle-statistics.js",
@@ -13,12 +13,14 @@
     "generate:puzzle-stats:local": "tsx scripts/generate-puzzle-statistics.ts",
     "fetch-today-puzzle": "tsx scripts/fetch-today-puzzle.ts",
     "lint": "eslint .",
-    "preview": "npm --prefix astro run preview",
+    "preview": "pnpm --dir astro preview",
     "fetch-pokemon": "tsx scripts/fetch.ts",
     "test": "vitest run --reporter=verbose",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "dev:reddit-mod": "pnpm --filter pokedoku-details dev"
   },
   "dependencies": {
+    "@pokedoku-helper/shared-types": "workspace:*",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import type { Pokemon } from "../../../../lib/shared/types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { formatDate } from "../../../../lib/shared/utils";
 import { trackEvent } from "../../../../lib/browser/analytics";
 import { InfoBox } from "../components/InfoBox";

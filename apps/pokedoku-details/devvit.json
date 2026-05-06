@@ -1,0 +1,25 @@
+{
+  "$schema": "https://developers.reddit.com/schema/config-file.v1.json",
+  "name": "pokedoku-details",
+  "server": {
+    "dir": "dist/server",
+    "entry": "index.cjs"
+  },
+  "triggers": {
+    "onAppInstall": "/internal/triggers/on-app-install",
+    "onCommentCreate": "/internal/triggers/on-comment-create",
+    "onCommentSubmit": "/internal/triggers/on-comment-submit",
+    "onPostCreate": "/internal/triggers/on-post-create",
+    "onPostSubmit": "/internal/triggers/on-post-submit"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "permissions": {
+    "reddit": true
+  },
+  "dev": {
+    "subreddit": "pokedoku_details_dev"
+  }
+}

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import type { Pokemon } from "../../../../lib/shared/types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
 import {
   FILTER_CATEGORIES,

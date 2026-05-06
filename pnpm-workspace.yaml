@@ -1,0 +1,5 @@
+packages:
+  - "."
+  - "astro"
+  - "apps/*"
+  - "packages/*"

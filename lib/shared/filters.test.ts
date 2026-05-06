@@ -8,7 +8,7 @@ import {
   parseFiltersFromUrl,
   type FilterState,
 } from "./filters";
-import type { Pokemon } from "./types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 
 const SQUIRTLE: Pokemon = {
   id: 7,

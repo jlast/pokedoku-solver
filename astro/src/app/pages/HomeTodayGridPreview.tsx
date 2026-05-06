@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Pokemon } from "../../../../lib/shared/types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { matchesConstraint, type Constraint } from "../../../../lib/shared/filters";
 import { Grid } from "../components/Grid";
 

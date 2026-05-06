@@ -1,4 +1,4 @@
-import type { Pokemon } from '../../../../lib/shared/types';
+import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { TYPE_COLORS, CATEGORY_COLORS } from '../../../../lib/shared/constants';
 import { FILTER_CATEGORIES, findConstraintOption, type Constraint } from '../../../../lib/shared/filters';
 import { trackEvent } from '../../../../lib/browser/analytics';

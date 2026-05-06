@@ -1,6 +1,6 @@
 import { FILTER_CATEGORIES } from "../../../lib/shared/filters";
 import { PAIR_FREQUENCY_BUCKETS } from "../../../lib/shared/pairFrequencyBuckets";
-import type { Pokemon } from "../../../lib/shared/types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { buildCategoryOutputFileNames, parseCategoryId, slugify } from "./category-filenames";
 import type {
   CategoryCount,
