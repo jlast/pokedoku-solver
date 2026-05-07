@@ -74,6 +74,7 @@ function formatDate(value: string): string {
 export default function PuzzleStatsApp() {
   const [stats, setStats] = useState<PuzzleStatsResponse | null>(null);
   const [pokemonByFormId, setPokemonByFormId] = useState<Map<number, PokemonListEntry>>(new Map());
+  const [pokemonLoading, setPokemonLoading] = useState(true);
   const [leastUsedMode, setLeastUsedMode] = useState<"categories" | "pairs">("categories");
   const [mostUsedMode, setMostUsedMode] = useState<"categories" | "pairs">("categories");
   const [showLegacyFilters, setShowLegacyFilters] = useState(false);
@@ -92,35 +93,18 @@ export default function PuzzleStatsApp() {
   useEffect(() => {
     trackEvent("view_puzzle_stats_page");
 
-    Promise.all([
-      fetch("/data/runtime/puzzle-stats.json?t=" + Date.now()),
-      fetch("/data/pokemon.json?t=" + Date.now()),
-    ])
-      .then(async ([statsRes, pokemonRes]) => {
+    fetch("/data/runtime/puzzle-stats.json?t=" + Date.now())
+      .then(async (statsRes) => {
         if (!statsRes.ok) {
           throw new Error("Failed to load puzzle statistics");
         }
-        if (!pokemonRes.ok) {
-          throw new Error("Failed to load pokemon list");
-        }
 
         const statsData = (await statsRes.json()) as PuzzleStatsResponse;
-        const pokemonData = (await pokemonRes.json()) as PokemonListEntry[];
-        const lookup = new Map<number, PokemonListEntry>();
-
-        for (const entry of pokemonData) {
-          if (typeof entry.formId === "number") {
-            lookup.set(entry.formId, entry);
-          }
-        }
-
         trackEvent("puzzle_stats_loaded", {
           puzzlesAnalyzed: statsData.puzzlesAnalyzed,
           dateFrom: statsData.dateRange.from,
           dateTo: statsData.dateRange.to,
         });
-
-        setPokemonByFormId(lookup);
         setStats(statsData);
       })
       .catch((err: unknown) => {
@@ -128,6 +112,26 @@ export default function PuzzleStatsApp() {
         trackEvent("puzzle_stats_load_error", { message });
         setError(message);
       });
+
+    fetch("/data/pokemon.json?t=" + Date.now())
+      .then(async (pokemonRes) => {
+        if (!pokemonRes.ok) {
+          throw new Error("Failed to load pokemon list");
+        }
+        const pokemonData = (await pokemonRes.json()) as PokemonListEntry[];
+        const lookup = new Map<number, PokemonListEntry>();
+        for (const entry of pokemonData) {
+          if (typeof entry.formId === "number") {
+            lookup.set(entry.formId, entry);
+          }
+        }
+        setPokemonByFormId(lookup);
+      })
+      .catch((err: unknown) => {
+        const message = err instanceof Error ? err.message : "Unknown error";
+        trackEvent("puzzle_stats_pokemon_load_error", { message });
+      })
+      .finally(() => setPokemonLoading(false));
   }, []);
 
   const derived = useMemo(() => {
@@ -181,21 +185,47 @@ export default function PuzzleStatsApp() {
 
   if (!stats || !derived) {
     return (
-      <div className="app loading text-center">
-        <p>Loading puzzle stats...</p>
+      <div className="grid gap-4 lg:grid-cols-2" aria-label="Loading puzzle stats sections">
+        <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <div className="mb-3 h-6 w-60 animate-pulse rounded bg-slate-200" />
+          <div className="mb-2 h-4 w-80 animate-pulse rounded bg-slate-100" />
+          <div className="space-y-2">
+            {[0, 1, 2, 3, 4].map((item) => (
+              <div key={item} className="h-14 animate-pulse rounded-lg border border-slate-200 bg-slate-50" />
+            ))}
+          </div>
+        </article>
+
+        <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <div className="mb-3 h-6 w-44 animate-pulse rounded bg-slate-200" />
+          <div className="mb-3 h-10 w-48 animate-pulse rounded-lg bg-slate-100" />
+          <div className="space-y-2">
+            {[0, 1, 2, 3, 4].map((item) => (
+              <div key={item} className="h-11 animate-pulse rounded-lg border border-slate-200 bg-slate-50" />
+            ))}
+          </div>
+        </article>
+
+        <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <div className="mb-3 h-6 w-44 animate-pulse rounded bg-slate-200" />
+          <div className="mb-3 h-10 w-48 animate-pulse rounded-lg bg-slate-100" />
+          <div className="space-y-2">
+            {[0, 1, 2, 3, 4].map((item) => (
+              <div key={item} className="h-11 animate-pulse rounded-lg border border-slate-200 bg-slate-50" />
+            ))}
+          </div>
+        </article>
+
+        <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <div className="mb-3 h-6 w-56 animate-pulse rounded bg-slate-200" />
+          <div className="h-52 animate-pulse rounded-lg bg-slate-100" />
+        </article>
       </div>
     );
   }
 
   return (
     <>
-      <section className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-        <p className="m-0 text-sm text-slate-700">
-          Wondering when a Pokemon was valid in PokeDoku? This page tracks when Pokemon were last usable,
-          alongside rarity, category, and pair-frequency trends across puzzle history.
-        </p>
-      </section>
-
       <section className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3 text-left">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
@@ -245,57 +275,77 @@ export default function PuzzleStatsApp() {
         <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
           <h2 className="mb-3 text-xl">When Was This Pokemon Last Valid?</h2>
           <p className="mb-2 text-sm text-slate-600">Pokemon that have gone the longest without being usable in PokeDoku.</p>
-          <ul className="m-0 grid list-none gap-2 p-0 mb-3">
-            {derived.oldestVisiblePokemon.map((item) => {
-              const pokemon = pokemonByFormId.get(item.formId);
-              const pokemonSlug = pokemon ? `${slugify(pokemon.name)}-${pokemon.formId ?? pokemon.id}` : null;
-              return (
-                <li key={item.formId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+          {pokemonLoading ? (
+            <ul className="m-0 mb-3 grid list-none gap-2 p-0" aria-label="Loading Pokemon recency list">
+              {[0, 1, 2, 3, 4].map((item) => (
+                <li key={item} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
                   <div className="flex items-center gap-3">
-                    {pokemonSlug ? (
-                      <a href={`/pokemon/${pokemonSlug}/`} className="block">
-                        {pokemon?.sprite ? (
-                          <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md" loading="lazy" />
-                        ) : (
-                          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-500">#{item.formId}</div>
-                        )}
-                      </a>
-                    ) : pokemon?.sprite ? (
-                      <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md" loading="lazy" />
-                    ) : (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-500">#{item.formId}</div>
-                    )}
-                    <div>
-                      <p className="m-0 font-semibold text-slate-900">
-                        {pokemonSlug ? <a href={`/pokemon/${pokemonSlug}/`}>{pokemon?.name ?? "Unknown Pokemon"}</a> : (pokemon?.name ?? "Unknown Pokemon")}
-                      </p>
-                      {pokemon?.types?.length ? (
-                        <div className="mt-1 flex flex-wrap gap-1">
-                          {pokemon.types.map((type) => (
-                            <CategoryBadgeLink
-                              key={`${item.formId}-${type}`}
-                              parsed={parseCategoryId(`types:${type}`)}
-                              href={getCategoryHref(type)}
-                            />
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="m-0 text-xs text-slate-500">Types: Unknown</p>
-                      )}
+                    <div className="h-10 w-10 animate-pulse rounded-md bg-slate-200" />
+                    <div className="space-y-1">
+                      <div className="h-3.5 w-28 animate-pulse rounded bg-slate-200" />
+                      <div className="h-3 w-20 animate-pulse rounded bg-slate-100" />
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="m-0 text-sm font-semibold text-slate-800">
-                      {item.lastUsableDate ? formatDate(item.lastUsableDate) : "Never"}
-                    </p>
-                    <p className="m-0 text-xs text-slate-500">
-                      {item.daysSinceLastUsable === null ? "No match yet" : `${item.daysSinceLastUsable}d ago`}
-                    </p>
+                  <div className="space-y-1 text-right">
+                    <div className="h-3.5 w-20 animate-pulse rounded bg-slate-200" />
+                    <div className="h-3 w-14 animate-pulse rounded bg-slate-100" />
                   </div>
                 </li>
-              );
-            })}
-          </ul>
+              ))}
+            </ul>
+          ) : (
+            <ul className="m-0 grid list-none gap-2 p-0 mb-3">
+              {derived.oldestVisiblePokemon.map((item) => {
+                const pokemon = pokemonByFormId.get(item.formId);
+                const pokemonSlug = pokemon ? `${slugify(pokemon.name)}-${pokemon.formId ?? pokemon.id}` : null;
+                return (
+                  <li key={item.formId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+                    <div className="flex items-center gap-3">
+                      {pokemonSlug ? (
+                        <a href={`/pokemon/${pokemonSlug}/`} className="block">
+                          {pokemon?.sprite ? (
+                            <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md" loading="lazy" />
+                          ) : (
+                            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-500">#{item.formId}</div>
+                          )}
+                        </a>
+                      ) : pokemon?.sprite ? (
+                        <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md" loading="lazy" />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-500">#{item.formId}</div>
+                      )}
+                      <div>
+                        <p className="m-0 font-semibold text-slate-900">
+                          {pokemonSlug ? <a href={`/pokemon/${pokemonSlug}/`}>{pokemon?.name ?? "Unknown Pokemon"}</a> : (pokemon?.name ?? "Unknown Pokemon")}
+                        </p>
+                        {pokemon?.types?.length ? (
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {pokemon.types.map((type) => (
+                              <CategoryBadgeLink
+                                key={`${item.formId}-${type}`}
+                                parsed={parseCategoryId(`types:${type}`)}
+                                href={getCategoryHref(type)}
+                              />
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="m-0 text-xs text-slate-500">Types: Unknown</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="m-0 text-sm font-semibold text-slate-800">
+                        {item.lastUsableDate ? formatDate(item.lastUsableDate) : "Never"}
+                      </p>
+                      <p className="m-0 text-xs text-slate-500">
+                        {item.daysSinceLastUsable === null ? "No match yet" : `${item.daysSinceLastUsable}d ago`}
+                      </p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
           <div className="w-full flex justify-end">
             <a href="/pokemon-list/?sortBy=recent-appearance" className="underline text-sm text-slate-600">
                 See all Pokemon
