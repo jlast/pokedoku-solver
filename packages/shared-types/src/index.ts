@@ -99,3 +99,87 @@ export interface Pokemon {
   dexDifficultyPercentile: number;
   formId?: number;
 }
+
+export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category';
+
+export interface FilterOptionDefinition {
+  name: string;
+  matches: (pokemon: Pokemon) => boolean;
+}
+
+export interface FilterCategoryDefinition {
+  key: ConstraintCategory;
+  label: string;
+  options: FilterOptionDefinition[];
+}
+
+const hasType = (pokemon: Pokemon, typeName: string): boolean =>
+  pokemon.types.some((type) => type === typeName);
+
+export const FILTER_CATEGORIES: FilterCategoryDefinition[] = [
+  {
+    key: 'types',
+    label: 'Types',
+    options: [
+      ...POKEMON_TYPES.map((name) => ({
+        name,
+        matches: (pokemon: Pokemon) => hasType(pokemon, name),
+      })),
+      { name: 'Monotype', matches: (pokemon) => pokemon.types.length === 1 },
+      { name: 'Dualtype', matches: (pokemon) => pokemon.types.length === 2 },
+    ],
+  },
+  {
+    key: 'regions',
+    label: 'Regions',
+    options: POKEMON_REGIONS.map((name) => ({
+      name,
+      matches: (pokemon: Pokemon) => pokemon.region === name,
+    })),
+  },
+  {
+    key: 'evolution',
+    label: 'Evolution',
+    options: [
+      {
+        name: 'First Stage',
+        matches: (pokemon) => pokemon.evolutionStage === 'First Stage',
+      },
+      {
+        name: 'Middle Stage',
+        matches: (pokemon) => pokemon.evolutionStage === 'Middle Stage',
+      },
+      {
+        name: 'Final Stage',
+        matches: (pokemon) => pokemon.evolutionStage === 'Final Stage',
+      },
+      {
+        name: 'No Evolution Line',
+        matches: (pokemon) => pokemon.evolutionStage === 'No Evolution Line',
+      },
+      {
+        name: 'Not Fully Evolved',
+        matches: (pokemon) =>
+          pokemon.evolutionStage === 'First Stage' ||
+          pokemon.evolutionStage === 'Middle Stage',
+      },
+      ...EVOLUTION_TRIGGERS.map((trigger) => ({
+        name: trigger,
+        matches: (pokemon: Pokemon) =>
+          pokemon.evolutionTrigger?.includes(trigger) ?? false,
+      })),
+      {
+        name: 'Branched evolution',
+        matches: (pokemon) => pokemon.isBranched === true,
+      },
+    ],
+  },
+  {
+    key: 'category',
+    label: 'Categories',
+    options: POKEMON_CATEGORIES.map((name) => ({
+      name,
+      matches: (pokemon: Pokemon) => pokemon.categories?.includes(name) ?? false,
+    })),
+  },
+];

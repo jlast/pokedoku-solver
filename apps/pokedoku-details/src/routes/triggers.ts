@@ -7,10 +7,12 @@ import type {
   OnPostSubmitRequest,
   TriggerResponse,
 } from '@devvit/web/shared';
-import { reddit } from '@devvit/web/server';
+import { reddit, RichTextBuilder } from '@devvit/web/server';
 import { isT1, isT3 } from '@devvit/shared-types/tid.js';
 import type { T1 } from '@devvit/shared-types/tid.js';
+import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { getPokemonMap } from '../core/pokemonCache';
+import { buildPokemonRedditRichText } from './redditComment';
 
 export const triggers = new Hono();
 
@@ -47,20 +49,20 @@ const normalizeCommentId = (id: string | undefined): T1 | null => {
   return null;
 };
 
-const getPokemonResponseText = async (input: string): Promise<string | null> => {
+const getMatchedPokemon = async (input: string): Promise<Pokemon[]> => {
   const tokens = extractBracketTokens(input);
   if (tokens.length === 0) {
     console.log('pokemon-match tokens=none');
-    return null;
+    return [];
   }
 
   const pokemonMap = await getPokemonMap();
-  const responses: string[] = [];
+  const matches: Pokemon[] = [];
   const matchedTokens: string[] = [];
   for (const token of tokens) {
-    const type = pokemonMap.get(token)?.types[0];
-    if (type) {
-      responses.push(type);
+    const pokemon = pokemonMap.get(token);
+    if (pokemon) {
+      matches.push(pokemon);
       matchedTokens.push(token);
     }
   }
@@ -69,12 +71,14 @@ const getPokemonResponseText = async (input: string): Promise<string | null> => 
     `pokemon-match tokens=${tokens.join(',')} matched=${matchedTokens.join(',') || 'none'}`
   );
 
-  if (responses.length === 0) {
-    return null;
-  }
-
-  return responses.join('\n');
+  return matches;
 };
+
+const renderPokemonReplyText = (pokemon: Pokemon[]): RichTextBuilder => {
+  const builder = new RichTextBuilder();
+  pokemon.map((entry) => buildPokemonRedditRichText(builder, entry).horizontalRule())
+  return builder;
+}
 
 triggers.post('/on-app-install', async (c) => {
   const input = await c.req.json<OnAppInstallRequest>();
@@ -104,20 +108,25 @@ const handleCommentEvent = async (
     return;
   }
 
-  const responseText = await getPokemonResponseText(body);
+  const matchedPokemon = await getMatchedPokemon(body);
+  const hasMatch = matchedPokemon.length > 0;
   console.log(
-    `on-comment commentId=${commentId} rawCommentId=${rawCommentId} matched=${responseText ? 'yes' : 'no'}`
+    `on-comment commentId=${commentId} rawCommentId=${rawCommentId} matched=${hasMatch ? 'yes' : 'no'}`
   );
-  if (!responseText) {
+  if (!hasMatch) {
     console.log(`on-comment body=${JSON.stringify(body)}`);
   }
 
-  if (!responseText) {
+  if (!hasMatch) {
     return;
   }
 
   const comment = await reddit.getCommentById(commentId);
-  await comment.reply({ text: responseText, runAs: 'APP' });
+  const textBuilder = renderPokemonReplyText(matchedPokemon);
+  await comment.reply({
+    richtext: textBuilder,
+    runAs: 'APP',
+  });
 };
 
 triggers.post('/on-comment-submit', async (c) => {
@@ -151,16 +160,22 @@ const handlePostEvent = async (
   }
 
   const postText = `${input.post?.title ?? ''}\n${input.post?.selftext ?? ''}`;
-  const responseText = await getPokemonResponseText(postText);
+  const matchedPokemon = await getMatchedPokemon(postText);
+  const hasMatch = matchedPokemon.length > 0;
   console.log(
-    `on-post-submit postId=${postId} matched=${responseText ? 'yes' : 'no'}`
+    `on-post-submit postId=${postId} matched=${hasMatch ? 'yes' : 'no'}`
   );
 
-  if (!responseText) {
+  if (!hasMatch) {
     return;
   }
 
-  await reddit.submitComment({ id: postId, text: responseText, runAs: 'APP' });
+  const textBuilder = renderPokemonReplyText(matchedPokemon);
+  await reddit.submitComment({
+    id: postId,
+    richtext: textBuilder,
+    runAs: 'APP',
+  });
 };
 
 triggers.post('/on-post-submit', async (c) => {

@@ -1,5 +1,5 @@
-import { EVOLUTION_TRIGGERS } from "@pokedoku-helper/shared-types";
-import type { Pokemon, PokemonCategory } from "@pokedoku-helper/shared-types";
+import { FILTER_CATEGORIES as SHARED_FILTER_CATEGORIES } from "@pokedoku-helper/shared-types";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { TYPE_COLORS, REGION_COLORS, EVOLUTION_COLORS, CATEGORY_COLORS } from './constants';
 
 export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category';
@@ -21,62 +21,52 @@ export interface FilterCategory {
   options: FilterOption[];
 }
 
-function hasType(p: Pokemon, typeName: string): boolean {
-  return p.types.some(t => t === typeName);
-}
-
 export const FILTER_CATEGORIES: FilterCategory[] = [
   {
     key: 'types',
     label: 'Types',
-    options: [
-      ...Object.keys(TYPE_COLORS).map(name => ({
-        name,
-        filter: (p: Pokemon) => hasType(p, name),
-        color: TYPE_COLORS[name],
-      })),
-      { name: 'Monotype', filter: (p) => p.types.length === 1, color: '#E74C3C' },
-      { name: 'Dualtype', filter: (p) => p.types.length === 2, color: '#3498DB' },
-    ],
+    options: SHARED_FILTER_CATEGORIES.find((cat) => cat.key === 'types')!.options.map(
+      (option) => ({
+        name: option.name,
+        filter: option.matches,
+        color:
+          TYPE_COLORS[option.name] ??
+          (option.name === 'Monotype' ? '#E74C3C' : option.name === 'Dualtype' ? '#3498DB' : undefined),
+      })
+    ),
   },
   {
     key: 'regions',
     label: 'Regions',
-    options: [
-      ...Object.keys(REGION_COLORS).map(name => ({
-        name,
-        filter: (p: Pokemon) => p.region === name,
-        color: REGION_COLORS[name],
-      })),
-    ],
+    options: SHARED_FILTER_CATEGORIES.find((cat) => cat.key === 'regions')!.options.map(
+      (option) => ({
+        name: option.name,
+        filter: option.matches,
+        color: REGION_COLORS[option.name],
+      })
+    ),
   },
   {
     key: 'evolution',
     label: 'Evolution',
-    options: [
-      { name: 'First Stage', filter: (p) => p.evolutionStage === 'First Stage', color: EVOLUTION_COLORS['First Stage'] },
-      { name: 'Middle Stage', filter: (p) => p.evolutionStage === 'Middle Stage', color: EVOLUTION_COLORS['Middle Stage'] },
-      { name: 'Final Stage', filter: (p) => p.evolutionStage === 'Final Stage', color: EVOLUTION_COLORS['Final Stage'] },
-      { name: 'No Evolution Line', filter: (p) => p.evolutionStage === 'No Evolution Line', color: EVOLUTION_COLORS['No Evolution Line'] },
-      { name: 'Not Fully Evolved', filter: (p) => p.evolutionStage === 'First Stage' || p.evolutionStage === 'Middle Stage', color: EVOLUTION_COLORS['Not Fully Evolved'] },
-      ...EVOLUTION_TRIGGERS.map(trigger => ({
-        name: trigger,
-        filter: (p: Pokemon) => p.evolutionTrigger?.includes(trigger) ?? false,
-        color: EVOLUTION_COLORS[trigger],
-      })),
-      { name: 'Branched evolution', filter: (p) => p.isBranched === true, color: EVOLUTION_COLORS['Branched evolution'] },
-    ],
+    options: SHARED_FILTER_CATEGORIES.find((cat) => cat.key === 'evolution')!.options.map(
+      (option) => ({
+        name: option.name,
+        filter: option.matches,
+        color: EVOLUTION_COLORS[option.name],
+      })
+    ),
   },
   {
     key: 'category',
     label: 'Categories',
-    options: [
-      ...Object.keys(CATEGORY_COLORS).map(name => ({
-        name,
-        filter: (p: Pokemon) => p.categories?.includes(name as PokemonCategory) ?? false,
-        color: CATEGORY_COLORS[name],
-      })),
-    ],
+    options: SHARED_FILTER_CATEGORIES.find((cat) => cat.key === 'category')!.options.map(
+      (option) => ({
+        name: option.name,
+        filter: option.matches,
+        color: CATEGORY_COLORS[option.name],
+      })
+    ),
   },
 ];
 

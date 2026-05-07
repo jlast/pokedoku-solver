@@ -1,38 +1,68 @@
+import { FILTER_CATEGORIES } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
+import { RichTextBuilder } from '@devvit/public-api';
+import { ListItemContext } from '@devvit/web/server';
 
 const BASE_URL = "https://pokedoku-helper.com";
 
 const slug = (value: string) =>
   value.toLowerCase().replaceAll(" ", "-").replaceAll(".", "");
 
-const link = (label: string, path: string) =>
-  `[${label}](${BASE_URL}${path})`;
+const getCategoryNames = (pokemon: Pokemon): string[] =>
+  FILTER_CATEGORIES.flatMap((group) =>
+    group.options
+      .filter((option) => option.matches(pokemon))
+      .map((option) => option.name)
+  ).filter((value, index, list) => list.indexOf(value) === index);
 
-const rarityText = (percentile: number) => {
-  const commonPercent = Math.max(1, Math.round(percentile * 100));
-  return `Top ${commonPercent}% hardest picks`;
+const appendCategoryLinks = (item: ListItemContext, pokemon: Pokemon): void => {
+  const categoryNames = getCategoryNames(pokemon);
+
+  item.paragraph((p) => {
+    p.text({ text: 'Categories: ' });
+    if (categoryNames.length === 0) {
+      p.text({ text: 'None' });
+      return;
+    }
+
+    categoryNames.forEach((category, index) => {
+      if (index > 0) {
+        p.text({ text: ' | ' });
+      }
+
+      p.link({
+        text: category,
+        url: `${BASE_URL}/category/${slug(category)}`,
+      });
+    });
+  });
 };
 
-export function formatPokemonRedditComment(pokemon: Pokemon): string {
-  const dex = String(pokemon.id).padStart(3, "0");
+export function buildPokemonRedditRichText(builder: RichTextBuilder, pokemon: Pokemon): RichTextBuilder {
+    const dex = String(pokemon.id).padStart(3, '0');
+    const formSlug = `/pokemon/${slug(`${pokemon.name}-${pokemon.formId}`)}`;
 
-  const typeLinks = pokemon.types
-    .map((type) => link(type, `/type/${slug(type)}`))
-    .join(" | ");
+    builder.paragraph((p) => {
+      p.link({ text: pokemon.name, url: `${BASE_URL}${formSlug}` });
+      p.text({ text: ` (#${dex})` });
+    });
 
-  const categoryLinks = pokemon.categories
-    ?.map((category) => link(category, `/category/${slug(category)}`))
-    .join(" • ");
+    builder.list({ ordered: false }, (list) => {
+      list.item((item) => {
+        item.paragraph((p) => {
+          p.text({ text: `Difficulty: ${pokemon.dexDifficulty ?? 'Unknown'}` });
+        });
+      });
+      list.item((item) => {
+        appendCategoryLinks(item, pokemon);
+      });
+    });
 
-  return [
-    `**[[${link(pokemon.name, `/pokemon/${slug(pokemon.name)}`)}]] (#${dex})**`,
-    `${typeLinks} • ${link(pokemon.region, `/region/${slug(pokemon.region)}`)}`,
-    "",
-    `• Difficulty: **${pokemon.dexDifficulty}**`,
-    `• Rarity: **${rarityText(pokemon.dexDifficultyPercentile)}**`,
-    pokemon.evolutionStage ? `• Evolution: ${link(pokemon.evolutionStage, `/evolution/${slug(pokemon.evolutionStage)}`)}` : "",
-    `• Categories: ${categoryLinks}`,
-    "",
-    `🔎 ${link("View full details & live stats", `/pokemon/${slug(pokemon.name)}`)}`
-  ].join("\n");
+
+    builder.paragraph((p) => {
+      p.text({ text: '🔍 View full details: ' });
+      p.link({ text: pokemon.name, url: `${BASE_URL}${formSlug}` });
+    });
+
+  return builder;
 }
