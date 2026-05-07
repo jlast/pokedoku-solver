@@ -98,12 +98,15 @@ export function buildPokemonRedditRichText(
     p.linebreak();
     p.linebreak();
     p.text({ text: '• ' });
-    p.link({
+    p.text({
       text: 'Dex Difficulty',
-      url: `${BASE_URL}/tips#beginner-dex-difficulty`,
     });
     p.text({
-      text: `: ${difficultyWithEmoji(pokemon.dexDifficulty)}`,
+      text: `: ${difficultyWithEmoji(pokemon.dexDifficulty)} `,
+    });
+    p.link({
+      text: '(?)',
+      url: `${BASE_URL}/tips#beginner-dex-difficulty`,
     });
     appendCategoryLinks(p, pokemon);
   });

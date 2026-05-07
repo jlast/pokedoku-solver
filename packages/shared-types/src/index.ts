@@ -109,7 +109,7 @@ export const DEX_DIFFICULTIES = [
 ] as const;
 export type DexDifficulty = (typeof DEX_DIFFICULTIES)[number];
 
-export const difficultyWithEmoji = (difficulty: DexDifficulty): string => {
+export const difficultyWithEmoji = (difficulty: string): string => {
   const value = (difficulty ?? 'Unknown').toLowerCase();
 
   if (value === 'easy') return '🟢 Easy';
