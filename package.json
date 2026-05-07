@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "preview": "pnpm --dir astro preview",
     "fetch-pokemon": "tsx scripts/fetch.ts",
-    "sync:pokedoku-details:local-data": "mkdir -p apps/pokedoku-details/src/generated && cp public/data/pokemon.json apps/pokedoku-details/src/generated/pokemon.local.json",
+    "sync:pokedoku-details:local-data": "pnpm fetch-pokemon && mkdir -p apps/pokedoku-details/src/generated && cp public/data/pokemon.json apps/pokedoku-details/src/generated/pokemon.local.json",
     "test": "vitest run --reporter=verbose",
     "test:watch": "vitest",
     "dev:pokedoku-details": "pnpm sync:pokedoku-details:local-data && pnpm --filter pokedoku-details dev"
