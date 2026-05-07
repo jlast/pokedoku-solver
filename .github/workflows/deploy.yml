@@ -108,10 +108,19 @@ jobs:
         env:
           DEVVIT_TOKEN: ${{ secrets.DEVVIT_TOKEN }}
         run: |
-          test -n "$DEVVIT_TOKEN" || (echo "Missing DEVVIT_TOKEN secret" && exit 1)
-          mkdir -p "$HOME/.devvit" "$HOME/.config/devvit"
-          printf '%s' "$DEVVIT_TOKEN" > "$HOME/.devvit/auth.json"
-          printf '%s' "$DEVVIT_TOKEN" > "$HOME/.config/devvit/auth.json"
+          TOKEN_PAYLOAD="$DEVVIT_TOKEN"
+
+          test -n "$TOKEN_PAYLOAD" || (echo "Missing DEVVIT_TOKEN secret" && exit 1)
+
+          mkdir -p "$HOME/.devvit"
+          printf '%s' "$TOKEN_PAYLOAD" > "$HOME/.devvit/token"
+          chmod 600 "$HOME/.devvit/token"
+
+          {
+            echo "DEVVIT_AUTH_TOKEN<<EOF"
+            printf '%s\n' "$TOKEN_PAYLOAD"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
 
       - name: Verify Devvit authentication
         run: pnpm --dir apps/pokedoku-details exec devvit whoami
