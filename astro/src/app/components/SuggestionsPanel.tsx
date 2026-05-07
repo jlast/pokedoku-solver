@@ -243,11 +243,13 @@ export function SuggestionsPanel({
           )}
         </div>
       </div>
-      <div className="scroll-hint">
-        <span className="scroll-hint-arrow" title="Scroll for more">
-          ▼
-        </span>
-      </div>
+      {sortedPokemon && sortedPokemon.length >= 5 && (
+        <div className="scroll-hint">
+          <span className="scroll-hint-arrow" title="Scroll for more">
+            ▼
+          </span>
+        </div>
+      )}
     </div>
   );
 }
