@@ -56,7 +56,6 @@ const appendCategoryLinks = (p: ParagraphContext, pokemon: Pokemon): void => {
 
   categoryGroups.forEach((group) => {
       p.linebreak();
-      p.text({ text: '• ' });
       p.text({ text: `${group.label}: ` });
 
       group.names.forEach((category, index) => {
@@ -96,8 +95,6 @@ export function buildPokemonRedditRichText(
     p.linebreak();
     appendTypeRegionLine(p, pokemon);
     p.linebreak();
-    p.linebreak();
-    p.text({ text: '• ' });
     p.text({
       text: 'Dex Difficulty',
     });
@@ -113,4 +110,24 @@ export function buildPokemonRedditRichText(
 
 
   return builder;
+}
+
+export function appendPokemonCompactLine(
+  p: ParagraphContext,
+  pokemon: Pokemon
+): void {
+  const dex = String(pokemon.id).padStart(3, '0');
+  const formSlug = `/pokemon/${slug(`${pokemon.name}-${pokemon.formId}`)}`;
+
+  p.link({ text: pokemon.name, url: `${BASE_URL}${formSlug}` });
+  p.text({ text: ` (#${dex}) - ` });
+
+  pokemon.types.forEach((type, index) => {
+    if (index > 0) {
+      p.text({ text: ' | ' });
+    }
+    p.text({ text: typeWithEmoji(type) });
+  });
+
+  p.text({ text: ` • ${pokemon.region}` });
 }

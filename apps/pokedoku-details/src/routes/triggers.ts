@@ -14,8 +14,12 @@ import { FILTER_CATEGORIES } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
 import { getPokemonMap } from '../core/pokemonCache';
-import { buildPokemonRedditRichText } from './pokemonCommentBuilder';
 import {
+  appendPokemonCompactLine,
+  buildPokemonRedditRichText,
+} from './pokemonCommentBuilder';
+import {
+  appendFilterCompactLine,
   appendFilterStats,
   formatTypeDifficultyStats,
   type MatchedFilter,
@@ -27,16 +31,16 @@ const BRACKET_TOKEN_REGEX = /(?:\\\[\\\[|\[\[)(.+?)(?:\\\]\\\]|\]\])/g;
 
 const extractBracketTokens = (input: string): string[] => {
   const matches = input.matchAll(BRACKET_TOKEN_REGEX);
-  const tokens = new Set<string>();
+  const tokens: string[] = [];
 
   for (const match of matches) {
     const token = match[1]?.trim().toLowerCase();
     if (token) {
-      tokens.add(token);
+      tokens.push(token);
     }
   }
 
-  return [...tokens];
+  return tokens;
 };
 
 const normalizeCommentId = (id: string | undefined): T1 | null => {
@@ -59,19 +63,22 @@ const normalizeCommentId = (id: string | undefined): T1 | null => {
 type MatchedLookup = {
   pokemon: Pokemon[];
   filters: MatchedFilter[];
+  ordered: Array<{ kind: 'pokemon'; value: Pokemon } | { kind: 'filter'; value: MatchedFilter }>;
+  tokenCount: number;
 };
 
 const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
   const tokens = extractBracketTokens(input);
   if (tokens.length === 0) {
     console.log('pokemon-match tokens=none');
-    return { pokemon: [], filters: [] };
+    return { pokemon: [], filters: [], ordered: [], tokenCount: 0 };
   }
 
   const pokemonMap = await getPokemonMap();
   const pokemonList = Array.from(pokemonMap.values());
   const pokemonMatches: Pokemon[] = [];
   const filterMatches: MatchedFilter[] = [];
+  const ordered: Array<{ kind: 'pokemon'; value: Pokemon } | { kind: 'filter'; value: MatchedFilter }> = [];
   const matchedTokens: string[] = [];
   const matchedFilterTokens: string[] = [];
 
@@ -79,6 +86,7 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
     const pokemon = pokemonMap.get(token);
     if (pokemon) {
       pokemonMatches.push(pokemon);
+      ordered.push({ kind: 'pokemon', value: pokemon });
       matchedTokens.push(token);
       continue;
     }
@@ -130,11 +138,8 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
         filterMatch.difficultyDistribution = difficultyStats.distribution;
       }
 
-      if (difficultyStats?.averageDifficulty) {
-        filterMatch.averageDifficulty = difficultyStats.averageDifficulty;
-      }
-
       filterMatches.push(filterMatch);
+      ordered.push({ kind: 'filter', value: filterMatch });
       matchedFilterTokens.push(token);
       continue;
     }
@@ -157,12 +162,13 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
     const filterMatch: MatchedFilter = {
       categoryLabel: filterCategory.label,
       name: filterOption.name,
+      linkSlug: filterOption.name,
       count: matchedPokemonForFilter.length,
       difficultyDistribution: difficultyStats.distribution,
-      averageDifficulty: difficultyStats.averageDifficulty
     };
 
     filterMatches.push(filterMatch);
+    ordered.push({ kind: 'filter', value: filterMatch });
     matchedFilterTokens.push(token);
   }
 
@@ -170,29 +176,50 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
     `pokemon-match tokens=${tokens.join(',')} pokemon=${matchedTokens.join(',') || 'none'} filters=${matchedFilterTokens.join(',') || 'none'}`
   );
 
-  return { pokemon: pokemonMatches, filters: filterMatches };
+  return {
+    pokemon: pokemonMatches,
+    filters: filterMatches,
+    ordered,
+    tokenCount: tokens.length,
+  };
 };
 
-const renderPokemonReplyText = ({ pokemon, filters }: MatchedLookup): RichTextBuilder => {
+export const __test__ = {
+  extractBracketTokens,
+  getMatchedLookup,
+};
+
+const renderPokemonReplyText = ({ ordered, tokenCount }: MatchedLookup): RichTextBuilder => {
   const builder = new RichTextBuilder();
-  pokemon.forEach((entry, index) => {
-    if (index > 0) {
-      builder.horizontalRule();
-    }
-    buildPokemonRedditRichText(builder, entry);
-  });
+  const compactMode = tokenCount >= 6;
 
-  if (filters.length > 0 && pokemon.length > 0) {
-    builder.horizontalRule();
+  if (compactMode) {
+    builder.paragraph((p) => {
+      ordered.forEach((entry) => {
+        if (entry.kind === 'pokemon') {
+          appendPokemonCompactLine(p, entry.value);
+        } else {
+          appendFilterCompactLine(p, entry.value);
+        }
+        p.linebreak();
+      });
+    });
+
+    return builder;
   }
-  filters.forEach((filter, index) => {
+
+  ordered.forEach((entry, index) => {
     if (index > 0) {
-      builder.horizontalRule();
+     builder.paragraph((p) => {p.linebreak(); p.linebreak()} );
     }
-    appendFilterStats(builder, filter);
+    if (entry.kind === 'pokemon') {
+      buildPokemonRedditRichText(builder, entry.value);
+    } else {
+      appendFilterStats(builder, entry.value);
+    }
   });
 
-  builder.horizontalRule();
+  builder.paragraph((p) => p.linebreak());
   builder.paragraph((p) => {
     const prefix = 'Data from ';
     const domain = 'pokedoku-helper.com';

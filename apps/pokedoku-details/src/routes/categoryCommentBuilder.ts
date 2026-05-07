@@ -1,4 +1,4 @@
-import type { RichTextBuilder } from '@devvit/web/server';
+import type { ParagraphContext, RichTextBuilder } from '@devvit/web/server';
 import { difficultyWithEmoji } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
@@ -8,7 +8,6 @@ export type MatchedFilter = {
   name: string;
   linkSlug: string;
   count: number;
-  averageDifficulty?: string;
   difficultyDistribution?: string;
 };
 
@@ -111,21 +110,24 @@ export const appendFilterStats = (
     });
     p.text({ text: ` (${filter.categoryLabel})` });
     p.linebreak();
-    p.text({ text: `${filter.count} matching Pokemon` });
-
-    if (typeof filter.averageDifficulty === 'string') {
-      p.linebreak();
-      p.linebreak();
-      p.text({
-        text: `Average Difficulty: ${difficultyWithEmoji(filter.averageDifficulty)}`,
-      });
-    }
+    p.text({ text: `${filter.count} valid answers` });
 
     if (typeof filter.difficultyDistribution === 'string') {
       p.linebreak();
       p.text({
-        text: `Difficulty Distribution: ${formatDistributionWithEmoji(filter.difficultyDistribution)}`,
+        text: `${formatDistributionWithEmoji(filter.difficultyDistribution)}`,
       });
     }
   });
+};
+
+export const appendFilterCompactLine = (
+  p: ParagraphContext,
+  filter: MatchedFilter
+): void => {
+    p.link({
+      text: filter.name,
+      url: `https://pokedoku-helper.com/category/${slug(filter.linkSlug)}`,
+    });
+    p.text({ text: ` - ${filter.count} answers` });
 };
