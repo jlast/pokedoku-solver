@@ -213,37 +213,8 @@ export const __test__ = {
   getMatchedLookup,
 };
 
-const renderPokemonReplyText = ({ ordered, tokenCount }: MatchedLookup): RichTextBuilder => {
-  const builder = new RichTextBuilder();
-  const compactMode = tokenCount >= 6;
-
-  if (compactMode) {
-    builder.paragraph((p) => {
-      ordered.forEach((entry) => {
-        if (entry.kind === 'pokemon') {
-          appendPokemonCompactLine(p, entry.value);
-        } else {
-          appendFilterCompactLine(p, entry.value);
-        }
-        p.linebreak();
-      });
-    });
-
-    return builder;
-  }
-
-  ordered.forEach((entry, index) => {
-    if (index > 0) {
-     builder.paragraph((p) => {p.linebreak(); p.linebreak()} );
-    }
-    if (entry.kind === 'pokemon') {
-      buildPokemonRedditRichText(builder, entry.value);
-    } else {
-      appendFilterStats(builder, entry.value);
-    }
-  });
-
-  builder.paragraph((p) => p.linebreak());
+const getFooterParagraph = (builder: RichTextBuilder) => {
+  builder.horizontalRule();
   builder.paragraph((p) => {
     const prefix = 'Data from ';
     const domain = 'pokedoku-helper.com';
@@ -263,6 +234,41 @@ const renderPokemonReplyText = ({ ordered, tokenCount }: MatchedLookup): RichTex
       formatting: [richTextSuperscript(suffix.length)],
     });
   });
+}
+
+const renderPokemonReplyText = ({ ordered, tokenCount }: MatchedLookup): RichTextBuilder => {
+  const builder = new RichTextBuilder();
+  const compactMode = tokenCount >= 6;
+
+  if (compactMode) {
+    builder.paragraph((p) => {
+      ordered.forEach((entry) => {
+        if (entry.kind === 'pokemon') {
+          appendPokemonCompactLine(p, entry.value);
+        } else {
+          appendFilterCompactLine(p, entry.value);
+        }
+        p.linebreak();
+      });
+    });
+    getFooterParagraph(builder);
+
+    return builder;
+  }
+
+  ordered.forEach((entry, index) => {
+    if (index > 0) {
+     builder.paragraph((p) => {p.linebreak(); p.linebreak()} );
+    }
+    if (entry.kind === 'pokemon') {
+      buildPokemonRedditRichText(builder, entry.value);
+    } else {
+      appendFilterStats(builder, entry.value);
+    }
+  });
+
+  builder.paragraph((p) => p.linebreak());
+  getFooterParagraph(builder);
   return builder;
 }
 
