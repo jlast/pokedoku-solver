@@ -47,9 +47,14 @@ daily_lambda_changed=false
 stats_lambda_changed=false
 daily_stack_changed=false
 stats_stack_changed=false
+pokedoku_details_changed=false
 
 if changed_in_paths '^public/images/'; then
   images_changed=true
+fi
+
+if changed_in_paths '^apps/pokedoku-details/' '^packages/shared-types/' '^public/data/' '^package.json$' '^pnpm-lock.yaml$' '^package-lock.json$'; then
+  pokedoku_details_changed=true
 fi
 
 if changed_in_paths '^public/data/' '^scripts/' '^lib/shared/' '^packages/shared-types/' '^package.json$' '^pnpm-lock.yaml$' '^package-lock.json$'; then
@@ -124,3 +129,4 @@ echo "daily_lambda_changed=${daily_lambda_changed}" >> "${GITHUB_OUTPUT}"
 echo "stats_lambda_changed=${stats_lambda_changed}" >> "${GITHUB_OUTPUT}"
 echo "daily_stack_changed=${daily_stack_changed}" >> "${GITHUB_OUTPUT}"
 echo "stats_stack_changed=${stats_stack_changed}" >> "${GITHUB_OUTPUT}"
+echo "pokedoku_details_changed=${pokedoku_details_changed}" >> "${GITHUB_OUTPUT}"

@@ -1,94 +1,83 @@
-# Devvit Mod Tool Template
+# Pokedoku Details (Devvit)
 
-A template for building Reddit moderation tools using Devvit web. This template provides a complete foundation for creating custom moderation tools with bulk comment management capabilities.
+Devvit app that listens to Reddit comment/post triggers, parses bracket tokens, and replies with Pokedoku helper data.
 
-## Features
+## What it supports
 
-This template includes a working mod tool called **"Mop"** that demonstrates:
+- `[[Pokemon]]` (example: `[[Golem]]`)
+- `[[Category]]` (example: `[[Fire]]`, `[[Kanto]]`)
+- `[[Category+Category]]` (example: `[[Ground+Kanto]]`)
+- Mixed sequences in one message (order is preserved in the reply)
+- Compact mode for 6+ bracket tokens
 
-- **Bulk Comment Management**: Remove or lock multiple comments at once
-- **Thread-level Actions**: "Mop comments" - Remove/lock a comment and all its replies
-- **Post-level Actions**: "Mop post comments" - Remove/lock all comments on a post
-- **Flexible Options**:
-  - Remove comments, lock comments, or both
-  - Skip distinguished comments (moderator/admin posts)
-- **Permission Checks**: Only moderators with proper permissions can use the tool
-- **User-friendly Forms**: Interactive forms with clear options and validation
+## Reply behavior
 
-## Tech Stack
+- Full mode (`< 6` tokens): detailed blocks for Pokemon and category stats
+- Compact mode (`>= 6` tokens): one line per token
+  - Category: `(Ground + Kanto)[link] - xx valid answers`
+  - Pokemon: `(Golem)[link] (#076) - 🪨 Rock | ⛰️ Ground • Kanto`
 
-- [Devvit](https://developers.reddit.com/): Reddit's platform for building and deploying apps
-- [Vite](https://vite.dev/): Fast build tool for the web components
-- [Hono](https://hono.dev/): Lightweight web framework for backend logic
-- [TypeScript](https://www.typescriptlang.org/): Type-safe development
+## Data source and cache
 
-## Getting Started
+- Remote-first source: `https://www.pokedoku-helper.com/data/pokemon.json`
+- Cache TTL: 1 hour
+- If remote fetch fails:
+  - logs a warning
+  - falls back to bundled local JSON (`src/generated/pokemon.local.json`)
+- If both remote and local fail:
+  - logs an error
+  - serves stale cache if available, otherwise returns empty data
 
-1. **Clone this template** or use it as a starting point for your mod tool
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-3. **Configure your app** in `devvit.json`:
-   - Update the app name
-   - Set your development subreddit
-4. **Start developing**:
-   ```bash
-   npm run dev
-   ```
-5. **Test your changes** in your development subreddit
+## Project structure
 
-## Project Structure
-
-```
+```text
 src/
-├── index.ts          # Main server setup with Hono routes
 ├── core/
-│   └── nuke.ts       # Core moderation logic for bulk operations
+│   └── pokemonCache.ts            # Remote-first + fallback cache loader
 └── routes/
-    ├── api.ts        # Public API endpoints
-    ├── forms.ts      # Form submission handlers
-    ├── menu.ts       # Context menu item handlers
-    └── triggers.ts   # App lifecycle triggers
+    ├── api.ts                     # Cache status/invalidate endpoints
+    ├── categoryCommentBuilder.ts  # Category/filter richtext builders
+    ├── pokemonCommentBuilder.ts   # Pokemon richtext builders
+    └── triggers.ts                # Comment/post trigger handlers
 ```
-
-## Customizing Your Mod Tool
-
-This template is designed to be easily customizable:
-
-1. **Modify existing actions**: Edit the nuke functionality in `src/core/nuke.ts`
-2. **Add new menu items**: Update `devvit.json` and add handlers in `src/routes/menu.ts`
-3. **Create new forms**: Add form definitions and handlers in `src/routes/forms.ts`
-4. **Add API endpoints**: Extend `src/routes/api.ts` for external integrations
 
 ## Commands
 
-- `npm run dev`: Starts development mode with live reload on your test subreddit
-- `npm run build`: Builds your mod tool for production
-- `npm run deploy`: Uploads a new version of your app to Reddit
-- `npm run launch`: Publishes your app for review and public use
-- `npm run login`: Authenticates your CLI with Reddit
-- `npm run type-check`: Runs TypeScript type checking, linting, and formatting
+- `npm run dev` - Start Devvit playtest
+- `npm run build` - Build app
+- `npm run test` - Run Vitest tests
+- `npm run type-check` - Run TypeScript build check
+- `npm run deploy` - Type-check + lint + test + upload
+- `npm run launch` - Deploy and publish app
+- `npm run login` - Devvit CLI login
 
-## How It Works
+## Local development notes
 
-The template demonstrates Reddit mod tool development through the "Mop" feature:
+- Ensure local fallback data exists before playtesting if you want fallback available:
+  - from repo root: `pnpm sync:pokedoku-details:local-data`
+- App permissions are configured in `devvit.json` (including HTTP domain allowlist).
 
-1. **Context Menu Integration**: Click on the Mod Shield icon in a comment to see custom mod actions
-2. **Permission Validation**: Automatically checks if the user has moderation permissions
-3. **Interactive Forms**: Presents options through Reddit's native form system
-4. **Reddit API**: Processes multiple comments using Reddit's API
+## CI publish behavior
 
-## Development Notes
+The deploy workflow publishes this app only when relevant files are affected.
 
-- **Permissions**: The app requires `reddit: true` permission to access Reddit's API
-- **User Types**: Menu items are restricted to `moderator` user type
+Affected paths include:
+- `apps/pokedoku-details/**`
+- `packages/shared-types/**`
+- `public/data/**`
+- root lockfiles / root package manifest
 
-## Deployment
+## GitHub secret for publish
 
-1. Test thoroughly in your development subreddit
-2. Run `npm run deploy` to upload your app
-3. Use `npm run launch` to submit for Reddit's app review process
-4. Once approved, users can install your mod tool from Reddit's app directory
+To enable Devvit publish in CI:
 
-This template provides everything you need to build powerful, user-friendly moderation tools for Reddit communities.
+1. GitHub repo → `Settings` → `Secrets and variables` → `Actions`
+2. Add secret: `DEVVIT_TOKEN` (or your configured auth secret name)
+3. Wire it to the publish step env in workflow if needed
+
+## Quick examples
+
+- `[[Golem]]`
+- `[[Fire]]`
+- `[[Ground+Kanto]]`
+- `I want to learn more about: [[Ground+Kanto]], [[Fire+Final Stage]], [[Fire]], [[Golem]], [[Kanto]]`

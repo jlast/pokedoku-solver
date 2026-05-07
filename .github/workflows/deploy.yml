@@ -29,6 +29,7 @@ jobs:
       stats_lambda_changed: ${{ steps.changes.outputs.stats_lambda_changed }}
       daily_stack_changed: ${{ steps.changes.outputs.daily_stack_changed }}
       stats_stack_changed: ${{ steps.changes.outputs.stats_stack_changed }}
+      pokedoku_details_changed: ${{ steps.changes.outputs.pokedoku_details_changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -71,3 +72,37 @@ jobs:
       stats_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.stats_lambda_changed == 'true') && 'true' || 'false' }}
       daily_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.daily_stack_changed == 'true') && 'true' || 'false' }}
       stats_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.stats_stack_changed == 'true') && 'true' || 'false' }}
+
+  pokedoku-details-publish:
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.pokedoku_details_changed == 'true' }}
+    needs:
+      - detect-changes
+      - validate-and-pages
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare local data fallback
+        run: pnpm sync:pokedoku-details:local-data
+
+      - name: Publish pokedoku-details app
+        run: pnpm --dir apps/pokedoku-details launch
