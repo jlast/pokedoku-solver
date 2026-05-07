@@ -1,6 +1,7 @@
 ---
 import AppPageLayout from "../../layouts/AppPageLayout.astro";
-import PokemonListApp from "../../app/pages/PokemonListApp";
+import { Header } from "../../app/components/Header";
+import { Footer } from "../../app/components/Footer";
 ---
 
 <AppPageLayout
@@ -8,7 +9,533 @@ import PokemonListApp from "../../app/pages/PokemonListApp";
   description="Browse all Pokemon with filters for types, regions, evolution, and categories."
   path="/pokemon-list/"
 >
-    <main class="mx-auto w-full max-w-6xl">
-      <PokemonListApp client:load />
-    </main>
+  <main class="mx-auto w-full max-w-6xl app" id="pokemon-list-app">
+    <Header
+      title="Pokemon List"
+      subtitle="Browse all Pokemon with filters for types, regions, categories, and more."
+      currentPage="pokemon-list"
+      client:load
+    />
+
+    <div class="controls-panel">
+      <div class="filter-controls">
+        <button class="filter-btn-main" id="open-filter-drawer" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
+          </svg>
+          Filter
+          <span class="filter-count" id="active-filter-count" hidden>0</span>
+        </button>
+        <button class="filter-btn-secondary" id="clear-filters" type="button" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+          </svg>
+          Clear filters
+        </button>
+      </div>
+
+      <div class="search-bar">
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Search by name, type, or region..."
+          class="search-input"
+        />
+      </div>
+
+      <div class="pokemon-list-filters" id="desktop-filters"></div>
+    </div>
+
+    <div class="pokemon-list-header">
+      <div class="sort-controls">
+        <label class="sort-label">
+          <span class="sort-icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M7 4v14m0 0-3-3m3 3 3-3M17 20V6m0 0-3 3m3-3 3 3"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+          <span class="sort-select-wrap">
+            <select class="sort-select" id="sort-select" aria-label="Sort Pokemon list">
+              <option value="number-asc">Pokemon # (low to high)</option>
+              <option value="number-desc">Pokemon # (high to low)</option>
+              <option value="difficulty-asc">Dex difficulty (hard to easy)</option>
+              <option value="difficulty-desc">Dex difficulty (easy to hard)</option>
+              <option value="recent-appearance">Recent appearance (oldest first)</option>
+              <option value="recent-appearance-newest">Recent appearance (newest first)</option>
+            </select>
+            <span class="sort-select-arrow" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="m6 9 6 6 6-6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </span>
+        </label>
+      </div>
+      <div class="results-count" id="results-count">0 of 0 Pokemon</div>
+    </div>
+
+    <div class="no-results" id="no-results" hidden>
+      <p>No Pokemon match the selected filters.</p>
+    </div>
+
+    <div class="pokemon-grid" id="pokemon-grid"></div>
+    <div id="load-more-sentinel" aria-hidden="true"></div>
+
+    <Footer client:load />
+
+    <div class="filter-drawer-overlay" id="filter-drawer-overlay" hidden></div>
+    <div class="filter-drawer" id="filter-drawer" hidden>
+      <div class="filter-drawer-header">
+        <span class="filter-drawer-title">Filters</span>
+        <button class="filter-drawer-close" id="close-filter-drawer" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+          </svg>
+        </button>
+      </div>
+      <div class="filter-drawer-content">
+        <div class="search-bar">
+          <input
+            id="search-input-drawer"
+            type="text"
+            placeholder="Search by name, type, or region..."
+            class="search-input"
+          />
+        </div>
+        <div id="drawer-filters"></div>
+      </div>
+      <div class="filter-drawer-footer">
+        <button id="clear-filters-drawer" class="clear-btn" type="button">Clear All</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // @ts-nocheck
+    import { FILTER_CATEGORIES, parseFiltersFromUrl, getActiveFilters, getFiltersForUrl, applyFilters } from "../../../../lib/shared/filters";
+    import { DEX_DIFFICULTY_COLORS, TYPE_COLORS } from "../../../../lib/shared/constants";
+    import { slugify } from "../../lib/slug";
+
+    const INITIAL_RENDER_COUNT = 120;
+    const RENDER_BATCH_SIZE = 80;
+    const SORT_OPTIONS = new Set(["number-asc", "number-desc", "difficulty-asc", "difficulty-desc", "recent-appearance", "recent-appearance-newest"]);
+
+    const state = {
+      pokemon: [],
+      loading: true,
+      sortBy: "number-asc",
+      filters: Object.fromEntries(FILTER_CATEGORIES.map((cat) => [cat.key, []])),
+      difficultyFilter: [],
+      expandedFilters: new Set(),
+      showFilterDrawer: false,
+      searchQuery: "",
+      visibleCount: INITIAL_RENDER_COUNT,
+      daysSinceLastUsableByKeyId: new Map(),
+    };
+
+    const els = {
+      grid: document.getElementById("pokemon-grid"),
+      desktopFilters: document.getElementById("desktop-filters"),
+      drawerFilters: document.getElementById("drawer-filters"),
+      searchInput: document.getElementById("search-input"),
+      searchInputDrawer: document.getElementById("search-input-drawer"),
+      sortSelect: document.getElementById("sort-select"),
+      resultsCount: document.getElementById("results-count"),
+      noResults: document.getElementById("no-results"),
+      clearFilters: document.getElementById("clear-filters"),
+      clearFiltersDrawer: document.getElementById("clear-filters-drawer"),
+      openDrawer: document.getElementById("open-filter-drawer"),
+      closeDrawer: document.getElementById("close-filter-drawer"),
+      drawer: document.getElementById("filter-drawer"),
+      drawerOverlay: document.getElementById("filter-drawer-overlay"),
+      activeFilterCount: document.getElementById("active-filter-count"),
+      loadMoreSentinel: document.getElementById("load-more-sentinel"),
+    };
+
+    const trackEvent = (name, metadata) => {
+      if (window.sa_loaded) window.sa_event(name, metadata);
+    };
+
+    const parseDay = (dateString) => new Date(`${dateString}T00:00:00.000Z`).getTime();
+    const toDaysSinceLastUsable = (item, latestPuzzleDate) => {
+      if (typeof item.daysSinceLastUsable === "number") return item.daysSinceLastUsable;
+      if (!item.lastUsableDate || !latestPuzzleDate) return null;
+      return Math.floor((parseDay(latestPuzzleDate) - parseDay(item.lastUsableDate)) / (24 * 60 * 60 * 1000));
+    };
+
+    const getFilteredPokemon = () => {
+      let result = applyFilters(state.pokemon, state.filters);
+      if (state.searchQuery.trim()) {
+        const query = state.searchQuery.toLowerCase();
+        result = result.filter((p) =>
+          p.name.toLowerCase().includes(query) ||
+          p.types.some((t) => t?.toLowerCase().includes(query)) ||
+          p.region?.toLowerCase().includes(query),
+        );
+      }
+      if (state.difficultyFilter.length > 0) {
+        result = result.filter((p) => p.dexDifficulty && state.difficultyFilter.includes(p.dexDifficulty));
+      }
+      return result;
+    };
+
+    const getSortedPokemon = () => {
+      const copy = [...getFilteredPokemon()];
+      if (state.sortBy === "number-asc") return copy.sort((a, b) => a.id - b.id);
+      if (state.sortBy === "number-desc") return copy.sort((a, b) => b.id - a.id);
+      if (state.sortBy === "difficulty-asc") return copy.sort((a, b) => (b.dexDifficultyPercentile ?? 0) - (a.dexDifficultyPercentile ?? 0));
+      if (state.sortBy === "difficulty-desc") return copy.sort((a, b) => (a.dexDifficultyPercentile ?? 0) - (b.dexDifficultyPercentile ?? 0));
+      if (state.sortBy === "recent-appearance") {
+        return copy.sort((a, b) => {
+          const aDays = state.daysSinceLastUsableByKeyId.get(a.formId ?? a.id) ?? Number.POSITIVE_INFINITY;
+          const bDays = state.daysSinceLastUsableByKeyId.get(b.formId ?? b.id) ?? Number.POSITIVE_INFINITY;
+          if (bDays !== aDays) return bDays - aDays;
+          return a.id - b.id;
+        });
+      }
+      if (state.sortBy === "recent-appearance-newest") {
+        return copy.sort((a, b) => {
+          const aDays = state.daysSinceLastUsableByKeyId.get(a.formId ?? a.id) ?? Number.POSITIVE_INFINITY;
+          const bDays = state.daysSinceLastUsableByKeyId.get(b.formId ?? b.id) ?? Number.POSITIVE_INFINITY;
+          if (aDays !== bDays) return aDays - bDays;
+          return a.id - b.id;
+        });
+      }
+      return copy;
+    };
+
+    const setDrawerVisible = (visible) => {
+      state.showFilterDrawer = visible;
+      els.drawer.hidden = !visible;
+      els.drawerOverlay.hidden = !visible;
+      document.body.style.overflow = visible ? "hidden" : "";
+    };
+
+    const syncUrl = () => {
+      const params = getFiltersForUrl(state.filters);
+      const trimmedSearch = state.searchQuery.trim();
+      if (trimmedSearch) params.set("search", trimmedSearch);
+      else params.delete("search");
+      params.delete("difficulty");
+      state.difficultyFilter.forEach((value) => params.append("difficulty", value));
+      params.set("sortBy", state.sortBy);
+
+      const newUrl = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
+      window.history.replaceState({}, "", newUrl);
+
+      const canonicalEl = document.querySelector('link[rel="canonical"]');
+      if (canonicalEl) canonicalEl.setAttribute("href", window.location.href);
+      const ogUrlEl = document.querySelector('meta[property="og:url"]');
+      if (ogUrlEl) ogUrlEl.setAttribute("content", window.location.href);
+    };
+
+    const createTypeBadge = (typeName) => {
+      const badge = document.createElement("span");
+      badge.className = "type-badge";
+      badge.textContent = typeName;
+      badge.style.backgroundColor = TYPE_COLORS[typeName] || "#64748b";
+      return badge;
+    };
+
+    const renderPokemonGrid = () => {
+      const sortedPokemon = getSortedPokemon();
+      const visiblePokemon = sortedPokemon.slice(0, state.visibleCount);
+      els.resultsCount.textContent = `${sortedPokemon.length} of ${state.pokemon.length} Pokemon`;
+      els.noResults.hidden = sortedPokemon.length !== 0;
+
+      els.grid.innerHTML = "";
+      for (const p of visiblePokemon) {
+        const pokemonKeyId = p.formId ?? p.id;
+        const slug = `${slugify(p.name)}-${pokemonKeyId}`;
+        const card = document.createElement("a");
+        card.className = "pokemon-card block no-underline";
+        card.href = `${import.meta.env.BASE_URL}pokemon/${slug}/`;
+        card.addEventListener("click", () => {
+          trackEvent("click_pokemon_detail", {
+            name: p.name,
+            id: p.id,
+            form_id: `${p.formId}`,
+            slug,
+            from: "pokemon-list",
+          });
+        });
+
+        if (p.sprite) {
+          const img = document.createElement("img");
+          img.src = p.sprite;
+          img.alt = "";
+          img.loading = "lazy";
+          img.decoding = "async";
+          img.className = "pokemon-sprite";
+          card.appendChild(img);
+        } else {
+          const placeholder = document.createElement("div");
+          placeholder.className = "pokemon-sprite-placeholder";
+          card.appendChild(placeholder);
+        }
+
+        const info = document.createElement("div");
+        info.className = "pokemon-card-info";
+        info.innerHTML = `<div class="pokemon-card-name">${p.name}</div><div class="pokemon-card-id">#${p.id}</div>`;
+
+        const typeWrap = document.createElement("div");
+        typeWrap.className = "pokemon-types";
+        p.types.forEach((typeName) => typeWrap.appendChild(createTypeBadge(typeName)));
+        info.appendChild(typeWrap);
+
+        if (p.dexDifficulty) {
+          const difficulty = document.createElement("span");
+          difficulty.className = "dex-difficulty-badge";
+          difficulty.textContent = p.dexDifficulty;
+          difficulty.style.backgroundColor = DEX_DIFFICULTY_COLORS[p.dexDifficulty] || "#64748b";
+          info.appendChild(difficulty);
+        }
+
+        card.appendChild(info);
+        els.grid.appendChild(card);
+      }
+    };
+
+    const renderFilterGroup = (container, cat, isDrawer) => {
+      const isExpanded = isDrawer || state.expandedFilters.has(cat.key);
+      const activeCount = state.filters[cat.key]?.length ?? 0;
+      const group = document.createElement("div");
+      group.className = `filter-group ${isExpanded ? "expanded" : ""}`;
+
+      const header = document.createElement("button");
+      header.className = "filter-header";
+      header.type = "button";
+      header.innerHTML = `<span class="filter-label">${cat.label}</span>${activeCount > 0 ? `<span class="filter-count">${activeCount}</span>` : ""}${isDrawer ? "" : `<span class="filter-chevron">${isExpanded ? "▼" : "▶"}</span>`}`;
+      if (!isDrawer) {
+        header.addEventListener("click", () => {
+          if (state.expandedFilters.has(cat.key)) {
+            state.expandedFilters.delete(cat.key);
+            trackEvent("collapse_filter", { category: cat.key });
+          } else {
+            state.expandedFilters.add(cat.key);
+            trackEvent("expand_filter", { category: cat.key });
+          }
+          renderFilters();
+        });
+      }
+      group.appendChild(header);
+
+      const buttons = document.createElement("div");
+      buttons.className = "filter-buttons";
+      for (const opt of cat.options) {
+        const isActive = (state.filters[cat.key] ?? []).includes(opt.name);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `filter-btn ${isActive ? "active" : ""}`;
+        btn.textContent = opt.name;
+        if (isActive && opt.color) {
+          btn.style.backgroundColor = opt.color;
+          btn.style.borderColor = opt.color;
+        }
+        btn.addEventListener("click", () => {
+          state.visibleCount = INITIAL_RENDER_COUNT;
+          const current = state.filters[cat.key] ?? [];
+          const isRemoving = current.includes(opt.name);
+          const next = isRemoving ? current.filter((v) => v !== opt.name) : [...current, opt.name];
+          state.filters[cat.key] = next;
+          trackEvent("toggle_filter", {
+            category: cat.key,
+            value: opt.name,
+            action: isRemoving ? "remove" : "add",
+            activeCount: next.length,
+          });
+          applyAndRender();
+        });
+        buttons.appendChild(btn);
+      }
+      group.appendChild(buttons);
+      container.appendChild(group);
+    };
+
+    const renderDifficultyFilter = (container, isDrawer) => {
+      const isExpanded = isDrawer || state.expandedFilters.has("difficulty");
+      const group = document.createElement("div");
+      group.className = `filter-group ${isExpanded ? "expanded" : ""}`;
+      const count = state.difficultyFilter.length;
+      const header = document.createElement("button");
+      header.type = "button";
+      header.className = "filter-header";
+      header.innerHTML = `<span class="filter-label">Dex Difficulty</span>${count > 0 ? `<span class="filter-count">${count}</span>` : ""}${isDrawer ? "" : `<span class="filter-chevron">${isExpanded ? "▼" : "▶"}</span>`}`;
+      if (!isDrawer) {
+        header.addEventListener("click", () => {
+          if (state.expandedFilters.has("difficulty")) {
+            state.expandedFilters.delete("difficulty");
+            trackEvent("collapse_filter", { category: "difficulty" });
+          } else {
+            state.expandedFilters.add("difficulty");
+            trackEvent("expand_filter", { category: "difficulty" });
+          }
+          renderFilters();
+        });
+      }
+      group.appendChild(header);
+
+      const buttons = document.createElement("div");
+      buttons.className = "filter-buttons";
+      Object.keys(DEX_DIFFICULTY_COLORS).forEach((diff) => {
+        const isActive = state.difficultyFilter.includes(diff);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `filter-btn ${isActive ? "active" : ""}`;
+        btn.textContent = diff;
+        btn.style.borderColor = DEX_DIFFICULTY_COLORS[diff];
+        btn.style.color = isActive ? "white" : DEX_DIFFICULTY_COLORS[diff];
+        if (isActive) btn.style.backgroundColor = DEX_DIFFICULTY_COLORS[diff];
+        btn.addEventListener("click", () => {
+          state.visibleCount = INITIAL_RENDER_COUNT;
+          state.difficultyFilter = isActive
+            ? state.difficultyFilter.filter((d) => d !== diff)
+            : [...state.difficultyFilter, diff];
+          applyAndRender();
+        });
+        buttons.appendChild(btn);
+      });
+      group.appendChild(buttons);
+      container.appendChild(group);
+    };
+
+    const renderFilters = () => {
+      els.desktopFilters.innerHTML = "";
+      els.drawerFilters.innerHTML = "";
+      renderDifficultyFilter(els.desktopFilters, false);
+      renderDifficultyFilter(els.drawerFilters, true);
+      for (const cat of FILTER_CATEGORIES) {
+        renderFilterGroup(els.desktopFilters, cat, false);
+        renderFilterGroup(els.drawerFilters, cat, true);
+      }
+    };
+
+    const updateControlState = () => {
+      const activeCount = getActiveFilters(state.filters) + state.difficultyFilter.length;
+      const hasActiveFilters = activeCount > 0 || state.searchQuery.trim().length > 0;
+      els.clearFilters.disabled = !hasActiveFilters;
+      els.activeFilterCount.hidden = activeCount === 0;
+      els.activeFilterCount.textContent = `${activeCount}`;
+      els.searchInput.value = state.searchQuery;
+      els.searchInputDrawer.value = state.searchQuery;
+      els.sortSelect.value = state.sortBy;
+    };
+
+    const applyAndRender = () => {
+      syncUrl();
+      renderFilters();
+      renderPokemonGrid();
+      updateControlState();
+
+      const totalFilters = getActiveFilters(state.filters);
+      if (totalFilters > 0) {
+        const filterCounts = {};
+        FILTER_CATEGORIES.forEach((cat) => { filterCounts[cat.key] = state.filters[cat.key]?.length ?? 0; });
+        trackEvent("filter_change", { ...filterCounts, total: totalFilters });
+      }
+    };
+
+    const clearFilters = () => {
+      const activeFilters = getActiveFilters(state.filters);
+      state.filters = Object.fromEntries(FILTER_CATEGORIES.map((cat) => [cat.key, []]));
+      state.searchQuery = "";
+      state.difficultyFilter = [];
+      state.visibleCount = INITIAL_RENDER_COUNT;
+      setDrawerVisible(false);
+      trackEvent("clear_filters", { count: activeFilters });
+      applyAndRender();
+    };
+
+    const setupLoadMoreObserver = () => {
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries[0]?.isIntersecting) return;
+        const total = getSortedPokemon().length;
+        if (state.visibleCount >= total) return;
+        state.visibleCount = Math.min(state.visibleCount + RENDER_BATCH_SIZE, total);
+        renderPokemonGrid();
+      }, { rootMargin: "300px 0px" });
+      observer.observe(els.loadMoreSentinel);
+    };
+
+    const initFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      state.filters = { ...state.filters, ...parseFiltersFromUrl(params) };
+      state.searchQuery = params.get("search") ?? "";
+      state.difficultyFilter = params.getAll("difficulty");
+      const sortParam = params.get("sortBy");
+      const savedSort = localStorage.getItem("pokedoku-sort");
+      const candidate = sortParam || savedSort || "number-asc";
+      state.sortBy = SORT_OPTIONS.has(candidate) ? candidate : "number-asc";
+    };
+
+    const bindEvents = () => {
+      els.searchInput.addEventListener("input", (event) => {
+        state.visibleCount = INITIAL_RENDER_COUNT;
+        state.searchQuery = event.target.value;
+        applyAndRender();
+      });
+      els.searchInputDrawer.addEventListener("input", (event) => {
+        state.visibleCount = INITIAL_RENDER_COUNT;
+        state.searchQuery = event.target.value;
+        applyAndRender();
+      });
+      els.sortSelect.addEventListener("change", (event) => {
+        state.sortBy = event.target.value;
+        localStorage.setItem("pokedoku-sort", state.sortBy);
+        state.visibleCount = INITIAL_RENDER_COUNT;
+        const column = state.sortBy.startsWith("number") ? "number" : state.sortBy.startsWith("difficulty") ? "difficulty" : "recent-appearance";
+        trackEvent("change_sort", { column, sort: state.sortBy });
+        applyAndRender();
+      });
+      els.openDrawer.addEventListener("click", () => setDrawerVisible(true));
+      els.closeDrawer.addEventListener("click", () => setDrawerVisible(false));
+      els.drawerOverlay.addEventListener("click", () => setDrawerVisible(false));
+      els.clearFilters.addEventListener("click", clearFilters);
+      els.clearFiltersDrawer.addEventListener("click", clearFilters);
+    };
+
+    const init = async () => {
+      initFromUrl();
+      bindEvents();
+      setupLoadMoreObserver();
+
+      try {
+        const pokemonRes = await fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`);
+        state.pokemon = await pokemonRes.json();
+        trackEvent("view_pokemon_list", { count: state.pokemon.length });
+      } catch (error) {
+        console.error("Failed to load Pokemon:", error);
+      }
+
+      try {
+        const recentRes = await fetch(`${import.meta.env.BASE_URL}data/runtime/pokemon-last-usable.json?t=${Date.now()}`);
+        const data = await recentRes.json();
+        const byKeyId = new Map();
+        const latestPuzzleDate = data.dateRange?.to;
+        for (const item of data.items ?? []) {
+          byKeyId.set(item.pokemonKeyId, toDaysSinceLastUsable(item, latestPuzzleDate));
+        }
+        state.daysSinceLastUsableByKeyId = byKeyId;
+      } catch (error) {
+        console.error("Failed to load Pokemon recent appearance:", error);
+      }
+
+      state.loading = false;
+      applyAndRender();
+    };
+
+    init();
+  </script>
 </AppPageLayout>
