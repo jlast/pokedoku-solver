@@ -64,6 +64,8 @@ import { Footer } from "../../app/components/Footer";
             <select class="sort-select" id="sort-select" aria-label="Sort Pokemon list">
               <option value="number-asc">Pokemon # (low to high)</option>
               <option value="number-desc">Pokemon # (high to low)</option>
+              <option value="name-asc">Name (A to Z)</option>
+              <option value="name-desc">Name (Z to A)</option>
               <option value="difficulty-asc">Dex difficulty (hard to easy)</option>
               <option value="difficulty-desc">Dex difficulty (easy to hard)</option>
               <option value="recent-appearance">Recent appearance (oldest first)</option>
@@ -130,7 +132,7 @@ import { Footer } from "../../app/components/Footer";
 
     const INITIAL_RENDER_COUNT = 120;
     const RENDER_BATCH_SIZE = 80;
-    const SORT_OPTIONS = new Set(["number-asc", "number-desc", "difficulty-asc", "difficulty-desc", "recent-appearance", "recent-appearance-newest"]);
+    const SORT_OPTIONS = new Set(["number-asc", "number-desc", "name-asc", "name-desc", "difficulty-asc", "difficulty-desc", "recent-appearance", "recent-appearance-newest"]);
 
     const state = {
       pokemon: [],
@@ -195,6 +197,8 @@ import { Footer } from "../../app/components/Footer";
       const copy = [...getFilteredPokemon()];
       if (state.sortBy === "number-asc") return copy.sort((a, b) => a.id - b.id);
       if (state.sortBy === "number-desc") return copy.sort((a, b) => b.id - a.id);
+      if (state.sortBy === "name-asc") return copy.sort((a, b) => a.name.localeCompare(b.name));
+      if (state.sortBy === "name-desc") return copy.sort((a, b) => b.name.localeCompare(a.name));
       if (state.sortBy === "difficulty-asc") return copy.sort((a, b) => (b.dexDifficultyPercentile ?? 0) - (a.dexDifficultyPercentile ?? 0));
       if (state.sortBy === "difficulty-desc") return copy.sort((a, b) => (a.dexDifficultyPercentile ?? 0) - (b.dexDifficultyPercentile ?? 0));
       if (state.sortBy === "recent-appearance") {
@@ -495,7 +499,13 @@ import { Footer } from "../../app/components/Footer";
         state.sortBy = event.target.value;
         localStorage.setItem("pokedoku-sort", state.sortBy);
         state.visibleCount = INITIAL_RENDER_COUNT;
-        const column = state.sortBy.startsWith("number") ? "number" : state.sortBy.startsWith("difficulty") ? "difficulty" : "recent-appearance";
+        const column = state.sortBy.startsWith("number")
+          ? "number"
+          : state.sortBy.startsWith("name")
+            ? "name"
+            : state.sortBy.startsWith("difficulty")
+              ? "difficulty"
+              : "recent-appearance";
         trackEvent("change_sort", { column, sort: state.sortBy });
         applyAndRender();
       });

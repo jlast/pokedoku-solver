@@ -8,6 +8,8 @@ import { parseCategoryId } from "./puzzle-stats/categoryUtils";
 type SortBy =
   | "number-asc"
   | "number-desc"
+  | "name-asc"
+  | "name-desc"
   | "difficulty-desc"
   | "difficulty-asc"
   | "recent-appearance"
@@ -67,6 +69,8 @@ export function SuggestionsPanel({
     setSortBy(newSort);
     const column = newSort.startsWith("number")
       ? "number"
+      : newSort.startsWith("name")
+        ? "name"
       : newSort.startsWith("difficulty")
         ? "difficulty"
         : "recent-appearance";
@@ -99,6 +103,10 @@ export function SuggestionsPanel({
       return copy.sort((a, b) => a.id - b.id);
     } else if (sortBy === "number-desc" ) {
       return copy.sort((a, b) => b.id - a.id);
+    } else if (sortBy === "name-asc") {
+      return copy.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "name-desc") {
+      return copy.sort((a, b) => b.name.localeCompare(a.name));
     } else if (sortBy === "difficulty-asc") {
       return copy.sort((a, b) => {
         const aPercentile = a.dexDifficultyPercentile ?? 0;
@@ -157,6 +165,8 @@ export function SuggestionsPanel({
                 >
                   <option value="number-asc">Pokemon # (low to high)</option>
                   <option value="number-desc">Pokemon # (high to low)</option>
+                  <option value="name-asc">Name (A to Z)</option>
+                  <option value="name-desc">Name (Z to A)</option>
                   <option value="difficulty-asc">Dex difficulty (hard to easy)</option>
                   <option value="difficulty-desc">Dex difficulty (easy to hard)</option>
                   <option value="recent-appearance">Recent appearance (oldest first)</option>
