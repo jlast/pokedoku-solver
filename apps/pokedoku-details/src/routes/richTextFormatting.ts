@@ -1,3 +1,18 @@
-// See node_modules/.pnpm/@devvit+shared-types@0.12.22_twirp-ts@2.5.0/node_modules/@devvit/shared-types/richtext/types.d.ts
-export const richTextFormattingBold = 1;
-export const richTextFormattingSuperscript = 32;
+// FormatRange is [formattingFlag, startIndex, length]
+// Flags: bold=1, superscript=32
+export type RichTextFormatRange = [number, number, number];
+
+const RICH_TEXT_BOLD = 1;
+const RICH_TEXT_SUPERSCRIPT = 32;
+
+export const richTextBold = (length: number): RichTextFormatRange => [
+  RICH_TEXT_BOLD,
+  0,
+  length,
+];
+
+export const richTextSuperscript = (length: number): RichTextFormatRange => [
+  RICH_TEXT_SUPERSCRIPT,
+  0,
+  length,
+];

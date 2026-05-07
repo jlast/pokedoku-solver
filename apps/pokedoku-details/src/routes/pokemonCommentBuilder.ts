@@ -6,7 +6,7 @@ import {
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { RichTextBuilder } from '@devvit/public-api';
 import { type ParagraphContext } from '@devvit/web/server';
-import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
+import { richTextBold } from './richTextFormatting';
 
 const BASE_URL = 'https://pokedoku-helper.com';
 
@@ -82,15 +82,13 @@ export function buildPokemonRedditRichText(
     p.link({
       text: pokemon.name,
       url: `${BASE_URL}${formSlug}`,
-      formatting: [
-        makeFormatting({ bold: true, startIndex: 0, length: pokemon.name.length }),
-      ],
+      formatting: [richTextBold(pokemon.name.length)],
     });
     p.text({ text: ' ' });
     const dexText = `(#${dex})`;
     p.text({
       text: dexText,
-      formatting: [makeFormatting({ bold: true, startIndex: 0, length: dexText.length })],
+      formatting: [richTextBold(dexText.length)],
     });
     p.linebreak();
     appendTypeRegionLine(p, pokemon);

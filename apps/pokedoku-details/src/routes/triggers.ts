@@ -13,7 +13,6 @@ import {
 import { reddit, RichTextBuilder } from '@devvit/web/server';
 import { FILTER_CATEGORIES } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
-import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
 import { getPokemonMap } from '../core/pokemonCache';
 import { log } from '../core/logger';
 import {
@@ -26,6 +25,7 @@ import {
   formatTypeDifficultyStats,
   type MatchedFilter,
 } from './categoryCommentBuilder';
+import { richTextSuperscript } from './richTextFormatting';
 import { error as logError, warn } from '../core/logger';
 
 export const triggers = new Hono();
@@ -251,22 +251,16 @@ const renderPokemonReplyText = ({ ordered, tokenCount }: MatchedLookup): RichTex
 
     p.text({
       text: prefix,
-      formatting: [
-        makeFormatting({ superscript: true, startIndex: 0, length: prefix.length }),
-      ],
+      formatting: [richTextSuperscript(prefix.length)],
     });
     p.link({
       text: domain,
       url: 'https://pokedoku-helper.com',
-      formatting: [
-        makeFormatting({ superscript: true, startIndex: 0, length: domain.length }),
-      ],
+      formatting: [richTextSuperscript(domain.length)],
     });
     p.text({
       text: suffix,
-      formatting: [
-        makeFormatting({ superscript: true, startIndex: 0, length: suffix.length }),
-      ],
+      formatting: [richTextSuperscript(suffix.length)],
     });
   });
   return builder;
