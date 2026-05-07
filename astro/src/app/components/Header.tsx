@@ -90,7 +90,7 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
                 className="m-0 h-7 w-7 cursor-pointer"
               />
             </a>
-            <span className="hidden ml-0.5 text-base leading-tight font-bold text-slate-900 max-[1100px]:inline-block">{title}</span>
+            <span data-header-title className="hidden ml-0.5 text-base leading-tight font-bold text-slate-900 max-[1100px]:inline-block">{title}</span>
 
           </div>
 
@@ -150,7 +150,7 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
         </div>
 
         <div className="mb-2 hidden shrink-0 items-center justify-center gap-2 pt-4 lg:!flex">
-          <h1 className="m-0 text-[1.55rem] leading-tight font-bold tracking-[0.01em] text-[#222]">{title}</h1>
+          <h1 data-header-title className="m-0 text-[1.55rem] leading-tight font-bold tracking-[0.01em] text-[#222]">{title}</h1>
         </div>
 
         {showDate && (
@@ -169,12 +169,12 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
               </span>
               <span className="text-[0.8rem] leading-tight font-medium tracking-[0.01em] text-slate-500 max-[1100px]:text-[0.76rem]">Updated daily</span>
             </div>
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-[0.85rem] text-slate-500">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
-              </svg>
-              {showDate}
-            </div>
+              <div className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-[0.85rem] text-slate-500">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+                </svg>
+              <span data-header-date>{showDate}</span>
+              </div>
           </div>
         )}
 

@@ -1,6 +1,8 @@
 ---
 import AppPageLayout from "../../layouts/AppPageLayout.astro";
-import { TodayLoader } from "../../app/pages/TodayLoader";
+import { Header } from "../../app/components/Header";
+import { Footer } from "../../app/components/Footer";
+import { TodayPageClient } from "../../app/pages/TodayPageClient";
 ---
 
 <AppPageLayout
@@ -8,5 +10,60 @@ import { TodayLoader } from "../../app/pages/TodayLoader";
   description="Get today's Pokedoku answers with all 9 solutions and strategic Pokémon picks to help optimize your Pokédex completion. Updated daily."
   path="/pokedoku-answers-today"
 >
-    <TodayLoader client:load />
+  <div class="app">
+    <Header
+      title="Today's Answers (Loading puzzle date...)"
+      subtitle="Get all 9 Pokedoku answers for today with strategic Pokemon picks to optimize your Pokedex completion."
+      introText="Includes all category combinations from today's puzzle with optimized picks for each square."
+      showDate="Loading puzzle date..."
+      alwaysShowSubheader={true}
+      currentPage="today"
+      client:load
+    />
+
+    <TodayPageClient client:load />
+
+    <section class="content-section rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50/70 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
+      <h2 class="mb-2">Today&apos;s Pokedoku categories</h2>
+      <p class="mb-0 text-slate-700">
+        This page auto-loads today&apos;s live puzzle constraints so you can inspect every square, compare options, and
+        make higher-confidence picks. It refreshes daily with the newest board.
+      </p>
+      <div class="mt-4 grid gap-2 sm:grid-cols-3">
+        <div class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">Daily puzzle constraints</div>
+        <div class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">All valid options per square</div>
+        <div class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">Dex-focused suggested picks</div>
+      </div>
+    </section>
+
+    <section class="content-section faq rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
+      <h2 class="mb-3">FAQ</h2>
+
+      <div class="mb-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+        <h3 class="mt-0">What is shown on this page?</h3>
+        <p class="mb-0 text-slate-700">You get today&apos;s row and column categories, plus all possible Pokemon matches for each square.</p>
+      </div>
+
+      <div class="mb-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+        <h3 class="mt-0">Does this update automatically?</h3>
+        <p class="mb-0 text-slate-700">Yes. The page is wired to load the current daily Pokedoku puzzle.</p>
+      </div>
+
+      <div class="mb-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+        <h3 class="mt-0">Can I go back to manual editing?</h3>
+        <p class="mb-0 text-slate-700">Yes. Open the custom puzzle editor anytime to set your own category combinations.</p>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+        <h3 class="mt-0">What is Dex Difficulty?</h3>
+        <p class="mb-0 text-slate-700">
+          Dex Difficulty tells you how hard a Pokemon is to place in Pokedoku.
+          <strong> Nightmare</strong> means few valid spots with high competition.
+          <strong> Easy</strong> means more flexible placement and lower competition.
+        </p>
+      </div>
+    </section>
+
+    <Footer />
+  </div>
 </AppPageLayout>
