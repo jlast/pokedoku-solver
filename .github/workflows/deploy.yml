@@ -104,5 +104,17 @@ jobs:
       - name: Prepare local data fallback
         run: pnpm sync:pokedoku-details:local-data
 
+      - name: Restore Devvit auth session
+        env:
+          DEVVIT_TOKEN: ${{ secrets.DEVVIT_TOKEN }}
+        run: |
+          test -n "$DEVVIT_TOKEN" || (echo "Missing DEVVIT_TOKEN secret" && exit 1)
+          mkdir -p "$HOME/.devvit" "$HOME/.config/devvit"
+          printf '%s' "$DEVVIT_TOKEN" > "$HOME/.devvit/auth.json"
+          printf '%s' "$DEVVIT_TOKEN" > "$HOME/.config/devvit/auth.json"
+
+      - name: Verify Devvit authentication
+        run: pnpm --dir apps/pokedoku-details exec devvit whoami
+
       - name: Publish pokedoku-details app
         run: pnpm --dir apps/pokedoku-details launch

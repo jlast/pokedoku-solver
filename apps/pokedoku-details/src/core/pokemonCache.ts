@@ -39,14 +39,14 @@ const fetchPokemonMap = async (): Promise<Map<string, Pokemon>> => {
     const pokemon = (await response.json()) as Pokemon[];
     log(`Loaded pokemon data from remote URL: ${POKEMON_DATA_URL}`);
     return buildPokemonMap(pokemon);
-  } catch (error) {
+  } catch (_error) {
     warn('Remote Pokemon fetch failed, falling back to local JSON');
 
     try {
       const pokemon = localPokemonData as Pokemon[];
       log('Loaded pokemon data from bundled local JSON fallback');
       return buildPokemonMap(pokemon);
-    } catch (fallbackError) {
+    } catch (_fallbackError) {
       logError('Local Pokemon fallback failed, returning stale/empty cache');
 
       if (cachedMap) {
