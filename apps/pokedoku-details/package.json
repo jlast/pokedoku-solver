@@ -8,7 +8,7 @@
     "build": "vite build",
     "deploy": "pnpm run type-check && pnpm run lint && pnpm run test && devvit upload",
     "dev": "devvit playtest",
-    "launch": "pnpm run deploy && devvit publish",
+    "launch": "pnpm run deploy && devvit publish --public",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "login": "devvit login",
     "prettier": "prettier --write .",

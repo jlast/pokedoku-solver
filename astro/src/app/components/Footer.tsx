@@ -48,6 +48,22 @@ export function Footer() {
         </svg>
         u/pokedoku-solver
       </a>
+      <span className="mx-2">•</span>
+      <a
+        className="inline-flex items-center gap-1.5 text-[#4ECDC4] no-underline hover:underline"
+        href="/terms-and-conditions/"
+        onClick={() => trackEvent("click_terms", { url: "/terms-and-conditions/" })}
+      >
+        Terms &amp; Conditions
+      </a>
+      <span className="mx-2">•</span>
+      <a
+        className="inline-flex items-center gap-1.5 text-[#4ECDC4] no-underline hover:underline"
+        href="/privacy-policy/"
+        onClick={() => trackEvent("click_privacy", { url: "/privacy-policy/" })}
+      >
+        Privacy Policy
+      </a>
     </footer>
   );
 }
