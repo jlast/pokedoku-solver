@@ -1,68 +1,113 @@
-import { FILTER_CATEGORIES } from '@pokedoku-helper/shared-types';
+import {
+  difficultyWithEmoji,
+  FILTER_CATEGORIES,
+  typeWithEmoji,
+} from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { RichTextBuilder } from '@devvit/public-api';
-import { ListItemContext } from '@devvit/web/server';
+import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
+import type { ParagraphContext } from '@devvit/web/server';
 
-const BASE_URL = "https://pokedoku-helper.com";
+const BASE_URL = 'https://pokedoku-helper.com';
 
 const slug = (value: string) =>
-  value.toLowerCase().replaceAll(" ", "-").replaceAll(".", "");
+  value.toLowerCase().replaceAll(' ', '-').replaceAll('.', '');
 
-const getCategoryNames = (pokemon: Pokemon): string[] =>
-  FILTER_CATEGORIES.flatMap((group) =>
-    group.options
+type CategoryGroup = {
+  label: string;
+  names: string[];
+};
+
+const getCategoryGroups = (pokemon: Pokemon): CategoryGroup[] =>
+  FILTER_CATEGORIES.map((group) => ({
+    label: group.label,
+    names: group.options
       .filter((option) => option.matches(pokemon))
       .map((option) => option.name)
-  ).filter((value, index, list) => list.indexOf(value) === index);
+      .filter((value, index, list) => list.indexOf(value) === index),
+  })).filter((group) => group.names.length > 0);
 
-const appendCategoryLinks = (item: ListItemContext, pokemon: Pokemon): void => {
-  const categoryNames = getCategoryNames(pokemon);
-
-  item.paragraph((p) => {
-    p.text({ text: 'Categories: ' });
-    if (categoryNames.length === 0) {
-      p.text({ text: 'None' });
-      return;
+const appendTypeRegionLine = (p: ParagraphContext, pokemon: Pokemon): void => {
+  pokemon.types.forEach((type, index) => {
+    if (index > 0) {
+      p.text({ text: ' | ' });
     }
+    p.link({
+      text: typeWithEmoji(type),
+      url: `${BASE_URL}/category/${slug(type)}`,
+    }); 
+  });
 
-    categoryNames.forEach((category, index) => {
-      if (index > 0) {
-        p.text({ text: ' | ' });
-      }
-
-      p.link({
-        text: category,
-        url: `${BASE_URL}/category/${slug(category)}`,
-      });
-    });
+  p.text({ text: ' • ' });
+  p.link({
+    text: pokemon.region,
+    url: `${BASE_URL}/category/${slug(pokemon.region)}`,
   });
 };
 
-export function buildPokemonRedditRichText(builder: RichTextBuilder, pokemon: Pokemon): RichTextBuilder {
-    const dex = String(pokemon.id).padStart(3, '0');
-    const formSlug = `/pokemon/${slug(`${pokemon.name}-${pokemon.formId}`)}`;
+const appendCategoryLinks = (p: ParagraphContext, pokemon: Pokemon): void => {
+  const categoryGroups = getCategoryGroups(pokemon).filter(
+    (group) => group.label !== 'Types' && group.label !== 'Regions'
+  );
 
-    builder.paragraph((p) => {
-      p.link({ text: pokemon.name, url: `${BASE_URL}${formSlug}` });
-      p.text({ text: ` (#${dex})` });
-    });
+  if (categoryGroups.length === 0) {
+    return;
+  }
 
-    builder.list({ ordered: false }, (list) => {
-      list.item((item) => {
-        item.paragraph((p) => {
-          p.text({ text: `Difficulty: ${pokemon.dexDifficulty ?? 'Unknown'}` });
+  categoryGroups.forEach((group) => {
+      p.linebreak();
+      p.text({ text: '• ' });
+      p.text({ text: `${group.label}: ` });
+
+      group.names.forEach((category, index) => {
+        if (index > 0) {
+          p.text({ text: ' • ' });
+        }
+
+        p.link({
+          text: category,
+          url: `${BASE_URL}/category/${slug(category)}`,
         });
       });
-      list.item((item) => {
-        appendCategoryLinks(item, pokemon);
-      });
     });
+};
 
+export function buildPokemonRedditRichText(
+  builder: RichTextBuilder,
+  pokemon: Pokemon
+): RichTextBuilder {
+  const dex = String(pokemon.id).padStart(3, '0');
+  const formSlug = `/pokemon/${slug(`${pokemon.name}-${pokemon.formId}`)}`;
 
-    builder.paragraph((p) => {
-      p.text({ text: '🔍 View full details: ' });
-      p.link({ text: pokemon.name, url: `${BASE_URL}${formSlug}` });
+  builder.paragraph((p) => {
+    p.link({
+      text: pokemon.name,
+      url: `${BASE_URL}${formSlug}`,
+      formatting: [
+        makeFormatting({ bold: true, startIndex: 0, length: pokemon.name.length }),
+      ],
     });
+    p.text({ text: ' ' });
+    const dexText = `(#${dex})`;
+    p.text({
+      text: dexText,
+      formatting: [makeFormatting({ bold: true, startIndex: 0, length: dexText.length })],
+    });
+    p.linebreak();
+    appendTypeRegionLine(p, pokemon);
+    p.linebreak();
+    p.linebreak();
+    p.text({ text: '• ' });
+    p.link({
+      text: 'Dex Difficulty',
+      url: `${BASE_URL}/tips#beginner-dex-difficulty`,
+    });
+    p.text({
+      text: `: ${difficultyWithEmoji(pokemon.dexDifficulty)}`,
+    });
+    appendCategoryLinks(p, pokemon);
+  });
+
 
   return builder;
 }

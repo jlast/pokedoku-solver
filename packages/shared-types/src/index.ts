@@ -24,6 +24,30 @@ export const TYPE_LINES = ['Monotype', 'Dualtype'] as const;
 export type PokemonType = (typeof POKEMON_TYPES)[number];
 export type TypeLine = (typeof TYPE_LINES)[number];
 
+export const TYPE_EMOJIS: Record<PokemonType, string> = {
+  Normal: '⚪',
+  Fire: '🔥',
+  Water: '💧',
+  Electric: '⚡',
+  Grass: '🌿',
+  Ice: '❄️',
+  Fighting: '🥊',
+  Poison: '🧪',
+  Ground: '⛰️',
+  Flying: '🪽',
+  Psychic: '🔮',
+  Bug: '🐛',
+  Rock: '🪨',
+  Ghost: '👻',
+  Dragon: '🐉',
+  Dark: '🌘',
+  Steel: '⚙️',
+  Fairy: '🧚',
+};
+
+export const typeWithEmoji = (type: PokemonType): string =>
+  `${TYPE_EMOJIS[type]} ${type}`;
+
 export const POKEMON_REGIONS = [
   'Kanto',
   'Johto',
@@ -85,6 +109,19 @@ export const DEX_DIFFICULTIES = [
 ] as const;
 export type DexDifficulty = (typeof DEX_DIFFICULTIES)[number];
 
+export const difficultyWithEmoji = (difficulty: DexDifficulty): string => {
+  const value = (difficulty ?? 'Unknown').toLowerCase();
+
+  if (value === 'easy') return '🟢 Easy';
+  if (value === 'normal') return '🔵 Normal';
+  if (value === 'hard') return '🟠 Hard';
+  if (value === 'expert') return '🔴 Expert';
+  if (value === 'nightmare') return '🟣 Nightmare';
+  if (value === 'impossible') return '⚫ Impossible';
+
+  return difficulty ?? 'Unknown';
+};
+
 export interface Pokemon {
   id: number;
   name: string;
@@ -95,7 +132,7 @@ export interface Pokemon {
   isBranched?: boolean;
   categories?: PokemonCategory[];
   sprite?: string;
-  dexDifficulty?: DexDifficulty;
+  dexDifficulty: DexDifficulty;
   dexDifficultyPercentile: number;
   formId?: number;
 }

@@ -11,6 +11,7 @@ import { reddit, RichTextBuilder } from '@devvit/web/server';
 import { isT1, isT3 } from '@devvit/shared-types/tid.js';
 import type { T1 } from '@devvit/shared-types/tid.js';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
+import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
 import { getPokemonMap } from '../core/pokemonCache';
 import { buildPokemonRedditRichText } from './redditComment';
 
@@ -76,7 +77,38 @@ const getMatchedPokemon = async (input: string): Promise<Pokemon[]> => {
 
 const renderPokemonReplyText = (pokemon: Pokemon[]): RichTextBuilder => {
   const builder = new RichTextBuilder();
-  pokemon.map((entry) => buildPokemonRedditRichText(builder, entry).horizontalRule())
+  pokemon.forEach((entry, index) => {
+    if (index > 0) {
+      builder.horizontalRule();
+    }
+    buildPokemonRedditRichText(builder, entry);
+  });
+  builder.horizontalRule();
+  builder.paragraph((p) => {
+    const prefix = 'Data from ';
+    const domain = 'pokedoku-helper.com';
+    const suffix = '. Use [[Pokemon]] to call.';
+
+    p.text({
+      text: prefix,
+      formatting: [
+        makeFormatting({ superscript: true, startIndex: 0, length: prefix.length }),
+      ],
+    });
+    p.link({
+      text: domain,
+      url: 'https://pokedoku-helper.com',
+      formatting: [
+        makeFormatting({ superscript: true, startIndex: 0, length: domain.length }),
+      ],
+    });
+    p.text({
+      text: suffix,
+      formatting: [
+        makeFormatting({ superscript: true, startIndex: 0, length: suffix.length }),
+      ],
+    });
+  });
   return builder;
 }
 

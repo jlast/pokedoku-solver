@@ -19,6 +19,12 @@ interface TipItem {
 
 const TIPS: TipItem[] = [
   {
+    id: "beginner-dex-difficulty",
+    level: "beginner",
+    question: "What is Dex Difficulty?",
+    answer: "Dex Difficulty shows how hard it is to use a Pokémon in Pokedoku. Nightmare = few valid spots, lots of competition. Easy = more options or less competition. Helps you see which answers are more logical to prioritize for dex completion.",
+  },
+  {
     id: "beginner-pp",
     level: "beginner",
     question: "What is PP in Pokedoku?",
