@@ -1,15 +1,16 @@
 import { Hono } from 'hono';
-import type {
-  OnAppInstallRequest,
-  OnCommentCreateRequest,
-  OnCommentSubmitRequest,
-  OnPostCreateRequest,
-  OnPostSubmitRequest,
-  TriggerResponse,
+import {
+  isT1,
+  isT3,
+  type OnAppInstallRequest,
+  type OnCommentCreateRequest,
+  type OnCommentSubmitRequest,
+  type OnPostCreateRequest,
+  type OnPostSubmitRequest,
+  type T1,
+  type TriggerResponse,
 } from '@devvit/web/shared';
 import { reddit, RichTextBuilder } from '@devvit/web/server';
-import { isT1, isT3 } from '@devvit/shared-types/tid.js';
-import type { T1 } from '@devvit/shared-types/tid.js';
 import { FILTER_CATEGORIES } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
@@ -28,6 +29,7 @@ import {
 export const triggers = new Hono();
 
 const BRACKET_TOKEN_REGEX = /(?:\\\[\\\[|\[\[)(.+?)(?:\\\]\\\]|\]\])/g;
+
 
 const extractBracketTokens = (input: string): string[] => {
   const matches = input.matchAll(BRACKET_TOKEN_REGEX);
