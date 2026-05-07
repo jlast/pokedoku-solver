@@ -83,6 +83,62 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
       continue;
     }
 
+    if (token.includes('+')) {
+      const [leftTokenRaw, rightTokenRaw] = token.split('+');
+      const leftToken = leftTokenRaw?.trim();
+      const rightToken = rightTokenRaw?.trim();
+
+      if (!leftToken || !rightToken) {
+        continue;
+      }
+
+      const leftCategory = FILTER_CATEGORIES.find((category) =>
+        category.options.some((option) => option.name.toLowerCase() === leftToken)
+      );
+      const rightCategory = FILTER_CATEGORIES.find((category) =>
+        category.options.some((option) => option.name.toLowerCase() === rightToken)
+      );
+
+      const leftOption = leftCategory?.options.find(
+        (option) => option.name.toLowerCase() === leftToken
+      );
+      const rightOption = rightCategory?.options.find(
+        (option) => option.name.toLowerCase() === rightToken
+      );
+
+      if (!leftCategory || !rightCategory || !leftOption || !rightOption) {
+        continue;
+      }
+
+      const matchedPokemonForFilter = pokemonList.filter(
+        (entry) => leftOption.matches(entry) && rightOption.matches(entry)
+      );
+      const hasTypeFilter =
+        leftCategory.key === 'types' || rightCategory.key === 'types';
+      const difficultyStats = hasTypeFilter
+        ? formatTypeDifficultyStats(matchedPokemonForFilter)
+        : null;
+
+      const filterMatch: MatchedFilter = {
+        categoryLabel: `${leftCategory.label} + ${rightCategory.label}`,
+        name: `${leftOption.name} + ${rightOption.name}`,
+        linkSlug: `${leftOption.name}/${rightOption.name}`,
+        count: matchedPokemonForFilter.length,
+      };
+
+      if (difficultyStats?.distribution) {
+        filterMatch.difficultyDistribution = difficultyStats.distribution;
+      }
+
+      if (difficultyStats?.averageDifficulty) {
+        filterMatch.averageDifficulty = difficultyStats.averageDifficulty;
+      }
+
+      filterMatches.push(filterMatch);
+      matchedFilterTokens.push(token);
+      continue;
+    }
+
     const filterCategory = FILTER_CATEGORIES.find((category) =>
       category.options.some((option) => option.name.toLowerCase() === token)
     );

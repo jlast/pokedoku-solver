@@ -6,9 +6,10 @@ import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
 export type MatchedFilter = {
   categoryLabel: string;
   name: string;
+  linkSlug: string;
   count: number;
-  averageDifficulty: string;
-  difficultyDistribution: string;
+  averageDifficulty?: string;
+  difficultyDistribution?: string;
 };
 
 const difficultyRank: Record<string, number> = {
@@ -103,7 +104,7 @@ export const appendFilterStats = (
   builder.paragraph((p) => {
     p.link({
       text: filter.name,
-      url: `https://pokedoku-helper.com/category/${slug(filter.name)}`,
+      url: `https://pokedoku-helper.com/category/${slug(filter.linkSlug)}`,
       formatting: [
         makeFormatting({ bold: true, startIndex: 0, length: filter.name.length }),
       ],
@@ -111,14 +112,20 @@ export const appendFilterStats = (
     p.text({ text: ` (${filter.categoryLabel})` });
     p.linebreak();
     p.text({ text: `${filter.count} matching Pokemon` });
-    p.linebreak();
-    p.linebreak();
-    p.text({
-      text: `Average Difficulty: ${difficultyWithEmoji(filter.averageDifficulty)}`,
-    });
-    p.linebreak();
-    p.text({
-      text: `Difficulty Distribution: ${formatDistributionWithEmoji(filter.difficultyDistribution)}`,
-    });
+
+    if (typeof filter.averageDifficulty === 'string') {
+      p.linebreak();
+      p.linebreak();
+      p.text({
+        text: `Average Difficulty: ${difficultyWithEmoji(filter.averageDifficulty)}`,
+      });
+    }
+
+    if (typeof filter.difficultyDistribution === 'string') {
+      p.linebreak();
+      p.text({
+        text: `Difficulty Distribution: ${formatDistributionWithEmoji(filter.difficultyDistribution)}`,
+      });
+    }
   });
 };
