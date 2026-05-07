@@ -4,8 +4,7 @@ import {
   typeWithEmoji,
 } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
-import { RichTextBuilder } from '@devvit/public-api';
-import { type ParagraphContext } from '@devvit/web/server';
+import { RichTextBuilder, type ParagraphContext } from '@devvit/web/server';
 import { richTextBold } from './richTextFormatting';
 
 const BASE_URL = 'https://pokedoku-helper.com';
