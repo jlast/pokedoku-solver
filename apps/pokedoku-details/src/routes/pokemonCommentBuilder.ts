@@ -5,8 +5,8 @@ import {
 } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { RichTextBuilder } from '@devvit/public-api';
+import { type ParagraphContext } from '@devvit/web/server';
 import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
-import type { ParagraphContext } from '@devvit/web/server';
 
 const BASE_URL = 'https://pokedoku-helper.com';
 

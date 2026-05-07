@@ -1,5 +1,6 @@
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import localPokemonData from '../generated/pokemon.local.json';
+import { error as logError, log, warn } from './logger';
 
 const POKEMON_DATA_URL = 'https://www.pokedoku-helper.com/data/pokemon.json';
 const DEFAULT_TTL_MS = 60 * 60 * 1000;
@@ -36,17 +37,17 @@ const fetchPokemonMap = async (): Promise<Map<string, Pokemon>> => {
     }
 
     const pokemon = (await response.json()) as Pokemon[];
-    console.log(`Loaded pokemon data from remote URL: ${POKEMON_DATA_URL}`);
+    log(`Loaded pokemon data from remote URL: ${POKEMON_DATA_URL}`);
     return buildPokemonMap(pokemon);
   } catch (error) {
-    console.warn('Remote Pokemon fetch failed, falling back to local JSON', error);
+    warn('Remote Pokemon fetch failed, falling back to local JSON');
 
     try {
       const pokemon = localPokemonData as Pokemon[];
-      console.log('Loaded pokemon data from bundled local JSON fallback');
+      log('Loaded pokemon data from bundled local JSON fallback');
       return buildPokemonMap(pokemon);
     } catch (fallbackError) {
-      console.error('Local Pokemon fallback failed, returning stale/empty cache', fallbackError);
+      logError('Local Pokemon fallback failed, returning stale/empty cache');
 
       if (cachedMap) {
         return cachedMap;
@@ -58,10 +59,10 @@ const fetchPokemonMap = async (): Promise<Map<string, Pokemon>> => {
 };
 
 export const getPokemonMap = async (): Promise<Map<string, Pokemon>> => {
-  console.log('Requesting Pokemon map');
+  log('Requesting Pokemon map');
 
   if (isCacheFresh() && cachedMap) {
-    console.log('Serving Pokemon map from cache');
+    log('Serving Pokemon map from cache');
     return cachedMap;
   }
 
@@ -81,7 +82,7 @@ export const getPokemonMap = async (): Promise<Map<string, Pokemon>> => {
     return await inFlight;
   } catch (error) {
     if (cachedMap) {
-      console.warn('Pokemon fetch failed, serving stale cache', error);
+      warn('Pokemon fetch failed, serving stale cache', error);
       return cachedMap;
     }
 

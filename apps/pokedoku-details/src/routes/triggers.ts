@@ -15,6 +15,7 @@ import { FILTER_CATEGORIES } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
 import { getPokemonMap } from '../core/pokemonCache';
+import { log } from '../core/logger';
 import {
   appendPokemonCompactLine,
   buildPokemonRedditRichText,
@@ -25,8 +26,12 @@ import {
   formatTypeDifficultyStats,
   type MatchedFilter,
 } from './categoryCommentBuilder';
+import { error as logError, warn } from '../core/logger';
 
 export const triggers = new Hono();
+
+const PROCESSED_COMMENT_EVENT_TTL_MS = 2 * 60 * 1000;
+const processedCommentEvents = new Map<string, number>();
 
 const BRACKET_TOKEN_REGEX = /(?:\\\[\\\[|\[\[)(.+?)(?:\\\]\\\]|\]\])/g;
 
@@ -62,6 +67,23 @@ const normalizeCommentId = (id: string | undefined): T1 | null => {
   return null;
 };
 
+const shouldProcessCommentEvent = (commentId: T1): boolean => {
+  const now = Date.now();
+
+  for (const [id, seenAt] of processedCommentEvents.entries()) {
+    if (now - seenAt > PROCESSED_COMMENT_EVENT_TTL_MS) {
+      processedCommentEvents.delete(id);
+    }
+  }
+
+  if (processedCommentEvents.has(commentId)) {
+    return false;
+  }
+
+  processedCommentEvents.set(commentId, now);
+  return true;
+};
+
 type MatchedLookup = {
   pokemon: Pokemon[];
   filters: MatchedFilter[];
@@ -72,7 +94,7 @@ type MatchedLookup = {
 const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
   const tokens = extractBracketTokens(input);
   if (tokens.length === 0) {
-    console.log('pokemon-match tokens=none');
+    log('pokemon-match tokens=none');
     return { pokemon: [], filters: [], ordered: [], tokenCount: 0 };
   }
 
@@ -174,7 +196,7 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
     matchedFilterTokens.push(token);
   }
 
-  console.log(
+  log(
     `pokemon-match tokens=${tokens.join(',')} pokemon=${matchedTokens.join(',') || 'none'} filters=${matchedFilterTokens.join(',') || 'none'}`
   );
 
@@ -252,7 +274,7 @@ const renderPokemonReplyText = ({ ordered, tokenCount }: MatchedLookup): RichTex
 
 triggers.post('/on-app-install', async (c) => {
   const input = await c.req.json<OnAppInstallRequest>();
-  console.log('App installed to subreddit: r/' + input.subreddit?.name);
+  log('App installed to subreddit: r/' + input.subreddit?.name);
 
   return c.json<TriggerResponse>({}, 200);
 });
@@ -265,7 +287,7 @@ const handleCommentEvent = async (
   const commentId = normalizeCommentId(rawCommentId);
 
   if (!body || !commentId) {
-    console.log(
+    log(
       `on-comment skipped body=${body ? 'yes' : 'no'} rawCommentId=${rawCommentId ?? 'missing'}`
     );
     return;
@@ -280,23 +302,32 @@ const handleCommentEvent = async (
 
   const lookup = await getMatchedLookup(body);
   const hasMatch = lookup.pokemon.length > 0 || lookup.filters.length > 0;
-  console.log(
+  log(
     `on-comment commentId=${commentId} rawCommentId=${rawCommentId} matched=${hasMatch ? 'yes' : 'no'}`
   );
   if (!hasMatch) {
-    console.log(`on-comment body=${JSON.stringify(body)}`);
+    log(`on-comment body=${JSON.stringify(body)}`);
   }
 
   if (!hasMatch) {
     return;
   }
 
-  const comment = await reddit.getCommentById(commentId);
-  const textBuilder = renderPokemonReplyText(lookup);
-  await comment.reply({
-    richtext: textBuilder,
-    runAs: 'APP',
-  });
+  if (!shouldProcessCommentEvent(commentId)) {
+    warn(`duplicate comment event skipped commentId=${commentId}`);
+    return;
+  }
+
+  try {
+    const comment = await reddit.getCommentById(commentId);
+    const textBuilder = renderPokemonReplyText(lookup);
+    await comment.reply({
+      richtext: textBuilder,
+      runAs: 'APP',
+    });
+  } catch (replyError) {
+    logError(`comment reply failed commentId=${commentId}`, replyError);
+  }
 };
 
 triggers.post('/on-comment-submit', async (c) => {
@@ -332,7 +363,7 @@ const handlePostEvent = async (
   const postText = `${input.post?.title ?? ''}\n${input.post?.selftext ?? ''}`;
   const lookup = await getMatchedLookup(postText);
   const hasMatch = lookup.pokemon.length > 0 || lookup.filters.length > 0;
-  console.log(
+  log(
     `on-post-submit postId=${postId} matched=${hasMatch ? 'yes' : 'no'}`
   );
 
@@ -340,12 +371,16 @@ const handlePostEvent = async (
     return;
   }
 
-  const textBuilder = renderPokemonReplyText(lookup);
-  await reddit.submitComment({
-    id: postId,
-    richtext: textBuilder,
-    runAs: 'APP',
-  });
+  try {
+    const textBuilder = renderPokemonReplyText(lookup);
+    await reddit.submitComment({
+      id: postId,
+      richtext: textBuilder,
+      runAs: 'APP',
+    });
+  } catch (replyError) {
+    logError(`post reply failed postId=${postId}`, replyError);
+  }
 };
 
 triggers.post('/on-post-submit', async (c) => {

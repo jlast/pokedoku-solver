@@ -1,7 +1,7 @@
-import type { ParagraphContext, RichTextBuilder } from '@devvit/web/server';
+import type { FormatRange, ParagraphContext, RichTextBuilder } from '@devvit/web/server';
 import { difficultyWithEmoji } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
-import { makeFormatting } from '@devvit/shared-types/richtext/elements.js';
+import { richTextFormattingBold } from './richTextFormatting';
 
 export type MatchedFilter = {
   categoryLabel: string;
@@ -104,9 +104,7 @@ export const appendFilterStats = (
     p.link({
       text: filter.name,
       url: `https://pokedoku-helper.com/category/${slug(filter.linkSlug)}`,
-      formatting: [
-        makeFormatting({ bold: true, startIndex: 0, length: filter.name.length }),
-      ],
+      formatting: [richTextFormattingBold, 0, filter.name.length] as unknown as FormatRange[]
     });
     p.linebreak();
     p.text({ text: `${filter.count} valid answers` });
