@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
 import { DonutChart } from "../components/charts/DonutChart";
 import { CategoryList, type CategoryCount } from "../components/puzzle-stats/CategoryList";
 import { PairList, type CategoryPair } from "../components/puzzle-stats/PairList";
@@ -175,7 +173,7 @@ export default function PuzzleStatsApp() {
 
   if (error) {
     return (
-      <div className="app loading">
+      <div className="app loading text-center">
         <p>Failed to load puzzle stats: {error}</p>
       </div>
     );
@@ -183,20 +181,14 @@ export default function PuzzleStatsApp() {
 
   if (!stats || !derived) {
     return (
-      <div className="app loading">
+      <div className="app loading text-center">
         <p>Loading puzzle stats...</p>
       </div>
     );
   }
 
   return (
-    <div className="app">
-      <Header
-        title="Pokedoku Insights"
-        subtitle="Explore historical category trends across past Pokedoku puzzles."
-        currentPage="puzzle-stats"
-      />
-
+    <>
       <section className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
         <p className="m-0 text-sm text-slate-700">
           Wondering when a Pokemon was valid in PokeDoku? This page tracks when Pokemon were last usable,
@@ -436,8 +428,6 @@ export default function PuzzleStatsApp() {
           </div>
         </article>
       </section>
-
-      <Footer />
-    </div>
+    </>
   );
 }

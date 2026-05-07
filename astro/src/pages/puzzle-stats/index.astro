@@ -1,5 +1,7 @@
 ---
 import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import { Header } from "../../app/components/Header";
+import { Footer } from "../../app/components/Footer";
 import PuzzleStatsApp from "../../app/pages/PuzzleStatsApp";
 ---
 
@@ -8,7 +10,14 @@ import PuzzleStatsApp from "../../app/pages/PuzzleStatsApp";
   description="View Pokedoku puzzle statistics, including category and pair frequency trends."
   path="/puzzle-stats/"
 >
-    <main class="mx-auto w-full max-w-6xl">
+    <main class="mx-auto w-full max-w-6xl app">
+      <Header
+        title="Pokedoku Insights"
+        subtitle="Explore historical category trends across past Pokedoku puzzles."
+        currentPage="puzzle-stats"
+        client:load
+      />
       <PuzzleStatsApp client:load />
+      <Footer client:load />
     </main>
 </AppPageLayout>
