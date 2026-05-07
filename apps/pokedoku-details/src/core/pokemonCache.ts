@@ -2,29 +2,11 @@ import type { Pokemon } from '@pokedoku-helper/shared-types';
 import localPokemonData from '../generated/pokemon.local.json';
 
 const POKEMON_DATA_URL = 'https://www.pokedoku-helper.com/data/pokemon.json';
-const DEFAULT_TTL_MS = 15 * 60 * 1000;
-const USE_LOCAL_DATA = true;
+const DEFAULT_TTL_MS = 60 * 60 * 1000;
 
 let cachedMap: Map<string, Pokemon> | null = null;
 let cachedAt: number | null = null;
 let inFlight: Promise<Map<string, Pokemon>> | null = null;
-let cachedSource: 'local' | 'remote' | null = null;
-
-const getDataSource = (): 'local' | 'remote' => {
-  if (USE_LOCAL_DATA) {
-    return 'local';
-  }
-
-  if (process.env.POKEMON_DATA_SOURCE === 'local') {
-    return 'local';
-  }
-
-  if (process.env.POKEMON_DATA_SOURCE === 'remote') {
-    return 'remote';
-  }
-
-  return 'remote';
-};
 
 const normalize = (value: string): string => value.trim().toLowerCase();
 
@@ -47,31 +29,36 @@ const buildPokemonMap = (pokemon: Pokemon[]): Map<string, Pokemon> => {
 };
 
 const fetchPokemonMap = async (): Promise<Map<string, Pokemon>> => {
-  const source = getDataSource();
-  console.log(`Fetching Pokemon data from source: ${source}`);
+  try {
+    const response = await fetch(POKEMON_DATA_URL);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Pokemon data: ${response.status}`);
+    }
 
-  if (source === 'local') {
-    const pokemon = localPokemonData as Pokemon[];
-    console.log('Loaded pokemon data from bundled local JSON');
+    const pokemon = (await response.json()) as Pokemon[];
+    console.log(`Loaded pokemon data from remote URL: ${POKEMON_DATA_URL}`);
     return buildPokemonMap(pokemon);
-  }
+  } catch (error) {
+    console.warn('Remote Pokemon fetch failed, falling back to local JSON', error);
 
-  const response = await fetch(POKEMON_DATA_URL);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch Pokemon data: ${response.status}`);
+    try {
+      const pokemon = localPokemonData as Pokemon[];
+      console.log('Loaded pokemon data from bundled local JSON fallback');
+      return buildPokemonMap(pokemon);
+    } catch (fallbackError) {
+      console.error('Local Pokemon fallback failed, returning stale/empty cache', fallbackError);
+
+      if (cachedMap) {
+        return cachedMap;
+      }
+
+      return new Map<string, Pokemon>();
+    }
   }
-  const pokemon = (await response.json()) as Pokemon[];
-  console.log(`Loaded pokemon data from remote URL: ${POKEMON_DATA_URL}`);
-  return buildPokemonMap(pokemon);
 };
 
 export const getPokemonMap = async (): Promise<Map<string, Pokemon>> => {
-  const source = getDataSource();
   console.log('Requesting Pokemon map');
-
-  if (cachedSource !== null && cachedSource !== source) {
-    invalidatePokemonCache();
-  }
 
   if (isCacheFresh() && cachedMap) {
     console.log('Serving Pokemon map from cache');
@@ -83,7 +70,6 @@ export const getPokemonMap = async (): Promise<Map<string, Pokemon>> => {
       .then((map) => {
         cachedMap = map;
         cachedAt = Date.now();
-        cachedSource = source;
         return map;
       })
       .finally(() => {
@@ -107,7 +93,6 @@ export const invalidatePokemonCache = (): void => {
   cachedMap = null;
   cachedAt = null;
   inFlight = null;
-  cachedSource = null;
 };
 
 export const getPokemonCacheStatus = () => ({
@@ -116,6 +101,6 @@ export const getPokemonCacheStatus = () => ({
   cachedAt,
   ageMs: cachedAt ? Date.now() - cachedAt : null,
   ttlMs: DEFAULT_TTL_MS,
-  source: getDataSource(),
-  localPath: getDataSource() === 'local' ? 'src/generated/pokemon.local.json' : null,
+  source: 'auto_remote_then_local_fallback',
+  localPath: 'src/generated/pokemon.local.json',
 });

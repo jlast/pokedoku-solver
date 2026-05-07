@@ -108,7 +108,6 @@ export const appendFilterStats = (
         makeFormatting({ bold: true, startIndex: 0, length: filter.name.length }),
       ],
     });
-    p.text({ text: ` (${filter.categoryLabel})` });
     p.linebreak();
     p.text({ text: `${filter.count} valid answers` });
 

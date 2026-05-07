@@ -18,8 +18,7 @@
     "sync:pokedoku-details:local-data": "mkdir -p apps/pokedoku-details/src/generated && cp public/data/pokemon.json apps/pokedoku-details/src/generated/pokemon.local.json",
     "test": "vitest run --reporter=verbose",
     "test:watch": "vitest",
-    "dev:pokedoku-details:local": "pnpm sync:pokedoku-details:local-data && pnpm --filter pokedoku-details dev:local-data",
-    "dev:pokedoku-details:remote": "pnpm --filter pokedoku-details dev:remote-data"
+    "dev:pokedoku-details": "pnpm sync:pokedoku-details:local-data && pnpm --filter pokedoku-details dev"
   },
   "dependencies": {
     "@pokedoku-helper/shared-types": "workspace:*",
