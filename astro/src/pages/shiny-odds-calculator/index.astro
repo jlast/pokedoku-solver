@@ -517,12 +517,36 @@ const faqStructuredData = {
 
   <script>
     // @ts-nocheck
-    const PRESTIGE_CHANCES = {
-      pokeball: { label: "Poké Ball", chance: 0.01 },
-      greatball: { label: "Great Ball", chance: null },
-      ultraball: { label: "Ultra Ball", chance: null },
-      masterball: { label: "Master Ball", chance: null },
-    };
+const PRESTIGE_CHANCES = {
+  pokeball: {
+    label: "Poké Ball",
+    chance: 0.01,
+  },
+  greatball: {
+    label: "Great Ball",
+    chance: 0.0125,
+  },
+  ultraball: {
+    label: "Ultra Ball",
+    chance: 0.015,
+  },
+  masterball: {
+    label: "Master Ball",
+    chance: 0.02,
+  },
+  premierball: {
+    label: "Premier Ball",
+    chance: 0.0225,
+  },
+  beastball: {
+    label: "Beast Ball",
+    chance: 0.025,
+  },
+  cherishball: {
+    label: "Cherish Ball",
+    chance: 0.03,
+  },
+};
 
     const inputs = {
       shinies: document.querySelector('[data-calculator-input="shinies"]'),
