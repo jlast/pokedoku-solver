@@ -63,6 +63,8 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
         return { category: "regions", value: GENERATION_MAP[obj] };
       }
       return null;
+    case "HISUI":
+      return { category: "regions", value: "Hisui" };
     case "POKEMON_TYPE":
       if (typeof obj === "string") {
         return { category: "types", value: obj.charAt(0).toUpperCase() + obj.slice(1) };
