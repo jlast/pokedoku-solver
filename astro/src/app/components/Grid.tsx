@@ -178,7 +178,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                               <span
                                 className={`cell-suggested-label ${cell.dexDifficulty === "Nightmare" ? "cell-suggested-label--nightmare" : ""}`}
                               >
-                                {cell.dexDifficulty === "Nightmare" ? "Nightmare" : "Suggested"}
+                                {cell.dexDifficulty === "Nightmare" ? "Nightmare" : "Recommended"}
                               </span>
                             )}
                             <button
