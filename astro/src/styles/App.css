@@ -177,7 +177,7 @@
 }
 
 .corner-spacer {
-  width: 100px;
+  width: 140px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -194,7 +194,7 @@
 .constraint-selector {
   display: flex;
   align-items: stretch;
-  width: 102px;
+  width: 143px;
 }
 
 .constraint-select {
@@ -266,8 +266,8 @@
 }
 
 .type-labels-left .constraint-selector {
-  height: 112px;
-  width:  100px;
+  height: 157px;
+  width: 140px;
 }
 
 .type-labels-left .constraint-select {
@@ -293,8 +293,8 @@
 }
 
 .cell {
-  width: 100px;
-  height: 110px;
+  width: 140px;
+  height: 154px;
   background: #f8fafc;
   display: flex;
   flex-direction: column;
@@ -310,10 +310,10 @@
 
 .cell .pokemon-sprite {
   position: absolute;
-  top: 14px;
-  left: 16px;
-  width: 68px;
-  height: 68px;
+  top: 20px;
+  left: 22px;
+  width: 95px;
+  height: 95px;
   object-fit: contain;
   z-index: 0;
 }
@@ -345,8 +345,8 @@
   top: 2px;
   right: 2px;
   z-index: 2;
-  width: 30px;
-  height: 34px;
+  width: 42px;
+  height: 48px;
   border: 1px solid #cbd5e1;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.92);
@@ -361,12 +361,12 @@
 }
 
 .cell-swap-icon {
-  font-size: 13px;
+  font-size: 18px;
   line-height: 1;
 }
 
 .cell-swap-count {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   line-height: 1;
 }
@@ -895,12 +895,31 @@
 }
 
 @media (max-width: 768px) {
+  .cell-swap-btn {
+    top: 14px;
+    right: 3px;
+    width: 30px;
+    height: 34px;
+    border-radius: 12px;
+  }
+
+  .cell-swap-icon {
+    font-size: 13px;
+  }
+
+  .cell-swap-count {
+    font-size: 11px;
+  }
+
   .cell {
     width: 90px;
     height: 110px;
   }
   .cell .pokemon-sprite {
+    top: 14px;
     left: 8px;
+    width: 68px;
+    height: 68px;
   }
 
   .constraint-display {

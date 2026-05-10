@@ -92,6 +92,23 @@ function buildSuggestedCells(
   };
 }
 
+function toParsedConstraint(constraint: Constraint | null): { raw: string; type: string; label: string } | null {
+  if (!constraint) return null;
+
+  const typeMap: Record<string, string> = {
+    type: "types",
+    types: "types",
+    typeline: "types",
+    region: "regions",
+    regions: "regions",
+    evolution: "evolution",
+    category: "category",
+  };
+
+  const mappedType = typeMap[constraint.category] ?? constraint.category;
+  return parseCategoryId(`${mappedType}:${constraint.value}`);
+}
+
 export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const gridSize = puzzle.rowConstraints.length;
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
@@ -198,7 +215,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const textualSuggestions = useMemo(() => {
     const entries: {
       key: string;
-      category: string;
+      rowConstraint: Constraint | null;
+      colConstraint: Constraint | null;
       pokemon: Pokemon | null;
     }[] = [];
 
@@ -206,7 +224,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       for (let col = 0; col < gridSize; col++) {
         entries.push({
           key: `${row}-${col}`,
-          category: `${grid.rowConstraints[row]?.value ?? "Any"} + ${grid.colConstraints[col]?.value ?? "Any"}`,
+          rowConstraint: grid.rowConstraints[row],
+          colConstraint: grid.colConstraints[col],
           pokemon: grid.cells[row][col],
         });
       }
@@ -267,7 +286,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           <h2 id="today-text-suggestions-heading" className="text-base font-semibold text-slate-900">
             Today&apos;s Recommended Pokedoku Answers
           </h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto hidden md:block">
             <table className="w-full min-w-[760px] text-left text-sm text-slate-700">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-900">
@@ -279,8 +298,48 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
               <tbody>
                 {textualSuggestions.map((entry) => (
                   <tr key={entry.key} className="border-b border-slate-100 align-top">
-                    <td className="px-2 py-3 pr-6">{entry.category}</td>
-                    <td className="px-2 py-3">{entry.pokemon ? <span>{entry.pokemon.name}</span> : <span>No suggestion available</span>}</td>
+                    <td className="px-2 py-3 pr-6">
+                      {(() => {
+                        const rowParsed = toParsedConstraint(entry.rowConstraint);
+                        const colParsed = toParsedConstraint(entry.colConstraint);
+
+                        if (!rowParsed && !colParsed) return <span>Any + Any</span>;
+
+                        return (
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {rowParsed ? (
+                              <CategoryBadgeLink
+                                parsed={rowParsed}
+                                href={`${import.meta.env.BASE_URL}category/${slugify(rowParsed.label)}/`}
+                              />
+                            ) : (
+                              <span>Any</span>
+                            )}
+                            <span className="text-slate-400">+</span>
+                            {colParsed ? (
+                              <CategoryBadgeLink
+                                parsed={colParsed}
+                                href={`${import.meta.env.BASE_URL}category/${slugify(colParsed.label)}/`}
+                              />
+                            ) : (
+                              <span>Any</span>
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </td>
+                    <td className="px-2 py-3">
+                      {entry.pokemon ? (
+                        <a
+                          href={`${import.meta.env.BASE_URL}pokemon/${slugify(entry.pokemon.name)}-${entry.pokemon.formId ?? entry.pokemon.id}/`}
+                          className="font-semibold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:text-slate-700"
+                        >
+                          {entry.pokemon.name}
+                        </a>
+                      ) : (
+                        <span>No suggestion available</span>
+                      )}
+                    </td>
                     <td className="px-2 py-3">
                       {entry.pokemon ? (
                         <div className="flex flex-wrap items-center gap-2">
@@ -313,6 +372,90 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          <div className="mt-3 space-y-3 md:hidden">
+            {textualSuggestions.map((entry) => {
+              const rowParsed = toParsedConstraint(entry.rowConstraint);
+              const colParsed = toParsedConstraint(entry.colConstraint);
+
+              return (
+                <article key={`mobile-${entry.key}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="space-y-1.5 text-sm">
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Category</div>
+                      <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                        {rowParsed ? (
+                          <CategoryBadgeLink
+                            parsed={rowParsed}
+                            href={`${import.meta.env.BASE_URL}category/${slugify(rowParsed.label)}/`}
+                          />
+                        ) : (
+                          <span>Any</span>
+                        )}
+                        <span className="text-slate-400">+</span>
+                        {colParsed ? (
+                          <CategoryBadgeLink
+                            parsed={colParsed}
+                            href={`${import.meta.env.BASE_URL}category/${slugify(colParsed.label)}/`}
+                          />
+                        ) : (
+                          <span>Any</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Pokemon</div>
+                      <div className="mt-1">
+                        {entry.pokemon ? (
+                          <a
+                            href={`${import.meta.env.BASE_URL}pokemon/${slugify(entry.pokemon.name)}-${entry.pokemon.formId ?? entry.pokemon.id}/`}
+                            className="inline-flex items-center rounded-lg bg-white px-2.5 py-1 text-base font-extrabold tracking-tight text-slate-900 shadow-sm ring-1 ring-slate-200 no-underline hover:text-slate-700 hover:ring-slate-300"
+                          >
+                            {entry.pokemon.name}
+                          </a>
+                        ) : (
+                          <span className="text-slate-700">No suggestion available</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Types &amp; Difficulty</div>
+                      <div className="mt-1">
+                        {entry.pokemon ? (
+                          <div className="flex flex-wrap items-center gap-2">
+                            {entry.pokemon.dexDifficulty && (
+                              <span
+                                className="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold leading-none text-white shadow-sm"
+                                style={{
+                                  backgroundColor: DEX_DIFFICULTY_COLORS[entry.pokemon.dexDifficulty],
+                                  border: "1px solid rgba(15,23,42,0.12)",
+                                }}
+                              >
+                                {entry.pokemon.dexDifficulty}
+                              </span>
+                            )}
+                            <div className="flex flex-wrap items-center gap-1">
+                              {entry.pokemon.types.map((type, i) => (
+                                <CategoryBadgeLink
+                                  key={`mobile-${entry.key}-${type}-${i}`}
+                                  parsed={parseCategoryId(`types:${type}`)}
+                                  href={`${import.meta.env.BASE_URL}category/${slugify(type)}/`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          <span>-</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
