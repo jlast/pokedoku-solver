@@ -281,11 +281,13 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         </a>
       </div>
 
-      <section className="mt-8" aria-labelledby="today-text-suggestions-heading">
-        <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_10px_24px_rgba(15,23,42,0.06)] sm:p-5">
+      <section className="mt-6 w-full md:w-auto" aria-labelledby="today-text-suggestions-heading">
+        <div className="mt-2 w-full rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_10px_24px_rgba(15,23,42,0.06)] sm:p-5">
           <h2 id="today-text-suggestions-heading" className="text-base font-semibold text-slate-900">
-            Today&apos;s Recommended Pokedoku Answers
+            <span className="hidden md:inline">Today&apos;s Recommended Pokedoku Answers</span>
+            <span className="md:hidden">Recommended Answers</span>
           </h2>
+          <p className="mt-1 text-sm text-slate-600">9 optimized picks for today&apos;s board</p>
           <div className="overflow-x-auto hidden md:block">
             <table className="w-full min-w-[760px] text-left text-sm text-slate-700">
               <thead>
@@ -374,84 +376,61 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
             </table>
           </div>
 
-          <div className="mt-3 space-y-3 md:hidden">
+          <div className="mt-2 w-full divide-y divide-slate-200 rounded-xl border border-slate-200 md:hidden">
             {textualSuggestions.map((entry) => {
               const rowParsed = toParsedConstraint(entry.rowConstraint);
               const colParsed = toParsedConstraint(entry.colConstraint);
 
               return (
-                <article key={`mobile-${entry.key}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                  <div className="space-y-1.5 text-sm">
-                    <div>
-                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Category</div>
-                      <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                        {rowParsed ? (
-                          <CategoryBadgeLink
-                            parsed={rowParsed}
-                            href={`${import.meta.env.BASE_URL}category/${slugify(rowParsed.label)}/`}
-                          />
+                <article key={`mobile-${entry.key}`} className="w-full bg-white p-2.5">
+                  <div className="text-sm">
+                    <div className="flex items-start gap-2">
+                      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-slate-200">
+                        {entry.pokemon?.sprite ? (
+                          <img src={entry.pokemon.sprite} alt="" className="h-7 w-7" loading="lazy" decoding="async" />
                         ) : (
-                          <span>Any</span>
-                        )}
-                        <span className="text-slate-400">+</span>
-                        {colParsed ? (
-                          <CategoryBadgeLink
-                            parsed={colParsed}
-                            href={`${import.meta.env.BASE_URL}category/${slugify(colParsed.label)}/`}
-                          />
-                        ) : (
-                          <span>Any</span>
+                          <span className="text-[10px] font-semibold text-slate-400">?</span>
                         )}
                       </div>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Pokemon</div>
-                      <div className="mt-1">
-                        {entry.pokemon ? (
-                          <a
-                            href={`${import.meta.env.BASE_URL}pokemon/${slugify(entry.pokemon.name)}-${entry.pokemon.formId ?? entry.pokemon.id}/`}
-                            className="inline-flex items-center rounded-lg bg-white px-2.5 py-1 text-base font-extrabold tracking-tight text-slate-900 shadow-sm ring-1 ring-slate-200 no-underline hover:text-slate-700 hover:ring-slate-300"
-                          >
-                            {entry.pokemon.name}
-                          </a>
-                        ) : (
-                          <span className="text-slate-700">No suggestion available</span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Types &amp; Difficulty</div>
-                      <div className="mt-1">
-                        {entry.pokemon ? (
-                          <div className="flex flex-wrap items-center gap-2">
-                            {entry.pokemon.dexDifficulty && (
-                              <span
-                                className="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold leading-none text-white shadow-sm"
-                                style={{
-                                  backgroundColor: DEX_DIFFICULTY_COLORS[entry.pokemon.dexDifficulty],
-                                  border: "1px solid rgba(15,23,42,0.12)",
-                                }}
-                              >
-                                {entry.pokemon.dexDifficulty}
-                              </span>
-                            )}
-                            <div className="flex flex-wrap items-center gap-1">
-                              {entry.pokemon.types.map((type, i) => (
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          {entry.pokemon ? (
+                            <a
+                              href={`${import.meta.env.BASE_URL}pokemon/${slugify(entry.pokemon.name)}-${entry.pokemon.formId ?? entry.pokemon.id}/`}
+                              className="inline-flex items-center text-base font-extrabold tracking-tight text-slate-900 no-underline hover:text-slate-700"
+                            >
+                              {entry.pokemon.name}
+                            </a>
+                          ) : (
+                            <span className="text-slate-700">No suggestion available</span>
+                          )}
+                          <div className="ml-auto flex shrink-0 flex-wrap items-center justify-end gap-1.5 text-right">
+                            {rowParsed ? (
+                              <span className="inline-flex scale-90 origin-right">
                                 <CategoryBadgeLink
-                                  key={`mobile-${entry.key}-${type}-${i}`}
-                                  parsed={parseCategoryId(`types:${type}`)}
-                                  href={`${import.meta.env.BASE_URL}category/${slugify(type)}/`}
+                                  parsed={rowParsed}
+                                  href={`${import.meta.env.BASE_URL}category/${slugify(rowParsed.label)}/`}
                                 />
-                              ))}
-                            </div>
+                              </span>
+                            ) : (
+                              <span>Any</span>
+                            )}
+                            <span className="text-slate-400">+</span>
+                            {colParsed ? (
+                              <span className="inline-flex scale-90 origin-right">
+                                <CategoryBadgeLink
+                                  parsed={colParsed}
+                                  href={`${import.meta.env.BASE_URL}category/${slugify(colParsed.label)}/`}
+                                />
+                              </span>
+                            ) : (
+                              <span>Any</span>
+                            )}
                           </div>
-                        ) : (
-                          <span>-</span>
-                        )}
+                        </div>
                       </div>
                     </div>
+
                   </div>
                 </article>
               );
