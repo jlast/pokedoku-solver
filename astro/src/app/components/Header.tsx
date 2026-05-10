@@ -154,7 +154,7 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
         </div>
 
         {showDate && (
-          <div className="inline-flex flex-col items-center gap-2.5">
+          <div className="inline-flex flex-wrap items-center justify-center gap-2.5">
             <div className="inline-flex items-center gap-2 text-[0.8rem] font-medium text-slate-500 max-[1100px]:gap-[7px] max-[1100px]:text-[0.76rem]" aria-label="Updates daily">
               <span className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-green-500 text-white max-[1100px]:h-[17px] max-[1100px]:w-[17px]" aria-hidden="true">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none">

@@ -174,7 +174,13 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                       <>
                         {showSuggestedMeta && (
                           <>
-                            {isSuggested && <span className="cell-suggested-label">Suggested</span>}
+                            {isSuggested && (
+                              <span
+                                className={`cell-suggested-label ${cell.dexDifficulty === "Nightmare" ? "cell-suggested-label--nightmare" : ""}`}
+                              >
+                                {cell.dexDifficulty === "Nightmare" ? "Nightmare" : "Suggested"}
+                              </span>
+                            )}
                             <button
                               type="button"
                               className="cell-swap-btn"

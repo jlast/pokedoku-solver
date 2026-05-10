@@ -41,10 +41,29 @@
   background: #c0392b;
 }
 
+.clear-btn.clear-btn--ghost-destructive {
+  border: 2px solid #fca5a5;
+  background: #fff;
+  color: #b91c1c;
+}
+
+.clear-btn.clear-btn--ghost-destructive:hover {
+  border-color: #f87171;
+  background: #fff1f2;
+  color: #991b1b;
+}
+
 .clear-btn:disabled,
 .clear-btn.disabled {
   background: #bdc3c7;
   cursor: not-allowed;
+}
+
+.clear-btn.clear-btn--ghost-destructive:disabled,
+.clear-btn.clear-btn--ghost-destructive.disabled {
+  border-color: #e5e7eb;
+  background: #f9fafb;
+  color: #9ca3af;
 }
 
 .today-btn {
@@ -96,6 +115,14 @@
   align-items: center;
   flex-wrap: wrap;
   flex-direction: column;
+}
+
+.today-actions {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
 .grid-wrapper {
@@ -306,6 +333,11 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+}
+
+.cell-suggested-label.cell-suggested-label--nightmare {
+  background: #111111;
+  color: #ffffff;
 }
 
 .cell-swap-btn {
