@@ -40,10 +40,6 @@ export function TodayPageClient() {
     const effectiveTab = activeTab === "bonus" && bonusPuzzle ? "bonus" : "today";
     const activePuzzle = effectiveTab === "bonus" ? bonusPuzzle! : regularPuzzle;
     const formattedDate = formatDate(activePuzzle.date);
-    const title = `Today's Pokedoku Answers (${formattedDate})`;
-    document.querySelectorAll<HTMLElement>("[data-header-title]").forEach((el) => {
-      el.textContent = title;
-    });
     document.querySelectorAll<HTMLElement>("[data-header-date]").forEach((el) => {
       el.textContent = formattedDate;
     });
