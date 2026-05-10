@@ -239,8 +239,6 @@ import { Footer } from "../../app/components/Footer";
       const newUrl = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
       window.history.replaceState({}, "", newUrl);
 
-      const canonicalEl = document.querySelector('link[rel="canonical"]');
-      if (canonicalEl) canonicalEl.setAttribute("href", window.location.href);
       const ogUrlEl = document.querySelector('meta[property="og:url"]');
       if (ogUrlEl) ogUrlEl.setAttribute("content", window.location.href);
     };
