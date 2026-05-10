@@ -176,9 +176,9 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                           <>
                             {isSuggested && (
                               <span
-                                className={`cell-suggested-label ${cell.dexDifficulty === "Nightmare" ? "cell-suggested-label--nightmare" : ""}`}
+                                className={`cell-suggested-label ${cell.dexDifficulty === "Nightmare" ? "cell-suggested-label--nightmare" : cell.id !== cell.formId ? "cell-suggested-label--special-form" : ""}`}
                               >
-                                {cell.dexDifficulty === "Nightmare" ? "Nightmare" : "Recommended"}
+                                {cell.dexDifficulty === "Nightmare" ? "Nightmare" : cell.id !== cell.formId ? "Form" : "Recommended"}
                               </span>
                             )}
                             <button
