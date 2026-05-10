@@ -340,6 +340,11 @@
   color: #ffffff;
 }
 
+.cell-suggested-label.cell-suggested-label--special-form {
+  background: #0e3e8c;
+  color: #ffffff;
+}
+
 .cell-swap-btn {
   position: absolute;
   top: 2px;
