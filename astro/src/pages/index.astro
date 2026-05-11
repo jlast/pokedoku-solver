@@ -22,18 +22,30 @@ import { HomeQuickStats } from "../app/pages/HomeQuickStats";
     <main class="mx-auto max-w-6xl px-4 pb-8">
       <section class="grid gap-6 lg:grid-cols-[1.05fr_1.25fr]">
         <div class="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-7 shadow-sm">
-          <h1 class="m-0 text-5xl font-extrabold leading-tight text-slate-900 md:text-6xl">
-            Solve Today&apos;s
-            <span class="block bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">Pokédoku</span>
-            Smarter
-          </h1>
+     <h1 class="m-0 leading-none text-slate-900">
+  <span class="block text-3xl font-bold tracking-tight md:text-4xl">
+    Solve Today&apos;s
+  </span>
+
+  <span class="block bg-gradient-to-b from-[#ef4444] via-[#dc2626] to-[#991b1b] bg-clip-text text-6xl font-extrabold tracking-tight text-transparent md:text-7xl">
+    Pokédoku
+  </span>
+
+  <span class="block text-5xl font-extrabold tracking-tight md:text-6xl">
+    Smarter
+  </span>
+</h1>
           <p class="mt-5 max-w-md text-lg leading-relaxed text-slate-600">
             Find today’s Pokedoku answers, explore valid Pokémon, and use stats to make smarter picks.
           </p>
 
           <div class="mt-6 flex flex-col gap-3 sm:max-w-sm">
-            <a href="/pokedoku-answers-today/" class="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-violet-500 px-5 py-3 text-lg font-semibold text-white no-underline shadow-[0_10px_24px_rgba(79,70,229,0.28)] transition hover:brightness-105">
-              Today’s Pokedoku Answers
+            <a
+              href="/pokedoku-answers-today/"
+              class="inline-flex items-center justify-center rounded-xl bg-gradient-to-b from-red-500 to-red-700 border border-red-900/40 px-5 py-3 text-lg font-semibold tracking-tight text-white no-underline shadow-[0_6px_18px_rgba(185,28,28,0.35)] transition-all duration-200 hover:brightness-110 hover:-translate-y-[1px] active:translate-y-[1px]"
+             >
+              <span class="mr-2 inline-block h-3 w-3 rounded-full bg-white ring-2 ring-black/20"></span>
+              Today’s Pokédoku Answers
             </a>
           </div>
 
