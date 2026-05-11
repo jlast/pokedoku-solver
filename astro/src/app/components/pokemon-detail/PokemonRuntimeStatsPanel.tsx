@@ -136,6 +136,15 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
         </>
       ) : null}
 
+      {variant === "sections" ? (
+        <HistoryTimelineCard
+          dates={appearanceTimeline}
+          title="Appearances over time"
+          subtitle="Latest 5 appearances"
+          emptyText="No appearance history available."
+        />
+      ) : null}
+
       {variant === "sections" ? <article className="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
         <div className="mb-2 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
@@ -185,15 +194,6 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
           <p className="text-sm text-slate-500">No combination stats available.</p>
         )}
       </article> : null}
-
-      {variant === "sections" ? (
-        <HistoryTimelineCard
-          dates={appearanceTimeline}
-          title="Appearances over time"
-          subtitle="Latest 5 appearances"
-          emptyText="No appearance history available."
-        />
-      ) : null}
     </>
   );
 }
