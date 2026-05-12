@@ -8,7 +8,9 @@
   "triggers": {
     "onAppInstall": "/internal/triggers/on-app-install",
     "onCommentCreate": "/internal/triggers/on-comment-create",
-    "onPostCreate": "/internal/triggers/on-post-create"
+    "onCommentUpdate": "/internal/triggers/on-comment-update",
+    "onPostCreate": "/internal/triggers/on-post-create",
+    "onPostUpdate": "/internal/triggers/on-post-update"
   },
   "scripts": {
     "build": "vite build",

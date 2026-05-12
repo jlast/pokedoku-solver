@@ -27,6 +27,10 @@ import {
 } from './categoryCommentBuilder';
 import { richTextSuperscript } from './richTextFormatting';
 import { error as logError, warn } from '../core/logger';
+import {
+  getCreatedCommentForSourceId,
+  storeCreatedCommentForSourceId,
+} from '../core/replyIdStore';
 
 export const triggers = new Hono();
 
@@ -65,6 +69,27 @@ const normalizeCommentId = (id: string | undefined): T1 | null => {
   }
 
   return null;
+};
+
+const normalizeCreatedCommentId = (id: string | undefined): T1 | null => {
+  if (!id) {
+    return null;
+  }
+
+  if (isT1(id)) {
+    return id;
+  }
+
+  const prefixed = `t1_${id}`;
+  return isT1(prefixed) ? prefixed : null;
+};
+
+type SourceEvent = {
+  sourceId: string;
+  sourceText: string;
+  authorName: string | undefined;
+  eventLabel: 'comment' | 'post';
+  createReply: (textBuilder: RichTextBuilder) => Promise<{ id?: string } | undefined>;
 };
 
 const shouldProcessCommentEvent = (commentId: T1): boolean => {
@@ -279,65 +304,98 @@ triggers.post('/on-app-install', async (c) => {
   return c.json<TriggerResponse>({}, 200);
 });
 
-const handleCommentEvent = async (
-  input: OnCommentSubmitRequest | OnCommentCreateRequest
-) => {
-  const body = input.comment?.body ?? '';
-  const rawCommentId = input.comment?.id;
-  const commentId = normalizeCommentId(rawCommentId);
-
-  if (!body || !commentId) {
-    log(
-      `on-comment skipped body=${body ? 'yes' : 'no'} rawCommentId=${rawCommentId ?? 'missing'}`
-    );
-    return;
-  }
-
+const handleSourceEvent = async ({
+  sourceId,
+  sourceText,
+  authorName,
+  eventLabel,
+  createReply,
+}: SourceEvent): Promise<void> => {
   const appUser = await reddit.getAppUser();
-  const authorName = input.comment?.author;
 
   if (authorName && authorName === appUser?.username) {
     return;
   }
 
-  const lookup = await getMatchedLookup(body);
+  const lookup = await getMatchedLookup(sourceText);
   const hasMatch = lookup.pokemon.length > 0 || lookup.filters.length > 0;
-  log(
-    `on-comment commentId=${commentId} rawCommentId=${rawCommentId} matched=${hasMatch ? 'yes' : 'no'}`
-  );
-  if (!hasMatch) {
-    log(`on-comment body=${JSON.stringify(body)}`);
+  log(`on-${eventLabel} sourceId=${sourceId} matched=${hasMatch ? 'yes' : 'no'}`);
+  if (!hasMatch && eventLabel === 'comment') {
+    log(`on-comment body=${JSON.stringify(sourceText)}`);
   }
 
   if (!hasMatch) {
-    return;
-  }
-
-  if (!shouldProcessCommentEvent(commentId)) {
-    warn(`duplicate comment event skipped commentId=${commentId}`);
     return;
   }
 
   try {
-    const comment = await reddit.getCommentById(commentId);
     const textBuilder = renderPokemonReplyText(lookup);
-    await comment.reply({
-      richtext: textBuilder,
-      runAs: 'APP',
-    });
+    const existingCreatedCommentRawId = await getCreatedCommentForSourceId(sourceId);
+    const existingCreatedCommentId = normalizeCommentId(existingCreatedCommentRawId ?? undefined);
+
+    if (existingCreatedCommentId) {
+      const existingReplyComment = await reddit.getCommentById(existingCreatedCommentId);
+      await existingReplyComment.edit({
+        richtext: textBuilder,
+        runAs: 'APP',
+      });
+      log(
+        `updated reply-map sourceId=${sourceId} createdCommentId=${existingCreatedCommentId}`
+      );
+      return;
+    }
+
+    const createdComment = await createReply(textBuilder);
+    const createdCommentId = normalizeCreatedCommentId(createdComment?.id);
+    if (!createdCommentId) {
+      warn(`${eventLabel} reply created without a valid comment id sourceId=${sourceId}`);
+      return;
+    }
+
+    const replyMapKey = await storeCreatedCommentForSourceId(sourceId, createdCommentId);
+    log(`stored reply-map key=${replyMapKey} sourceId=${sourceId} createdCommentId=${createdCommentId}`);
   } catch (replyError) {
-    logError(`comment reply failed commentId=${commentId}`, replyError);
+    logError(`${eventLabel} reply failed sourceId=${sourceId}`, replyError);
   }
 };
 
-triggers.post('/on-comment-submit', async (c) => {
-  const input = await c.req.json<OnCommentSubmitRequest>();
+const handleCommentEvent = async (
+  input: OnCommentSubmitRequest | OnCommentCreateRequest
+) => {
+  const sourceText = input.comment?.body ?? '';
+  const rawCommentId = input.comment?.id;
+  const sourceId = normalizeCommentId(rawCommentId);
+
+  if (!sourceText || !sourceId) {
+    log(
+      `on-comment skipped body=${sourceText ? 'yes' : 'no'} rawCommentId=${rawCommentId ?? 'missing'}`
+    );
+    return;
+  }
+
+  await handleSourceEvent({
+    sourceId,
+    sourceText,
+    authorName: input.comment?.author,
+    eventLabel: 'comment',
+    createReply: async (textBuilder) => {
+      const comment = await reddit.getCommentById(sourceId);
+      return await comment.reply({
+        richtext: textBuilder,
+        runAs: 'APP',
+      });
+    },
+  });
+};
+
+triggers.post('/on-comment-create', async (c) => {
+  const input = await c.req.json<OnCommentCreateRequest>();
   await handleCommentEvent(input);
 
   return c.json<TriggerResponse>({}, 200);
 });
 
-triggers.post('/on-comment-create', async (c) => {
+triggers.post('/on-comment-update', async (c) => {
   const input = await c.req.json<OnCommentCreateRequest>();
   await handleCommentEvent(input);
 
@@ -347,50 +405,36 @@ triggers.post('/on-comment-create', async (c) => {
 const handlePostEvent = async (
   input: OnPostSubmitRequest | OnPostCreateRequest
 ) => {
-  const postId = input.post?.id;
+  const sourceId = input.post?.id;
 
-  if (!postId || !isT3(postId)) {
+  if (!sourceId || !isT3(sourceId)) {
     return;
   }
 
-  const appUser = await reddit.getAppUser();
-  const authorName = input.author?.name;
-
-  if (authorName && authorName === appUser?.username) {
-    return;
-  }
-
-  const postText = `${input.post?.title ?? ''}\n${input.post?.selftext ?? ''}`;
-  const lookup = await getMatchedLookup(postText);
-  const hasMatch = lookup.pokemon.length > 0 || lookup.filters.length > 0;
-  log(
-    `on-post-submit postId=${postId} matched=${hasMatch ? 'yes' : 'no'}`
-  );
-
-  if (!hasMatch) {
-    return;
-  }
-
-  try {
-    const textBuilder = renderPokemonReplyText(lookup);
-    await reddit.submitComment({
-      id: postId,
-      richtext: textBuilder,
-      runAs: 'APP',
-    });
-  } catch (replyError) {
-    logError(`post reply failed postId=${postId}`, replyError);
-  }
+  const sourceText = `${input.post?.title ?? ''}\n${input.post?.selftext ?? ''}`;
+  await handleSourceEvent({
+    sourceId,
+    sourceText,
+    authorName: input.author?.name,
+    eventLabel: 'post',
+    createReply: async (textBuilder) => {
+      return await reddit.submitComment({
+        id: sourceId,
+        richtext: textBuilder,
+        runAs: 'APP',
+      });
+    },
+  });
 };
 
-triggers.post('/on-post-submit', async (c) => {
-  const input = await c.req.json<OnPostSubmitRequest>();
+triggers.post('/on-post-create', async (c) => {
+  const input = await c.req.json<OnPostCreateRequest>();
   await handlePostEvent(input);
 
   return c.json<TriggerResponse>({}, 200);
 });
 
-triggers.post('/on-post-create', async (c) => {
+triggers.post('/on-post-update', async (c) => {
   const input = await c.req.json<OnPostCreateRequest>();
   await handlePostEvent(input);
 
