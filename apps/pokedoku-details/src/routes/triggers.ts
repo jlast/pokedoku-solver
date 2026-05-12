@@ -31,13 +31,36 @@ import {
   getCreatedCommentForSourceId,
   storeCreatedCommentForSourceId,
 } from '../core/replyIdStore';
+import { getPokemonRuntimeStats } from '../core/pokemonRuntimeStats';
 
 export const triggers = new Hono();
 
-const PROCESSED_COMMENT_EVENT_TTL_MS = 2 * 60 * 1000;
-const processedCommentEvents = new Map<string, number>();
-
 const BRACKET_TOKEN_REGEX = /(?:\\\[\\\[|\[\[)(.+?)(?:\\\]\\\]|\]\])/g;
+
+const getOrdinalSuffix = (day: number): string => {
+  if (day % 100 >= 11 && day % 100 <= 13) {
+    return 'th';
+  }
+
+  switch (day % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
+  }
+};
+
+const getUpdatedDateTextUtc = (): string => {
+  const now = new Date();
+  const month = now.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
+  const day = now.getUTCDate();
+  const year = now.getUTCFullYear();
+  return `Updated ${month} ${day}${getOrdinalSuffix(day)} ${year}.`;
+};
 
 
 const extractBracketTokens = (input: string): string[] => {
@@ -90,23 +113,6 @@ type SourceEvent = {
   authorName: string | undefined;
   eventLabel: 'comment' | 'post';
   createReply: (textBuilder: RichTextBuilder) => Promise<{ id?: string } | undefined>;
-};
-
-const shouldProcessCommentEvent = (commentId: T1): boolean => {
-  const now = Date.now();
-
-  for (const [id, seenAt] of processedCommentEvents.entries()) {
-    if (now - seenAt > PROCESSED_COMMENT_EVENT_TTL_MS) {
-      processedCommentEvents.delete(id);
-    }
-  }
-
-  if (processedCommentEvents.has(commentId)) {
-    return false;
-  }
-
-  processedCommentEvents.set(commentId, now);
-  return true;
 };
 
 type MatchedLookup = {
@@ -241,10 +247,16 @@ export const __test__ = {
 const getFooterParagraph = (builder: RichTextBuilder) => {
   builder.horizontalRule();
   builder.paragraph((p) => {
-    const prefix = 'Data from ';
+    const prefix = 'More stats and strategy tools at ';
     const domain = 'pokedoku-helper.com';
     const suffix = '. Use [[Pokemon]] or [[Category]] or [[Category+Category]] to call.';
+    const dataFromText = getUpdatedDateTextUtc();
 
+    p.text({
+      text: dataFromText,
+      formatting: [richTextSuperscript(dataFromText.length)],
+    });
+    p.linebreak();
     p.text({
       text: prefix,
       formatting: [richTextSuperscript(prefix.length)],
@@ -261,7 +273,7 @@ const getFooterParagraph = (builder: RichTextBuilder) => {
   });
 }
 
-const renderPokemonReplyText = ({ ordered, tokenCount }: MatchedLookup): RichTextBuilder => {
+const renderPokemonReplyText = async ({ ordered, tokenCount }: MatchedLookup): Promise<RichTextBuilder> => {
   const builder = new RichTextBuilder();
   const compactMode = tokenCount >= 6;
 
@@ -281,16 +293,28 @@ const renderPokemonReplyText = ({ ordered, tokenCount }: MatchedLookup): RichTex
     return builder;
   }
 
-  ordered.forEach((entry, index) => {
+  for (const [index, entry] of ordered.entries()) {
     if (index > 0) {
-     builder.paragraph((p) => {p.linebreak(); p.linebreak()} );
+      builder.paragraph((p) => {
+        p.linebreak();
+        p.linebreak();
+      });
     }
+
     if (entry.kind === 'pokemon') {
-      buildPokemonRedditRichText(builder, entry.value);
+      const runtimeStats =
+        typeof entry.value.formId === 'number'
+          ? await getPokemonRuntimeStats(entry.value.formId)
+          : null;
+      buildPokemonRedditRichText(
+        builder,
+        entry.value,
+        runtimeStats ? { lastValidDaysAgo: runtimeStats.daysAgo } : undefined
+      );
     } else {
       appendFilterStats(builder, entry.value);
     }
-  });
+  }
 
   builder.paragraph((p) => p.linebreak());
   getFooterParagraph(builder);
@@ -329,7 +353,7 @@ const handleSourceEvent = async ({
   }
 
   try {
-    const textBuilder = renderPokemonReplyText(lookup);
+    const textBuilder = await renderPokemonReplyText(lookup);
     const existingCreatedCommentRawId = await getCreatedCommentForSourceId(sourceId);
     const existingCreatedCommentId = normalizeCommentId(existingCreatedCommentRawId ?? undefined);
 

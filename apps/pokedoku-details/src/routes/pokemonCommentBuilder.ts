@@ -5,7 +5,7 @@ import {
 } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { RichTextBuilder, type ParagraphContext } from '@devvit/web/server';
-import { richTextBold } from './richTextFormatting';
+import { richTextBold, richTextItalic } from './richTextFormatting';
 
 const BASE_URL = 'https://pokedoku-helper.com';
 
@@ -15,6 +15,10 @@ const slug = (value: string) =>
 type CategoryGroup = {
   label: string;
   names: string[];
+};
+
+type PokemonRuntimeInfo = {
+  lastValidDaysAgo?: number;
 };
 
 const getCategoryGroups = (pokemon: Pokemon): CategoryGroup[] =>
@@ -34,7 +38,7 @@ const appendTypeRegionLine = (p: ParagraphContext, pokemon: Pokemon): void => {
     p.link({
       text: typeWithEmoji(type),
       url: `${BASE_URL}/category/${slug(type)}`,
-    }); 
+    });
   });
 
   p.text({ text: ' • ' });
@@ -54,25 +58,27 @@ const appendCategoryLinks = (p: ParagraphContext, pokemon: Pokemon): void => {
   }
 
   categoryGroups.forEach((group) => {
-      p.linebreak();
-      p.text({ text: `${group.label}: ` });
+    p.linebreak();
+    const labelText = `${group.label}:`;
+    p.text({ text: labelText, formatting: [richTextItalic(labelText.length)] });
+    p.text({ text: ' ' });
+    group.names.forEach((category, index) => {
+      if (index > 0) {
+        p.text({ text: ' • ' });
+      }
 
-      group.names.forEach((category, index) => {
-        if (index > 0) {
-          p.text({ text: ' • ' });
-        }
-
-        p.link({
-          text: category,
-          url: `${BASE_URL}/category/${slug(category)}`,
-        });
+      p.link({
+        text: category,
+        url: `${BASE_URL}/category/${slug(category)}`,
       });
     });
+  });
 };
 
 export function buildPokemonRedditRichText(
   builder: RichTextBuilder,
-  pokemon: Pokemon
+  pokemon: Pokemon,
+  runtimeInfo?: PokemonRuntimeInfo
 ): RichTextBuilder {
   const dex = String(pokemon.id).padStart(3, '0');
   const formSlug = `/pokemon/${slug(`${pokemon.name}-${pokemon.formId}`)}`;
@@ -92,8 +98,10 @@ export function buildPokemonRedditRichText(
     p.linebreak();
     appendTypeRegionLine(p, pokemon);
     p.linebreak();
+    const dexDifficultyLabel = 'Dex Difficulty';
     p.text({
-      text: 'Dex Difficulty',
+      text: dexDifficultyLabel,
+      formatting: [richTextItalic(dexDifficultyLabel.length)],
     });
     p.text({
       text: `: ${difficultyWithEmoji(pokemon.dexDifficulty)} `,
@@ -102,9 +110,15 @@ export function buildPokemonRedditRichText(
       text: '(?)',
       url: `${BASE_URL}/tips#beginner-dex-difficulty`,
     });
+    if (runtimeInfo?.lastValidDaysAgo != null) {
+      p.linebreak();
+      const lastValidLabel = 'Last valid:';
+      const dayUnit = runtimeInfo.lastValidDaysAgo === 1 ? 'day' : 'days';
+      p.text({ text: lastValidLabel, formatting: [richTextItalic(lastValidLabel.length)] });
+      p.text({ text: ` ${runtimeInfo.lastValidDaysAgo} ${dayUnit} ago` });
+    }
     appendCategoryLinks(p, pokemon);
   });
-
 
   return builder;
 }
