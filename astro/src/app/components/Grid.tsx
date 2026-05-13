@@ -2,7 +2,7 @@ import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { TYPE_COLORS, CATEGORY_COLORS } from '../../../../lib/shared/constants';
 import { FILTER_CATEGORIES, findConstraintOption, type Constraint } from '../../../../lib/shared/filters';
 import { trackEvent } from '../../../../lib/browser/analytics';
-import { CategoryIcon } from './puzzle-stats/CategoryIcon';
+import { CategoryBadgeLink } from './shared/CategoryBadgeLink';
 import type { ParsedCategory } from './puzzle-stats/categoryUtils';
 
 interface GridProps {
@@ -75,7 +75,7 @@ function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: 
 
   return (
     <select
-      className="constraint-select"
+      className={`w-full cursor-pointer rounded-md border-2 border-[var(--border)] bg-[var(--bg)] px-2 py-1.5 text-center text-[10px] text-[var(--text-h)] focus:border-[var(--accent)] focus:outline-none md:text-xs ${isRow ? 'h-full' : ''}`}
       value={constraint?.value || ''}
       onChange={handleChange}
       style={{ borderColor: getConstraintColor(constraint) }}
@@ -94,45 +94,43 @@ function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: 
 
 export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, suggestedPokemonKeys, swapOptionCounts, selectedCell, editable = true, showSuggestedMeta = false, onCellClick, onSwapClick, onConstraintChange }: GridProps) {
   const getPokemonKey = (pokemon: Pokemon): string => pokemon.sprite || pokemon.name;
-  const renderConstraintDisplay = (constraint: Constraint | null) => {
+  const renderConstraintDisplay = (constraint: Constraint | null, isRow = false) => {
     const parsed = getConstraintParsedCategory(constraint);
 
     return (
-      <div className={`constraint-display${parsed ? ' constraint-display-with-icon' : ''}`} style={{ borderColor: getConstraintColor(constraint) }}>
-        <span>{constraint?.value || '-'}</span>
-        {parsed && (
-          <span className="constraint-icon-wrap" aria-hidden>
-            <CategoryIcon parsed={parsed} />
-          </span>
-        )}
+      <div
+        className={`flex w-full items-center justify-center rounded-md border-2 border-[var(--border)] bg-[var(--bg)] px-2 py-1.5 text-center text-[10px] font-medium text-[var(--text-h)] md:text-xs ${isRow ? 'h-full' : ''}`}
+        style={{ borderColor: getConstraintColor(constraint) }}
+      >
+        {parsed ? <CategoryBadgeLink parsed={parsed} href={null} /> : <span>{constraint?.value || '-'}</span>}
       </div>
     );
   };
 
   return (
-    <div className="grid-wrapper">
-      <div className="type-labels-top">
-        <div className="corner-spacer">
+    <div className="mb-3 flex flex-col items-center">
+      <div className="mb-1 flex gap-1">
+        <div className="flex w-[140px] flex-col items-center justify-center max-[768px]:w-[70px]">
         </div>
         {colConstraints.map((constraint, colIndex) => (
-          <div key={colIndex} className="constraint-selector">
+          <div key={colIndex} className="flex w-[143px] items-stretch max-[768px]:w-[90px]">
             {editable ? (
               <ConstraintSelect constraint={constraint} index={colIndex} isRow={false} onChange={onConstraintChange} />
             ) : (
-              renderConstraintDisplay(constraint)
+              renderConstraintDisplay(constraint, false)
             )}
           </div>
         ))}
       </div>
 
-      <div className="grid-with-row-labels">
-        <div className="type-labels-left">
+      <div className="flex gap-1">
+        <div className="flex flex-col gap-1">
           {rowConstraints.map((constraint, rowIndex) => (
-            <div key={rowIndex} className="constraint-selector">
+            <div key={rowIndex} className="flex h-[157px] w-[140px] items-stretch max-[768px]:h-[112px] max-[768px]:w-[70px]">
               {editable ? (
                 <ConstraintSelect constraint={constraint} index={rowIndex} isRow={true} onChange={onConstraintChange} />
               ) : (
-                renderConstraintDisplay(constraint)
+                renderConstraintDisplay(constraint, true)
               )}
             </div>
           ))}

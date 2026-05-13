@@ -7,114 +7,6 @@
   50% { background-position: 100% 50%; }
 }
 
-.grid-wrapper {
-  display: flex;
-  margin-bottom: 12px;
-  flex-direction: column;
-  align-items: center;
-}
-
-.type-labels-top {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 4px;
-}
-
-.corner-spacer {
-  width: 140px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.constraint-selector {
-  display: flex;
-  align-items: stretch;
-  width: 143px;
-}
-
-.constraint-select {
-  width: 100%;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 2px solid var(--border);
-  background: var(--bg);
-  color: var(--text-h);
-  font-size: 12px;
-  cursor: pointer;
-  text-align: center;
-}
-
-.constraint-select:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.constraint-select optgroup {
-  font-weight: 600;
-  font-style: normal;
-}
-
-.constraint-display {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 2px solid var(--border);
-  background: var(--bg);
-  color: var(--text-h);
-  font-size: 12px;
-  text-align: center;
-  font-weight: 500;
-}
-
-.constraint-display-with-icon {
-  flex-direction: column;
-  gap: 4px;
-}
-
-.constraint-icon-wrap {
-  display: inline-flex;
-  justify-content: center;
-}
-
-.constraint-icon-wrap > span {
-  width: 40px !important;
-  height: 40px !important;
-}
-
-.constraint-icon-wrap > span img {
-  width: 24px !important;
-  height: 24px !important;
-}
-
-.grid-with-row-labels {
-  display: flex;
-  gap: 4px;
-}
-
-.type-labels-left {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.type-labels-left .constraint-selector {
-  height: 157px;
-  width: 140px;
-}
-
-.type-labels-left .constraint-select {
-  height: 100%;
-}
-
-.type-labels-left .constraint-display {
-  height: 100%;
-}
-
 .suggested-grid {
   display: flex;
   flex-direction: column;
@@ -348,23 +240,6 @@
     height: 68px;
   }
 
-  .constraint-display {
-    font-size: 10px;
-  }
-
-  .corner-spacer {
-    width: 70px;
-  }
-  
-  .constraint-selector {
-    width: 90px;
-  }
-  
-  .type-labels-left .constraint-selector {
-    height: 112px;
-    width: 70px;
-  }
-  
   .pokemon-name {
     font-size: 12px;
   }
@@ -403,4 +278,3 @@ footer a:hover {
 footer span {
   margin: 0 8px;
 }
-
