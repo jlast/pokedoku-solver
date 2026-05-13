@@ -194,7 +194,7 @@ const baseUrl = import.meta.env.BASE_URL;
       client:load
     />
 
-    <section class="content-section flex flex-col gap-7">
+    <section class="content-section content-section--narrow flex flex-col gap-7">
       <script type="application/ld+json" set:html={JSON.stringify(faqStructuredData)}></script>
       {
         LEVELS.map((section) => {

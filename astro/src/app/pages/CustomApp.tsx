@@ -265,7 +265,7 @@ function App() {
         </div>
       </div>
 
-      <section className="content-section">
+      <section className="content-section content-section--narrow">
         <h2>How it works</h2>
 
         <p>
@@ -293,7 +293,7 @@ function App() {
         </p>
       </section>
 
-      <section className="content-section faq">
+      <section className="content-section content-section--narrow faq">
         <h2>FAQ</h2>
 
         <h3>What is Pokedoku?</h3>
