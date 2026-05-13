@@ -139,9 +139,9 @@ export function SuggestionsPanel({
   if (!selectedCell) return null;
 
   return (
-    <div className="suggestions-panel-wrapper">
-      <div className="suggestions-panel" ref={containerRef}>
-        <div className="panel-header">
+    <div className="relative mb-4">
+      <div className="relative mt-5 flex max-h-[500px] w-[418px] flex-col overflow-y-auto rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 max-[768px]:h-full max-[768px]:max-h-[350px] max-[768px]:w-[332px]" ref={containerRef}>
+        <div className="sticky top-0 z-[5] shrink-0 bg-[var(--bg)]">
           <div className="flex items-center justify-between">
             <span className="font-semibold text-[var(--text-h)]">{possiblePokemon.length} Pokémon</span>
             <label className="flex items-center gap-1">
@@ -187,7 +187,7 @@ export function SuggestionsPanel({
             </label>
           </div>
         </div>
-        <div className="pokemon-list">
+        <div className="flex flex-col gap-2">
           {sortedPokemon?.length && sortedPokemon?.length > 0 ? (
             sortedPokemon?.map((p) => (
               <button
@@ -244,8 +244,8 @@ export function SuggestionsPanel({
         </div>
       </div>
       {sortedPokemon && sortedPokemon.length >= 5 && (
-        <div className="scroll-hint">
-          <span className="scroll-hint-arrow" title="Scroll for more">
+        <div className="sticky left-1/2 -mt-10 h-8 w-8 -translate-x-4 rounded-full border border-[var(--border)] bg-white/50">
+          <span className="flex h-full w-full items-center justify-center" title="Scroll for more">
             ▼
           </span>
         </div>

@@ -67,12 +67,12 @@ export function TodayPageClient() {
   return (
     <>
       {bonusPuzzle && (
-        <div className="today-puzzle-toggle" role="tablist" aria-label="Choose puzzle">
+        <div className="my-3 flex justify-center gap-2" role="tablist" aria-label="Choose puzzle">
           <button
             type="button"
             role="tab"
             aria-selected={effectiveTab === "today"}
-            className={`today-puzzle-tab ${effectiveTab === "today" ? "active" : ""}`}
+            className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-2 text-[13px] font-semibold ${effectiveTab === "today" ? "border-[var(--accent)] bg-[color-mix(in_srgb,var(--accent)_14%,var(--bg))] text-[var(--text-h)]" : "border-[var(--border)] bg-[var(--bg)] text-[var(--text-h)]"}`}
             onClick={() => {
               trackEvent("click_today_toggle", { tab: "today" });
               setActiveTab("today");
@@ -84,14 +84,14 @@ export function TodayPageClient() {
             type="button"
             role="tab"
             aria-selected={effectiveTab === "bonus"}
-            className={`today-puzzle-tab ${effectiveTab === "bonus" ? "active" : ""}`}
+            className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-2 text-[13px] font-semibold ${effectiveTab === "bonus" ? "border-[var(--accent)] bg-[color-mix(in_srgb,var(--accent)_14%,var(--bg))] text-[var(--text-h)]" : "border-[var(--border)] bg-[var(--bg)] text-[var(--text-h)]"}`}
             onClick={() => {
               trackEvent("click_today_toggle", { tab: "bonus" });
               setActiveTab("bonus");
             }}
           >
-            <span className="today-puzzle-tab-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
+            <span className="inline-flex h-3.5 w-3.5" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false" className="h-full w-full fill-current">
                 <path d="M20 7h-2.18A2.99 2.99 0 0 0 18 6a3 3 0 0 0-5.5-1.66L12 5l-.5-.66A3 3 0 0 0 6 6c0 .35.06.69.18 1H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7h1a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1ZM9 5a1 1 0 0 1 .8.4L10.75 7H9A1 1 0 0 1 9 5Zm6 0a1 1 0 0 1 0 2h-1.75l.95-1.6A1 1 0 0 1 15 5ZM5 9h6v2H5V9Zm2 4h4v5H7v-5Zm6 5v-5h4v5h-4Zm6-7h-6V9h6v2Z" />
               </svg>
             </span>

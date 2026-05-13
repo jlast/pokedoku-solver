@@ -178,7 +178,7 @@ export default function PuzzleStatsApp() {
 
   if (error) {
     return (
-      <div className="app loading text-center">
+      <div className="min-h-screen p-5 text-center">
         <p>Failed to load puzzle stats: {error}</p>
       </div>
     );
