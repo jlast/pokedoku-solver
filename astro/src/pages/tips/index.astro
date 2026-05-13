@@ -3,6 +3,7 @@ import AppPageLayout from "../../layouts/AppPageLayout.astro";
 import { Header } from "../../app/components/Header";
 import { Footer } from "../../app/components/Footer";
 import Collapsible from "../../components/Collapsible.astro";
+import ContentSection from "../../components/shared/ContentSection.astro";
 
 type TipLevel = "beginner" | "advanced" | "gotcha";
 
@@ -187,7 +188,7 @@ const baseUrl = import.meta.env.BASE_URL;
   description="Learn Pokedoku strategy with beginner and advanced Q&A."
   path="/tips/"
 >
-  <div class="app">
+  <div class="min-h-screen p-5">
     <Header
       title="Pokedoku Tips & Tricks"
       subtitle="Beginner-friendly explanations and advanced category strategy, including common gotchas from the community."
@@ -195,7 +196,7 @@ const baseUrl = import.meta.env.BASE_URL;
       client:load
     />
 
-    <section class="content-section content-section--narrow flex flex-col gap-7">
+    <ContentSection class="flex flex-col gap-7">
       <script type="application/ld+json" set:html={JSON.stringify(faqStructuredData)}></script>
       {
         LEVELS.map((section) => {
@@ -203,7 +204,7 @@ const baseUrl = import.meta.env.BASE_URL;
           return (
             <div class="rounded-[14px] border border-slate-200 bg-slate-50/40 p-4">
               <div>
-                <h2>{section.title}</h2>
+                <h2 class="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">{section.title}</h2>
                 <p class="mb-2.5">{section.description}</p>
               </div>
 
@@ -252,7 +253,7 @@ const baseUrl = import.meta.env.BASE_URL;
           );
         })
       }
-    </section>
+    </ContentSection>
 
     <Footer client:load />
   </div>

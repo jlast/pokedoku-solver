@@ -8,6 +8,7 @@ import { Header } from "../components/Header";
 import { SuggestionsPanel } from "../components/SuggestionsPanel";
 import { Footer } from "../components/Footer";
 import { InfoBox } from "../components/InfoBox";
+import { ContentSection } from "../components/shared/ContentSection";
 
 function parseConstraintFromParam(value: string): Constraint | null {
   const result = findConstraintOption(value);
@@ -221,22 +222,22 @@ function App() {
 
   if (loading) {
     return (
-      <div className="app loading">
+      <div className="min-h-screen p-5 text-center">
         <p>Loading Pokémon data...</p>
       </div>
     );
   }
 
   return (
-    <div className="app">
+    <div className="min-h-screen p-5">
       <Header
         title="Custom Puzzle"
         subtitle="Explore all valid Pokémon for any Pokedoku square. Set constraints and click a cell to see matching Pokémon."
         currentPage="custom"
       />
 
-      <div className="main-content">
-        <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>
+      <div className="flex flex-col items-center gap-1">
+        <p className="text-[0.9rem] opacity-70">
           Select a category to begin
         </p>
         <Grid
@@ -251,7 +252,7 @@ function App() {
         <InfoBox>Numbers show how many Pokémon match each combination.</InfoBox>
         <button
           onClick={clearGrid}
-          className="clear-btn"
+          className="w-fit rounded-lg border-2 border-red-300 bg-white px-4 py-2 text-sm text-red-700 transition-colors hover:border-red-400 hover:bg-rose-50 hover:text-red-800 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400"
           disabled={!hasGridData}
         >
           Clear All
@@ -265,75 +266,75 @@ function App() {
         </div>
       </div>
 
-      <section className="content-section content-section--narrow">
-        <h2>How it works</h2>
+      <ContentSection>
+        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">How it works</h2>
 
-        <p>
+        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
           Choose a constraint for each row and column, then click a square to
           view matching Pokémon. You can load today’s puzzle or create your own
           combinations to explore different possibilities.
         </p>
 
-        <h2>Why use this Pokedoku helper?</h2>
+        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">Why use this Pokedoku helper?</h2>
 
-        <p>
+        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
           Some squares have lots of possible answers, while others are much more
           restrictive than they look. This helper shows valid Pokémon for each
           combination so you can learn new options, avoid invalid guesses, and
           make better choices in the daily puzzle.
         </p>
 
-        <h2>Use it with today’s Pokedoku</h2>
+        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">Use it with today’s Pokedoku</h2>
 
-        <p>
+        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
           Tap <strong>Today&apos;s puzzle</strong> to load the current grid,
           then inspect each square to see which Pokémon fit. You can use it as a
           hint tool, a learning aid, or a quick way to understand difficult
           categories.
         </p>
-      </section>
+      </ContentSection>
 
-      <section className="content-section content-section--narrow faq">
-        <h2>FAQ</h2>
+      <ContentSection className="faq">
+        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">FAQ</h2>
 
-        <h3>What is Pokedoku?</h3>
+        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">What is Pokedoku?</h3>
 
-        <p>
+        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
           Pokedoku is a daily puzzle where each square must be filled with a
           Pokémon that matches both the row and column categories.
         </p>
 
-        <h3>What does this helper do?</h3>
+        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">What does this helper do?</h3>
 
-        <p>
+        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
           It shows Pokémon that match the selected row and column constraints
           for a square, making it easier to explore valid options.
         </p>
 
-        <h3>What is Dex Difficulty?</h3>
+        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">What is Dex Difficulty?</h3>
 
-        <p>
+        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
           Dex Difficulty shows how hard it is to use a Pokémon in Pokedoku.
           <strong> Nightmare</strong> = few valid spots, lots of competition.
           <strong> Easy</strong> = more options or less competition. Helps you
           see which answers are.
         </p>
 
-        <h3>Can I use it for the daily puzzle?</h3>
+        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">Can I use it for the daily puzzle?</h3>
 
-        <p>
+        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
           Yes. You can load the current puzzle and view possible matches for
           each square.
         </p>
 
-        <h3>What kinds of constraints can I explore?</h3>
+        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">What kinds of constraints can I explore?</h3>
 
-        <p>
+        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
           Depending on the puzzle, you can check combinations involving types,
           regions, generations, evolution lines, legendary status, and other
           common Pokedoku categories.
         </p>
-      </section>
+      </ContentSection>
 
       <Footer />
     </div>

@@ -238,7 +238,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   if (loading) return <div className="app loading text-center"><p>Loading Pokemon data...</p></div>;
 
   return (
-    <div className="main-content">
+    <div className="flex flex-col items-center">
       <Grid
         cells={grid.cells}
         rowConstraints={grid.rowConstraints}
@@ -262,17 +262,17 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         />
       </div>
 
-      <div className="today-actions">
+      <div className="mt-2 flex flex-wrap justify-center gap-2.5">
         <button
           onClick={clearCells}
-          className="clear-btn clear-btn--ghost-destructive"
+          className="w-fit rounded-lg border-2 border-red-300 bg-white px-4 py-2 text-sm text-red-700 transition-colors hover:border-red-400 hover:bg-rose-50 hover:text-red-800 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400"
           disabled={!hasGridData}
         >
           Clear selected Pokemon
         </button>
         <a
           href={`${import.meta.env.BASE_URL}custom/`}
-          className="filter-btn-secondary"
+          className="inline-flex items-center gap-1.5 rounded-[10px] border-2 border-slate-200 bg-white px-[18px] py-2.5 text-[0.9rem] font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50"
           onClick={() => trackEvent("click_navigate", { url: "custom/", from: "today_suggestions" })}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">

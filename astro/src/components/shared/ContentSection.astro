@@ -1,0 +1,14 @@
+---
+interface Props {
+  class?: string;
+  narrow?: boolean;
+}
+
+const { class: className = "", narrow = true } = Astro.props;
+const base = "mx-auto mt-8 px-1";
+const width = narrow ? "max-w-[760px]" : "w-full";
+---
+
+<section class={`${base} ${width} ${className}`.trim()}>
+  <slot />
+</section>

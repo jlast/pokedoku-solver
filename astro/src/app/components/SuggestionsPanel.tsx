@@ -142,10 +142,10 @@ export function SuggestionsPanel({
     <div className="suggestions-panel-wrapper">
       <div className="suggestions-panel" ref={containerRef}>
         <div className="panel-header">
-          <div className="sort-header">
-            <span className="panel-title">{possiblePokemon.length} Pokémon</span>
-            <label className="sort-label">
-              <span className="sort-icon" aria-hidden="true">
+          <div className="flex items-center justify-between">
+            <span className="font-semibold text-[var(--text-h)]">{possiblePokemon.length} Pokémon</span>
+            <label className="flex items-center gap-1">
+              <span className="text-[0.8rem] text-[#666]" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M7 4v14m0 0-3-3m3 3 3-3M17 20V6m0 0-3 3m3-3 3 3"
@@ -156,9 +156,9 @@ export function SuggestionsPanel({
                   />
                 </svg>
               </span>
-              <span className="sort-select-wrap">
+              <span className="relative inline-flex items-center">
                 <select
-                  className="sort-select"
+                  className="cursor-pointer appearance-none rounded-md border border-[var(--border)] bg-[var(--bg)] py-1 pl-2 pr-7 text-xs text-[var(--text)]"
                   aria-label="Sort Pokémon suggestions"
                   value={sortBy}
                   onChange={(event) => handleSortChange(event.target.value as SortBy)}
@@ -172,7 +172,7 @@ export function SuggestionsPanel({
                   <option value="recent-appearance">Recent appearance (oldest first)</option>
                   <option value="recent-appearance-newest">Recent appearance (newest first)</option>
                 </select>
-                <span className="sort-select-arrow" aria-hidden="true">
+                <span className="pointer-events-none absolute right-2 inline-flex items-center text-[#666]" aria-hidden="true">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                     <path
                       d="m6 9 6 6 6-6"

@@ -3,6 +3,7 @@ import AppPageLayout from "../../layouts/AppPageLayout.astro";
 import { Header } from "../../app/components/Header";
 import { Footer } from "../../app/components/Footer";
 import { TodayPageClient } from "../../app/pages/TodayPageClient";
+import ContentSection from "../../components/shared/ContentSection.astro";
 ---
 
 <AppPageLayout
@@ -10,7 +11,7 @@ import { TodayPageClient } from "../../app/pages/TodayPageClient";
   description="Get today's Pokedoku answers with all 9 solutions and strategic Pokémon picks to help optimize your Pokédex completion. Updated daily."
   path="/pokedoku-answers-today/"
 >
-  <div class="app">
+  <div class="min-h-screen p-5">
     <Header
       title="Today's Pokedoku Answers"
       subtitle="Get all 9 Pokedoku answers for today with strategic Pokémon picks to optimize your Pokedex completion."
@@ -23,29 +24,29 @@ import { TodayPageClient } from "../../app/pages/TodayPageClient";
 
     <TodayPageClient client:load />
 
-    <section class="content-section content-section--narrow">
-      <h2>Today&apos;s Pokedoku categories</h2>
-      <p>
+    <ContentSection>
+      <h2 class="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">Today&apos;s Pokedoku categories</h2>
+      <p class="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
         This page automatically loads the current Pokedoku puzzle constraints so you can inspect every square and see
         which Pokémon fit. It updates each day with the latest puzzle.
       </p>
-    </section>
+    </ContentSection>
 
-    <section class="content-section content-section--narrow faq">
-      <h2>FAQ</h2>
-      <h3>What is shown on this page?</h3>
-      <p>This page loads today&apos;s Pokedoku categories and shows possible Pokémon matches for each square.</p>
-      <h3>Does this update automatically?</h3>
-      <p>Yes. It is designed to load the current daily Pokedoku puzzle.</p>
-      <h3>Can I go back to manual editing?</h3>
-      <p>Yes. Use the back button to return to the editor and set your own row and column combinations.</p>
-      <h3>What is Dex Difficulty?</h3>
-      <p>
+    <ContentSection class="faq">
+      <h2 class="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">FAQ</h2>
+      <h3 class="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">What is shown on this page?</h3>
+      <p class="mb-3.5 text-base leading-[1.7] text-[#6a6477]">This page loads today&apos;s Pokedoku categories and shows possible Pokémon matches for each square.</p>
+      <h3 class="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">Does this update automatically?</h3>
+      <p class="mb-3.5 text-base leading-[1.7] text-[#6a6477]">Yes. It is designed to load the current daily Pokedoku puzzle.</p>
+      <h3 class="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">Can I go back to manual editing?</h3>
+      <p class="mb-3.5 text-base leading-[1.7] text-[#6a6477]">Yes. Use the back button to return to the editor and set your own row and column combinations.</p>
+      <h3 class="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">What is Dex Difficulty?</h3>
+      <p class="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
           Dex Difficulty shows how hard it is to use a Pokémon in Pokedoku. <strong>Nightmare</strong> = few valid spots,
           lots of competition. <strong>Easy</strong> = more options or less competition. Helps you see which answers are
           more logical to prioritize for dex completion.
         </p>
-    </section>
+    </ContentSection>
 
     <Footer />
   </div>
