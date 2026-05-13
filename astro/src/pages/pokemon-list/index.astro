@@ -17,14 +17,23 @@ import { Footer } from "../../app/components/Footer";
       client:load
     />
 
-    <div class="controls-panel">
-      <div class="mb-3 flex justify-end gap-3 max-[600px]:justify-center">
+    <div class="my-5 rounded-[15px] border-b border-slate-200 bg-slate-50 p-4">
+      <div class="mb-6 flex flex-col gap-3 rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4">
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Search by name, type, or region..."
+          class="w-full rounded-lg border-2 border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-[0.95rem] text-[var(--text-h)] placeholder:text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
+        />
+      </div>
+
+      <div class="mb-3 flex justify-start gap-3">
         <button class="inline-flex items-center gap-1.5 rounded-[10px] border-2 border-slate-500 bg-slate-500 px-[18px] py-2.5 text-[0.9rem] font-medium text-white transition-colors hover:border-slate-600 hover:bg-slate-600" id="open-filter-drawer" type="button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
           </svg>
           Filter
-          <span class="filter-count" id="active-filter-count" hidden>0</span>
+          <span class="rounded-[10px] bg-white px-1.5 py-0.5 text-xs font-semibold text-slate-500" id="active-filter-count" hidden>0</span>
         </button>
         <button class="inline-flex items-center gap-1.5 rounded-[10px] border-2 border-slate-200 bg-white px-[18px] py-2.5 text-[0.9rem] font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50" id="clear-filters" type="button" disabled>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -34,20 +43,10 @@ import { Footer } from "../../app/components/Footer";
         </button>
       </div>
 
-      <div class="search-bar">
-        <input
-          id="search-input"
-          type="text"
-          placeholder="Search by name, type, or region..."
-          class="search-input"
-        />
-      </div>
-
-      <div class="pokemon-list-filters" id="desktop-filters"></div>
     </div>
 
-    <div class="pokemon-list-header">
-      <div class="sort-controls">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex gap-2">
         <label class="flex items-center gap-1">
           <span class="text-[0.8rem] text-[#666]" aria-hidden="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -85,7 +84,7 @@ import { Footer } from "../../app/components/Footer";
           </span>
         </label>
       </div>
-      <div class="results-count" id="results-count">0 of 0 Pokemon</div>
+      <div class="text-sm text-[var(--text)]" id="results-count">0 of 0 Pokemon</div>
     </div>
 
     <div class="px-4 py-8 text-center text-[var(--text)]" id="no-results" hidden>
@@ -97,28 +96,28 @@ import { Footer } from "../../app/components/Footer";
 
     <Footer client:load />
 
-    <div class="filter-drawer-overlay" id="filter-drawer-overlay" hidden></div>
-    <div class="filter-drawer" id="filter-drawer" hidden>
-      <div class="filter-drawer-header">
-        <span class="filter-drawer-title">Filters</span>
-        <button class="filter-drawer-close" id="close-filter-drawer" type="button">
+    <div class="fixed inset-0 z-[999] bg-black/50 opacity-0 transition-opacity duration-300 pointer-events-none" id="filter-drawer-overlay" hidden></div>
+    <div class="fixed bottom-0 left-0 top-0 z-[1000] block w-[85%] max-w-80 -translate-x-full overflow-y-auto bg-[var(--bg)] opacity-0 transition-all duration-300 ease-out pointer-events-none" id="filter-drawer" hidden>
+      <div class="sticky top-0 flex items-center justify-between border-b border-[var(--border)] bg-[var(--bg)] p-4">
+        <span class="text-[1.1rem] font-semibold">Filters</span>
+        <button class="cursor-pointer bg-transparent p-1 text-[var(--text)]" id="close-filter-drawer" type="button">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
           </svg>
         </button>
       </div>
-      <div class="filter-drawer-content">
-        <div class="search-bar">
+      <div class="p-4">
+        <div class="mb-4 block border-none bg-transparent p-0">
           <input
             id="search-input-drawer"
             type="text"
             placeholder="Search by name, type, or region..."
-            class="search-input"
+            class="w-full rounded-lg border-2 border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-[0.95rem] text-[var(--text-h)] placeholder:text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
           />
         </div>
         <div id="drawer-filters"></div>
       </div>
-      <div class="filter-drawer-footer">
+      <div class="sticky bottom-0 flex justify-center gap-3 border-t border-[var(--border)] bg-[var(--bg)] p-4">
         <button id="clear-filters-drawer" class="w-fit rounded-lg border-2 border-red-300 bg-white px-4 py-2 text-sm text-red-700 transition-colors hover:border-red-400 hover:bg-rose-50 hover:text-red-800 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400" type="button">Clear All</button>
       </div>
     </div>
@@ -149,7 +148,6 @@ import { Footer } from "../../app/components/Footer";
 
     const els = {
       grid: document.getElementById("pokemon-grid"),
-      desktopFilters: document.getElementById("desktop-filters"),
       drawerFilters: document.getElementById("drawer-filters"),
       searchInput: document.getElementById("search-input"),
       searchInputDrawer: document.getElementById("search-input-drawer"),
@@ -222,9 +220,32 @@ import { Footer } from "../../app/components/Footer";
 
     const setDrawerVisible = (visible) => {
       state.showFilterDrawer = visible;
-      els.drawer.hidden = !visible;
-      els.drawerOverlay.hidden = !visible;
       document.body.style.overflow = visible ? "hidden" : "";
+
+      if (visible) {
+        els.drawer.hidden = false;
+        els.drawerOverlay.hidden = false;
+
+        requestAnimationFrame(() => {
+          els.drawer.classList.remove("-translate-x-full", "opacity-0", "pointer-events-none");
+          els.drawer.classList.add("translate-x-0", "opacity-100");
+          els.drawerOverlay.classList.remove("opacity-0", "pointer-events-none");
+          els.drawerOverlay.classList.add("opacity-100");
+        });
+        return;
+      }
+
+      els.drawer.classList.remove("translate-x-0", "opacity-100");
+      els.drawer.classList.add("-translate-x-full", "opacity-0", "pointer-events-none");
+      els.drawerOverlay.classList.remove("opacity-100");
+      els.drawerOverlay.classList.add("opacity-0", "pointer-events-none");
+
+      window.setTimeout(() => {
+        if (!state.showFilterDrawer) {
+          els.drawer.hidden = true;
+          els.drawerOverlay.hidden = true;
+        }
+      }, 300);
     };
 
     const syncUrl = () => {
@@ -243,6 +264,11 @@ import { Footer } from "../../app/components/Footer";
       if (ogUrlEl) ogUrlEl.setAttribute("content", window.location.href);
     };
 
+    const baseFilterGroupClass = "flex flex-col overflow-hidden rounded-lg border border-[var(--border)]";
+    const expandedFilterGroupClass = `${baseFilterGroupClass} expanded`;
+    const filterHeaderClass = "flex w-full items-center gap-2 bg-[var(--bg)] px-3 py-2.5 text-left";
+    const filterButtonsClass = "filter-buttons flex flex-wrap gap-1.5 p-3";
+    const filterButtonClass = "rounded-2xl border-2 border-[var(--border)] bg-[var(--bg)] px-3 py-1.5 text-[0.8rem] font-medium text-[var(--text)] transition-all";
     const createTypeBadge = (typeName) => {
       const badge = document.createElement("span");
       badge.className = "rounded-[10px] px-2 py-0.5 text-[0.7rem] font-semibold text-white";
@@ -314,12 +340,12 @@ import { Footer } from "../../app/components/Footer";
       const isExpanded = isDrawer || state.expandedFilters.has(cat.key);
       const activeCount = state.filters[cat.key]?.length ?? 0;
       const group = document.createElement("div");
-      group.className = `filter-group ${isExpanded ? "expanded" : ""}`;
+      group.className = isExpanded ? expandedFilterGroupClass : baseFilterGroupClass;
 
       const header = document.createElement("button");
-      header.className = "filter-header";
+      header.className = `${filterHeaderClass} ${isDrawer ? "rounded-lg border border-[var(--border)]" : "border-none"}`;
       header.type = "button";
-      header.innerHTML = `<span class="filter-label">${cat.label}</span>${activeCount > 0 ? `<span class="filter-count">${activeCount}</span>` : ""}${isDrawer ? "" : `<span class="filter-chevron">${isExpanded ? "▼" : "▶"}</span>`}`;
+      header.innerHTML = `<span class="text-[0.9rem] font-semibold text-[var(--text-h)]">${cat.label}</span>${activeCount > 0 ? `<span class="rounded-[10px] bg-[var(--accent)] px-1.5 py-0.5 text-[0.7rem] font-semibold text-white">${activeCount}</span>` : ""}${isDrawer ? "" : `<span class="ml-auto text-[0.7rem] text-[var(--text)]">${isExpanded ? "▼" : "▶"}</span>`}`;
       if (!isDrawer) {
         header.addEventListener("click", () => {
           if (state.expandedFilters.has(cat.key)) {
@@ -335,16 +361,18 @@ import { Footer } from "../../app/components/Footer";
       group.appendChild(header);
 
       const buttons = document.createElement("div");
-      buttons.className = "filter-buttons";
+      buttons.className = filterButtonsClass;
+      buttons.style.display = isExpanded ? "flex" : "none";
       for (const opt of cat.options) {
         const isActive = (state.filters[cat.key] ?? []).includes(opt.name);
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = `filter-btn ${isActive ? "active" : ""}`;
+        btn.className = filterButtonClass;
         btn.textContent = opt.name;
         if (isActive && opt.color) {
           btn.style.backgroundColor = opt.color;
           btn.style.borderColor = opt.color;
+          btn.style.color = "white";
         }
         btn.addEventListener("click", () => {
           state.visibleCount = INITIAL_RENDER_COUNT;
@@ -369,12 +397,12 @@ import { Footer } from "../../app/components/Footer";
     const renderDifficultyFilter = (container, isDrawer) => {
       const isExpanded = isDrawer || state.expandedFilters.has("difficulty");
       const group = document.createElement("div");
-      group.className = `filter-group ${isExpanded ? "expanded" : ""}`;
+      group.className = isExpanded ? expandedFilterGroupClass : baseFilterGroupClass;
       const count = state.difficultyFilter.length;
       const header = document.createElement("button");
       header.type = "button";
-      header.className = "filter-header";
-      header.innerHTML = `<span class="filter-label">Dex Difficulty</span>${count > 0 ? `<span class="filter-count">${count}</span>` : ""}${isDrawer ? "" : `<span class="filter-chevron">${isExpanded ? "▼" : "▶"}</span>`}`;
+      header.className = `${filterHeaderClass} ${isDrawer ? "rounded-lg border border-[var(--border)]" : "border-none"}`;
+      header.innerHTML = `<span class="text-[0.9rem] font-semibold text-[var(--text-h)]">Dex Difficulty</span>${count > 0 ? `<span class="rounded-[10px] bg-[var(--accent)] px-1.5 py-0.5 text-[0.7rem] font-semibold text-white">${count}</span>` : ""}${isDrawer ? "" : `<span class="ml-auto text-[0.7rem] text-[var(--text)]">${isExpanded ? "▼" : "▶"}</span>`}`;
       if (!isDrawer) {
         header.addEventListener("click", () => {
           if (state.expandedFilters.has("difficulty")) {
@@ -390,12 +418,13 @@ import { Footer } from "../../app/components/Footer";
       group.appendChild(header);
 
       const buttons = document.createElement("div");
-      buttons.className = "filter-buttons";
+      buttons.className = filterButtonsClass;
+      buttons.style.display = isExpanded ? "flex" : "none";
       Object.keys(DEX_DIFFICULTY_COLORS).forEach((diff) => {
         const isActive = state.difficultyFilter.includes(diff);
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = `filter-btn ${isActive ? "active" : ""}`;
+        btn.className = filterButtonClass;
         btn.textContent = diff;
         btn.style.borderColor = DEX_DIFFICULTY_COLORS[diff];
         btn.style.color = isActive ? "white" : DEX_DIFFICULTY_COLORS[diff];
@@ -414,12 +443,9 @@ import { Footer } from "../../app/components/Footer";
     };
 
     const renderFilters = () => {
-      els.desktopFilters.innerHTML = "";
       els.drawerFilters.innerHTML = "";
-      renderDifficultyFilter(els.desktopFilters, false);
       renderDifficultyFilter(els.drawerFilters, true);
       for (const cat of FILTER_CATEGORIES) {
-        renderFilterGroup(els.desktopFilters, cat, false);
         renderFilterGroup(els.drawerFilters, cat, true);
       }
     };
