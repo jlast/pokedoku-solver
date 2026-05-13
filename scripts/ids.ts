@@ -705,49 +705,49 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   710: {
     // Pumpkaboo average
     evolution: {
-      to: [711, 10129, 10130, 10131],
+      to: [711],
     },
   },
   10126: {
     // Pumpkaboo small
     evolution: {
-      to: [711, 10129, 10130, 10131],
+      to: [10129],
     },
   },
   10127: {
     // Pumpkaboo large
     evolution: {
-      to: [711, 10129, 10130, 10131],
+      to: [10130],
     },
   },
   10128: {
     // Pumpkaboo super
     evolution: {
-      to: [711, 10129, 10130, 10131],
+      to: [10131],
     },
   },
   711: {
-    // Gourgeist small
+    // Gourgeist average
     evolution: {
-      from: [710, 10126, 10127, 10128],
+      from: [710],
     },
   },
   10129: {
     // Gourgeist small
     evolution: {
-      from: [710, 10126, 10127, 10128],
+      from: [10126],
     },
   },
   10130: {
     // Gourgeist large
     evolution: {
-      from: [710, 10126, 10127, 10128],
+      from: [10127],
     },
   },
   10131: {
     // Gourgeist super
     evolution: {
-      from: [710, 10126, 10127, 10128],
+      from: [10128],
     },
   },
   10193: {
