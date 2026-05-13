@@ -997,8 +997,7 @@ footer span {
   margin: 0 8px;
 }
 
-/* SEO content section only */
-.app .content-section {
+.app .content-section--narrow {
   max-width: 760px;
   margin: 32px auto 0;
   padding: 0 4px;

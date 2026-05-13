@@ -1,0 +1,20 @@
+---
+interface Props {
+  forId: string;
+  rowClass?: string;
+}
+
+const { forId, rowClass = "" } = Astro.props;
+---
+
+<label
+  for={forId}
+  class:list={[
+    "grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50/70 p-2.5 sm:grid-cols-[auto_minmax(0,1fr)_auto]",
+    rowClass,
+  ]}
+>
+  <slot name="icon" />
+  <slot name="content" />
+  <slot name="control" />
+</label>

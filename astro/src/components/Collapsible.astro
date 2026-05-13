@@ -1,0 +1,39 @@
+---
+interface Props {
+  title: string;
+  open?: boolean;
+  detailsClass?: string;
+  summaryClass?: string;
+  contentClass?: string;
+}
+
+const {
+  title,
+  open = false,
+  detailsClass = "",
+  summaryClass = "",
+  contentClass = "",
+} = Astro.props;
+---
+
+<details class:list={["group", detailsClass]} open={open}>
+  <summary
+    class:list={[
+      "flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-extrabold text-slate-900 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden",
+      summaryClass,
+    ]}
+  >
+    <span>{title}</span>
+    <svg
+      class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </summary>
+  <div class={contentClass}>
+    <slot />
+  </div>
+</details>
