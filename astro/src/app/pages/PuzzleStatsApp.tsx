@@ -87,7 +87,7 @@ export default function PuzzleStatsApp() {
 
   function getCategoryHref(label: string): string | null {
     const slug = slugify(label);
-    return categorySlugSet.has(slug) ? `/category/${slug}/` : null;
+    return categorySlugSet.has(slug) ? `/tools/category/${slug}/` : null;
   }
 
   useEffect(() => {

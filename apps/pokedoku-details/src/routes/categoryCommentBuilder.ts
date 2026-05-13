@@ -2,6 +2,7 @@ import type { ParagraphContext, RichTextBuilder } from '@devvit/web/server';
 import { difficultyWithEmoji } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { richTextBold } from './richTextFormatting';
+import { BASE_URL } from '../core/constants';
 
 export type MatchedFilter = {
   categoryLabel: string;
@@ -103,7 +104,7 @@ export const appendFilterStats = (
   builder.paragraph((p) => {
     p.link({
       text: filter.name,
-      url: `https://pokedoku-helper.com/category/${slug(filter.linkSlug)}`,
+      url: `${BASE_URL}/tools/category/${slug(filter.linkSlug)}`,
       formatting: [richTextBold(filter.name.length)],
     });
     p.linebreak();
@@ -124,7 +125,7 @@ export const appendFilterCompactLine = (
 ): void => {
     p.link({
       text: filter.name,
-      url: `https://pokedoku-helper.com/category/${slug(filter.linkSlug)}`,
+      url: `${BASE_URL}/tools/category/${slug(filter.linkSlug)}`,
     });
     p.text({ text: ` - ${filter.count} answers` });
 };

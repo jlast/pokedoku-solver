@@ -61,7 +61,7 @@ if changed_in_paths '^public/data/' '^scripts/' '^lib/shared/' '^packages/shared
   data_changed=true
 fi
 
-if changed_in_paths '^astro/' '^astro/src/pages/category/' '^astro/src/pages/pokemon/' '^src/' '^lib/browser/' '^lib/shared/' '^packages/shared-types/' '^public/' '^package.json$' '^pnpm-lock.yaml$' '^package-lock.json$'; then
+if changed_in_paths '^astro/' '^astro/src/pages/' '^astro/src/pages/pokemon/' '^src/' '^lib/browser/' '^lib/shared/' '^packages/shared-types/' '^public/' '^package.json$' '^pnpm-lock.yaml$' '^package-lock.json$'; then
   site_changed=true
 fi
 

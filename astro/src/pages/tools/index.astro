@@ -1,0 +1,92 @@
+---
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import { Header } from "../../app/components/Header";
+import { Footer } from "../../app/components/Footer";
+
+const tools = [
+  {
+    title: "Category Explorer",
+    description: "Browse all categories and drill into detailed category pages with examples and runtime stats.",
+    href: "/tools/category/",
+    accent: "from-sky-500 to-cyan-600",
+    border: "border-sky-200",
+    glow: "shadow-[0_16px_34px_rgba(14,116,144,0.14)]",
+    iconBg: "bg-sky-100 text-sky-700",
+    button: "bg-sky-600 hover:bg-sky-700",
+    cta: "Explore categories",
+    tag: "Category & combos",
+    iconPath: "M21.41 11.58 12.42 2.59A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .53.21 1.04.59 1.41l8.99 8.99a2 2 0 0 0 2.83 0l6.99-6.99a2 2 0 0 0 0-2.83zM6.5 8A1.5 1.5 0 1 1 8 6.5 1.5 1.5 0 0 1 6.5 8z",
+    iconSize: "h-6 w-6",
+  },
+  {
+    title: "Shiny Odds Calculator",
+    description: "Calculate your shiny odds across grids with prestige-aware rates, live percentages, and 1-in-N odds.",
+    href: "/tools/shiny-odds-calculator/",
+    accent: "from-red-500 to-red-700",
+    border: "border-rose-200",
+    glow: "shadow-[0_16px_34px_rgba(185,28,28,0.14)]",
+    iconBg: "bg-rose-100 text-rose-700",
+    button: "bg-rose-700 hover:bg-rose-800",
+    cta: "Calculate shiny odds",
+    tag: "Odds & probability",
+    iconPath: "m12 4 1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4z",
+    iconSize: "h-7 w-7",
+  },
+  {
+    title: "Pokedoku Insights",
+    description: "Explore puzzle history, rarity signals, and category pair trends across past Pokedoku boards.",
+    href: "/tools/pokedoku-insights/",
+    accent: "from-emerald-500 to-teal-600",
+    border: "border-emerald-200",
+    glow: "shadow-[0_16px_34px_rgba(5,150,105,0.14)]",
+    iconBg: "bg-emerald-100 text-emerald-700",
+    button: "bg-emerald-700 hover:bg-emerald-800",
+    cta: "View insights",
+    tag: "Stats & trends",
+    iconPath: "M4 18h16M6 16V9m6 7V6m6 10v-4",
+    iconSize: "h-6 w-6",
+  },
+];
+---
+
+<AppPageLayout
+  title="Tools | Pokedoku Helper"
+  description="Explore all Pokedoku Helper tools including Category Explorer, Shiny Odds Calculator, and Pokedoku Insights."
+  path="/tools/"
+>
+  <div>
+    <Header
+      title="Tools"
+      subtitle="Everything you need to analyze categories, shiny odds, and puzzle trends."
+      currentPage="tools"
+      client:load
+    />
+
+    <main class="mx-auto w-full max-w-6xl px-4 pb-10">
+      <section class="grid gap-5 lg:grid-cols-3">
+        {tools.map((tool) => (
+          <a href={tool.href} class:list={["group rounded-3xl border bg-white p-6 text-inherit no-underline shadow-sm transition-all hover:-translate-y-1", tool.border, tool.glow]}>
+            <div class="mb-4 flex items-start justify-between gap-3">
+              <span class:list={["inline-flex h-12 w-12 items-center justify-center rounded-2xl", tool.iconBg]}>
+                <svg class:list={[tool.iconSize ?? "h-6 w-6"]} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d={tool.iconPath} stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </span>
+              <span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold tracking-wide text-slate-600">
+                {tool.tag}
+              </span>
+            </div>
+            <div class={`mb-4 h-1.5 w-24 rounded-full bg-gradient-to-r ${tool.accent}`}></div>
+            <h2 class="m-0 text-3xl font-extrabold tracking-tight text-slate-900">{tool.title}</h2>
+            <p class="mt-3 mb-0 text-base leading-relaxed text-slate-600">{tool.description}</p>
+            <span class:list={["mt-5 inline-flex items-center rounded-xl px-4 py-2 text-sm font-semibold text-white transition-colors", tool.button]}>
+              {tool.cta}
+            </span>
+          </a>
+        ))}
+      </section>
+    </main>
+
+    <Footer client:load />
+  </div>
+</AppPageLayout>

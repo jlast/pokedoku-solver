@@ -6,8 +6,7 @@ import {
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { RichTextBuilder, type ParagraphContext } from '@devvit/web/server';
 import { richTextBold, richTextItalic } from './richTextFormatting';
-
-const BASE_URL = 'https://pokedoku-helper.com';
+import { BASE_URL } from '../core/constants';
 
 const slug = (value: string) =>
   value.toLowerCase().replaceAll(' ', '-').replaceAll('.', '');
@@ -37,14 +36,14 @@ const appendTypeRegionLine = (p: ParagraphContext, pokemon: Pokemon): void => {
     }
     p.link({
       text: typeWithEmoji(type),
-      url: `${BASE_URL}/category/${slug(type)}`,
+      url: `${BASE_URL}/tools/category/${slug(type)}`,
     });
   });
 
   p.text({ text: ' • ' });
   p.link({
     text: pokemon.region,
-    url: `${BASE_URL}/category/${slug(pokemon.region)}`,
+    url: `${BASE_URL}/tools/category/${slug(pokemon.region)}`,
   });
 };
 
@@ -69,7 +68,7 @@ const appendCategoryLinks = (p: ParagraphContext, pokemon: Pokemon): void => {
 
       p.link({
         text: category,
-        url: `${BASE_URL}/category/${slug(category)}`,
+        url: `${BASE_URL}/tools/category/${slug(category)}`,
       });
     });
   });

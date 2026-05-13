@@ -312,7 +312,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                             {rowParsed ? (
                               <CategoryBadgeLink
                                 parsed={rowParsed}
-                                href={`${import.meta.env.BASE_URL}category/${slugify(rowParsed.label)}/`}
+                                href={`${import.meta.env.BASE_URL}tools/category/${slugify(rowParsed.label)}/`}
                               />
                             ) : (
                               <span>Any</span>
@@ -321,7 +321,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                             {colParsed ? (
                               <CategoryBadgeLink
                                 parsed={colParsed}
-                                href={`${import.meta.env.BASE_URL}category/${slugify(colParsed.label)}/`}
+                                href={`${import.meta.env.BASE_URL}tools/category/${slugify(colParsed.label)}/`}
                               />
                             ) : (
                               <span>Any</span>
@@ -361,7 +361,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                               <CategoryBadgeLink
                                 key={`${entry.key}-${type}-${i}`}
                                 parsed={parseCategoryId(`types:${type}`)}
-                                href={`${import.meta.env.BASE_URL}category/${slugify(type)}/`}
+                                href={`${import.meta.env.BASE_URL}tools/category/${slugify(type)}/`}
                               />
                             ))}
                           </div>
@@ -409,7 +409,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                               <span className="inline-flex scale-90 origin-right">
                                 <CategoryBadgeLink
                                   parsed={rowParsed}
-                                  href={`${import.meta.env.BASE_URL}category/${slugify(rowParsed.label)}/`}
+                                  href={`${import.meta.env.BASE_URL}tools/category/${slugify(rowParsed.label)}/`}
                                 />
                               </span>
                             ) : (
@@ -420,7 +420,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                               <span className="inline-flex scale-90 origin-right">
                                 <CategoryBadgeLink
                                   parsed={colParsed}
-                                  href={`${import.meta.env.BASE_URL}category/${slugify(colParsed.label)}/`}
+                                  href={`${import.meta.env.BASE_URL}tools/category/${slugify(colParsed.label)}/`}
                                 />
                               </span>
                             ) : (

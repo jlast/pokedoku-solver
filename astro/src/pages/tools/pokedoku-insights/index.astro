@@ -1,0 +1,52 @@
+---
+import AppPageLayout from "../../../layouts/AppPageLayout.astro";
+import { Header } from "../../../app/components/Header";
+import { Footer } from "../../../app/components/Footer";
+import PuzzleStatsApp from "../../../app/pages/PuzzleStatsApp";
+---
+
+<AppPageLayout
+  title="Pokedoku Puzzle Stats – Category Frequency Trends"
+  description="View Pokedoku puzzle statistics, including category and pair frequency trends."
+  path="/tools/pokedoku-insights/"
+>
+    <main class="mx-auto w-full max-w-6xl app">
+      <Header
+        title="Pokedoku Insights"
+        subtitle="Explore historical category trends across past Pokedoku puzzles."
+        currentPage="tools"
+        client:load
+      />
+
+      <section class="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
+        <p class="m-0 text-sm text-slate-700">
+          Wondering when a Pokemon was valid in PokeDoku? This page tracks when Pokemon were last usable,
+          alongside rarity, category, and pair-frequency trends across puzzle history.
+        </p>
+      </section>
+
+      <PuzzleStatsApp client:load>
+        <div class="grid gap-4 lg:grid-cols-2" aria-label="Loading puzzle stats sections">
+          <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+            <div class="mb-3 h-6 w-60 animate-pulse rounded bg-slate-200"></div>
+            <div class="mb-2 h-4 w-80 animate-pulse rounded bg-slate-100"></div>
+            <div class="space-y-2">
+              <div class="h-14 animate-pulse rounded-lg border border-slate-200 bg-slate-50"></div>
+              <div class="h-14 animate-pulse rounded-lg border border-slate-200 bg-slate-50"></div>
+              <div class="h-14 animate-pulse rounded-lg border border-slate-200 bg-slate-50"></div>
+            </div>
+          </article>
+          <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+            <div class="mb-3 h-6 w-44 animate-pulse rounded bg-slate-200"></div>
+            <div class="mb-3 h-10 w-48 animate-pulse rounded-lg bg-slate-100"></div>
+            <div class="space-y-2">
+              <div class="h-11 animate-pulse rounded-lg border border-slate-200 bg-slate-50"></div>
+              <div class="h-11 animate-pulse rounded-lg border border-slate-200 bg-slate-50"></div>
+              <div class="h-11 animate-pulse rounded-lg border border-slate-200 bg-slate-50"></div>
+            </div>
+          </article>
+        </div>
+      </PuzzleStatsApp>
+      <Footer client:load />
+    </main>
+</AppPageLayout>

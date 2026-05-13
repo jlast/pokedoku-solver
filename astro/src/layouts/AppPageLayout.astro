@@ -42,13 +42,13 @@ const canonical = absoluteUrl(path);
       return "/pokemon/***";
     }
 
-    if (path.startsWith("/category/")) {
+    if (path.startsWith("/tools/category/")) {
       const parts = path.split("/").filter(Boolean);
 
-      if (parts.length === 2) return "/category/*";
-      if (parts.length === 3) return "/category/*/*";
+      if (parts.length === 2) return "/tools/category/*";
+      if (parts.length === 3) return "/tools/category/*/*";
 
-      return "/category/***";
+      return "/tools/category/***";
     }
 
     return path;

@@ -28,7 +28,7 @@ export function PairList({
     const rightSlug = slugify(rightLabel);
     if (!categorySlugSet.has(leftSlug) || !categorySlugSet.has(rightSlug)) return null;
     const [a, b] = [leftSlug, rightSlug].sort((x, y) => x.localeCompare(y));
-    return `/category/${a}/${b}/`;
+    return `/tools/category/${a}/${b}/`;
   }
 
   const maxCount = showDistributionBar ? Math.max(...items.map((item) => item.count), 0) : 0;

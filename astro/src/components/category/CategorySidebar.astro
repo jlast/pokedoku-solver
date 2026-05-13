@@ -61,7 +61,7 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
           activeEntries.map((activeEntry) => (
             <li class="mb-1 flex w-full min-w-0 items-stretch">
               <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)] ${activeEntries.length === 2 ? "rounded-e-none" : ""}`}>
-                <a href={`/category/${activeEntry.slug}/`} class="inline-flex w-full min-w-0 items-center gap-2 px-3 py-2 text-slate-800 no-underline">
+                <a href={`/tools/category/${activeEntry.slug}/`} class="inline-flex w-full min-w-0 items-center gap-2 px-3 py-2 text-slate-800 no-underline">
                   <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ring-sky-300 bg-sky-100">
                     <CategoryIconBadge parsed={parseCategoryId(activeEntry.key)} />
                   </span>
@@ -107,7 +107,7 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
                 <div
                   class={`mr-[1px] min-w-0 flex-1 rounded-xl border transition-all duration-150 ${!isActive && activeSlugs.length === 1 ? "rounded-e-none" : ""} ${isActive ? "border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)]" : "border-slate-200 bg-white hover:-translate-y-px hover:border-slate-300 hover:shadow-sm"}`}
                 >
-                  <a href={`/category/${entry.slug}/`} class="inline-flex w-full min-w-0 items-center gap-2 px-3 py-2 text-slate-800 no-underline">
+                  <a href={`/tools/category/${entry.slug}/`} class="inline-flex w-full min-w-0 items-center gap-2 px-3 py-2 text-slate-800 no-underline">
                     <span class={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ${isActive ? "ring-sky-300 bg-sky-100" : "ring-slate-200 bg-slate-50"}`}>
                       <CategoryIconBadge parsed={parsed} />
                     </span>
@@ -115,7 +115,7 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
                   </a>
                 </div>
                 {!isActive && activeSlugs.length === 1 ? (
-                  <a href={`/category/${activeSlugs[0]}/${entry.slug}/`}
+                  <a href={`/tools/category/${activeSlugs[0]}/${entry.slug}/`}
                     class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-slate-200 bg-white text-slate-700 hover:-translate-y-px hover:border-slate-300 hover:shadow-sm"
                     aria-label={`Add ${entry.label}`}
                   >
@@ -149,7 +149,7 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
             <li class="mb-1 flex w-full min-w-0 items-stretch">
               <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)] ${activeEntries.length === 2 ? "rounded-e-none" : ""}`}>
                 <a
-                  href={`/category/${activeEntry.slug}/`}
+                  href={`/tools/category/${activeEntry.slug}/`}
                   data-mobile-category-item
                   data-search-label={activeEntry.label.toLowerCase()}
                   data-slug={activeEntry.slug}
@@ -192,7 +192,7 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
                 <li data-mobile-category-item-wrap data-search-label={entry.label.toLowerCase()} class="mb-1 flex w-full min-w-0 items-stretch">
                   <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border transition-all duration-150 ${!isActive && activeSlugs.length === 1 ? "rounded-e-none" : ""} ${isActive ? "border-sky-300 bg-sky-50/80" : "border-slate-200 bg-white"}`}>
                     <a
-                      href={`/category/${entry.slug}/`}
+                      href={`/tools/category/${entry.slug}/`}
                       data-mobile-category-item
                       data-slug={entry.slug}
                       data-search-label={entry.label.toLowerCase()}
@@ -238,11 +238,11 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
   }
 
   const goSingle = (slug: string) => {
-    window.location.href = `/category/${slug}/`;
+    window.location.href = `/tools/category/${slug}/`;
   };
 
   const goPair = (left: string, right: string) => {
-    window.location.href = `/category/${left}/${right}/`;
+    window.location.href = `/tools/category/${left}/${right}/`;
   };
 
   const setDesktopGroupExpanded = (group: Element, expanded: boolean) => {

@@ -23,7 +23,7 @@ export function CombinationRows({ rows }: { rows: CombinationRow[] }) {
     const rightSlug = slugify(rightLabel);
     if (!categorySlugSet.has(leftSlug) || !categorySlugSet.has(rightSlug)) return null;
     const [a, b] = [leftSlug, rightSlug].sort((x, y) => x.localeCompare(y));
-    return `/category/${a}/${b}/`;
+    return `/tools/category/${a}/${b}/`;
   }
 
   return (

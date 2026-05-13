@@ -27,7 +27,7 @@ export function CategoryList({
 
   function getCategoryHref(label: string): string | null {
     const slug = slugify(label);
-    return categorySlugSet.has(slug) ? `/category/${slug}/` : null;
+    return categorySlugSet.has(slug) ? `/tools/category/${slug}/` : null;
   }
 
   const maxCount = showDistributionBar ? Math.max(...items.map((item) => item.count), 0) : 0;

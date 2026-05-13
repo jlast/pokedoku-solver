@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "../../../../lib/browser/analytics";
 
 interface HeaderProps {
@@ -17,17 +17,45 @@ interface NavButton {
   icon: string;
 }
 
+interface ToolLink {
+  label: string;
+  url: string;
+  iconType: "fill" | "stroke";
+  icon: string;
+}
+
 const NAV_BUTTONS: NavButton[] = [
   { page: "home", label: "Home", url: "", icon: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" },
   { page: "today", label: "Today's Answers", url: "pokedoku-answers-today/", icon: "M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z" },
   { page: "pokemon-list", label: "All Pokemon", url: "pokemon-list/", icon: "M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z" },
-  { page: "category", label: "Categories", url: "category/", icon: "M21.41 11.58 12.42 2.59A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .53.21 1.04.59 1.41l8.99 8.99a2 2 0 0 0 2.83 0l6.99-6.99a2 2 0 0 0 0-2.83zM6.5 8A1.5 1.5 0 1 1 8 6.5 1.5 1.5 0 0 1 6.5 8z" },
-  { page: "puzzle-stats", label: "Pokedoku Insights", url: "puzzle-stats/", icon: "M3 17h3V9H3v8zm5 0h3V5H8v12zm5 0h3v-4h-3v4zm5 2H2v2h16v-2z" },
+  { page: "tools", label: "Tools", url: "tools/", icon: "M5 4.5a1.5 1.5 0 1 0 0 .01V4.5Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Zm0 7a1.5 1.5 0 1 0 0 .01v-.01ZM12 4.5a1.5 1.5 0 1 0 0 .01V4.5Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Zm0 7a1.5 1.5 0 1 0 0 .01v-.01ZM19 4.5a1.5 1.5 0 1 0 0 .01V4.5Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Z" },
   { page: "tips", label: "Tips & Tricks", url: "tips/", icon: "M9 21h6v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2 11.7-.5.3V16h-3v-2h-1v2H10v-1.99l-.5-.3C7.99 12.79 7 11.01 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.01-.99 3.79-2.5 4.7z" },
+];
+
+const TOOL_LINKS: ToolLink[] = [
+  {
+    label: "Category Explorer",
+    url: "tools/category/",
+    iconType: "fill",
+    icon: "M21.41 11.58 12.42 2.59A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .53.21 1.04.59 1.41l8.99 8.99a2 2 0 0 0 2.83 0l6.99-6.99a2 2 0 0 0 0-2.83zM6.5 8A1.5 1.5 0 1 1 8 6.5 1.5 1.5 0 0 1 6.5 8z",
+  },
+  {
+    label: "Shiny Odds Calculator",
+    url: "tools/shiny-odds-calculator/",
+    iconType: "fill",
+    icon: "m12 1.8 2.4 6.2L22.2 10l-7.8 2L12 18.2 9.6 12 1.8 10l7.8-2L12 1.8z",
+  },
+  {
+    label: "Pokedoku Insights",
+    url: "tools/pokedoku-insights/",
+    iconType: "fill",
+    icon: "M3 18h18v2H3v-2Zm2-1V9h3v8H5Zm5 0V6h3v11h-3Zm5 0v-5h3v5h-3Z",
+  },
 ];
 
 export function Header({ title, subtitle, introText, showDate, alwaysShowSubheader, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const toolsMenuRef = useRef<HTMLDetailsElement | null>(null);
 
   const desktopNavButtonClass = (isActive: boolean) =>
     `inline-flex min-h-10 items-center gap-1.5 rounded-[10px] border px-2.5 text-[0.8rem] whitespace-nowrap transition-colors ${
@@ -72,11 +100,28 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
     };
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent) => {
+      const toolsMenu = toolsMenuRef.current;
+      if (!toolsMenu || !toolsMenu.open) return;
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (!toolsMenu.contains(target)) {
+        toolsMenu.open = false;
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+    };
+  }, []);
+
   return (
     <>
       <header className="mb-6 text-center">
         <div className="mx-auto w-full max-w-6xl px-4">
-        <div className="flex justify-center items-center gap-3 mt-4 max-[1100px]:flex max-[1100px]:items-center max-[1100px]:justify-between">
+        <div className="flex justify-center items-center gap-3 max-[1100px]:flex max-[1100px]:items-center max-[1100px]:justify-between">
           <div className="flex min-w-0 items-center justify-self-start gap-2.5">
             <a
               href={`${import.meta.env.BASE_URL}`}
@@ -100,6 +145,48 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
           >
             {NAV_BUTTONS.map((btn) => {
               const isActive = btn.page === currentPage;
+
+              if (btn.page === "tools") {
+                return (
+                  <details key={btn.label} ref={toolsMenuRef} className="group relative">
+                    <summary className={`${desktopNavButtonClass(isActive)} list-none`}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d={btn.icon} />
+                      </svg>
+                      {btn.label}
+                      <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="transition-transform group-open:rotate-180">
+                        <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </summary>
+                    <div className="absolute left-0 z-20 mt-2 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
+                      <a
+                        href={`${import.meta.env.BASE_URL}${btn.url}`}
+                        onClick={() => trackEvent("click_navigate", { url: btn.url, from: currentPage })}
+                        className="block border-b border-slate-100 px-3 py-2.5 text-sm font-semibold text-slate-800 no-underline hover:bg-slate-50"
+                      >
+                        All tools
+                      </a>
+                      {TOOL_LINKS.map((tool) => (
+                        <a
+                          key={tool.url}
+                          href={`${import.meta.env.BASE_URL}${tool.url}`}
+                          onClick={() => trackEvent("click_navigate", { url: tool.url, from: currentPage })}
+                          className="flex items-center gap-2 px-3 py-2.5 text-sm text-slate-700 no-underline hover:bg-slate-50"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={`shrink-0 h-[14px] w-[14px]`}>
+                            {tool.iconType === "fill" ? (
+                              <path d={tool.icon} fill="currentColor" />
+                            ) : (
+                              <path d={tool.icon} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            )}
+                          </svg>
+                          {tool.label}
+                        </a>
+                      ))}
+                    </div>
+                  </details>
+                );
+              }
 
               return (
                   <a
@@ -203,6 +290,7 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
               <div id="mobile-nav" className="block px-2 pt-2.5 pb-3">
                 <nav className="flex flex-col gap-1" aria-label="Mobile primary">
                   {NAV_BUTTONS.map((btn) => {
+                    if (btn.page === "tools") return null;
                     const isActive = btn.page === currentPage;
 
                     return (
@@ -223,6 +311,42 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
                       </a>
                     );
                   })}
+
+                  <details className="mt-1 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1">
+                    <summary className="cursor-pointer list-none px-2 py-2 text-sm font-semibold text-slate-800 [&::-webkit-details-marker]:hidden">Tools</summary>
+                    <div className="pb-1">
+                      <a
+                        href={`${import.meta.env.BASE_URL}tools/`}
+                        onClick={() => {
+                          trackEvent("click_navigate", { url: "tools/", from: currentPage });
+                          closeMobileMenu("navigate");
+                        }}
+                        className="block rounded-md px-2 py-2 text-sm text-slate-700 no-underline hover:bg-white"
+                      >
+                        All tools
+                      </a>
+                      {TOOL_LINKS.map((tool) => (
+                        <a
+                          key={`mobile-${tool.url}`}
+                          href={`${import.meta.env.BASE_URL}${tool.url}`}
+                          onClick={() => {
+                            trackEvent("click_navigate", { url: tool.url, from: currentPage });
+                            closeMobileMenu("navigate");
+                          }}
+                          className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-slate-700 no-underline hover:bg-white"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={`shrink-0 ${tool.label === "Shiny Odds Calculator" ? "h-[18px] w-[18px]" : "h-[14px] w-[14px]"}`}>
+                            {tool.iconType === "fill" ? (
+                              <path d={tool.icon} fill="currentColor" />
+                            ) : (
+                              <path d={tool.icon} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            )}
+                          </svg>
+                          {tool.label}
+                        </a>
+                      ))}
+                    </div>
+                  </details>
 
                   <a
                     href="https://buymeacoffee.com/jeroenvande"
@@ -248,7 +372,7 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
         )}
 
         {subtitle && <p className={ (alwaysShowSubheader ? "" : "max-[600px]:hidden") + " mx-auto mb-3 max-w-[700px] text-center text-[1.12rem] leading-[1.65] text-[#6a6477]" }>{subtitle}</p>}
-        {introText && <p class="mt-1 text-[0.95rem] leading-snug text-slate-600">{introText}</p>}
+        {introText && <p className="mt-1 text-[0.95rem] leading-snug text-slate-600">{introText}</p>}
         </div>
         <div className="relative left-1/2 mt-4 w-screen -translate-x-1/2 border-t border-slate-200" aria-hidden="true" />
       </header>

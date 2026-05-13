@@ -1,0 +1,984 @@
+---
+import AppPageLayout from "../../../layouts/AppPageLayout.astro";
+import { Header } from "../../../app/components/Header";
+import { Footer } from "../../../app/components/Footer";
+import Collapsible from "../../../components/Collapsible.astro";
+import PokeballIcon from "../../../components/PokeballIcon.astro";
+import SetupRow from "../../../components/SetupRow.astro";
+
+const PRESTIGE_LEVELS = [
+  {
+    id: "pokeball",
+    label: "Poké Ball",
+    oddsLabel: "1 / 100",
+    chance: 0.01,
+    tone: "pokeball",
+    description: "Base shiny chance per eligible square.",
+  },
+  {
+    id: "greatball",
+    label: "Great Ball",
+    oddsLabel: "1 / 80",
+    chance: 0.0125,
+    tone: "greatball",
+    description: "1.25x shiny odds multiplier.",
+  },
+  {
+    id: "ultraball",
+    label: "Ultra Ball",
+    oddsLabel: "1 / 66.7",
+    chance: 0.015,
+    tone: "ultraball",
+    description: "1.5x shiny odds multiplier.",
+  },
+  {
+    id: "masterball",
+    label: "Master Ball",
+    oddsLabel: "1 / 50",
+    chance: 0.02,
+    tone: "masterball",
+    description: "2x shiny odds multiplier.",
+  },
+  {
+    id: "premierball",
+    label: "Premier Ball",
+    oddsLabel: "1 / 44.4",
+    chance: 0.0225,
+    tone: "premierball",
+    description: "2.25x shiny odds multiplier.",
+  },
+  {
+    id: "beastball",
+    label: "Beast Ball",
+    oddsLabel: "1 / 40",
+    chance: 0.025,
+    tone: "beastball",
+    description: "2.5x shiny odds multiplier.",
+  },
+  {
+    id: "cherishball",
+    label: "Cherish Ball",
+    oddsLabel: "1 / 33.3",
+    chance: 0.03,
+    tone: "cherishball",
+    description: "3x shiny odds multiplier.",
+  },
+];
+
+const faqStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What does this calculator show?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "It shows your odds of getting a chosen number of shiny Pokémon across one or more Pokedoku grids.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Does it calculate exact or minimum shinies?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "By default, it calculates at least X shinies. In Advanced options, you can switch to exactly X shinies.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What is the default setup?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "The default is 2 shinies across 1 grid of 9 squares at Poké Ball prestige, with a 1 in 100 shiny chance per eligible square.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Why are the odds so low?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Each square has an independent shiny roll, so even 9 squares at 1 in 100 only gives a small chance of multiple shinies.",
+      },
+    },
+  ],
+};
+---
+
+<AppPageLayout
+  title="Shiny Odds Calculator for Pokedoku"
+  description="Calculate your chance of finding shiny Pokémon across Pokedoku grids by shiny target, number of grids, and prestige level."
+  path="/tools/shiny-odds-calculator/"
+>
+  <div class="app">
+    <Header
+      title="Shiny Odds Calculator"
+      subtitle="Calculate your chance of finding shiny Pokémon across Pokedoku grids."
+      currentPage="tools"
+      client:load
+    />
+
+    <main
+      class="mx-auto w-full max-w-4xl px-3 sm:px-4 flex flex-col gap-4 sm:gap-5"
+    >
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(faqStructuredData)}
+      />
+
+      <section
+        class="rounded-[18px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+        aria-live="polite"
+      >
+        <div class="flex items-start justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <p
+              class="m-0 mb-2 text-[0.72rem] font-extrabold uppercase tracking-[0.11em] text-indigo-600"
+            >
+              Live odds
+            </p>
+            <p class="m-0 text-sm font-semibold text-slate-800">
+              <a
+                href="#shiny-hunt-setup"
+                class="inline-flex items-center gap-1.5 text-slate-800 decoration-slate-300 underline-offset-4 hover:decoration-slate-500"
+              >
+                <span data-result-title>Chance of 2 or more shinies</span>
+                <svg class="h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="m4 20 1.2-4.2L15.8 5.2a1.5 1.5 0 0 1 2.1 0l1 1a1.5 1.5 0 0 1 0 2.1L8.2 18.8 4 20Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+                  <path d="m13.8 7.2 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                </svg>
+              </a>
+            </p>
+            <div class="mt-1.5 flex flex-col items-start gap-1.5">
+              <p
+                class="m-0 bg-gradient-to-b from-[#ef4444] via-[#dc2626] to-[#991b1b] bg-clip-text text-[clamp(3.4rem,10vw,5.3rem)] font-black leading-none tracking-[-0.04em] text-transparent"
+                data-result-main
+              >
+                2.66%
+              </p>
+              <p
+                class="m-0 text-sm font-semibold text-slate-700"
+                data-result-odds
+              >
+                about 1 in 38
+              </p>
+              <p
+                class="m-0 inline-flex rounded-full border border-amber-200 bg-amber-100/70 px-3 py-1 text-xs font-semibold text-amber-800"
+                data-result-judgement
+              >
+                Decent odds
+              </p>
+            </div>
+            <p
+              class="mt-2 max-w-[38rem] text-xs leading-relaxed text-slate-500"
+              data-result-subtitle
+            >
+              Across 1 grid with 9 squares at Poké Ball prestige.
+            </p>
+          </div>
+          <div class="h-24 w-24 shrink-0 sm:h-40 sm:w-40" data-result-badge aria-hidden="true">
+            <PokeballIcon tone="pokeball" class="h-full w-full" />
+          </div>
+        </div>
+
+        <dl
+          class="mt-4 grid grid-cols-2 gap-2.5 lg:grid-cols-4"
+          aria-label="Live odds details"
+        >
+          <div
+            class="m-0 rounded-xl border border-indigo-100 bg-white/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+          >
+            <dt
+              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-slate-600"
+            >
+              Expected shinies
+            </dt>
+            <dd
+              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-slate-900"
+              data-result-expected
+            >
+              0.09
+            </dd>
+          </div>
+          <div
+            class="m-0 rounded-xl border border-indigo-100 bg-white/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+          >
+            <dt
+              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-slate-600"
+            >
+              Exactly target
+            </dt>
+            <dd
+              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-slate-900"
+              data-result-exact
+            >
+              0.31%
+            </dd>
+          </div>
+          <div
+            class="m-0 rounded-xl border border-indigo-100 bg-white/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+          >
+            <dt
+              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-slate-600"
+            >
+              At least 1
+            </dt>
+            <dd
+              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-slate-900"
+              data-result-at-least-one
+            >
+              8.65%
+            </dd>
+          </div>
+          <div
+            class="m-0 rounded-xl border border-indigo-100 bg-white/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+          >
+            <dt
+              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-slate-600"
+            >
+              Zero shinies
+            </dt>
+            <dd
+              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-slate-900"
+              data-result-zero
+            >
+              91.35%
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section
+        id="shiny-hunt-setup"
+        class="scroll-mt-20 rounded-[18px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+        aria-labelledby="calculator-title"
+      >
+        <div class="mb-4 flex items-center gap-3">
+          <div
+            class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700 shadow-[inset_0_0_0_1px_rgba(129,140,248,0.25)]"
+            aria-hidden="true"
+          >
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect
+                x="4"
+                y="3"
+                width="16"
+                height="18"
+                rx="3"
+                stroke="currentColor"
+                stroke-width="1.5"></rect>
+              <rect
+                x="7"
+                y="6"
+                width="10"
+                height="3"
+                rx="1"
+                fill="currentColor"
+                opacity="0.25"></rect>
+              <path
+                d="M8 12h2M14 12h2M8 16h2M14 16h2M11.5 12h1M11.5 16h1"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <div>
+            <h2
+              id="calculator-title"
+              class="m-0 text-xl font-bold text-slate-900"
+            >
+              Shiny Hunt Setup
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid gap-2.5">
+          <SetupRow forId="shinies-wanted">
+            <span
+              slot="icon"
+              class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-700 shadow-[inset_0_0_0_1px_rgba(148,163,184,0.2)]"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="m12 4 1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4z"
+                  fill="currentColor"></path>
+              </svg>
+            </span>
+            <span slot="content" class="min-w-0 flex-1">
+              <span class="block font-semibold text-slate-900"
+                >Shinies wanted</span
+              >
+              <span class="block text-sm text-slate-500"
+                >How many shiny Pokémon?</span
+              >
+            </span>
+            <span
+              slot="control"
+              class="col-span-full grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] overflow-hidden rounded-xl border border-slate-300 bg-white sm:col-auto sm:w-48"
+              data-stepper="shinies-wanted"
+            >
+              <button
+                type="button"
+                class="min-h-11 text-xl font-extrabold text-slate-900"
+                data-step="-1"
+                aria-label="Decrease shinies wanted">−</button
+              >
+              <input
+                id="shinies-wanted"
+                class="min-h-11 border-x border-slate-200 bg-transparent text-center font-extrabold text-slate-900 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                data-calculator-input="shinies"
+                type="number"
+                min="0"
+                step="1"
+                value="2"
+                inputmode="numeric"
+              />
+              <button
+                type="button"
+                class="min-h-11 text-xl font-extrabold text-slate-900"
+                data-step="1"
+                aria-label="Increase shinies wanted">+</button
+              >
+            </span>
+          </SetupRow>
+
+          <SetupRow forId="prestige-level">
+            <span
+              slot="icon"
+              class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-500 shadow-[inset_0_0_0_1px_rgba(148,163,184,0.2)]"
+              data-prestige-badge
+              aria-hidden="true"
+            >
+              <PokeballIcon tone="pokeball" class="h-7 w-7" />
+            </span>
+            <span slot="content" class="min-w-0 flex-1">
+              <span class="block font-semibold text-slate-900"
+                >Prestige level</span
+              >
+              <span class="block text-sm text-slate-500"
+                >Shiny odds per eligible square</span
+              >
+            </span>
+            <select
+              slot="control"
+              id="prestige-level"
+              data-calculator-input="prestige"
+              class="col-span-full min-h-[2.9rem] w-full rounded-xl border border-slate-300 bg-white px-3.5 font-extrabold text-slate-900 sm:col-auto sm:w-56"
+            >
+              {
+                PRESTIGE_LEVELS.map((level) => (
+                  <option
+                    value={level.id}
+                    data-chance={level.chance ?? ""}
+                    selected={level.id === "pokeball"}
+                  >
+                    {level.label} ({level.oddsLabel})
+                  </option>
+                ))
+              }
+            </select>
+          </SetupRow>
+
+          <Collapsible
+            title="Advanced options"
+            detailsClass="rounded-[14px] border border-slate-200 bg-slate-50/70"
+            summaryClass="px-3 py-2.5 text-sm"
+            contentClass="grid gap-2.5 px-2 pb-2"
+          >
+            <SetupRow forId="squares-per-grid" rowClass="bg-white">
+              <span
+                slot="icon"
+                class="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sky-700 shadow-[inset_0_0_0_1px_rgba(148,163,184,0.2)]"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect
+                    x="5"
+                    y="5"
+                    width="14"
+                    height="14"
+                    rx="2"
+                    stroke="currentColor"
+                    stroke-width="1.5"></rect>
+                  <path
+                    d="M5 10h14M5 14h14M10 5v14M14 5v14"
+                    stroke="currentColor"
+                    stroke-width="1.5"></path>
+                </svg>
+              </span>
+              <span slot="content" class="min-w-0 flex-1">
+                <span class="block font-semibold text-slate-900"
+                  >Squares per grid</span
+                >
+                <span class="block text-sm text-slate-500"
+                  >How many squares in each grid?</span
+                >
+              </span>
+              <span
+                slot="control"
+                class="col-span-full grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] overflow-hidden rounded-xl border border-slate-300 bg-white sm:col-auto sm:w-48"
+                data-stepper="squares-per-grid"
+              >
+                <button
+                  type="button"
+                  class="min-h-11 text-xl font-extrabold text-slate-900"
+                  data-step="-1"
+                  aria-label="Decrease squares per grid">−</button
+                >
+                <input
+                  id="squares-per-grid"
+                  class="min-h-11 border-x border-slate-200 bg-transparent text-center font-extrabold text-slate-900 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  data-calculator-input="squares"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value="9"
+                  inputmode="numeric"
+                />
+                <button
+                  type="button"
+                  class="min-h-11 text-xl font-extrabold text-slate-900"
+                  data-step="1"
+                  aria-label="Increase squares per grid">+</button
+                >
+              </span>
+            </SetupRow>
+
+            <SetupRow forId="grid-count" rowClass="bg-white">
+              <span
+                slot="icon"
+                class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 shadow-[inset_0_0_0_1px_rgba(148,163,184,0.2)]"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect
+                    x="5"
+                    y="6"
+                    width="8"
+                    height="8"
+                    rx="1.8"
+                    stroke="currentColor"
+                    stroke-width="1.6"></rect>
+                  <rect
+                    x="11"
+                    y="10"
+                    width="8"
+                    height="8"
+                    rx="1.8"
+                    stroke="currentColor"
+                    stroke-width="1.6"></rect>
+                </svg>
+              </span>
+              <span slot="content" class="min-w-0 flex-1">
+                <span class="block font-semibold text-slate-900"
+                  >Number of grids</span
+                >
+                <span class="block text-sm text-slate-500"
+                  >How many grids are you completing?</span
+                >
+              </span>
+              <span
+                slot="control"
+                class="col-span-full grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] overflow-hidden rounded-xl border border-slate-300 bg-white sm:col-auto sm:w-48"
+                data-stepper="grid-count"
+              >
+                <button
+                  type="button"
+                  class="min-h-11 text-xl font-extrabold text-slate-900"
+                  data-step="-1"
+                  aria-label="Decrease number of grids">−</button
+                >
+                <input
+                  id="grid-count"
+                  class="min-h-11 border-x border-slate-200 bg-transparent text-center font-extrabold text-slate-900 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  data-calculator-input="grids"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value="1"
+                  inputmode="numeric"
+                />
+                <button
+                  type="button"
+                  class="min-h-11 text-xl font-extrabold text-slate-900"
+                  data-step="1"
+                  aria-label="Increase number of grids">+</button
+                >
+              </span>
+            </SetupRow>
+
+            <fieldset
+              class="rounded-xl border border-slate-200 bg-slate-50 p-2"
+            >
+              <legend class="sr-only">Result type</legend>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="relative">
+                  <input
+                    class="peer sr-only"
+                    type="radio"
+                    name="result-mode"
+                    value="at-least"
+                    checked
+                    data-calculator-input="mode"
+                  />
+                  <span
+                    class="flex min-h-10 items-center justify-center rounded-lg bg-white font-extrabold text-slate-600 peer-checked:bg-indigo-50 peer-checked:text-indigo-600"
+                    >At least X</span
+                  >
+                </label>
+                <label class="relative">
+                  <input
+                    class="peer sr-only"
+                    type="radio"
+                    name="result-mode"
+                    value="exactly"
+                    data-calculator-input="mode"
+                  />
+                  <span
+                    class="flex min-h-10 items-center justify-center rounded-lg bg-white font-extrabold text-slate-600 peer-checked:bg-indigo-50 peer-checked:text-indigo-600"
+                    >Exactly X</span
+                  >
+                </label>
+              </div>
+            </fieldset>
+          </Collapsible>
+        </div>
+      </section>
+
+      <aside
+        class="flex gap-3 rounded-[14px] border border-sky-100 bg-sky-50 p-4 text-slate-700"
+      >
+        <span
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-500 font-bold text-white"
+          >i</span
+        >
+        <p class="m-0 text-sm leading-6">
+          Shiny odds are calculated per eligible square. For “at least X
+          shinies”, the calculator adds together all outcomes from X up to the
+          total number of squares.
+        </p>
+      </aside>
+
+      <section
+        class="rounded-[18px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+        aria-labelledby="prestige-title"
+      >
+        <div class="mb-3 flex items-center gap-3">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-red-500 shadow-[inset_0_0_0_1px_rgba(129,140,248,0.25)]"
+            aria-hidden="true"
+          >
+            <PokeballIcon tone="pokeball" class="h-7 w-7" />
+          </div>
+          <div>
+            <h2
+              id="prestige-title"
+              class="m-0 text-xl font-bold text-slate-900"
+            >
+              Prestige levels
+            </h2>
+            <p class="m-0 text-sm text-slate-500">
+              Each prestige level has a different base shiny rate.
+            </p>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-xl border border-slate-200">
+          {
+            PRESTIGE_LEVELS.map((level) => (
+              <button
+                type="button"
+                class:list={[
+                  "flex w-full items-center gap-3 border-0 border-b border-slate-200 bg-white px-4 py-3.5 last:border-b-0",
+                  level.id === "pokeball"
+                    ? "shadow-[inset_3px_0_0_rgb(220,38,38)]"
+                    : "",
+                ]}
+                data-prestige-option={level.id}
+                data-tone={level.tone}
+                disabled={level.chance === null}
+              >
+                <span
+                  class:list={[
+                    "inline-flex h-7 w-7 items-center justify-center",
+                    level.tone === "pokeball"
+                      ? "text-red-500"
+                      : level.tone === "greatball"
+                        ? "text-blue-600"
+                        : level.tone === "ultraball"
+                          ? "text-yellow-400"
+                          : level.tone === "masterball"
+                            ? "text-purple-400"
+                            : level.tone === "premierball"
+                              ? "text-slate-400"
+                              : level.tone === "beastball"
+                                ? "text-slate-700"
+                                : "text-red-700",
+                  ]}
+                  aria-hidden="true"
+                >
+                  <PokeballIcon tone={level.tone} class="h-7 w-7" />
+                </span>
+                <span class="flex-1 text-left">
+                  <span class="block font-semibold text-slate-900">
+                    {level.label}
+                  </span>
+                  <span class="block text-xs text-slate-500">
+                    {level.description}
+                  </span>
+                </span>
+                <span class="font-bold text-indigo-600">{level.oddsLabel}</span>
+              </button>
+            ))
+          }
+        </div>
+      </section>
+
+      <section
+        class="rounded-[18px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+        aria-labelledby="faq-title"
+      >
+        <div class="mb-3 flex items-center gap-3">
+          <div
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-xl"
+          >
+            ?
+          </div>
+          <h2 id="faq-title" class="m-0 text-xl font-bold text-slate-900">
+            FAQ
+          </h2>
+        </div>
+
+        <div
+          class="overflow-hidden rounded-xl border border-slate-200 bg-white"
+        >
+          <Collapsible
+            title="What does this calculator show?"
+            open
+            detailsClass="border-b border-slate-200 last:border-b-0"
+            contentClass="px-4 pb-4"
+          >
+            <p class="m-0 text-sm leading-6 text-slate-600">
+              It shows your odds of getting a chosen number of shiny Pokemon
+              across one or more Pokedoku grids.
+            </p>
+          </Collapsible>
+          <Collapsible
+            title="Does it calculate exact or minimum shinies?"
+            detailsClass="border-b border-slate-200 last:border-b-0"
+            contentClass="px-4 pb-4"
+          >
+            <p class="m-0 text-sm leading-6 text-slate-600">
+              By default, it calculates at least X shinies. In Advanced options,
+              you can switch to exactly X shinies.
+            </p>
+          </Collapsible>
+          <Collapsible
+            title="What is the default setup?"
+            detailsClass="border-b border-slate-200 last:border-b-0"
+            contentClass="px-4 pb-4"
+          >
+            <p class="m-0 text-sm leading-6 text-slate-600">
+              The default is 2 shinies across 1 grid of 9 squares at Poke Ball
+              prestige, with a 1/100 shiny chance per square.
+            </p>
+          </Collapsible>
+          <Collapsible
+            title="Why are the odds so low?"
+            detailsClass="border-b border-slate-200 last:border-b-0"
+            contentClass="px-4 pb-4"
+          >
+            <p class="m-0 text-sm leading-6 text-slate-600">
+              Each square has an independent shiny roll, so even 9 squares at
+              1/100 only gives a small chance of multiple shinies.
+            </p>
+          </Collapsible>
+        </div>
+      </section>
+    </main>
+
+    <Footer client:load />
+  </div>
+
+  <script define:vars={{ PRESTIGE_LEVELS }}>
+    // @ts-nocheck
+    const PRESTIGE_CHANCES = Object.fromEntries(
+      PRESTIGE_LEVELS.map((level) => [
+        level.id,
+        {
+          label: level.label,
+          chance: level.chance,
+          tone: level.tone,
+        },
+      ]),
+    );
+
+    const PRESTIGE_LEFT_ACCENT = {
+      pokeball: "shadow-[inset_3px_0_0_rgb(220,38,38)]",
+      greatball: "shadow-[inset_3px_0_0_rgb(37,99,235)]",
+      ultraball: "shadow-[inset_3px_0_0_rgb(202,138,4)]",
+      masterball: "shadow-[inset_3px_0_0_rgb(147,51,234)]",
+      premierball: "shadow-[inset_3px_0_0_rgb(100,116,139)]",
+      beastball: "shadow-[inset_3px_0_0_rgb(15,23,42)]",
+      cherishball: "shadow-[inset_3px_0_0_rgb(185,28,28)]",
+    };
+
+    const PRESTIGE_BADGE_TEXT = {
+      pokeball: "text-red-500",
+      greatball: "text-blue-600",
+      ultraball: "text-yellow-400",
+      masterball: "text-purple-400",
+      premierball: "text-slate-400",
+      beastball: "text-slate-700",
+      cherishball: "text-red-700",
+    };
+
+    const inputs = {
+      shinies: document.querySelector('[data-calculator-input="shinies"]'),
+      squares: document.querySelector('[data-calculator-input="squares"]'),
+      grids: document.querySelector('[data-calculator-input="grids"]'),
+      prestige: document.querySelector('[data-calculator-input="prestige"]'),
+      modes: document.querySelectorAll('[data-calculator-input="mode"]'),
+    };
+
+    const results = {
+      title: document.querySelector("[data-result-title]"),
+      main: document.querySelector("[data-result-main]"),
+      odds: document.querySelector("[data-result-odds]"),
+      judgement: document.querySelector("[data-result-judgement]"),
+      subtitle: document.querySelector("[data-result-subtitle]"),
+      expected: document.querySelector("[data-result-expected]"),
+      exact: document.querySelector("[data-result-exact]"),
+      atLeastOne: document.querySelector("[data-result-at-least-one]"),
+      zero: document.querySelector("[data-result-zero]"),
+    };
+
+    const JUDGEMENT_STYLES = {
+      extremelyRare:
+        "border-rose-200 bg-rose-100/70 text-rose-800",
+      veryUnlikely:
+        "border-orange-200 bg-orange-100/70 text-orange-800",
+      decentOdds:
+        "border-amber-200 bg-amber-100/70 text-amber-800",
+      prettyAchievable:
+        "border-emerald-200 bg-emerald-100/70 text-emerald-800",
+    };
+
+    const getOddsJudgement = (chance) => {
+      if (chance >= 1) {
+        return {
+          label: "Pretty achievable",
+          style: JUDGEMENT_STYLES.prettyAchievable,
+        };
+      }
+
+      if (chance <= 0) {
+        return {
+          label: "Extremely rare",
+          style: JUDGEMENT_STYLES.extremelyRare,
+        };
+      }
+
+      const denominator = Math.round(1 / chance);
+
+      if (!Number.isFinite(denominator) || denominator <= 0) {
+        return {
+          label: "Extremely rare",
+          style: JUDGEMENT_STYLES.extremelyRare,
+        };
+      }
+
+      if (denominator <= 20) {
+        return {
+          label: "Pretty achievable",
+          style: JUDGEMENT_STYLES.prettyAchievable,
+        };
+      }
+
+      if (denominator <= 80) {
+        return {
+          label: "Decent odds",
+          style: JUDGEMENT_STYLES.decentOdds,
+        };
+      }
+
+      if (denominator <= 300) {
+        return {
+          label: "Very unlikely",
+          style: JUDGEMENT_STYLES.veryUnlikely,
+        };
+      }
+
+      return {
+        label: "Extremely rare",
+        style: JUDGEMENT_STYLES.extremelyRare,
+      };
+    };
+
+    const clampNumber = (value, fallback, min) => {
+      const parsed = Number.parseInt(value, 10);
+      if (!Number.isFinite(parsed)) return fallback;
+      return Math.max(min, parsed);
+    };
+
+    const factorialRatio = (n, k) => {
+      let result = 1;
+      for (let i = 1; i <= k; i += 1) {
+        result *= (n - (k - i)) / i;
+      }
+      return result;
+    };
+
+    const binomial = (n, k, p) => {
+      if (k < 0 || k > n) return 0;
+      return factorialRatio(n, k) * p ** k * (1 - p) ** (n - k);
+    };
+
+    const atLeast = (n, k, p) => {
+      if (k <= 0) return 1;
+      if (k > n) return 0;
+      let total = 0;
+      for (let i = k; i <= n; i += 1) {
+        total += binomial(n, i, p);
+      }
+      return total;
+    };
+
+    const formatPercent = (value) => {
+      const percent = value * 100;
+      if (percent >= 10) return `${percent.toFixed(1)}%`;
+      if (percent >= 1) return `${percent.toFixed(2)}%`;
+      return `${percent.toFixed(3)}%`;
+    };
+
+    const formatOneIn = (value) => {
+      if (value >= 1) return "guaranteed";
+      if (value <= 0) return "effectively impossible";
+      const denominator = Math.round(1 / value);
+      if (!Number.isFinite(denominator) || denominator <= 0)
+        return "effectively impossible";
+      if (denominator >= 1000000) return "less than 1 in 1,000,000";
+      return `about 1 in ${denominator.toLocaleString()}`;
+    };
+
+    const getMode = () => {
+      const selected = Array.from(inputs.modes).find((input) => input.checked);
+      return selected?.value ?? "at-least";
+    };
+
+    const trackEvent = (name, metadata) => {
+      if (window.sa_loaded) {
+        window.sa_event(name, metadata);
+      }
+    };
+
+    const syncPrestigeButtons = (selectedId) => {
+      document.querySelectorAll("[data-prestige-option]").forEach((button) => {
+        Object.values(PRESTIGE_LEFT_ACCENT).forEach((className) =>
+          button.classList.remove(className),
+        );
+        if (button.getAttribute("data-prestige-option") === selectedId) {
+          const tone = button.getAttribute("data-tone") ?? "pokeball";
+          button.classList.add(
+            PRESTIGE_LEFT_ACCENT[tone] ?? PRESTIGE_LEFT_ACCENT.pokeball,
+          );
+        }
+      });
+
+      const tone = PRESTIGE_CHANCES[selectedId]?.tone ?? "pokeball";
+      document
+        .querySelectorAll("[data-prestige-badge], [data-result-badge]")
+        .forEach((badge) => {
+          Object.values(PRESTIGE_BADGE_TEXT).forEach((className) =>
+            badge.classList.remove(className),
+          );
+          badge.classList.add(
+            PRESTIGE_BADGE_TEXT[tone] ?? PRESTIGE_BADGE_TEXT.pokeball,
+          );
+          badge.querySelectorAll("[data-ball-bottom]").forEach((part) => {
+            part.setAttribute("fill", tone === "cherishball" ? "currentColor" : "white");
+          });
+        });
+    };
+
+    const calculate = () => {
+      const shinies = clampNumber(inputs.shinies.value, 2, 0);
+      const squares = clampNumber(inputs.squares.value, 9, 1);
+      const grids = clampNumber(inputs.grids.value, 1, 1);
+      const prestige =
+        PRESTIGE_CHANCES[inputs.prestige.value] ?? PRESTIGE_CHANCES.pokeball;
+      const mode = getMode();
+      const totalSquares = squares * grids;
+      const chance = prestige.chance ?? PRESTIGE_CHANCES.pokeball.chance;
+      const exactChance = binomial(totalSquares, shinies, chance);
+      const mainChance =
+        mode === "exactly"
+          ? exactChance
+          : atLeast(totalSquares, shinies, chance);
+      const label =
+        mode === "exactly" ? `exactly ${shinies}` : `${shinies} or more`;
+
+      inputs.shinies.value = String(shinies);
+      inputs.squares.value = String(squares);
+      inputs.grids.value = String(grids);
+
+      results.title.textContent = `Chance of ${label} shinies`;
+      results.main.textContent = formatPercent(mainChance);
+      results.odds.textContent = formatOneIn(mainChance);
+      const judgement = getOddsJudgement(mainChance);
+      results.judgement.textContent = judgement.label;
+      Object.values(JUDGEMENT_STYLES).forEach((style) => {
+        style.split(" ").forEach((className) => {
+          results.judgement.classList.remove(className);
+        });
+      });
+      judgement.style.split(" ").forEach((className) => {
+        results.judgement.classList.add(className);
+      });
+      results.subtitle.textContent = `Across ${grids} ${grids === 1 ? "grid" : "grids"} with ${totalSquares} squares at ${prestige.label} prestige.`;
+      results.expected.textContent = (totalSquares * chance).toFixed(2);
+      results.exact.textContent = formatPercent(exactChance);
+      results.atLeastOne.textContent = formatPercent(
+        atLeast(totalSquares, 1, chance),
+      );
+      results.zero.textContent = formatPercent(
+        binomial(totalSquares, 0, chance),
+      );
+      syncPrestigeButtons(inputs.prestige.value);
+    };
+
+    document.querySelectorAll("[data-stepper]").forEach((stepper) => {
+      const input = stepper.querySelector("input");
+      stepper.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const nextValue =
+            clampNumber(
+              input.value,
+              Number(input.value || input.min || 0),
+              Number(input.min || 0),
+            ) + Number(button.getAttribute("data-step"));
+          input.value = String(Math.max(Number(input.min || 0), nextValue));
+          calculate();
+        });
+      });
+    });
+
+    document.querySelectorAll("[data-calculator-input]").forEach((input) => {
+      input.addEventListener("input", calculate);
+      input.addEventListener("change", calculate);
+    });
+
+    document.querySelectorAll("[data-prestige-option]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const id = button.getAttribute("data-prestige-option");
+        if (!id || button.disabled) return;
+        inputs.prestige.value = id;
+        calculate();
+      });
+    });
+
+    calculate();
+    trackEvent("view_shiny_odds_calculator", {});
+  </script>
+</AppPageLayout>
