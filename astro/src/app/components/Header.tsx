@@ -29,7 +29,7 @@ const NAV_BUTTONS: NavButton[] = [
   { page: "home", label: "Home", url: "", icon: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" },
   { page: "today", label: "Today's Answers", url: "pokedoku-answers-today/", icon: "M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z" },
   { page: "pokemon-list", label: "All Pokemon", url: "pokemon-list/", iconType: "stroke", icon: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20ZM2 12h20M12 12a3 3 0 1 0 0 .01V12Z" },
-  { page: "tools", label: "Tools", url: "tools/", iconType: "stroke", icon: "M3 7h18v12H3V7Zm5 0V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" },
+  { page: "tools", label: "Tools", url: "tools/", icon: "M3 7h18v12H3V7Zm5 0V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" },
   { page: "tips", label: "Tips & Tricks", url: "tips/", icon: "M9 21h6v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2 11.7-.5.3V16h-3v-2h-1v2H10v-1.99l-.5-.3C7.99 12.79 7 11.01 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.01-.99 3.79-2.5 4.7z" },
 ];
 
@@ -59,7 +59,6 @@ const ALL_TOOLS_ICON =
 
 export function Header({ title, subtitle, introText, showDate, alwaysShowSubheader, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [pathname, setPathname] = useState("");
   const toolsMenuRef = useRef<HTMLDetailsElement | null>(null);
   const mobileToolsMenuRef = useRef<HTMLDetailsElement | null>(null);
 
@@ -74,6 +73,7 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
     return normalizePath(rawPath.startsWith("/") ? rawPath : `/${rawPath}`);
   };
 
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "";
   const normalizedPathname = pathname ? normalizePath(pathname) : "";
   const isToolsSectionPage = normalizedPathname.startsWith(resolvePath("tools/"));
   const isToolRouteActive = (toolUrl: string) => normalizedPathname.startsWith(resolvePath(toolUrl));
@@ -137,11 +137,6 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
     return () => {
       document.removeEventListener("mousedown", handlePointerDown);
     };
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setPathname(window.location.pathname);
   }, []);
 
   useEffect(() => {
@@ -268,7 +263,7 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
               <img
                 src="https://cdn.buymeacoffee.com/uploads/project_updates/2023/12/08f1cf468ace518fc8cc9e352a2e613f.png"
                 alt="Support me on Buy Me a Coffee"
-                className="h-6 w-auto max-w-none"
+                className="h-6 w-[96px] max-w-none"
               />
             </a>
 
