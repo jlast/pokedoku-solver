@@ -14,6 +14,7 @@ interface NavButton {
   page: string;
   label: string;
   url: string;
+  iconType?: "fill" | "stroke";
   icon: string;
 }
 
@@ -27,8 +28,8 @@ interface ToolLink {
 const NAV_BUTTONS: NavButton[] = [
   { page: "home", label: "Home", url: "", icon: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" },
   { page: "today", label: "Today's Answers", url: "pokedoku-answers-today/", icon: "M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z" },
-  { page: "pokemon-list", label: "All Pokemon", url: "pokemon-list/", icon: "M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z" },
-  { page: "tools", label: "Tools", url: "tools/", icon: "M5 4.5a1.5 1.5 0 1 0 0 .01V4.5Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Zm0 7a1.5 1.5 0 1 0 0 .01v-.01ZM12 4.5a1.5 1.5 0 1 0 0 .01V4.5Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Zm0 7a1.5 1.5 0 1 0 0 .01v-.01ZM19 4.5a1.5 1.5 0 1 0 0 .01V4.5Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Z" },
+  { page: "pokemon-list", label: "All Pokemon", url: "pokemon-list/", iconType: "stroke", icon: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20ZM2 12h20M12 12a3 3 0 1 0 0 .01V12Z" },
+  { page: "tools", label: "Tools", url: "tools/", iconType: "stroke", icon: "M3 7h18v12H3V7Zm5 0V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" },
   { page: "tips", label: "Tips & Tricks", url: "tips/", icon: "M9 21h6v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2 11.7-.5.3V16h-3v-2h-1v2H10v-1.99l-.5-.3C7.99 12.79 7 11.01 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.01-.99 3.79-2.5 4.7z" },
 ];
 
@@ -53,21 +54,42 @@ const TOOL_LINKS: ToolLink[] = [
   },
 ];
 
+const ALL_TOOLS_ICON =
+  "M5 4.5a1.5 1.5 0 1 0 0 .01V4.5Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Zm0 7a1.5 1.5 0 1 0 0 .01v-.01ZM12 4.5a1.5 1.5 0 1 0 0 .01V4.5Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Zm0 7a1.5 1.5 0 1 0 0 .01v-.01ZM19 4.5a1.5 1.5 0 1 0 0 .01V4.5Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Zm0 7a1.5 1.5 0 1 0 0 .01v-.01Z";
+
 export function Header({ title, subtitle, introText, showDate, alwaysShowSubheader, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [pathname, setPathname] = useState("");
   const toolsMenuRef = useRef<HTMLDetailsElement | null>(null);
+  const mobileToolsMenuRef = useRef<HTMLDetailsElement | null>(null);
+
+  const normalizePath = (path: string) => {
+    const cleanPath = path.replace(/\/+/g, "/");
+    return cleanPath.endsWith("/") ? cleanPath : `${cleanPath}/`;
+  };
+
+  const resolvePath = (url: string) => {
+    const basePath = import.meta.env.BASE_URL || "/";
+    const rawPath = `${basePath}${url}`;
+    return normalizePath(rawPath.startsWith("/") ? rawPath : `/${rawPath}`);
+  };
+
+  const normalizedPathname = pathname ? normalizePath(pathname) : "";
+  const isToolsSectionPage = normalizedPathname.startsWith(resolvePath("tools/"));
+  const isToolRouteActive = (toolUrl: string) => normalizedPathname.startsWith(resolvePath(toolUrl));
+  const hasSpecificToolActive = TOOL_LINKS.some((tool) => isToolRouteActive(tool.url));
 
   const desktopNavButtonClass = (isActive: boolean) =>
     `inline-flex min-h-10 items-center gap-1.5 rounded-[10px] border px-2.5 text-[0.8rem] whitespace-nowrap transition-colors ${
       isActive
-        ? "cursor-pointer border-slate-700 bg-slate-700 text-white"
+        ? "cursor-pointer border-transparent bg-transparent text-red-500"
         : "cursor-pointer border-transparent bg-transparent text-slate-700 hover:border-indigo-200 hover:bg-indigo-50"
     }`;
 
   const mobileNavButtonClass = (isActive: boolean) =>
     `inline-flex w-full items-center justify-start gap-2 rounded-lg border-none px-3 py-2.5 text-left text-sm transition-colors ${
       isActive
-        ? "cursor-pointer bg-slate-500 text-white"
+        ? "cursor-pointer text-red-500"
         : "cursor-pointer bg-transparent text-slate-700 hover:bg-slate-50"
     }`;
 
@@ -117,6 +139,18 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setPathname(window.location.pathname);
+  }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen || !isToolsSectionPage) return;
+    if (mobileToolsMenuRef.current) {
+      mobileToolsMenuRef.current.open = true;
+    }
+  }, [mobileMenuOpen, isToolsSectionPage]);
+
   return (
     <>
       <header className="mb-6 text-center">
@@ -149,7 +183,7 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
               if (btn.page === "tools") {
                 return (
                   <details key={btn.label} ref={toolsMenuRef} className="group relative">
-                    <summary className={`${desktopNavButtonClass(isActive)} list-none`}>
+                    <summary className={`${desktopNavButtonClass(false)} list-none group-open:text-red-500`}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d={btn.icon} />
                       </svg>
@@ -162,27 +196,40 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
                       <a
                         href={`${import.meta.env.BASE_URL}${btn.url}`}
                         onClick={() => trackEvent("click_navigate", { url: btn.url, from: currentPage })}
-                        className="block border-b border-slate-100 px-3 py-2.5 text-sm font-semibold text-slate-800 no-underline hover:bg-slate-50"
+                        className={`flex items-center gap-2 border-b border-slate-100 px-3 py-2.5 text-sm font-semibold no-underline hover:bg-slate-50 ${
+                          isToolsSectionPage && !hasSpecificToolActive ? "text-red-500" : "text-slate-800"
+                        }`}
+                        aria-current={isToolsSectionPage && !hasSpecificToolActive ? "page" : undefined}
                       >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
+                          <path d={ALL_TOOLS_ICON} fill="currentColor" />
+                        </svg>
                         All tools
                       </a>
-                      {TOOL_LINKS.map((tool) => (
-                        <a
-                          key={tool.url}
-                          href={`${import.meta.env.BASE_URL}${tool.url}`}
-                          onClick={() => trackEvent("click_navigate", { url: tool.url, from: currentPage })}
-                          className="flex items-center gap-2 px-3 py-2.5 text-sm text-slate-700 no-underline hover:bg-slate-50"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={`shrink-0 h-[14px] w-[14px]`}>
-                            {tool.iconType === "fill" ? (
-                              <path d={tool.icon} fill="currentColor" />
-                            ) : (
-                              <path d={tool.icon} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            )}
-                          </svg>
-                          {tool.label}
-                        </a>
-                      ))}
+                      {TOOL_LINKS.map((tool) => {
+                        const isActiveTool = isToolRouteActive(tool.url);
+
+                        return (
+                          <a
+                            key={tool.url}
+                            href={`${import.meta.env.BASE_URL}${tool.url}`}
+                            onClick={() => trackEvent("click_navigate", { url: tool.url, from: currentPage })}
+                            className={`flex items-center gap-2 px-3 py-2.5 text-sm no-underline hover:bg-slate-50 ${
+                              isActiveTool ? "text-red-500" : "text-slate-700"
+                            }`}
+                            aria-current={isActiveTool ? "page" : undefined}
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={`shrink-0 h-[14px] w-[14px]`}>
+                              {tool.iconType === "fill" ? (
+                                <path d={tool.icon} fill="currentColor" />
+                              ) : (
+                                <path d={tool.icon} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                              )}
+                            </svg>
+                            {tool.label}
+                          </a>
+                        );
+                      })}
                     </div>
                   </details>
                 );
@@ -196,8 +243,12 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
                     className={desktopNavButtonClass(isActive)}
                     aria-current={isActive ? "page" : undefined}
                   >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d={btn.icon} />
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    {btn.iconType === "stroke" ? (
+                      <path d={btn.icon} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    ) : (
+                      <path d={btn.icon} fill="currentColor" />
+                    )}
                   </svg>
                   {btn.label}
                   </a>
@@ -290,8 +341,76 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
               <div id="mobile-nav" className="block px-2 pt-2.5 pb-3">
                 <nav className="flex flex-col gap-1" aria-label="Mobile primary">
                   {NAV_BUTTONS.map((btn) => {
-                    if (btn.page === "tools") return null;
                     const isActive = btn.page === currentPage;
+
+                    if (btn.page === "tools") {
+                      return (
+                        <details ref={mobileToolsMenuRef} key={`mobile-${btn.label}`} className="group mt-1 overflow-hidden rounded-xl bg-white" open={mobileMenuOpen && isToolsSectionPage}>
+                          <summary className="flex list-none items-center justify-between [&::-webkit-details-marker]:hidden">
+                            <span className={`${mobileNavButtonClass(false)}`}>
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                {btn.iconType === "stroke" ? (
+                                  <path d={btn.icon} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                ) : (
+                                  <path d={btn.icon} fill="currentColor" />
+                                )}
+                              </svg>
+                              {btn.label}
+                            </span>
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="mr-3 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180">
+                              <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </summary>
+                          <div className="bg-red-50/80 px-2 py-2">
+                            <a
+                              href={`${import.meta.env.BASE_URL}tools/`}
+                              onClick={() => {
+                                trackEvent("click_navigate", { url: "tools/", from: currentPage });
+                                closeMobileMenu("navigate");
+                              }}
+                              className={`inline-flex w-full items-center justify-start gap-2 rounded-lg border-none px-3 py-2.5 text-left text-sm transition-colors ${
+                                isToolsSectionPage && !hasSpecificToolActive
+                                  ? "text-red-500"
+                                  : "text-slate-700 hover:bg-slate-100"
+                              }`}
+                              aria-current={isToolsSectionPage && !hasSpecificToolActive ? "page" : undefined}
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d={ALL_TOOLS_ICON} fill="currentColor" />
+                              </svg>
+                              All tools
+                            </a>
+                            {TOOL_LINKS.map((tool) => {
+                              const isActiveTool = isToolRouteActive(tool.url);
+
+                              return (
+                                <a
+                                  key={`mobile-${tool.url}`}
+                                  href={`${import.meta.env.BASE_URL}${tool.url}`}
+                                  onClick={() => {
+                                    trackEvent("click_navigate", { url: tool.url, from: currentPage });
+                                    closeMobileMenu("navigate");
+                                  }}
+                                  className={`mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm no-underline transition-colors ${
+                                    isActiveTool ? "text-red-500" : "text-slate-700 hover:bg-slate-100"
+                                  }`}
+                                  aria-current={isActiveTool ? "page" : undefined}
+                                >
+                                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={`shrink-0 h-[14px] w-[14px]`}>
+                                    {tool.iconType === "fill" ? (
+                                      <path d={tool.icon} fill="currentColor" />
+                                    ) : (
+                                      <path d={tool.icon} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    )}
+                                  </svg>
+                                  {tool.label}
+                                </a>
+                              );
+                            })}
+                          </div>
+                        </details>
+                      );
+                    }
 
                     return (
                       <a
@@ -304,49 +423,17 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
                         className={mobileNavButtonClass(isActive)}
                         aria-current={isActive ? "page" : undefined}
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                          <path d={btn.icon} />
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          {btn.iconType === "stroke" ? (
+                            <path d={btn.icon} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          ) : (
+                            <path d={btn.icon} fill="currentColor" />
+                          )}
                         </svg>
                         {btn.label}
                       </a>
                     );
                   })}
-
-                  <details className="mt-1 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1">
-                    <summary className="cursor-pointer list-none px-2 py-2 text-sm font-semibold text-slate-800 [&::-webkit-details-marker]:hidden">Tools</summary>
-                    <div className="pb-1">
-                      <a
-                        href={`${import.meta.env.BASE_URL}tools/`}
-                        onClick={() => {
-                          trackEvent("click_navigate", { url: "tools/", from: currentPage });
-                          closeMobileMenu("navigate");
-                        }}
-                        className="block rounded-md px-2 py-2 text-sm text-slate-700 no-underline hover:bg-white"
-                      >
-                        All tools
-                      </a>
-                      {TOOL_LINKS.map((tool) => (
-                        <a
-                          key={`mobile-${tool.url}`}
-                          href={`${import.meta.env.BASE_URL}${tool.url}`}
-                          onClick={() => {
-                            trackEvent("click_navigate", { url: tool.url, from: currentPage });
-                            closeMobileMenu("navigate");
-                          }}
-                          className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-slate-700 no-underline hover:bg-white"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={`shrink-0 ${tool.label === "Shiny Odds Calculator" ? "h-[18px] w-[18px]" : "h-[14px] w-[14px]"}`}>
-                            {tool.iconType === "fill" ? (
-                              <path d={tool.icon} fill="currentColor" />
-                            ) : (
-                              <path d={tool.icon} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            )}
-                          </svg>
-                          {tool.label}
-                        </a>
-                      ))}
-                    </div>
-                  </details>
 
                   <a
                     href="https://buymeacoffee.com/jeroenvande"
