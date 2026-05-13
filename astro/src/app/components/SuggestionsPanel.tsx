@@ -192,7 +192,7 @@ export function SuggestionsPanel({
             sortedPokemon?.map((p) => (
               <button
                 key={`${p.id}-${p.name}`}
-                className="pokemon-item"
+                className="flex cursor-pointer flex-row gap-0 rounded-lg border border-[var(--border)] bg-[var(--bg)] p-0 text-left transition-all hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
                 onClick={() => {
                   trackEvent("select_pokemon", {
                     name: p.name,
@@ -203,17 +203,17 @@ export function SuggestionsPanel({
                 }}
               >
                 {p.sprite ? (
-                  <img src={p.sprite} alt="" className="pokemon-sprite" />
+                  <img src={p.sprite} alt="" className="m-3 mr-1 h-[50px] w-[50px] shrink-0 object-contain" />
                 ) : (
-                  <div className="pokemon-sprite-placeholder" />
+                  <div className="m-3 mr-1 h-[50px] w-[50px] shrink-0 rounded-full bg-[var(--code-bg)]" />
                 )}
-                <div className="pokemon-item-top">
-                  <div className="pokemon-item-name-row">
-                    <span className="pokemon-id">#{p.id}</span>
-                    <span className="pokemon-name">{p.name}</span>
+                <div className="flex flex-1 flex-col">
+                  <div className="flex flex-1 items-center gap-2 px-2 pb-1 pt-2">
+                    <span className="shrink-0 text-[10px] font-semibold text-[#666]">#{p.id}</span>
+                    <span className="flex-1 text-[12px] font-medium text-[#2c3e50]">{p.name}</span>
                     {p.dexDifficulty && (
                       <span
-                        className="dex-difficulty-badge"
+                        className="ml-auto shrink-0 rounded-[10px] px-2 py-[2px] text-[0.7rem] font-semibold uppercase text-white"
                         style={{
                           backgroundColor:
                             DEX_DIFFICULTY_COLORS[p.dexDifficulty],
@@ -224,22 +224,22 @@ export function SuggestionsPanel({
                       </span>
                     )}
                   </div>
-                  <div className="pokemon-item-bottom">
-                     <div className="pokemon-types">
-                       {p.types.map((type, i) => (
+                  <div className="flex items-center gap-2 px-2 pb-2 text-[0.85rem] text-[#666]">
+                    <div className="flex shrink-0 flex-wrap gap-0.5">
+                        {p.types.map((type, i) => (
                          <CategoryBadgeLink
                            key={`${p.id}-${type}-${i}`}
                            parsed={parseCategoryId(`types:${type}`)}
                            href={null}
                          />
                        ))}
-                     </div>
+                    </div>
                   </div>
                 </div>
               </button>
             ))
           ) : (
-            <p className="no-pokemon">No Pokémon matches the constraints.</p>
+            <p className="p-5 text-center text-[#e74c3c]">No Pokémon matches the constraints.</p>
           )}
         </div>
       </div>
