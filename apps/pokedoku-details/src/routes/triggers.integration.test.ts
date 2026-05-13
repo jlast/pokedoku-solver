@@ -62,4 +62,17 @@ describe('triggers integration parsing', () => {
     ]);
     expect(lookup.filters.every((filter) => typeof filter.linkSlug === 'string')).toBe(true);
   });
+
+  it('preserves dual-type token order for runtime stats lookup', async () => {
+    const { __test__ } = await import('./triggers');
+
+    const lookup = await __test__.getMatchedLookup('[[Flying+Fire]], [[Fire+Flying]]');
+
+    expect(lookup.filters.map((filter) => filter.name)).toEqual([
+      'Flying + Fire',
+      'Fire + Flying',
+    ]);
+    expect(lookup.filters[0]?.runtimeTypePair).toEqual({ left: 'Flying', right: 'Fire' });
+    expect(lookup.filters[1]?.runtimeTypePair).toEqual({ left: 'Fire', right: 'Flying' });
+  });
 });

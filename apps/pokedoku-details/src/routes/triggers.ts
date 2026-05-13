@@ -32,6 +32,10 @@ import {
   storeCreatedCommentForSourceId,
 } from '../core/replyIdStore';
 import { getPokemonRuntimeStats } from '../core/pokemonRuntimeStats';
+import {
+  getCategoryRuntimeStats,
+  getDualTypeRuntimeStats,
+} from '../core/categoryRuntimeStats';
 
 export const triggers = new Hono();
 
@@ -189,6 +193,13 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
         count: matchedPokemonForFilter.length,
       };
 
+      if (leftCategory.key === 'types' && rightCategory.key === 'types') {
+        filterMatch.runtimeTypePair = {
+          left: leftOption.name,
+          right: rightOption.name,
+        };
+      }
+
       if (difficultyStats?.distribution) {
         filterMatch.difficultyDistribution = difficultyStats.distribution;
       }
@@ -220,6 +231,7 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
       linkSlug: filterOption.name,
       count: matchedPokemonForFilter.length,
       difficultyDistribution: difficultyStats.distribution,
+      runtimeCategoryName: filterOption.name,
     };
 
     filterMatches.push(filterMatch);
@@ -312,7 +324,18 @@ const renderPokemonReplyText = async ({ ordered, tokenCount }: MatchedLookup): P
         runtimeStats ? { lastValidDaysAgo: runtimeStats.daysAgo } : undefined
       );
     } else {
-      appendFilterStats(builder, entry.value);
+      const runtimeStats = entry.value.runtimeTypePair
+        ? await getDualTypeRuntimeStats(
+            entry.value.runtimeTypePair.left,
+            entry.value.runtimeTypePair.right
+          )
+        : entry.value.runtimeCategoryName
+          ? await getCategoryRuntimeStats(entry.value.runtimeCategoryName)
+          : null;
+      appendFilterStats(
+        builder,
+        runtimeStats ? { ...entry.value, lastSeenDaysAgo: runtimeStats.daysAgo } : entry.value
+      );
     }
   }
 

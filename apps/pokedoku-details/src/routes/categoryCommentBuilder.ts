@@ -10,6 +10,12 @@ export type MatchedFilter = {
   linkSlug: string;
   count: number;
   difficultyDistribution?: string;
+  lastSeenDaysAgo?: number;
+  runtimeCategoryName?: string;
+  runtimeTypePair?: {
+    left: string;
+    right: string;
+  };
 };
 
 const difficultyRank: Record<string, number> = {
@@ -115,6 +121,14 @@ export const appendFilterStats = (
       p.text({
         text: `${formatDistributionWithEmoji(filter.difficultyDistribution)}`,
       });
+    }
+
+    if (typeof filter.lastSeenDaysAgo === 'number') {
+      p.linebreak();
+      const lastSeenLabel = 'Last seen:';
+      const dayUnit = filter.lastSeenDaysAgo === 1 ? 'day' : 'days';
+      p.text({ text: lastSeenLabel });
+      p.text({ text: ` ${filter.lastSeenDaysAgo} ${dayUnit} ago` });
     }
   });
 };
