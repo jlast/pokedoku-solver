@@ -88,11 +88,11 @@ import { Footer } from "../../app/components/Footer";
       <div class="results-count" id="results-count">0 of 0 Pokemon</div>
     </div>
 
-    <div class="no-results" id="no-results" hidden>
-      <p>No Pokemon match the selected filters.</p>
+    <div class="px-4 py-8 text-center text-[var(--text)]" id="no-results" hidden>
+      <p class="mb-4 text-[1.1rem]">No Pokemon match the selected filters.</p>
     </div>
 
-    <div class="pokemon-grid" id="pokemon-grid"></div>
+    <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3" id="pokemon-grid"></div>
     <div id="load-more-sentinel" aria-hidden="true"></div>
 
     <Footer client:load />
@@ -245,7 +245,7 @@ import { Footer } from "../../app/components/Footer";
 
     const createTypeBadge = (typeName) => {
       const badge = document.createElement("span");
-      badge.className = "type-badge";
+      badge.className = "rounded-[10px] px-2 py-0.5 text-[0.7rem] font-semibold text-white";
       badge.textContent = typeName;
       badge.style.backgroundColor = TYPE_COLORS[typeName] || "#64748b";
       return badge;
@@ -262,7 +262,7 @@ import { Footer } from "../../app/components/Footer";
         const pokemonKeyId = p.formId ?? p.id;
         const slug = `${slugify(p.name)}-${pokemonKeyId}`;
         const card = document.createElement("a");
-        card.className = "pokemon-card block no-underline";
+        card.className = "flex min-h-[180px] cursor-pointer flex-col items-center rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3 no-underline transition-all hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]";
         card.href = `${import.meta.env.BASE_URL}pokemon/${slug}/`;
         card.addEventListener("click", () => {
           trackEvent("click_pokemon_detail", {
@@ -280,26 +280,26 @@ import { Footer } from "../../app/components/Footer";
           img.alt = "";
           img.loading = "lazy";
           img.decoding = "async";
-          img.className = "pokemon-sprite";
+          img.className = "h-20 w-20 object-contain";
           card.appendChild(img);
         } else {
           const placeholder = document.createElement("div");
-          placeholder.className = "pokemon-sprite-placeholder";
+          placeholder.className = "h-20 w-20 rounded-full bg-[var(--code-bg)]";
           card.appendChild(placeholder);
         }
 
         const info = document.createElement("div");
-        info.className = "pokemon-card-info";
-        info.innerHTML = `<div class="pokemon-card-name">${p.name}</div><div class="pokemon-card-id">#${p.id}</div>`;
+        info.className = "flex w-full flex-col items-center gap-1";
+        info.innerHTML = `<div class="text-center text-[0.9rem] font-semibold text-[var(--text-h)]">${p.name}</div><div class="text-[0.8rem] text-[#666]">#${p.id}</div>`;
 
         const typeWrap = document.createElement("div");
-        typeWrap.className = "pokemon-types";
+        typeWrap.className = "flex flex-wrap justify-center gap-1";
         p.types.forEach((typeName) => typeWrap.appendChild(createTypeBadge(typeName)));
         info.appendChild(typeWrap);
 
         if (p.dexDifficulty) {
           const difficulty = document.createElement("span");
-          difficulty.className = "dex-difficulty-badge";
+          difficulty.className = "rounded-[10px] px-2 py-[2px] text-[0.65rem] font-semibold uppercase text-white";
           difficulty.textContent = p.dexDifficulty;
           difficulty.style.backgroundColor = DEX_DIFFICULTY_COLORS[p.dexDifficulty] || "#64748b";
           info.appendChild(difficulty);

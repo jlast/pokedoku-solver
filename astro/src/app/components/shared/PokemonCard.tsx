@@ -17,18 +17,18 @@ export function PokemonCard({ pokemon, href = null, onClick }: PokemonCardProps)
         <img
           src={pokemon.sprite}
           alt=""
-          className="pokemon-sprite"
+          className="h-20 w-20 object-contain"
           loading="lazy"
           decoding="async"
           fetchPriority="low"
         />
       ) : (
-        <div className="pokemon-sprite-placeholder" />
+        <div className="h-20 w-20 rounded-full bg-[var(--code-bg)]" />
       )}
-      <div className="pokemon-card-info">
-        <div className="pokemon-card-name">{pokemon.name}</div>
-        <div className="pokemon-card-id">#{pokemon.id}</div>
-        <div className="pokemon-types">
+      <div className="flex w-full flex-col items-center gap-1">
+        <div className="text-center text-[0.9rem] font-semibold text-[var(--text-h)]">{pokemon.name}</div>
+        <div className="text-[0.8rem] text-[#666]">#{pokemon.id}</div>
+        <div className="flex flex-wrap justify-center gap-1">
           {pokemon.types.map((type, i) => (
             <CategoryBadgeLink
               key={`${pokemon.id}-${type}-${i}`}
@@ -39,7 +39,7 @@ export function PokemonCard({ pokemon, href = null, onClick }: PokemonCardProps)
         </div>
         {pokemon.dexDifficulty && (
           <span
-            className="dex-difficulty-badge"
+            className="rounded-[10px] px-2 py-[2px] text-[0.65rem] font-semibold uppercase text-white"
             style={{
               backgroundColor: DEX_DIFFICULTY_COLORS[pokemon.dexDifficulty],
             }}
@@ -53,14 +53,20 @@ export function PokemonCard({ pokemon, href = null, onClick }: PokemonCardProps)
 
   if (href) {
     return (
-      <a className="pokemon-card block no-underline" href={href}>
-        {cardBody}
+      <a
+        className="block min-h-[180px] cursor-pointer rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3 no-underline transition-all hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
+        href={href}
+      >
+        <div className="flex flex-col items-center">{cardBody}</div>
       </a>
     );
   }
 
   return (
-    <div className="pokemon-card" onClick={onClick}>
+    <div
+      className="flex min-h-[180px] cursor-pointer flex-col items-center rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3 transition-all hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
+      onClick={onClick}
+    >
       {cardBody}
     </div>
   );
