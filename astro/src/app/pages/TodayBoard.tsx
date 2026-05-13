@@ -236,7 +236,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     return entries;
   }, [grid.cells, grid.colConstraints, grid.rowConstraints, gridSize]);
 
-  if (loading) return <div className="app loading text-center"><p>Loading Pokemon data...</p></div>;
+  if (loading) return <div className="min-h-screen p-5 text-center"><p>Loading Pokemon data...</p></div>;
 
   return (
     <div className="flex flex-col items-center">

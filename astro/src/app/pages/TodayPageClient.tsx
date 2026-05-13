@@ -47,7 +47,7 @@ export function TodayPageClient() {
 
   if (error) {
     return (
-      <div className="app loading text-center">
+      <div className="min-h-screen p-5 text-center">
         <p>Failed to load today&apos;s puzzle: {error}</p>
       </div>
     );
@@ -55,7 +55,7 @@ export function TodayPageClient() {
 
   if (!puzzles || !regularPuzzle) {
     return (
-      <div className="app loading text-center">
+      <div className="min-h-screen p-5 text-center">
         <p>Loading today&apos;s puzzle...</p>
       </div>
     );
