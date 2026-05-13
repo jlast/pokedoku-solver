@@ -157,10 +157,16 @@ const faqStructuredData = {
                 2.66%
               </p>
               <p
-                class="m-0 inline-flex rounded-full border border-indigo-200 bg-indigo-100/70 px-3 py-1 text-sm font-semibold text-indigo-700"
+                class="m-0 text-sm font-semibold text-slate-700"
                 data-result-odds
               >
                 about 1 in 38
+              </p>
+              <p
+                class="m-0 inline-flex rounded-full border border-amber-200 bg-amber-100/70 px-3 py-1 text-xs font-semibold text-amber-800"
+                data-result-judgement
+              >
+                Decent odds
               </p>
             </div>
             <p
@@ -740,11 +746,74 @@ const faqStructuredData = {
       title: document.querySelector("[data-result-title]"),
       main: document.querySelector("[data-result-main]"),
       odds: document.querySelector("[data-result-odds]"),
+      judgement: document.querySelector("[data-result-judgement]"),
       subtitle: document.querySelector("[data-result-subtitle]"),
       expected: document.querySelector("[data-result-expected]"),
       exact: document.querySelector("[data-result-exact]"),
       atLeastOne: document.querySelector("[data-result-at-least-one]"),
       zero: document.querySelector("[data-result-zero]"),
+    };
+
+    const JUDGEMENT_STYLES = {
+      extremelyRare:
+        "border-rose-200 bg-rose-100/70 text-rose-800",
+      veryUnlikely:
+        "border-orange-200 bg-orange-100/70 text-orange-800",
+      decentOdds:
+        "border-amber-200 bg-amber-100/70 text-amber-800",
+      prettyAchievable:
+        "border-emerald-200 bg-emerald-100/70 text-emerald-800",
+    };
+
+    const getOddsJudgement = (chance) => {
+      if (chance >= 1) {
+        return {
+          label: "Pretty achievable",
+          style: JUDGEMENT_STYLES.prettyAchievable,
+        };
+      }
+
+      if (chance <= 0) {
+        return {
+          label: "Extremely rare",
+          style: JUDGEMENT_STYLES.extremelyRare,
+        };
+      }
+
+      const denominator = Math.round(1 / chance);
+
+      if (!Number.isFinite(denominator) || denominator <= 0) {
+        return {
+          label: "Extremely rare",
+          style: JUDGEMENT_STYLES.extremelyRare,
+        };
+      }
+
+      if (denominator <= 20) {
+        return {
+          label: "Pretty achievable",
+          style: JUDGEMENT_STYLES.prettyAchievable,
+        };
+      }
+
+      if (denominator <= 80) {
+        return {
+          label: "Decent odds",
+          style: JUDGEMENT_STYLES.decentOdds,
+        };
+      }
+
+      if (denominator <= 300) {
+        return {
+          label: "Very unlikely",
+          style: JUDGEMENT_STYLES.veryUnlikely,
+        };
+      }
+
+      return {
+        label: "Extremely rare",
+        style: JUDGEMENT_STYLES.extremelyRare,
+      };
     };
 
     const clampNumber = (value, fallback, min) => {
@@ -857,6 +926,16 @@ const faqStructuredData = {
       results.title.textContent = `Chance of ${label} shinies`;
       results.main.textContent = formatPercent(mainChance);
       results.odds.textContent = formatOneIn(mainChance);
+      const judgement = getOddsJudgement(mainChance);
+      results.judgement.textContent = judgement.label;
+      Object.values(JUDGEMENT_STYLES).forEach((style) => {
+        style.split(" ").forEach((className) => {
+          results.judgement.classList.remove(className);
+        });
+      });
+      judgement.style.split(" ").forEach((className) => {
+        results.judgement.classList.add(className);
+      });
       results.subtitle.textContent = `Across ${grids} ${grids === 1 ? "grid" : "grids"} with ${totalSquares} squares at ${prestige.label} prestige.`;
       results.expected.textContent = (totalSquares * chance).toFixed(2);
       results.exact.textContent = formatPercent(exactChance);
