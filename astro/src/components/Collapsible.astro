@@ -5,6 +5,8 @@ interface Props {
   detailsClass?: string;
   summaryClass?: string;
   contentClass?: string;
+  analyticsEventName?: string;
+  analyticsMetadata?: Record<string, string>;
 }
 
 const {
@@ -13,10 +15,19 @@ const {
   detailsClass = "",
   summaryClass = "",
   contentClass = "",
+  analyticsEventName,
+  analyticsMetadata = {},
 } = Astro.props;
+
+const metadataJson = JSON.stringify(analyticsMetadata);
 ---
 
-<details class:list={["group", detailsClass]} open={open}>
+<details
+  class:list={["group", detailsClass]}
+  open={open}
+  data-collapsible-analytics-event={analyticsEventName}
+  data-collapsible-analytics-metadata={metadataJson}
+>
   <summary
     class:list={[
       "flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-extrabold text-slate-900 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden",
@@ -37,3 +48,42 @@ const {
     <slot />
   </div>
 </details>
+
+<script>
+  // @ts-nocheck
+  const trackEvent = (name, metadata) => {
+    if (window.sa_loaded) {
+      window.sa_event(name, metadata);
+    }
+  };
+
+  document
+    .querySelectorAll("[data-collapsible-analytics-event]")
+    .forEach((element) => {
+      if (element.dataset.analyticsBound === "true") return;
+      element.dataset.analyticsBound = "true";
+
+      element.addEventListener("toggle", () => {
+        const eventName = element.getAttribute("data-collapsible-analytics-event");
+        if (!eventName) return;
+
+        const rawMetadata = element.getAttribute(
+          "data-collapsible-analytics-metadata",
+        );
+        let metadata = {};
+
+        if (rawMetadata) {
+          try {
+            metadata = JSON.parse(rawMetadata);
+          } catch {
+            metadata = {};
+          }
+        }
+
+        trackEvent(eventName, {
+          ...metadata,
+          state: element.open ? "open" : "closed",
+        });
+      });
+    });
+</script>
