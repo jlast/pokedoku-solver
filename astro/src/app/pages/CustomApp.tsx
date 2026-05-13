@@ -9,6 +9,7 @@ import { SuggestionsPanel } from "../components/SuggestionsPanel";
 import { Footer } from "../components/Footer";
 import { InfoBox } from "../components/InfoBox";
 import { ContentSection } from "../components/shared/ContentSection";
+import { ActionButton } from "../components/shared/ActionButton";
 
 function parseConstraintFromParam(value: string): Constraint | null {
   const result = findConstraintOption(value);
@@ -250,13 +251,13 @@ function App() {
           onConstraintChange={handleConstraintChange}
         />
         <InfoBox>Numbers show how many Pokémon match each combination.</InfoBox>
-        <button
+        <ActionButton
           onClick={clearGrid}
-          className="w-fit rounded-lg border-2 border-red-300 bg-white px-4 py-2 text-sm text-red-700 transition-colors hover:border-red-400 hover:bg-rose-50 hover:text-red-800 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400"
+          variant="destructiveGhost"
           disabled={!hasGridData}
         >
           Clear All
-        </button>
+        </ActionButton>
         <div ref={suggestionsRef}>
           <SuggestionsPanel
             selectedCell={grid.selectedCell}

@@ -8,6 +8,7 @@ import { SuggestionsPanel } from "../components/SuggestionsPanel";
 import { SectionCard } from "../components/shared/SectionCard";
 import { matchesConstraint, type Constraint } from "../../../../lib/shared/filters";
 import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
+import { ActionButton, ActionLink } from "../components/shared/ActionButton";
 import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { slugify } from "../../lib/slug";
 
@@ -263,23 +264,23 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       </div>
 
       <div className="mt-2 flex flex-wrap justify-center gap-2.5">
-        <button
+        <ActionButton
           onClick={clearCells}
-          className="w-fit rounded-lg border-2 border-red-300 bg-white px-4 py-2 text-sm text-red-700 transition-colors hover:border-red-400 hover:bg-rose-50 hover:text-red-800 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400"
+          variant="destructiveGhost"
           disabled={!hasGridData}
         >
           Clear selected Pokemon
-        </button>
-        <a
+        </ActionButton>
+        <ActionLink
           href={`${import.meta.env.BASE_URL}custom/`}
-          className="inline-flex items-center gap-1.5 rounded-[10px] border-2 border-slate-200 bg-white px-[18px] py-2.5 text-[0.9rem] font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50"
+          variant="secondary"
           onClick={() => trackEvent("click_navigate", { url: "custom/", from: "today_suggestions" })}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Try another board
-        </a>
+        </ActionLink>
       </div>
 
       <section className="mt-6 w-full md:w-auto" aria-labelledby="today-text-suggestions-heading">
