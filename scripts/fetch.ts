@@ -248,7 +248,10 @@ async function fetchForms() {
   }
 }
 
-function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
+function getEntry(
+  formId: number,
+  added: Set<number>,
+): Pokemon | undefined {
   if (IGNORED_FORM_IDS.has(formId)) return;
   const form = loadForm(formId);
   if (!form) return;
@@ -277,7 +280,7 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
   const types = pokemon.types
     .sort((a, b) => a.slot - b.slot)
     .map((t) => t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1)) as
-    | [PokemonType, PokemonType?]
+    | [PokemonType, PokemonType]
     | [PokemonType];
 
   const entry: Pokemon = {
@@ -288,7 +291,7 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
     sprite: `/images/sprites/${form.id}.png`,
     formId,
   };
-  
+
   if (ULTRA_BEASTS.has(id)) addPokemonCategory(entry, "Ultra Beast");
   else if (FOSSIL_IDS.has(id)) addPokemonCategory(entry, "Fossil");
   else if (STARTER_IDS.has(formId)) addPokemonCategory(entry, "First Partner");
@@ -316,6 +319,49 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
             entry.evolutionTrigger =
               result.trigger.length > 0 ? result.trigger : undefined;
           if (result.branched) entry.isBranched = true;
+
+          const queue: EvolutionNode[] = [chain];
+          let currentNode: EvolutionNode | undefined;
+          let parentNode: EvolutionNode | undefined;
+          while (queue.length > 0 && !currentNode) {
+            const node = queue.shift();
+            if (!node) break;
+            if (node.species.name === species.name) {
+              currentNode = node;
+              break;
+            }
+            for (const child of node.evolves_to) {
+              if (child.species.name === species.name) {
+                parentNode = node;
+              }
+              queue.push(child);
+            }
+          }
+
+          if (currentNode) {
+            const fromFormId = parentNode?.species.url
+              ? (() => {
+                  const speciesMatch = parentNode.species.url.match(/\/pokemon-species\/(\d+)\/$/);
+                  if (!speciesMatch) return undefined;
+                  return parseInt(speciesMatch[1]);
+                })()
+              : undefined;
+
+            const toFormIds = currentNode.evolves_to
+              .map((node) => {
+                const speciesMatch = node.species.url.match(/\/pokemon-species\/(\d+)\/$/);
+                if (!speciesMatch) return undefined;
+                return parseInt(speciesMatch[1]);
+              })
+              .filter((id): id is number => typeof id === "number");
+
+            if (typeof fromFormId === "number" || toFormIds.length > 0) {
+              entry.evolution = {
+                ...(typeof fromFormId === "number" ? { from: [fromFormId] } : {}),
+                ...(toFormIds.length > 0 ? { to: toFormIds } : {}),
+              };
+            }
+          }
         }
       }
     } else if (!IGNORE_EVOLVE_FORMS.has(form.form_name)) {
@@ -334,6 +380,15 @@ function getEntry(formId: number, added: Set<number>): Pokemon | undefined {
   if (formOverride) {
     if (formOverride.types) entry.types = formOverride.types;
     if (formOverride.region) entry.region = formOverride.region;
+    if (formOverride.evolution?.from) {
+      entry.evolution = {...entry.evolution, from: formOverride.evolution.from };
+    }
+    if (formOverride.evolution?.to) {
+      entry.evolution = {...entry.evolution, to: formOverride.evolution.to };
+    }
+    if(formOverride.evolution?.from?.length === 0) delete entry.evolution?.from;
+    if(formOverride.evolution?.to?.length === 0) delete entry.evolution?.to;
+    if(!entry.evolution?.from && !entry.evolution?.to) delete entry.evolution;
     if (formOverride.evolutionStage)
       entry.evolutionStage = formOverride.evolutionStage;
     if (formOverride.evolutionTrigger)

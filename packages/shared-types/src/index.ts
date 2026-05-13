@@ -122,19 +122,26 @@ export const difficultyWithEmoji = (difficulty: string): string => {
   return difficulty ?? 'Unknown';
 };
 
-export interface Pokemon {
+export interface InternalPokemon {
   id: number;
   name: string;
   types: [PokemonType, PokemonType] | [PokemonType];
   region: PokemonRegion;
+  evolution?: {
+    from?: number[];
+    to?: number[];
+  };
   evolutionStage?: EvolutionMethod;
   evolutionTrigger?: EvolutionTrigger[];
   isBranched?: boolean;
   categories?: PokemonCategory[];
   sprite?: string;
+  formId?: number;
+}
+
+export interface Pokemon extends InternalPokemon {
   dexDifficulty: DexDifficulty;
   dexDifficultyPercentile: number;
-  formId?: number;
 }
 
 export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category';
