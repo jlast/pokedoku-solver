@@ -76,7 +76,7 @@ export function Header({ title, subtitle, introText, showDate, alwaysShowSubhead
     <>
       <header className="mb-6 text-center">
         <div className="mx-auto w-full max-w-6xl px-4">
-        <div className="flex justify-center items-center gap-3 max-[1100px]:flex max-[1100px]:items-center max-[1100px]:justify-between">
+        <div className="flex justify-center items-center gap-3 mt-4 max-[1100px]:flex max-[1100px]:items-center max-[1100px]:justify-between">
           <div className="flex min-w-0 items-center justify-self-start gap-2.5">
             <a
               href={`${import.meta.env.BASE_URL}`}
