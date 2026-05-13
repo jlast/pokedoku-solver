@@ -489,7 +489,12 @@ export function Header({
                 aria-label="Navigation menu"
               >
                 <div className="sticky top-0 z-[2] flex items-center justify-between border-b border-slate-200 bg-white px-3.5 pt-3.5 pb-2.5">
-                  <span className="text-base font-bold text-slate-900">
+                  <span className="inline-flex items-center gap-2 text-base font-bold text-slate-900">
+                    <img
+                      src={import.meta.env.BASE_URL + "logo.svg"}
+                      alt="Pokedoku Helper"
+                      className="h-5 w-5"
+                    />
                     Pokedoku Helper
                   </span>
                   <button
