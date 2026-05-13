@@ -136,9 +136,9 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
           ))}
         </div>
 
-        <div className="suggested-grid">
+        <div className="flex flex-col gap-1 rounded border-[3px] border-[#2c3e50] bg-[#2c3e50]">
           {cells.map((row, rowIndex) => (
-            <div key={rowIndex} className="row">
+            <div key={rowIndex} className="flex gap-1">
               {row.map((cell, colIndex) => {
                 const isSelected = selectedCell?.[0] === rowIndex && selectedCell?.[1] === colIndex;
                 const possible = possiblePokemon[rowIndex][colIndex];
@@ -151,11 +151,26 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                     cell &&
                     suggestedPokemonKeys?.[rowIndex]?.[colIndex] === getPokemonKey(cell),
                 );
-                
+                const suggestedLabel = cell
+                  ? cell.dexDifficulty === 'Nightmare'
+                    ? 'Nightmare'
+                    : cell.id !== cell.formId
+                      ? 'Alt Form'
+                      : ''
+                  : '';
+                const isFilled = Boolean(cell);
+                const cellStateClasses = isSelected
+                  ? isFilled
+                    ? 'bg-[#dbeafe] text-[#1e3a8a] shadow-[0_0_0_4px_#1d4ed8,inset_0_0_0_2px_#ffffff]'
+                    : 'bg-[#bfdbfe] text-[#1e3a8a] shadow-[0_0_0_4px_#1d4ed8,inset_0_0_0_2px_#ffffff]'
+                  : isFilled
+                    ? 'bg-white hover:bg-[#ffeeee]'
+                    : 'bg-[#f8fafc] hover:bg-[#e2e8f0]';
+
                 return (
                     <div
                       key={colIndex}
-                      className={`cell ${isSelected ? 'selected' : ''} ${cell ? 'filled' : ''} ${hasConstraint ? 'constrained' : ''} ${isSuggested ? 'suggested-cell' : ''}`}
+                      className={`relative flex h-[154px] w-[140px] cursor-pointer flex-col items-center justify-end overflow-hidden rounded border-2 border-transparent transition-all max-[768px]:h-[110px] max-[768px]:w-[90px] ${cellStateClasses}`}
                       onClick={() => {
                       trackEvent('click_cell', {
                         position: `${rowIndex}_${colIndex}`,
@@ -165,7 +180,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                       onCellClick(rowIndex, colIndex);
                     }}
                     style={{
-                      '--constraint-color': getConstraintColor(rowConstraint || colConstraint),
+                      borderColor: hasConstraint ? getConstraintColor(rowConstraint || colConstraint) : undefined,
                     } as React.CSSProperties}
                   >
                     {cell ? (
@@ -173,35 +188,37 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                         {showSuggestedMeta && (
                           <>
                             {isSuggested && (
-                              <span
-                                className={`${cell.dexDifficulty === "Nightmare" ? "cell-suggested-label cell-suggested-label--nightmare" : cell.id !== cell.formId ? "cell-suggested-label cell-suggested-label--special-form" : ""}`}
-                              >
-                                {cell.dexDifficulty === "Nightmare" ? "Nightmare" : cell.id !== cell.formId ? "Alt Form" : ""}
-                              </span>
+                              suggestedLabel ? (
+                                <span
+                                  className={`absolute left-0 top-0 z-[2] rounded-br-lg rounded-tl-sm px-[5px] py-px text-[7px] font-bold uppercase leading-[14px] tracking-[0.02em] text-white ${cell.dexDifficulty === "Nightmare" ? "bg-[#9b59b6]" : "bg-[#2574f5]"}`}
+                                >
+                                  {suggestedLabel}
+                                </span>
+                              ) : null
                             )}
                             <button
                               type="button"
-                              className="cell-swap-btn"
+                              className="absolute right-0.5 top-0.5 z-[2] inline-flex h-12 w-[42px] cursor-pointer flex-col items-center justify-center gap-px rounded-[14px] border border-[#cbd5e1] bg-[rgba(255,255,255,0.92)] text-[#4f46e5] shadow-[0_2px_6px_rgba(15,23,42,0.18)] hover:border-[#a5b4fc] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4f46e5] focus-visible:outline-offset-1 max-[768px]:right-[3px] max-[768px]:top-[14px] max-[768px]:h-[34px] max-[768px]:w-[30px] max-[768px]:rounded-xl"
                               aria-label={`Swap ${cell.name} (${optionCount} options)`}
                               onClick={(event) => {
                                 event.stopPropagation();
                                 (onSwapClick ?? onCellClick)(rowIndex, colIndex);
                               }}
                             >
-                              <span className="cell-swap-icon">⇄</span>
-                              <span className="cell-swap-count">{optionCount}</span>
+                              <span className="text-[18px] leading-none max-[768px]:text-[13px]">⇄</span>
+                              <span className="text-sm font-bold leading-none max-[768px]:text-[11px]">{optionCount}</span>
                             </button>
                           </>
                         )}
-                        {cell.sprite && <img src={cell.sprite} alt="" className="pokemon-sprite" />}
-                        <div className="cell-content">
-                          <span className="pokemon-name">{cell.name}</span>
+                        {cell.sprite && <img src={cell.sprite} alt="" className="absolute left-[22px] top-5 z-0 h-[95px] w-[95px] object-contain max-[768px]:left-2 max-[768px]:top-[14px] max-[768px]:h-[68px] max-[768px]:w-[68px]" />}
+                        <div className={`relative z-[1] m-1 inline-flex flex-col items-center gap-px rounded-md px-2 py-1 text-center ${isSuggested ? 'm-0.5 px-1.5 py-[3px]' : ''}`}>
+                          <span className={`text-[9px] font-semibold leading-[1.05] ${isSelected ? 'text-[#1e3a8a]' : 'text-[#2c3e50]'}`}>{cell.name}</span>
                         </div>
                       </>
                     ) : (
-                      <div className="cell-count">
-                        <span className="possible-count">{possible.length}</span>
-                        <span className="tap-hint">Tap to explore</span>
+                      <div className="flex h-full flex-col items-center justify-center gap-0.5">
+                        <span className={`text-[26px] font-bold max-[768px]:text-[20px] ${isSelected ? 'text-[#1e3a8a]' : 'text-[#334155]'}`}>{possible.length}</span>
+                        <span className={`text-[0.6rem] ${isSelected ? 'text-[#1e3a8a]' : ''} opacity-80`}>Tap to explore</span>
                       </div>
                     )}
                   </div>
