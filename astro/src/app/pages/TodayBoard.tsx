@@ -410,9 +410,9 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                           ) : (
                             <span className="text-slate-700">No suggestion available</span>
                           )}
-                          <div className="ml-auto flex shrink-0 flex-wrap items-center justify-end gap-1.5 text-right">
+                          <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-1.5 text-right">
                             {rowParsed ? (
-                              <span className="inline-flex scale-90 origin-right">
+                              <span className="inline-flex max-w-full scale-90 origin-right">
                                 <CategoryBadgeLink
                                   parsed={rowParsed}
                                   href={`${import.meta.env.BASE_URL}tools/category/${slugify(rowParsed.label)}/`}
@@ -423,7 +423,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                             )}
                             <span className="text-slate-400">+</span>
                             {colParsed ? (
-                              <span className="inline-flex scale-90 origin-right">
+                              <span className="inline-flex max-w-full scale-90 origin-right">
                                 <CategoryBadgeLink
                                   parsed={colParsed}
                                   href={`${import.meta.env.BASE_URL}tools/category/${slugify(colParsed.label)}/`}
