@@ -573,37 +573,37 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   412: {
     // Burmy plant
     evolution: {
-      to: [413, 10036, 10037, 414],
+      to: [413, 414],
     },
   },
   10034: {
     // Burmy sandy
     evolution: {
-      to: [413, 10036, 10037, 414],
+      to: [10036, 414],
     },
   },
   10035: {
     // Burmy trash
     evolution: {
-      to: [413, 10036, 10037, 414],
+      to: [10037],
     },
   },
   413: {
     // Wormadam plant
     evolution: {
-      from: [412, 10034, 10035],
+      from: [412],
     },
   },
   10036: {
     // Wormadam sandy
     evolution: {
-      from: [412, 10034, 10035],
+      from: [10034],
     },
   },
   10037: {
     // Wormadam trash
     evolution: {
-      from: [412, 10034, 10035],
+      from: [10035],
     },
   },
   414: {
@@ -639,49 +639,49 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   585: {
     // Deerling spring
     evolution: {
-      to: [586, 10071, 10072, 10073],
+      to: [586],
     },
   },
   10068: {
     // Deerling summer
     evolution: {
-      to: [586, 10071, 10072, 10073],
+      to: [10071],
     },
   },
   10069: {
     // Deerling autumn
     evolution: {
-      to: [586, 10071, 10072, 10073],
+      to: [10072],
     },
   },
   10070: {
     // Deerling winter
     evolution: {
-      to: [586, 10071, 10072, 10073],
+      to: [10073],
     },
   },
   586: {
-    // Deerling spring
+    // Sawsbuck spring
     evolution: {
-      from: [585, 10068, 10069, 10070],
+      from: [585],
     },
   },
   10071: {
     // Sawsbuck summer
     evolution: {
-      from: [585, 10068, 10069, 10070],
+      from: [10068],
     },
   },
   10072: {
     // Sawsbuck autumn
     evolution: {
-      from: [585, 10068, 10069, 10070],
+      from: [10069],
     },
   },
   10073: {
     // Sawsbuck winter
     evolution: {
-      from: [585, 10068, 10069, 10070],
+      from: [10070],
     },
   },
   677: {
