@@ -857,6 +857,13 @@ const faqStructuredData = {
       return `about 1 in ${denominator.toLocaleString()}`;
     };
 
+    const getOneInDenominator = (value) => {
+      if (value <= 0) return null;
+      const denominator = Math.round(1 / value);
+      if (!Number.isFinite(denominator) || denominator <= 0) return null;
+      return denominator;
+    };
+
     const getMode = () => {
       const selected = Array.from(inputs.modes).find((input) => input.checked);
       return selected?.value ?? "at-least";
@@ -921,6 +928,8 @@ const faqStructuredData = {
       results.title.textContent = `Chance of ${label} shinies`;
       results.main.textContent = formatPercent(mainChance);
       results.odds.textContent = formatOneIn(mainChance);
+      const oneInDenominator = getOneInDenominator(mainChance);
+      results.odds.classList.toggle("hidden", oneInDenominator === 1);
       const judgement = getOddsJudgement(mainChance);
       results.judgement.textContent = judgement.label;
       Object.values(JUDGEMENT_STYLES).forEach((style) => {
