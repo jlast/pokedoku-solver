@@ -21,7 +21,7 @@ export function InfoTooltipIcon({ text }: InfoTooltipIconProps) {
   }, []);
 
   return (
-    <span ref={ref} className="relative inline-flex">
+    <span ref={ref} className="relative inline-flex items-center align-middle">
       <button
         type="button"
         onClick={(e) => {
@@ -32,7 +32,7 @@ export function InfoTooltipIcon({ text }: InfoTooltipIconProps) {
         aria-expanded={open}
         className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-600 transition-colors hover:border-slate-400 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
       >
-        <span className="font-serif text-sm font-bold leading-none">i</span>
+        <span className="block font-serif text-sm font-bold leading-none">i</span>
       </button>
 
       <span

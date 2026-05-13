@@ -2,6 +2,7 @@
 import { PokemonCard } from "../../app/components/shared/PokemonCard";
 import { slugify } from "../../lib/slug";
 import InfoTooltipIcon from "../shared/InfoTooltipIcon.astro";
+import SectionCard from "../SectionCard.astro";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 
 interface Props {
@@ -15,16 +16,16 @@ const { pokemon, categoryType, category, seeAllHref } = Astro.props;
 const resolvedSeeAllHref = seeAllHref ?? `/pokemon-list/?${categoryType}=${category}&sortBy=difficulty-asc`;
 ---
 
-<article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-  <div class="flex justify-between w-full">
-    <div class="flex items-center gap-2">
-      <h2 class="text-xl font-semibold tracking-tight text-slate-900">Best picks</h2>
+<SectionCard>
+  <Fragment slot="title">
+    <h2 class="inline-flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-900">
+      Best picks
       <InfoTooltipIcon text="These Pokémon appear in the fewest categories, but when they do appear, they have a lot of competition. Strong picks if you want safe, widely valid answers." />
-    </div>
-    <a href={resolvedSeeAllHref} class="underline text-sm text-slate-600">
-        See all Pokemon
-    </a>
-  </div>
+    </h2>
+  </Fragment>
+  <a slot="headerRight" href={resolvedSeeAllHref} class="underline text-sm text-slate-600">
+    See all Pokemon
+  </a>
   {pokemon.length > 0 ? (
     <div class="pokemon-grid mt-3">
       {pokemon.slice(0, 4).map((entry) => (
@@ -36,4 +37,4 @@ const resolvedSeeAllHref = seeAllHref ?? `/pokemon-list/?${categoryType}=${categ
       No Pokemon currently match this category combination. Try another category or browse all Pokemon.
     </div>
   )}
-</article>
+</SectionCard>

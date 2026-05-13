@@ -3,6 +3,7 @@ import { parseCategoryId, getCategoryBarColor } from "../puzzle-stats/categoryUt
 import { CombinationRows } from "../shared/CombinationRows";
 import { HistoryTimelineCard } from "../shared/HistoryTimelineCard";
 import { InfoTooltipIcon } from "../shared/InfoTooltipIcon";
+import { SectionCard } from "../shared/SectionCard";
 
 interface RuntimeCombinationMatch {
   categories: [string, string];
@@ -71,11 +72,9 @@ export function CategoryRuntimeCards({ statsFileName, showCombinations = true, s
   return (
     <section className="grid gap-4">
       {showCombinations ? (
-        <article className="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl text-left font-semibold tracking-tight text-slate-900">Most common combinations</h2>
-            <InfoTooltipIcon text="Shows how often this combination appears in puzzles. Higher percentages mean you're more likely to encounter this pairing." />
-          </div>
+        <SectionCard
+          title={<span className="flex items-center gap-2">Most common combinations <InfoTooltipIcon text="Shows how often this combination appears in puzzles. Higher percentages mean you're more likely to encounter this pairing." /></span>}
+        >
           {rows.length > 0 ? (
             <div className="mt-3">
               <CombinationRows rows={rows} />
@@ -83,7 +82,7 @@ export function CategoryRuntimeCards({ statsFileName, showCombinations = true, s
           ) : (
             <p className="mt-2 text-slate-500">No combination history available yet.</p>
           )}
-        </article>
+        </SectionCard>
       ) : null}
 
       {showHistory ? <HistoryTimelineCard dates={stats?.appearanceDates ?? []} /> : null}

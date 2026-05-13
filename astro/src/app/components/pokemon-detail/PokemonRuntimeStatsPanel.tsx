@@ -6,6 +6,7 @@ import { FILTER_CATEGORIES } from "../../../../../lib/shared/filters";
 import { slugify } from "../../../lib/slug";
 import { CategoryBadgeLink } from "../shared/CategoryBadgeLink";
 import { InfoTooltipIcon } from "../shared/InfoTooltipIcon";
+import { SectionCard } from "../shared/SectionCard";
 
 interface RuntimeCategoryMatch {
   categoryId: string;
@@ -145,13 +146,9 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
         />
       ) : null}
 
-      {variant === "sections" ? <article className="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <h2>Most common categories</h2>
-            <InfoTooltipIcon text="Shows how often this category appears in puzzles. Higher percentages mean you're more likely to encounter this pairing." />
-          </div>
-        </div>
+      {variant === "sections" ? <SectionCard
+        title={<span className="flex items-center gap-2">Most common categories <InfoTooltipIcon text="Shows how often this category appears in puzzles. Higher percentages mean you're more likely to encounter this pairing." /></span>}
+      >
         {categoryRows.length > 0 ? (
           <ul className="grid gap-3 text-left">
             {categoryRows.map((row) => (
@@ -171,15 +168,11 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
         ) : (
           <p className="text-sm text-slate-500">No category stats available.</p>
         )}
-      </article> : null}
+      </SectionCard> : null}
 
-      {variant === "sections" ? <article className="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <h2>Top combinations</h2>
-            <InfoTooltipIcon text="Shows how often this combination appears in puzzles. Higher percentages mean you're more likely to encounter this pairing." />
-          </div>
-        </div>
+      {variant === "sections" ? <SectionCard
+        title={<span className="flex items-center gap-2">Top combinations <InfoTooltipIcon text="Shows how often this combination appears in puzzles. Higher percentages mean you're more likely to encounter this pairing." /></span>}
+      >
         {comboRows.length > 0 ? (
           <CombinationRows
             rows={comboRows.map((row) => ({
@@ -193,7 +186,7 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
         ) : (
           <p className="text-sm text-slate-500">No combination stats available.</p>
         )}
-      </article> : null}
+      </SectionCard> : null}
     </>
   );
 }

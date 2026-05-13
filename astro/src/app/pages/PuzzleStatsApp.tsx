@@ -4,6 +4,7 @@ import { CategoryList, type CategoryCount } from "../components/puzzle-stats/Cat
 import { PairList, type CategoryPair } from "../components/puzzle-stats/PairList";
 import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
 import { InfoTooltipIcon } from "../components/shared/InfoTooltipIcon";
+import { SectionCard } from "../components/shared/SectionCard";
 import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { slugify } from "../../lib/slug";
 import { trackEvent } from "../../../../lib/browser/analytics";
@@ -272,8 +273,7 @@ export default function PuzzleStatsApp() {
 
       <section className="grid gap-4 lg:grid-cols-2">
 
-        <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <h2 className="mb-3 text-xl">When Was This Pokemon Last Valid?</h2>
+        <SectionCard title="When Was This Pokemon Last Valid?" className="text-left">
           <p className="mb-2 text-sm text-slate-600">Pokemon that have gone the longest without being usable in PokeDoku.</p>
           {pokemonLoading ? (
             <ul className="m-0 mb-3 grid list-none gap-2 p-0" aria-label="Loading Pokemon recency list">
@@ -351,13 +351,12 @@ export default function PuzzleStatsApp() {
                 See all Pokemon
             </a>
           </div>
-        </article>
+        </SectionCard>
 
-        <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <div className="mb-3 flex items-center gap-2">
-            <h2 className="text-xl">Most used (top 5)</h2>
-            <InfoTooltipIcon text="Shows how often this item appears in puzzles. Higher percentages mean you're more likely to encounter it." />
-          </div>
+        <SectionCard
+          title={<span>Most used (top 5) <InfoTooltipIcon text="Shows how often this item appears in puzzles. Higher percentages mean you're more likely to encounter it." /></span>}
+          className="text-left"
+        >
           <div className="mb-3 inline-flex rounded-lg border border-slate-300 bg-white p-1">
             <button
               type="button"
@@ -379,13 +378,12 @@ export default function PuzzleStatsApp() {
           ) : (
             <PairList items={derived.mostCommonPairs} showDistributionBar distributionTotal={derived.totalPairOccurrences} />
           )}
-        </article>
+        </SectionCard>
 
-        <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <div className="mb-3 flex items-center gap-2">
-            <h2 className="text-xl">Least used (top 5)</h2>
-            <InfoTooltipIcon text="Shows how often this item appears in puzzles. Lower percentages mean you're less likely to encounter it." />
-          </div>
+        <SectionCard
+          title={<span>Least used (top 5) <InfoTooltipIcon text="Shows how often this item appears in puzzles. Lower percentages mean you're less likely to encounter it." /></span>}
+          className="text-left"
+        >
           <div className="mb-3 inline-flex rounded-lg border border-slate-300 bg-white p-1">
             <button
               type="button"
@@ -407,10 +405,9 @@ export default function PuzzleStatsApp() {
           ) : (
             <PairList items={derived.leastCommonPairs} showDistributionBar distributionTotal={derived.totalPairOccurrences} />
           )}
-        </article>
+        </SectionCard>
 
-        <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <h2 className="mb-3 text-xl">Category type breakdown</h2>
+        <SectionCard title="Category type breakdown" className="text-left">
           <p className="mb-2 text-sm text-slate-600">How often each category type appears.</p>
           <div className="grid gap-4 md:grid-cols-[240px_1fr] md:items-center">
             <div className="mx-auto">
@@ -443,10 +440,9 @@ export default function PuzzleStatsApp() {
               })}
             </ul>
           </div>
-        </article>
+        </SectionCard>
 
-        <article className="rounded-xl border border-slate-200 bg-white p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <h2 className="mb-3 text-xl">Combination frequency distribution</h2>
+        <SectionCard title="Combination frequency distribution" className="text-left">
           <p className="mb-2 text-sm text-slate-600">How often each unique category pair appears.</p>
           <div className="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
             <div className="mx-auto">
@@ -476,7 +472,7 @@ export default function PuzzleStatsApp() {
               ))}
             </ul>
           </div>
-        </article>
+        </SectionCard>
       </section>
     </>
   );

@@ -1,3 +1,5 @@
+import { SectionCard } from "./SectionCard";
+
 interface Props {
   dates: string[];
   title?: string;
@@ -37,11 +39,7 @@ export function HistoryTimelineCard({
   }));
 
   return (
-    <article className="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-      <div className="flex gap-3">
-        <h2 className="text-xl font-semibold tracking-tight text-slate-900">{title}</h2>
-      </div>
-      <div className="mb-3 flex text-xs text-slate-500">{subtitle}</div>
+    <SectionCard title={title} subtitle={subtitle}>
       {timeline.length > 0 ? (
         <ul className="relative m-0 list-none p-0 before:absolute before:bottom-0 before:left-[10px] before:top-0 before:w-px before:bg-slate-200">
           {timeline.map((entry, index) => (
@@ -59,6 +57,6 @@ export function HistoryTimelineCard({
       ) : (
         <p className="text-sm text-slate-500">{emptyText}</p>
       )}
-    </article>
+    </SectionCard>
   );
 }

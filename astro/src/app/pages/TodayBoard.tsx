@@ -5,6 +5,7 @@ import { DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
 import { InfoBox } from "../components/InfoBox";
 import { Grid } from "../components/Grid";
 import { SuggestionsPanel } from "../components/SuggestionsPanel";
+import { SectionCard } from "../components/shared/SectionCard";
 import { matchesConstraint, type Constraint } from "../../../../lib/shared/filters";
 import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
 import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
@@ -282,12 +283,16 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       </div>
 
       <section className="mt-6 w-full md:w-auto" aria-labelledby="today-text-suggestions-heading">
-        <div className="mt-2 w-full rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_10px_24px_rgba(15,23,42,0.06)] sm:p-5">
-          <h2 id="today-text-suggestions-heading" className="text-base font-semibold text-slate-900">
-            <span className="hidden md:inline">Today&apos;s Recommended Pokedoku Answers</span>
-            <span className="md:hidden">Recommended Answers</span>
-          </h2>
-          <p className="mt-1 text-sm text-slate-600">9 optimized picks for today&apos;s board</p>
+        <SectionCard
+          className="mt-2 w-full"
+          title={(
+            <h2 id="today-text-suggestions-heading" className="text-xl font-semibold tracking-tight text-slate-900">
+              <span className="hidden md:inline">Today&apos;s Recommended Pokedoku Answers</span>
+              <span className="md:hidden">Recommended Answers</span>
+            </h2>
+          )}
+          subtitle="9 optimized picks for today's board"
+        >
           <div className="overflow-x-auto hidden md:block">
             <table className="w-full min-w-[760px] text-left text-sm text-slate-700">
               <thead>
@@ -436,7 +441,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
               );
             })}
           </div>
-        </div>
+        </SectionCard>
       </section>
     </div>
   );
