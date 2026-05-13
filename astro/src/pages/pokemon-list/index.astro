@@ -131,6 +131,7 @@ import { Footer } from "../../app/components/Footer";
 
     const INITIAL_RENDER_COUNT = 120;
     const RENDER_BATCH_SIZE = 80;
+    const SEARCH_TRACK_DEBOUNCE_MS = 400;
     const SORT_OPTIONS = new Set(["number-asc", "number-desc", "name-asc", "name-desc", "difficulty-asc", "difficulty-desc", "recent-appearance", "recent-appearance-newest"]);
 
     const state = {
@@ -142,6 +143,8 @@ import { Footer } from "../../app/components/Footer";
       expandedFilters: new Set(),
       showFilterDrawer: false,
       searchQuery: "",
+      lastTrackedSearchQuery: "",
+      searchTrackTimeoutId: null,
       visibleCount: INITIAL_RENDER_COUNT,
       daysSinceLastUsableByKeyId: new Map(),
     };
@@ -175,6 +178,11 @@ import { Footer } from "../../app/components/Footer";
       return Math.floor((parseDay(latestPuzzleDate) - parseDay(item.lastUsableDate)) / (24 * 60 * 60 * 1000));
     };
 
+    const matchesCategorySearch = (pokemon, query) =>
+      FILTER_CATEGORIES.some((cat) =>
+        cat.options.some((opt) => opt.name.toLowerCase().includes(query) && opt.filter(pokemon)),
+      );
+
     const getFilteredPokemon = () => {
       let result = applyFilters(state.pokemon, state.filters);
       if (state.searchQuery.trim()) {
@@ -182,7 +190,8 @@ import { Footer } from "../../app/components/Footer";
         result = result.filter((p) =>
           p.name.toLowerCase().includes(query) ||
           p.types.some((t) => t?.toLowerCase().includes(query)) ||
-          p.region?.toLowerCase().includes(query),
+          p.region?.toLowerCase().includes(query) ||
+          matchesCategorySearch(p, query),
         );
       }
       if (state.difficultyFilter.length > 0) {
@@ -475,6 +484,32 @@ import { Footer } from "../../app/components/Footer";
       }
     };
 
+    const trackSearchQuery = (source) => {
+      if (state.searchTrackTimeoutId) window.clearTimeout(state.searchTrackTimeoutId);
+      state.searchTrackTimeoutId = window.setTimeout(() => {
+        const trimmedQuery = state.searchQuery.trim();
+        if (!trimmedQuery) {
+          if (state.lastTrackedSearchQuery) {
+            trackEvent("clear_search_query", {
+              source,
+              previousQuery: state.lastTrackedSearchQuery,
+            });
+            state.lastTrackedSearchQuery = "";
+          }
+          return;
+        }
+
+        if (trimmedQuery === state.lastTrackedSearchQuery) return;
+        state.lastTrackedSearchQuery = trimmedQuery;
+        trackEvent("search_query", {
+          source,
+          query: trimmedQuery,
+          length: trimmedQuery.length,
+          results: getSortedPokemon().length,
+        });
+      }, SEARCH_TRACK_DEBOUNCE_MS);
+    };
+
     const clearFilters = () => {
       const activeFilters = getActiveFilters(state.filters);
       state.filters = Object.fromEntries(FILTER_CATEGORIES.map((cat) => [cat.key, []]));
@@ -513,11 +548,13 @@ import { Footer } from "../../app/components/Footer";
         state.visibleCount = INITIAL_RENDER_COUNT;
         state.searchQuery = event.target.value;
         applyAndRender();
+        trackSearchQuery("desktop");
       });
       els.searchInputDrawer.addEventListener("input", (event) => {
         state.visibleCount = INITIAL_RENDER_COUNT;
         state.searchQuery = event.target.value;
         applyAndRender();
+        trackSearchQuery("drawer");
       });
       els.sortSelect.addEventListener("change", (event) => {
         state.sortBy = event.target.value;
