@@ -259,8 +259,8 @@ export const __test__ = {
 const getFooterParagraph = (builder: RichTextBuilder) => {
   builder.horizontalRule();
   builder.paragraph((p) => {
-    const prefix = 'More stats and strategy tools at ';
-    const domain = 'pokedoku-helper.com';
+    const prefix = 'Play the game at ';
+    const domain = 'pokedoku.com';
     const suffix = '. Use [[Pokemon]] or [[Category]] or [[Category+Category]] to call.';
     const dataFromText = getUpdatedDateTextUtc();
 
@@ -275,7 +275,7 @@ const getFooterParagraph = (builder: RichTextBuilder) => {
     });
     p.link({
       text: domain,
-      url: 'https://pokedoku-helper.com',
+      url: 'https://www.pokedoku.com',
       formatting: [richTextSuperscript(domain.length)],
     });
     p.text({
