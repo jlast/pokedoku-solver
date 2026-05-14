@@ -67,7 +67,7 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Description: "Fetch and store the daily puzzle in S3"
-      ScheduleExpression: cron(5 4 * * ? *)
+      ScheduleExpression: cron(1 4 * * ? *)
       State: ENABLED
       Targets:
         - Arn: !GetAtt DailyPuzzleFetcherFunction.Arn
