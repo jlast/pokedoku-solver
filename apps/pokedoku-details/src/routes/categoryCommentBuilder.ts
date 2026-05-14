@@ -1,7 +1,7 @@
 import type { ParagraphContext, RichTextBuilder } from '@devvit/web/server';
 import { difficultyWithEmoji } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
-import { richTextBold } from './richTextFormatting';
+import { richTextBold, richTextItalic } from './richTextFormatting';
 import { BASE_URL } from '../core/constants';
 
 export type MatchedFilter = {
@@ -127,7 +127,7 @@ export const appendFilterStats = (
       p.linebreak();
       const lastSeenLabel = 'Last seen:';
       const dayUnit = filter.lastSeenDaysAgo === 1 ? 'day' : 'days';
-      p.text({ text: lastSeenLabel });
+      p.text({ text: lastSeenLabel, formatting: [richTextItalic(labelText.length)]});
       p.text({ text: ` ${filter.lastSeenDaysAgo} ${dayUnit} ago` });
     }
   });
