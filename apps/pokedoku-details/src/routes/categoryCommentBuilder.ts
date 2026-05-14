@@ -127,7 +127,7 @@ export const appendFilterStats = (
       p.linebreak();
       const lastSeenLabel = 'Last seen:';
       const dayUnit = filter.lastSeenDaysAgo === 1 ? 'day' : 'days';
-      p.text({ text: lastSeenLabel, formatting: [richTextItalic(labelText.length)]});
+      p.text({ text: lastSeenLabel, formatting: [richTextItalic(lastSeenLabel.length)]});
       p.text({ text: ` ${filter.lastSeenDaysAgo} ${dayUnit} ago` });
     }
   });
