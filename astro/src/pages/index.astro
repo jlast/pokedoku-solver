@@ -4,6 +4,7 @@ import { Header } from "../app/components/Header";
 import { Footer } from "../app/components/Footer";
 import { HomeTodayGridPreview } from "../app/pages/HomeTodayGridPreview";
 import { HomeQuickStats } from "../app/pages/HomeQuickStats";
+import { HomeFeaturedPick } from "../app/pages/HomeFeaturedPick";
 ---
 
 <AppPageLayout
@@ -49,6 +50,7 @@ import { HomeQuickStats } from "../app/pages/HomeQuickStats";
             </a>
           </div>
 
+          <HomeFeaturedPick client:load />
           <HomeQuickStats client:load />
         </div>
 

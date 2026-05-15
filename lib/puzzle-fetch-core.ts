@@ -1,3 +1,6 @@
+import type { Pokemon } from "@pokedoku-helper/shared-types";
+import { FILTER_CATEGORIES, matchesConstraint } from "./shared/filters";
+
 type ConstraintCategory = "regions" | "types" | "evolution" | "category";
 
 interface ConstraintMapping {
@@ -12,6 +15,16 @@ interface RawConstraint {
 
 type PuzzleType = "AUTOMATIC" | "SOCIAL_CREATOR" | "BONUS" | string;
 
+export interface FeaturedPick {
+  id: number;
+  formId?: number;
+  name: string;
+  sprite?: string;
+  dexDifficulty: string;
+  dexDifficultyPercentile: number;
+  globalCategoryCombinationCount: number;
+}
+
 export interface MappedPuzzle {
   date: string;
   type: PuzzleType;
@@ -19,6 +32,7 @@ export interface MappedPuzzle {
   size: number;
   rowConstraints: ConstraintMapping[];
   colConstraints: ConstraintMapping[];
+  featuredPick?: FeaturedPick;
 }
 
 interface RawPuzzle {
@@ -156,6 +170,135 @@ function mapPuzzle(puzzle: RawPuzzle): MappedPuzzle {
     rowConstraints: rowConstraints as ConstraintMapping[],
     colConstraints: colConstraints as ConstraintMapping[],
   };
+}
+
+const DIFFICULTY_RANK: Record<string, number> = {
+  Easy: 0,
+  Normal: 1,
+  Hard: 2,
+  Expert: 3,
+  Nightmare: 4,
+  Impossible: 5,
+};
+
+function compareByHardest(a: Pokemon, b: Pokemon): number {
+  const aDifficulty = a.dexDifficulty ? DIFFICULTY_RANK[a.dexDifficulty] ?? -1 : -1;
+  const bDifficulty = b.dexDifficulty ? DIFFICULTY_RANK[b.dexDifficulty] ?? -1 : -1;
+  if (aDifficulty !== bDifficulty) return bDifficulty - aDifficulty;
+
+  const aPercentile = a.dexDifficultyPercentile ?? Number.NEGATIVE_INFINITY;
+  const bPercentile = b.dexDifficultyPercentile ?? Number.NEGATIVE_INFINITY;
+  if (aPercentile !== bPercentile) return bPercentile - aPercentile;
+
+  return a.id - b.id;
+}
+
+function buildEvolutionLineResolver(pokemon: Pokemon[]): (id: number) => string {
+  const nodes = new Map<number, Set<number>>();
+  const byId = new Map<number, Pokemon>();
+  for (const entry of pokemon) {
+    byId.set(entry.id, entry);
+    if (!nodes.has(entry.id)) nodes.set(entry.id, new Set<number>());
+  }
+
+  for (const entry of pokemon) {
+    const neighbors = nodes.get(entry.id)!;
+    const from = entry.evolution?.from ?? [];
+    const to = entry.evolution?.to ?? [];
+    for (const neighborId of [...from, ...to]) {
+      if (!byId.has(neighborId)) continue;
+      neighbors.add(neighborId);
+      nodes.get(neighborId)?.add(entry.id);
+    }
+  }
+
+  const visited = new Set<number>();
+  const lineById = new Map<number, string>();
+
+  for (const nodeId of nodes.keys()) {
+    if (visited.has(nodeId)) continue;
+    const stack = [nodeId];
+    const component: number[] = [];
+    visited.add(nodeId);
+    while (stack.length > 0) {
+      const current = stack.pop()!;
+      component.push(current);
+      for (const neighbor of nodes.get(current) ?? []) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          stack.push(neighbor);
+        }
+      }
+    }
+
+    const key = String(Math.min(...component));
+    for (const id of component) lineById.set(id, key);
+  }
+
+  return (id: number) => lineById.get(id) ?? String(id);
+}
+
+function countGlobalCategoryCombinationsForPokemon(entry: Pokemon, pokemon: Pokemon[]): number {
+  const options = FILTER_CATEGORIES.flatMap((category) =>
+    category.options.map((option) => ({
+      constraint: { category: category.key, value: option.name },
+    })),
+  );
+
+  const resolveEvolutionLine = buildEvolutionLineResolver(pokemon);
+  let count = 0;
+
+  for (let i = 0; i < options.length; i++) {
+    for (let j = i + 1; j < options.length; j++) {
+      const left = options[i];
+      const right = options[j];
+
+      if (!matchesConstraint(entry, left.constraint) || !matchesConstraint(entry, right.constraint)) {
+        continue;
+      }
+
+      const matching = pokemon.filter((candidate) =>
+        matchesConstraint(candidate, left.constraint) && matchesConstraint(candidate, right.constraint),
+      );
+
+      if (matching.length === 0) continue;
+
+      const lineCount = new Set(matching.map((candidate) => resolveEvolutionLine(candidate.id))).size;
+      if (lineCount <= 1) continue;
+
+      count += 1;
+    }
+  }
+
+  return count;
+}
+
+export function enrichPuzzlesWithFeaturedPick(puzzles: MappedPuzzle[], pokemon: Pokemon[]): MappedPuzzle[] {
+  return puzzles.map((puzzle) => {
+    const possiblePokemon = pokemon.filter((entry) =>
+      puzzle.rowConstraints.some((row) =>
+        puzzle.colConstraints.some((col) => matchesConstraint(entry, row) && matchesConstraint(entry, col)),
+      ),
+    );
+
+    const featured = [...possiblePokemon].sort(compareByHardest)[0];
+    if (!featured) return puzzle;
+
+    const globalCategoryCombinationCount = countGlobalCategoryCombinationsForPokemon(featured, pokemon);
+
+    return {
+      ...puzzle,
+      featuredPick: {
+        id: featured.id,
+        formId: featured.formId,
+        name: featured.name,
+        sprite: featured.sprite,
+        dexDifficulty: featured.dexDifficulty,
+        dexDifficultyPercentile: featured.dexDifficultyPercentile,
+        globalCategoryCombinationCount,
+      },
+    };
+  });
 }
 
 export async function fetchPuzzles(): Promise<MappedPuzzle[]> {

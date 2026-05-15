@@ -1,11 +1,20 @@
-import { mkdir, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import { fetchPuzzles, type MappedPuzzle } from "../lib/puzzle-fetch-core";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
+import { enrichPuzzlesWithFeaturedPick, fetchPuzzles, type MappedPuzzle } from "../lib/puzzle-fetch-core";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const runtimeDir = path.join(__dirname, "..", "public", "data", "runtime");
 const puzzlesDir = path.join(runtimeDir, "puzzles");
+const pokemonPath = path.join(__dirname, "..", "public", "data", "pokemon.json");
+
+async function readPokemonList(): Promise<Pokemon[]> {
+  const raw = await readFile(pokemonPath, "utf8");
+  const parsed = JSON.parse(raw) as unknown;
+  if (!Array.isArray(parsed)) throw new Error("pokemon.json does not contain a JSON array");
+  return parsed as Pokemon[];
+}
 
 async function writeLocalPuzzleFiles(puzzles: MappedPuzzle[]) {
   await mkdir(puzzlesDir, { recursive: true });
@@ -26,7 +35,9 @@ async function writeLocalPuzzleFiles(puzzles: MappedPuzzle[]) {
 
 async function main() {
   const puzzles = await fetchPuzzles();
-  await writeLocalPuzzleFiles(puzzles);
+  const pokemon = await readPokemonList();
+  const enrichedPuzzles = enrichPuzzlesWithFeaturedPick(puzzles, pokemon);
+  await writeLocalPuzzleFiles(enrichedPuzzles);
 }
 
 main().catch((error) => {

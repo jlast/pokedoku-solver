@@ -1,9 +1,11 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { fetchPuzzles } from "../../lib/puzzle-fetch-core";
+import { enrichPuzzlesWithFeaturedPick, fetchPuzzles } from "../../lib/puzzle-fetch-core";
+import { readPokemonListFromS3 } from "./puzzle-statistics/io-s3";
 
 export async function handler() {
   const bucketName = process.env.BUCKET_NAME;
   const objectKey = process.env.OBJECT_KEY || "data/runtime/today-puzzle.json";
+  const pokemonDataKey = "data/pokemon.json";
 
   if (!bucketName) {
     throw new Error("BUCKET_NAME is required");
@@ -16,8 +18,10 @@ export async function handler() {
   }
 
   const s3 = new S3Client({});
+  const pokemon = await readPokemonListFromS3(s3, bucketName, pokemonDataKey);
+  const enrichedPuzzles = enrichPuzzlesWithFeaturedPick(puzzles, pokemon);
 
-  const datedWrites = puzzles.map((puzzle) => {
+  const datedWrites = enrichedPuzzles.map((puzzle) => {
     const suffix = puzzle.type === "BONUS" ? "-bonus" : "";
     const datedObjectKey = `data/runtime/puzzles/${puzzle.date}${suffix}.json`;
 
@@ -37,7 +41,7 @@ export async function handler() {
       new PutObjectCommand({
         Bucket: bucketName,
         Key: objectKey,
-        Body: JSON.stringify(puzzles, null, 2),
+        Body: JSON.stringify(enrichedPuzzles, null, 2),
         ContentType: "application/json",
         CacheControl: "max-age=300, public",
       }),
@@ -52,7 +56,7 @@ export async function handler() {
       bucket: bucketName,
       key: objectKey,
       date: regularPuzzle.date,
-      puzzleTypes: puzzles.map((p) => p.type),
+      puzzleTypes: enrichedPuzzles.map((p) => p.type),
     }),
   };
 }
