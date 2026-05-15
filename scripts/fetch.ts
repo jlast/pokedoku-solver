@@ -146,6 +146,43 @@ function getCategoryPairs(categories: string[]): string[] {
   return pairs;
 }
 
+function resolveOverriddenFormId(formId: number, formIdMap: Map<number, number>): number {
+  let current = formId;
+  const visited = new Set<number>();
+
+  while (formIdMap.has(current) && !visited.has(current)) {
+    visited.add(current);
+    current = formIdMap.get(current)!;
+  }
+
+  return current;
+}
+
+function normalizeEvolutionPaths(pokemonList: InternalPokemon[]): void {
+  const formIdMap = new Map<number, number>();
+  for (const [sourceFormId, override] of Object.entries(POKEMON_OVERRIDES)) {
+    if (typeof override.formId === "number") {
+      formIdMap.set(Number(sourceFormId), override.formId);
+    }
+  }
+
+  for (const pokemon of pokemonList) {
+    if (!pokemon.evolution) continue;
+
+    if (pokemon.evolution.from?.length) {
+      pokemon.evolution.from = Array.from(
+        new Set(pokemon.evolution.from.map((id) => resolveOverriddenFormId(id, formIdMap))),
+      );
+    }
+
+    if (pokemon.evolution.to?.length) {
+      pokemon.evolution.to = Array.from(
+        new Set(pokemon.evolution.to.map((id) => resolveOverriddenFormId(id, formIdMap))),
+      );
+    }
+  }
+}
+
 async function fetchPokemons() {
   console.log("Fetching Pokemon list...");
   let list = loadPokemonList();
@@ -434,6 +471,7 @@ async function main() {
   }
 
   output.push(...CUSTOM_POKEMON);
+  normalizeEvolutionPaths(output);
   output.sort((a, b) => a.id - b.id);
 
   console.log("Calculating Dex difficulties...");

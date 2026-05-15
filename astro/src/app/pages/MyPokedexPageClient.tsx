@@ -1,8 +1,384 @@
-import { getSessionUserProfile } from "../../lib/cognitoAuth";
+import { useEffect, useMemo, useState } from "react";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
+import { getSessionIdToken, getSessionUserProfile } from "../../lib/cognitoAuth";
+import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
+
+const LOCAL_STORAGE_KEY = "my_pokedex_caught_key_ids";
+const SHINY_LOCAL_STORAGE_KEY = "my_pokedex_shiny_key_ids";
+const PRESTIGE_UNLOCK_LEVEL_KEY = "my_pokedex_unlocked_prestige_level";
+
+type SyncStatus = "idle" | "syncing" | "synced" | "offline";
+
+function getPrestigeToneClass(tone: string): string {
+  if (tone === "greatball") return "text-blue-600";
+  if (tone === "ultraball") return "text-yellow-400";
+  if (tone === "masterball") return "text-purple-400";
+  if (tone === "premierball") return "text-slate-400";
+  if (tone === "beastball") return "text-slate-700";
+  if (tone === "cherishball") return "text-red-700";
+  return "text-red-500";
+}
+
+function PrestigeIcon({ tone, className }: { tone: string; className?: string }) {
+  const toneClass = getPrestigeToneClass(tone);
+
+  return (
+    <svg className={`${toneClass} ${className ?? ""}`} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="rgb(30 41 59)" strokeWidth="1.35" />
+      <path d="M3 12h18" stroke="rgb(30 41 59)" strokeWidth="1.35" strokeLinecap="round" />
+      <path d="M5.2 12a6.8 6.8 0 0 1 13.6 0" className="fill-current" />
+      <path d="M5.2 12a6.8 6.8 0 0 0 13.6 0" fill={tone === "cherishball" ? "currentColor" : "white"} />
+      <circle cx="12" cy="12" r="2.5" fill="white" stroke="rgb(30 41 59)" strokeWidth="1.1" />
+    </svg>
+  );
+}
+
+function readUnlockedPrestigeLevel(): number {
+  const raw = localStorage.getItem(PRESTIGE_UNLOCK_LEVEL_KEY);
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.max(0, Math.min(PRESTIGE_LEVELS.length - 1, Math.floor(parsed)));
+}
+
+function writeUnlockedPrestigeLevel(levelIndex: number): void {
+  localStorage.setItem(PRESTIGE_UNLOCK_LEVEL_KEY, String(levelIndex));
+}
+
+function getPokemonKeyId(pokemon: Pokemon): number {
+  return pokemon.formId ?? pokemon.id;
+}
+
+function readLocalCaughtSet(): Set<number> {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!raw) return new Set<number>();
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return new Set<number>();
+
+    return new Set(
+      parsed
+        .map((entry) => Number(entry))
+        .filter((entry) => Number.isFinite(entry) && entry > 0),
+    );
+  } catch {
+    return new Set<number>();
+  }
+}
+
+function writeLocalCaughtSet(caughtSet: Set<number>): void {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(Array.from(caughtSet).sort((a, b) => a - b)));
+}
+
+function readLocalShinySet(): Set<number> {
+  try {
+    const raw = localStorage.getItem(SHINY_LOCAL_STORAGE_KEY);
+    if (!raw) return new Set<number>();
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return new Set<number>();
+
+    return new Set(
+      parsed
+        .map((entry) => Number(entry))
+        .filter((entry) => Number.isFinite(entry) && entry > 0),
+    );
+  } catch {
+    return new Set<number>();
+  }
+}
+
+function writeLocalShinySet(shinySet: Set<number>): void {
+  localStorage.setItem(SHINY_LOCAL_STORAGE_KEY, JSON.stringify(Array.from(shinySet).sort((a, b) => a - b)));
+}
+
+function getApiBaseUrl(): string | null {
+  const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
+  if (!baseUrl || typeof baseUrl !== "string") return null;
+  return baseUrl.replace(/\/+$/, "");
+}
+
+function parseCaughtIdsFromApi(data: unknown): number[] | null {
+  if (!data || typeof data !== "object") return null;
+  const candidate = (data as { caughtPokemonKeyIds?: unknown }).caughtPokemonKeyIds;
+  if (!Array.isArray(candidate)) return null;
+
+  return candidate
+    .map((entry) => Number(entry))
+    .filter((entry) => Number.isFinite(entry) && entry > 0);
+}
+
+async function getRemoteCaughtIds(token: string): Promise<number[] | null> {
+  const apiBaseUrl = getApiBaseUrl();
+  if (!apiBaseUrl) return null;
+
+  const response = await fetch(`${apiBaseUrl}/user-dex`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) return null;
+  const data = (await response.json()) as unknown;
+  return parseCaughtIdsFromApi(data);
+}
+
+async function patchRemoteCaughtIds(token: string, caughtPokemonKeyIds: number[]): Promise<boolean> {
+  const apiBaseUrl = getApiBaseUrl();
+  if (!apiBaseUrl) return false;
+
+  const response = await fetch(`${apiBaseUrl}/user-dex`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ caughtPokemonKeyIds }),
+  });
+
+  return response.ok;
+}
 
 export function MyPokedexPageClient() {
   const profile = typeof window === "undefined" ? null : getSessionUserProfile();
   const userLabel = profile?.label ?? null;
+  const [pokemon, setPokemon] = useState<Pokemon[]>([]);
+  const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
+  const [shinySet, setShinySet] = useState<Set<number>>(new Set<number>());
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showCaughtOnly, setShowCaughtOnly] = useState(false);
+  const [showMissingOnly, setShowMissingOnly] = useState(false);
+  const [selectedPrestigeLevelId, setSelectedPrestigeLevelId] = useState(PRESTIGE_LEVELS[0]?.id ?? "pokeball");
+  const [unlockedPrestigeLevelIndex, setUnlockedPrestigeLevelIndex] = useState(0);
+  const [importJsonText, setImportJsonText] = useState("");
+  const [importStatus, setImportStatus] = useState<string | null>(null);
+  const [showImportPanel, setShowImportPanel] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
+
+  useEffect(() => {
+    if (!userLabel) return;
+
+    let isCancelled = false;
+
+    async function loadData() {
+      setIsLoading(true);
+      setSyncStatus("syncing");
+
+      const localCaught = readLocalCaughtSet();
+      const localShiny = readLocalShinySet();
+      const localUnlockedLevel = readUnlockedPrestigeLevel();
+      if (!isCancelled) {
+        setCaughtSet(new Set(localCaught));
+        setShinySet(new Set(localShiny));
+        setUnlockedPrestigeLevelIndex(localUnlockedLevel);
+      }
+
+      try {
+        const pokemonResponse = await fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`);
+        const pokemonData = (await pokemonResponse.json()) as Pokemon[];
+
+        if (!isCancelled) {
+          setPokemon(Array.isArray(pokemonData) ? pokemonData : []);
+        }
+      } catch {
+        if (!isCancelled) {
+          setPokemon([]);
+        }
+      }
+
+      const token = getSessionIdToken();
+      if (!token) {
+        if (!isCancelled) {
+          setSyncStatus("offline");
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const remoteCaughtIds = await getRemoteCaughtIds(token);
+
+        if (remoteCaughtIds) {
+          const remoteSet = new Set(remoteCaughtIds);
+          writeLocalCaughtSet(remoteSet);
+          if (!isCancelled) {
+            setCaughtSet(remoteSet);
+            setSyncStatus("synced");
+          }
+        } else if (!isCancelled) {
+          setSyncStatus("offline");
+        }
+      } catch {
+        if (!isCancelled) {
+          setSyncStatus("offline");
+        }
+      }
+
+      if (!isCancelled) {
+        setIsLoading(false);
+      }
+    }
+
+    void loadData();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [userLabel]);
+
+  const filteredPokemon = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    return pokemon
+      .filter((entry) => {
+        if (showCaughtOnly && !caughtSet.has(getPokemonKeyId(entry))) {
+          return false;
+        }
+
+        if (showMissingOnly && caughtSet.has(getPokemonKeyId(entry))) {
+          return false;
+        }
+
+        if (!normalizedQuery) return true;
+
+        return (
+          entry.name.toLowerCase().includes(normalizedQuery) ||
+          String(entry.id).includes(normalizedQuery) ||
+          (entry.region ?? "").toLowerCase().includes(normalizedQuery) ||
+          entry.types.some((type) => type.toLowerCase().includes(normalizedQuery))
+        );
+      })
+      .sort((a, b) => a.id - b.id || getPokemonKeyId(a) - getPokemonKeyId(b));
+  }, [caughtSet, pokemon, searchQuery, showCaughtOnly, showMissingOnly]);
+
+  const caughtCount = caughtSet.size;
+  const shinyCount = shinySet.size;
+  const totalCount = pokemon.length;
+  const completionRate = totalCount > 0 ? Math.round((caughtCount / totalCount) * 100) : 0;
+  const selectedPrestigeLevel = PRESTIGE_LEVELS.find((level) => level.id === selectedPrestigeLevelId) ?? PRESTIGE_LEVELS[0];
+  const nextPrestigeLevel = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex + 1] ?? null;
+  const canUnlockNextPrestige = Boolean(nextPrestigeLevel) && totalCount > 0 && caughtCount === totalCount;
+
+  useEffect(() => {
+    const selectedIndex = PRESTIGE_LEVELS.findIndex((level) => level.id === selectedPrestigeLevelId);
+    if (selectedIndex > unlockedPrestigeLevelIndex) {
+      setSelectedPrestigeLevelId(PRESTIGE_LEVELS[unlockedPrestigeLevelIndex]?.id ?? PRESTIGE_LEVELS[0]?.id ?? "pokeball");
+    }
+  }, [selectedPrestigeLevelId, unlockedPrestigeLevelIndex]);
+
+  function unlockNextPrestigeLevel() {
+    if (!nextPrestigeLevel || !canUnlockNextPrestige) return;
+
+    const nextIndex = unlockedPrestigeLevelIndex + 1;
+    setUnlockedPrestigeLevelIndex(nextIndex);
+    writeUnlockedPrestigeLevel(nextIndex);
+
+    const resetCaughtSet = new Set<number>();
+    const resetShinySet = new Set<number>();
+    setCaughtSet(resetCaughtSet);
+    setShinySet(resetShinySet);
+    writeLocalCaughtSet(resetCaughtSet);
+    writeLocalShinySet(resetShinySet);
+
+    setSelectedPrestigeLevelId(nextPrestigeLevel.id);
+
+    const token = getSessionIdToken();
+    if (token) {
+      setSyncStatus("syncing");
+      void patchRemoteCaughtIds(token, []).then((didSync) => {
+        setSyncStatus(didSync ? "synced" : "offline");
+      });
+    }
+  }
+
+  function importPokedexJson() {
+    try {
+      const parsed = JSON.parse(importJsonText) as {
+        prestige?: unknown;
+        entries?: Array<{ "@t"?: unknown; pokemonId?: unknown; shiny?: unknown }>;
+      };
+
+      const validIds = new Set(pokemon.map((entry) => getPokemonKeyId(entry)));
+      const importedCaught = new Set<number>();
+      const importedShiny = new Set<number>();
+
+      if (Array.isArray(parsed.entries)) {
+        for (const entry of parsed.entries) {
+          if (entry?.["@t"] !== "upd") continue;
+          const pokemonId = Number(entry.pokemonId);
+          if (!Number.isFinite(pokemonId) || !validIds.has(pokemonId)) continue;
+          importedCaught.add(pokemonId);
+          if (entry.shiny === true) {
+            importedShiny.add(pokemonId);
+          }
+        }
+      }
+
+      const importedPrestige = Number(parsed.prestige);
+      if (Number.isFinite(importedPrestige)) {
+        const levelIndex = Math.max(0, Math.min(PRESTIGE_LEVELS.length - 1, Math.floor(importedPrestige)));
+        setUnlockedPrestigeLevelIndex(levelIndex);
+        writeUnlockedPrestigeLevel(levelIndex);
+        setSelectedPrestigeLevelId(PRESTIGE_LEVELS[levelIndex]?.id ?? PRESTIGE_LEVELS[0].id);
+      }
+
+      setCaughtSet(importedCaught);
+      setShinySet(importedShiny);
+      writeLocalCaughtSet(importedCaught);
+      writeLocalShinySet(importedShiny);
+      setImportStatus(`Imported ${importedCaught.size} unlocked Pokemon and ${importedShiny.size} shinies.`);
+
+      const token = getSessionIdToken();
+      if (token) {
+        setSyncStatus("syncing");
+        void patchRemoteCaughtIds(token, Array.from(importedCaught)).then((didSync) => {
+          setSyncStatus(didSync ? "synced" : "offline");
+        });
+      }
+    } catch {
+      setImportStatus("Import failed. Please paste valid JSON.");
+    }
+  }
+
+  async function toggleCaught(pokemonKeyId: number) {
+    const nextSet = new Set(caughtSet);
+    const nextShinySet = new Set(shinySet);
+    if (nextSet.has(pokemonKeyId)) {
+      nextSet.delete(pokemonKeyId);
+      nextShinySet.delete(pokemonKeyId);
+    } else {
+      nextSet.add(pokemonKeyId);
+    }
+
+    setCaughtSet(nextSet);
+    setShinySet(nextShinySet);
+    writeLocalCaughtSet(nextSet);
+    writeLocalShinySet(nextShinySet);
+
+    const token = getSessionIdToken();
+    if (!token) {
+      setSyncStatus("offline");
+      return;
+    }
+
+    setSyncStatus("syncing");
+    const didSync = await patchRemoteCaughtIds(token, Array.from(nextSet));
+    setSyncStatus(didSync ? "synced" : "offline");
+  }
+
+  function toggleShiny(pokemonKeyId: number) {
+    if (!caughtSet.has(pokemonKeyId)) return;
+
+    const nextSet = new Set(shinySet);
+    if (nextSet.has(pokemonKeyId)) {
+      nextSet.delete(pokemonKeyId);
+    } else {
+      nextSet.add(pokemonKeyId);
+    }
+
+    setShinySet(nextSet);
+    writeLocalShinySet(nextSet);
+  }
 
   if (!userLabel) {
     return (
@@ -42,11 +418,248 @@ export function MyPokedexPageClient() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-slate-50/70 p-6">
-        <h2 className="m-0 text-xl font-semibold text-slate-900">My Pokedex</h2>
-        <p className="mb-0 mt-2 text-slate-600">
-          Your personal dex tracking dashboard is ready for your next update. This page is now live and connected to your account session.
-        </p>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <button
+            type="button"
+            onClick={() => setShowImportPanel((prev) => !prev)}
+            className="flex w-full items-center justify-between gap-3 text-left"
+            aria-expanded={showImportPanel}
+          >
+            <span className="text-sm font-semibold text-slate-800">Import Pokedoku Pokedex JSON</span>
+            <span className="text-xs font-semibold text-slate-500">{showImportPanel ? "Hide" : "Show"}</span>
+          </button>
+
+          {showImportPanel ? (
+            <>
+              <p className="mb-0 mt-2 text-xs text-slate-600">
+                To export your Pokedoku dex JSON, open
+                {" "}
+                <a
+                  href="https://api.pokedoku.com/api/user/dex?type=1"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-slate-800 underline decoration-slate-400 underline-offset-2 hover:text-slate-900"
+                >
+                  api.pokedoku.com/api/user/dex?type=1
+                </a>
+                , copy the full JSON response, then paste it below.
+              </p>
+              <textarea
+                value={importJsonText}
+                onChange={(event) => setImportJsonText(event.target.value)}
+                placeholder='Paste JSON like {"type":"DAILY_MODE","prestige":0,"entries":[...]}'
+                className="mt-2 h-28 w-full rounded-lg border border-slate-300 bg-white p-3 text-xs text-slate-900 outline-none ring-slate-300 transition focus:ring"
+              />
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={importPokedexJson}
+                  className="h-10 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
+                >
+                  Import Pokedex JSON
+                </button>
+                {importStatus ? <p className="m-0 text-xs text-slate-600">{importStatus}</p> : null}
+              </div>
+            </>
+          ) : null}
+        </div>
+
+        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="m-0 text-sm font-semibold text-amber-900">Prestige Unlock</p>
+              <p className="m-0 mt-1 text-xs text-amber-800">
+                {nextPrestigeLevel
+                  ? `Complete the full Pokedex to unlock ${nextPrestigeLevel.label}. Unlocking resets your progress.`
+                  : "All prestige levels unlocked."}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={unlockNextPrestigeLevel}
+              disabled={!canUnlockNextPrestige}
+              className={`h-11 shrink-0 rounded-lg px-5 text-sm font-bold transition ${
+                canUnlockNextPrestige
+                  ? "bg-amber-500 text-white shadow-sm hover:bg-amber-600"
+                  : "cursor-not-allowed bg-slate-200 text-slate-500"
+              }`}
+            >
+              {nextPrestigeLevel ? `Unlock ${nextPrestigeLevel.label}` : "All unlocked"}
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-4 overflow-x-auto pb-1">
+          <div className="inline-flex min-w-full gap-2 rounded-xl bg-slate-100 p-1">
+            {PRESTIGE_LEVELS.map((level, levelIndex) => {
+              const isLocked = levelIndex > unlockedPrestigeLevelIndex;
+
+              return (
+                <button
+                  key={level.id}
+                  type="button"
+                  onClick={() => setSelectedPrestigeLevelId(level.id)}
+                  disabled={isLocked}
+                  className={`flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition ${
+                    selectedPrestigeLevelId === level.id
+                      ? "bg-white text-slate-900 shadow-sm"
+                      : "text-slate-600 hover:bg-slate-200 hover:text-slate-800"
+                  } ${isLocked ? "cursor-not-allowed opacity-50 hover:bg-transparent hover:text-slate-600" : ""}`}
+                >
+                  <PrestigeIcon tone={level.tone} className="h-4 w-4" />
+                  <span>{level.label}</span>
+                  {isLocked ? <span className="text-[10px]">Locked</span> : null}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 className="m-0 text-xl font-semibold text-slate-900">My Pokedex</h2>
+            <p className="mb-0 mt-1 text-sm text-slate-500">Track your collection and keep your progress synced.</p>
+            <p className="mb-0 mt-1 text-xs text-slate-500">
+              Prestige: <span className="font-semibold text-slate-700">{selectedPrestigeLevel.label}</span> (Shiny odds: {selectedPrestigeLevel.oddsLabel})
+            </p>
+          </div>
+          <span
+            className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+              syncStatus === "synced"
+                ? "bg-emerald-100 text-emerald-700"
+                : syncStatus === "syncing"
+                  ? "bg-amber-100 text-amber-700"
+                  : "bg-slate-100 text-slate-600"
+            }`}
+          >
+            {syncStatus === "synced" ? "Synced" : syncStatus === "syncing" ? "Syncing..." : "Local only"}
+          </span>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="m-0 text-sm text-slate-500">Completion</p>
+              <p className="m-0 text-2xl font-bold text-slate-900">
+                {caughtCount} / {totalCount}
+              </p>
+              <p className="m-0 mt-1 text-xs font-semibold text-amber-700">Shinies: {shinyCount}</p>
+            </div>
+            <p className="m-0 text-sm font-semibold text-slate-700">{completionRate}%</p>
+          </div>
+          <progress className="mt-3 h-2 w-full overflow-hidden rounded-full" max={Math.max(totalCount, 1)} value={caughtCount} />
+        </div>
+
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search by name, number, type, or region"
+            className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none ring-slate-300 transition focus:ring"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              setShowCaughtOnly((prev) => {
+                const next = !prev;
+                if (next) {
+                  setShowMissingOnly(false);
+                }
+                return next;
+              });
+            }}
+            className={`h-10 shrink-0 rounded-lg px-4 text-sm font-semibold transition ${
+              showCaughtOnly ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+            }`}
+          >
+            {showCaughtOnly ? "Showing caught" : "Show caught only"}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setShowMissingOnly((prev) => {
+                const next = !prev;
+                if (next) {
+                  setShowCaughtOnly(false);
+                }
+                return next;
+              });
+            }}
+            className={`h-10 shrink-0 rounded-lg px-4 text-sm font-semibold transition ${
+              showMissingOnly ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+            }`}
+          >
+            {showMissingOnly ? "Showing missing" : "Show missing only"}
+          </button>
+        </div>
+
+        {isLoading ? (
+          <p className="mb-0 mt-5 text-sm text-slate-600">Loading your Pokedex...</p>
+        ) : (
+          <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
+            {filteredPokemon.map((entry) => {
+              const pokemonKeyId = getPokemonKeyId(entry);
+              const isCaught = caughtSet.has(pokemonKeyId);
+              const isShiny = shinySet.has(pokemonKeyId);
+
+              return (
+                <button
+                  key={pokemonKeyId}
+                  type="button"
+                  onClick={() => {
+                    void toggleCaught(pokemonKeyId);
+                  }}
+                  className={`rounded-xl border p-3 text-left transition ${
+                    isCaught
+                      ? "border-emerald-300 bg-emerald-50 hover:bg-emerald-100"
+                      : "border-slate-200 bg-white hover:bg-slate-50"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs text-slate-500">#{entry.id}</span>
+                    <span className={`text-xs font-semibold ${isCaught ? "text-emerald-700" : "text-slate-500"}`}>
+                      {isCaught ? "Caught" : "Missing"}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2">
+                    {entry.sprite ? (
+                      <img src={entry.sprite} alt={entry.name} className="h-10 w-10 object-contain" loading="lazy" />
+                    ) : (
+                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-slate-200 text-xs font-semibold text-slate-600">
+                        {entry.name.charAt(0)}
+                      </span>
+                    )}
+                    <div>
+                      <p className="m-0 text-sm font-semibold text-slate-900">{entry.name}</p>
+                      <p className="m-0 text-xs text-slate-500">{entry.types.join(" / ")}</p>
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        toggleShiny(pokemonKeyId);
+                      }}
+                      disabled={!isCaught}
+                      className={`rounded-md px-2 py-1 text-[11px] font-semibold transition ${
+                        isShiny
+                          ? "bg-amber-400 text-amber-900"
+                          : isCaught
+                            ? "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                            : "cursor-not-allowed bg-slate-100 text-slate-400"
+                      }`}
+                    >
+                      {isShiny ? "Shiny unlocked" : "Mark shiny"}
+                    </button>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </section>
     </main>
   );

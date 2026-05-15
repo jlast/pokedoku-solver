@@ -215,6 +215,11 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                           <span className={`text-[9px] font-semibold leading-[1.05] ${isSelected ? 'text-[#1e3a8a]' : 'text-[#2c3e50]'}`}>{cell.name}</span>
                         </div>
                       </>
+                    ) : possible.length === 0 ? (
+                      <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
+                        <span className={`text-[18px] font-bold max-[768px]:text-[14px] ${isSelected ? 'text-[#1e3a8a]' : 'text-[#475569]'}`}>No options yet</span>
+                        <span className={`text-[0.58rem] ${isSelected ? 'text-[#1e3a8a]' : 'text-[#64748b]'}`}>Tap to check other squares</span>
+                      </div>
                     ) : (
                       <div className="flex h-full flex-col items-center justify-center gap-0.5">
                         <span className={`text-[26px] font-bold max-[768px]:text-[20px] ${isSelected ? 'text-[#1e3a8a]' : 'text-[#334155]'}`}>{possible.length}</span>

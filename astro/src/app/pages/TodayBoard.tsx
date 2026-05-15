@@ -11,6 +11,7 @@ import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
 import { ActionButton, ActionLink } from "../components/shared/ActionButton";
 import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { slugify } from "../../lib/slug";
+import { getSessionUserProfile } from "../../lib/cognitoAuth";
 
 export interface TodayPuzzle {
   date: string;
@@ -20,6 +21,8 @@ export interface TodayPuzzle {
   rowConstraints: Constraint[];
   colConstraints: Constraint[];
 }
+
+const MY_POKEDEX_CAUGHT_KEY = "my_pokedex_caught_key_ids";
 
 interface GridState {
   cells: (Pokemon | null)[][];
@@ -45,6 +48,22 @@ function compareByHardest(a: Pokemon, b: Pokemon): number {
   const bPercentile = b.dexDifficultyPercentile ?? Number.POSITIVE_INFINITY;
   if (aPercentile !== bPercentile) return bPercentile - aPercentile;
   return a.id - b.id;
+}
+
+function getPokemonKeyId(pokemon: Pokemon): number {
+  return pokemon.formId ?? pokemon.id;
+}
+
+function readCaughtSet(): Set<number> {
+  try {
+    const raw = localStorage.getItem(MY_POKEDEX_CAUGHT_KEY);
+    if (!raw) return new Set<number>();
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return new Set<number>();
+    return new Set(parsed.map((entry) => Number(entry)).filter((entry) => Number.isFinite(entry) && entry > 0));
+  } catch {
+    return new Set<number>();
+  }
 }
 
 function buildSuggestedCells(
@@ -112,6 +131,7 @@ function toParsedConstraint(constraint: Constraint | null): { raw: string; type:
 }
 
 export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
+  const isLoggedIn = typeof window !== "undefined" && Boolean(getSessionUserProfile());
   const gridSize = puzzle.rowConstraints.length;
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
@@ -124,7 +144,13 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const [suggestedPokemonKeys, setSuggestedPokemonKeys] = useState<(string | null)[][]>(
     () => Array(gridSize).fill(null).map(() => Array(gridSize).fill(null)),
   );
+  const [showMissingOnly, setShowMissingOnly] = useState(false);
+  const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setCaughtSet(readCaughtSet());
+  }, []);
 
   useEffect(() => {
     if (!grid.selectedCell || !suggestionsRef.current) return;
@@ -141,9 +167,6 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       .then((res) => res.json())
       .then((data) => {
         setPokemon(data);
-        const { cells, suggestedKeys } = buildSuggestedCells(data, puzzle.rowConstraints, puzzle.colConstraints);
-        setSuggestedPokemonKeys(suggestedKeys);
-        setGrid((prev) => ({ ...prev, cells }));
         setLoading(false);
       })
       .catch((err) => {
@@ -151,6 +174,18 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         setLoading(false);
       });
   }, [puzzle.colConstraints, puzzle.rowConstraints]);
+
+  const pokemonPool = useMemo(() => {
+    if (!showMissingOnly) return pokemon;
+    return pokemon.filter((entry) => !caughtSet.has(getPokemonKeyId(entry)));
+  }, [caughtSet, pokemon, showMissingOnly]);
+
+  useEffect(() => {
+    if (pokemonPool.length === 0) return;
+    const { cells, suggestedKeys } = buildSuggestedCells(pokemonPool, puzzle.rowConstraints, puzzle.colConstraints);
+    setSuggestedPokemonKeys(suggestedKeys);
+    setGrid((prev) => ({ ...prev, cells }));
+  }, [pokemonPool, puzzle.rowConstraints, puzzle.colConstraints]);
 
   const possiblePokemon = useMemo(() => {
     const result: Pokemon[][][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null).map(() => [] as Pokemon[]));
@@ -160,7 +195,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           result[row][col] = [grid.cells[row][col]!];
           continue;
         }
-        const candidates = pokemon.filter((p) => {
+        const candidates = pokemonPool.filter((p) => {
           if (!matchesConstraint(p, grid.rowConstraints[row])) return false;
           if (!matchesConstraint(p, grid.colConstraints[col])) return false;
           return true;
@@ -169,17 +204,17 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       }
     }
     return result;
-  }, [grid, pokemon, gridSize]);
+  }, [grid, pokemonPool, gridSize]);
 
   const swapOptionCounts = useMemo(() => {
     const result: number[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
     for (let row = 0; row < gridSize; row++) {
       for (let col = 0; col < gridSize; col++) {
-        result[row][col] = pokemon.filter((p) => matchesConstraint(p, grid.rowConstraints[row]) && matchesConstraint(p, grid.colConstraints[col])).length;
+        result[row][col] = pokemonPool.filter((p) => matchesConstraint(p, grid.rowConstraints[row]) && matchesConstraint(p, grid.colConstraints[col])).length;
       }
     }
     return result;
-  }, [grid.rowConstraints, grid.colConstraints, pokemon, gridSize]);
+  }, [grid.rowConstraints, grid.colConstraints, pokemonPool, gridSize]);
 
   const handleCellClick = (row: number, col: number) => {
     setGrid((prev) => {
@@ -211,8 +246,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const selectedCellPossible = useMemo(() => {
     if (!grid.selectedCell) return [];
     const [row, col] = grid.selectedCell;
-    return pokemon.filter((p) => matchesConstraint(p, grid.rowConstraints[row]) && matchesConstraint(p, grid.colConstraints[col]));
-  }, [grid.selectedCell, grid.rowConstraints, grid.colConstraints, pokemon]);
+    return pokemonPool.filter((p) => matchesConstraint(p, grid.rowConstraints[row]) && matchesConstraint(p, grid.colConstraints[col]));
+  }, [grid.selectedCell, grid.rowConstraints, grid.colConstraints, pokemonPool]);
 
   const textualSuggestions = useMemo(() => {
     const entries: {
@@ -240,6 +275,33 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
 
   return (
     <div className="flex flex-col items-center">
+      {isLoggedIn ? (
+        <section className="mb-3 max-w-[700px] w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-left">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p className="m-0 text-sm font-semibold text-slate-800">My Pokedex filter</p>
+              <p className="m-0 text-xs text-slate-500">Show only entries you still need</p>
+            </div>
+            <div className="inline-flex rounded-lg border border-slate-300 bg-white p-1">
+              <button
+                type="button"
+                onClick={() => setShowMissingOnly(false)}
+                className={`rounded-md px-3 py-1 text-sm ${!showMissingOnly ? "bg-slate-700 text-white" : "text-slate-700"}`}
+              >
+                Off
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowMissingOnly(true)}
+                className={`rounded-md px-3 py-1 text-sm ${showMissingOnly ? "bg-slate-700 text-white" : "text-slate-700"}`}
+              >
+                On
+              </button>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <Grid
         cells={grid.cells}
         rowConstraints={grid.rowConstraints}
