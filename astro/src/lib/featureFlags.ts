@@ -17,16 +17,16 @@ export function isAuthFeatureEnabled(search: string): boolean {
   const queryValue = params.get("auth");
 
   if (queryValue === "1") {
-    sessionStorage.setItem(AUTH_OVERRIDE_KEY, "1");
+    localStorage.setItem(AUTH_OVERRIDE_KEY, "1");
     return true;
   }
 
   if (queryValue === "0") {
-    sessionStorage.setItem(AUTH_OVERRIDE_KEY, "0");
+    localStorage.setItem(AUTH_OVERRIDE_KEY, "0");
     return false;
   }
 
-  const storedOverride = sessionStorage.getItem(AUTH_OVERRIDE_KEY);
+  const storedOverride = localStorage.getItem(AUTH_OVERRIDE_KEY);
   if (storedOverride === "1") return true;
   if (storedOverride === "0") return false;
 

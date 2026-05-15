@@ -3,7 +3,7 @@ import { buildLoginUrl } from "../../lib/cognitoAuth";
 import { isAuthFeatureEnabled } from "../../lib/featureFlags";
 
 type Provider = {
-  id: "Google" | "Amazon";
+  id: "Google" | "Facebook" | "Apple";
   enabled: boolean;
   label: string;
   description: string;
@@ -17,10 +17,16 @@ const PROVIDERS: Provider[] = [
     description: "Sign in with your Google account through Cognito.",
   },
   {
-    id: "Amazon",
+    id: "Facebook",
     enabled: false,
-    label: "Continue with Amazon",
-    description: "Coming soon. Add Login with Amazon in Cognito to enable.",
+    label: "Continue with Facebook",
+    description: "Coming soon. Add Facebook Login in Cognito to enable.",
+  },
+  {
+    id: "Apple",
+    enabled: false,
+    label: "Continue with Apple",
+    description: "Coming soon. Add Sign in with Apple in Cognito to enable.",
   },
 ];
 
