@@ -128,7 +128,7 @@ jobs:
         run: aws cloudformation validate-template --template-body file://terraform/user-dex-api-stack.yaml
 
       - name: Deploy user dex API CloudFormation stack
-        if: inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true'
+        if: false && (inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true')
         env:
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
