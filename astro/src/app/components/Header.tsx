@@ -111,6 +111,8 @@ export function Header({
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pathname, setPathname] = useState("");
+  const [authEnabled, setAuthEnabled] = useState(false);
+  const [userLabel, setUserLabel] = useState<string | null>(null);
   const toolsMenuRef = useRef<HTMLDetailsElement | null>(null);
   const mobileToolsMenuRef = useRef<HTMLDetailsElement | null>(null);
 
@@ -132,9 +134,6 @@ export function Header({
 
   const normalizedPathname = pathname ? normalizePath(pathname) : "";
   const currentPath = stripBasePath(normalizedPathname);
-  const authEnabled =
-    typeof window !== "undefined" && isAuthFeatureEnabled(window.location.search);
-  const userLabel = typeof window !== "undefined" ? getSessionUserLabel() : null;
   const isToolsSectionPage = currentPath.startsWith(resolvePath("tools/"));
   const isToolRouteActive = (item: ToolMenuItem) => {
     const prefixes = [item.url, ...(item.matchPrefixes ?? [])];
@@ -222,15 +221,24 @@ export function Header({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const updatePathname = () => setPathname(window.location.pathname);
-    updatePathname();
-    window.addEventListener("popstate", updatePathname);
-    window.addEventListener("astro:page-load", updatePathname as EventListener);
-    document.addEventListener("astro:after-swap", updatePathname as EventListener);
+    const syncClientState = () => {
+      setPathname(window.location.pathname);
+      setAuthEnabled(isAuthFeatureEnabled(window.location.search));
+      setUserLabel(getSessionUserLabel());
+    };
+
+    const syncFromNav = () => {
+      window.setTimeout(syncClientState, 0);
+    };
+
+    syncFromNav();
+    window.addEventListener("popstate", syncFromNav);
+    window.addEventListener("astro:page-load", syncFromNav as EventListener);
+    document.addEventListener("astro:after-swap", syncFromNav as EventListener);
     return () => {
-      window.removeEventListener("popstate", updatePathname);
-      window.removeEventListener("astro:page-load", updatePathname as EventListener);
-      document.removeEventListener("astro:after-swap", updatePathname as EventListener);
+      window.removeEventListener("popstate", syncFromNav);
+      window.removeEventListener("astro:page-load", syncFromNav as EventListener);
+      document.removeEventListener("astro:after-swap", syncFromNav as EventListener);
     };
   }, []);
 

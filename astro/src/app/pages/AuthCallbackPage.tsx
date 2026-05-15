@@ -3,17 +3,15 @@ import { finishLoginFromCallback } from "../../lib/cognitoAuth";
 import { isAuthFeatureEnabled } from "../../lib/featureFlags";
 
 export function AuthCallbackPage() {
-  const [status, setStatus] = useState<"working" | "success" | "error">(() => {
-    if (typeof window === "undefined") return "working";
-    return isAuthFeatureEnabled(window.location.search) ? "working" : "error";
-  });
+  const [status, setStatus] = useState<"working" | "success" | "error">("working");
 
   useEffect(() => {
-    if (status === "error") {
-      return;
-    }
-
     const finish = async () => {
+      if (!isAuthFeatureEnabled(window.location.search)) {
+        setStatus("error");
+        return;
+      }
+
       const ok = await finishLoginFromCallback(new URL(window.location.href));
       setStatus(ok ? "success" : "error");
 
@@ -24,7 +22,7 @@ export function AuthCallbackPage() {
     };
 
     void finish();
-  }, [status]);
+  }, []);
 
   return (
     <main className="mx-auto flex min-h-[50vh] max-w-xl items-center justify-center px-4 text-center">
