@@ -1,0 +1,23 @@
+---
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import { Footer } from "../../app/components/Footer";
+import { Header } from "../../app/components/Header";
+import { MyPokedexPageClient } from "../../app/pages/MyPokedexPageClient";
+---
+
+<AppPageLayout
+  title="My Pokedex | Pokedoku Helper"
+  description="Track your personal Pokedex progress in Pokedoku Helper."
+  path="/user/"
+>
+  <div class="min-h-screen overflow-x-hidden p-5">
+    <Header
+      title="My Pokedex"
+      subtitle="Your signed-in space for personal dex progress."
+      currentPage="my-pokedex"
+      client:load
+    />
+    <MyPokedexPageClient client:load />
+    <Footer client:load />
+  </div>
+</AppPageLayout>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "../../../../lib/browser/analytics";
-import { buildLogoutUrl, clearSession, getSessionUserLabel } from "../../lib/cognitoAuth";
+import { buildLogoutUrl, clearSession, getSessionUserProfile } from "../../lib/cognitoAuth";
 import { isAuthFeatureEnabled } from "../../lib/featureFlags";
 
 interface HeaderProps {
@@ -113,8 +113,12 @@ export function Header({
   const [pathname, setPathname] = useState("");
   const [authEnabled, setAuthEnabled] = useState(false);
   const [userLabel, setUserLabel] = useState<string | null>(null);
+  const [userImageUrl, setUserImageUrl] = useState<string | null>(null);
+  const [userFallbackInitial, setUserFallbackInitial] = useState("U");
   const toolsMenuRef = useRef<HTMLDetailsElement | null>(null);
+  const profileMenuRef = useRef<HTMLDetailsElement | null>(null);
   const mobileToolsMenuRef = useRef<HTMLDetailsElement | null>(null);
+  const mobileUserMenuRef = useRef<HTMLDetailsElement | null>(null);
 
   const normalizePath = (path: string) => {
     const cleanPath = path.replace(/\/+/g, "/");
@@ -135,6 +139,7 @@ export function Header({
   const normalizedPathname = pathname ? normalizePath(pathname) : "";
   const currentPath = stripBasePath(normalizedPathname);
   const isToolsSectionPage = currentPath.startsWith(resolvePath("tools/"));
+  const isUserSectionPage = currentPath.startsWith(resolvePath("user/"));
   const isToolRouteActive = (item: ToolMenuItem) => {
     const prefixes = [item.url, ...(item.matchPrefixes ?? [])];
     return prefixes.some((prefix) => normalizePath(currentPath).startsWith(resolvePath(prefix)));
@@ -198,11 +203,16 @@ export function Header({
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
       const toolsMenu = toolsMenuRef.current;
-      if (!toolsMenu || !toolsMenu.open) return;
+      const profileMenu = profileMenuRef.current;
       const target = event.target;
       if (!(target instanceof Node)) return;
-      if (!toolsMenu.contains(target)) {
+
+      if (toolsMenu?.open && !toolsMenu.contains(target)) {
         toolsMenu.open = false;
+      }
+
+      if (profileMenu?.open && !profileMenu.contains(target)) {
+        profileMenu.open = false;
       }
     };
 
@@ -220,11 +230,21 @@ export function Header({
   }, [mobileMenuOpen, isToolsSectionPage]);
 
   useEffect(() => {
+    if (!mobileMenuOpen || !isUserSectionPage) return;
+    if (mobileUserMenuRef.current) {
+      mobileUserMenuRef.current.open = true;
+    }
+  }, [mobileMenuOpen, isUserSectionPage]);
+
+  useEffect(() => {
     if (typeof window === "undefined") return;
     const syncClientState = () => {
       setPathname(window.location.pathname);
       setAuthEnabled(isAuthFeatureEnabled(window.location.search));
-      setUserLabel(getSessionUserLabel());
+      const profile = getSessionUserProfile();
+      setUserLabel(profile?.label ?? null);
+      setUserImageUrl(profile?.imageUrl ?? null);
+      setUserFallbackInitial(profile?.fallbackInitial ?? "U");
     };
 
     const syncFromNav = () => {
@@ -247,6 +267,8 @@ export function Header({
     clearSession();
     window.location.assign(buildLogoutUrl());
   };
+
+  const userInitial = userFallbackInitial;
 
   return (
     <>
@@ -418,18 +440,60 @@ export function Header({
 
             <div className="flex shrink-0 items-center justify-self-end gap-2">
               {authEnabled ? userLabel ? (
-                <>
-                  <span className="hidden max-w-[200px] truncate text-sm text-slate-600 min-[1101px]:inline">
-                    {userLabel}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={signOut}
-                    className="cursor-pointer inline-flex h-10 items-center rounded-[10px] border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
-                  >
-                    Sign out
-                  </button>
-                </>
+                <details ref={profileMenuRef} className="group relative hidden min-[1101px]:block">
+                  <summary className="inline-flex h-10 cursor-pointer list-none items-center gap-2 rounded-[10px] border border-slate-300 bg-white px-2.5 pr-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">
+                    {userImageUrl ? (
+                      <img
+                        src={userImageUrl}
+                        alt={`${userLabel} profile`}
+                        className="h-6 w-6 rounded-full border border-slate-200 object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
+                        {userInitial}
+                      </span>
+                    )}
+                    <span className="max-w-[180px] truncate">{userLabel}</span>
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                      className="transition-transform group-open:rotate-180"
+                    >
+                      <path
+                        d="m5 7.5 5 5 5-5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </summary>
+                  <div className="absolute right-0 z-20 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
+                    <a
+                      href={`${import.meta.env.BASE_URL}user/`}
+                      onClick={() =>
+                        trackEvent("click_navigate", {
+                          url: "user/",
+                          from: currentPage,
+                        })
+                      }
+                      className="flex items-center gap-2 border-b border-slate-100 px-3 py-2.5 text-sm text-slate-700 no-underline hover:bg-slate-50"
+                    >
+                      My Pokedex
+                    </a>
+                    <button
+                      type="button"
+                      onClick={signOut}
+                      className="w-full cursor-pointer px-3 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                </details>
               ) : (
                 <a
                   href={`${import.meta.env.BASE_URL}login/`}
@@ -710,28 +774,102 @@ export function Header({
                       );
                     })}
 
-                    {authEnabled ? userLabel ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          closeMobileMenu("navigate");
-                          signOut();
-                        }}
-                        className={mobileNavButtonClass(false)}
+                    {authEnabled ? (
+                      <details
+                        ref={mobileUserMenuRef}
+                        className="group mt-1 overflow-hidden rounded-xl bg-white"
+                        open={mobileMenuOpen && isUserSectionPage}
                       >
-                        Sign out
-                      </button>
-                    ) : (
-                      <a
-                        href={`${import.meta.env.BASE_URL}login/`}
-                        onClick={() => {
-                          trackEvent("click_navigate", { url: "login/", from: currentPage });
-                          closeMobileMenu("navigate");
-                        }}
-                        className={mobileNavButtonClass(false)}
-                      >
-                        Login
-                      </a>
+                        <summary className="flex list-none items-center justify-between [&::-webkit-details-marker]:hidden">
+                          <span className={mobileNavButtonClass(false)}>
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <path
+                                d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"
+                                fill="currentColor"
+                              />
+                            </svg>
+                            My Pokedoku Helper
+                          </span>
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            aria-hidden="true"
+                            className="mr-3 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180"
+                          >
+                            <path
+                              d="m5 7.5 5 5 5-5"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </summary>
+
+                        <div className="bg-red-50/80 px-2 py-2">
+                          {userLabel ? (
+                            <div className="mb-1 mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700">
+                              {userImageUrl ? (
+                                <img
+                                  src={userImageUrl}
+                                  alt={`${userLabel} profile`}
+                                  className="h-7 w-7 rounded-full border border-slate-200 object-cover"
+                                  referrerPolicy="no-referrer"
+                                />
+                              ) : (
+                                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
+                                  {userInitial}
+                                </span>
+                              )}
+                              <span className="truncate">{userLabel}</span>
+                            </div>
+                          ) : null}
+
+                          {userLabel ? (
+                            <>
+                              <a
+                                href={`${import.meta.env.BASE_URL}user/`}
+                                onClick={() => {
+                                  trackEvent("click_navigate", { url: "user/", from: currentPage });
+                                  closeMobileMenu("navigate");
+                                }}
+                                className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 no-underline transition-colors hover:bg-slate-100"
+                              >
+                                My Pokedex
+                              </a>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  closeMobileMenu("navigate");
+                                  signOut();
+                                }}
+                                className="mt-0.5 flex w-full cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                              >
+                                Sign out
+                              </button>
+                            </>
+                          ) : (
+                            <a
+                              href={`${import.meta.env.BASE_URL}login/`}
+                              onClick={() => {
+                                trackEvent("click_navigate", { url: "login/", from: currentPage });
+                                closeMobileMenu("navigate");
+                              }}
+                              className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 no-underline transition-colors hover:bg-slate-100"
+                            >
+                              Login
+                            </a>
+                          )}
+                        </div>
+                      </details>
                     ) : null}
 
                     <a

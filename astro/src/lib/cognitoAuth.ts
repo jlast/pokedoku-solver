@@ -45,7 +45,57 @@ function decodeBase64Url(value: string): string {
     .replace(/-/g, "+")
     .replace(/_/g, "/")
     .padEnd(Math.ceil(value.length / 4) * 4, "=");
-  return atob(normalized);
+  const binary = atob(normalized);
+  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+
+type SessionTokenPayload = {
+  email?: string;
+  name?: string;
+  picture?: string;
+  avatar_url?: string;
+  preferred_username?: string;
+  username?: string;
+  given_name?: string;
+  family_name?: string;
+  sub?: string;
+  [key: string]: unknown;
+};
+
+const UNKNOWN_TRAINER_LABEL = "Unknown Trainer";
+
+function getBestSessionLabel(payload: SessionTokenPayload): string {
+  const displayName = payload.name || payload.email;
+
+  if (displayName && displayName.trim().length > 0) {
+    return displayName;
+  }
+
+  return UNKNOWN_TRAINER_LABEL;
+}
+
+function getFallbackInitial(payload: SessionTokenPayload): string {
+  if (payload.email && payload.email.trim().length > 0) {
+    return payload.email.trim().charAt(0).toUpperCase();
+  }
+
+  return "U";
+}
+
+function getBestSessionImageUrl(payload: SessionTokenPayload): string | null {
+  const candidates = [
+    payload.picture,
+    payload.avatar_url,
+    typeof payload["custom:picture"] === "string" ? payload["custom:picture"] : null,
+    typeof payload["profile_image_url"] === "string" ? payload["profile_image_url"] : null,
+  ];
+
+  const firstValid = candidates.find(
+    (candidate) => typeof candidate === "string" && candidate.trim().length > 0,
+  );
+
+  return firstValid ?? null;
 }
 
 export async function buildLoginUrl(provider: ProviderName): Promise<string> {
@@ -187,13 +237,38 @@ export function getSessionUserLabel(): string | null {
 
   try {
     const payloadPart = token.split(".")[1];
-    if (!payloadPart) return "Signed in";
-    const payload = JSON.parse(decodeBase64Url(payloadPart)) as {
-      email?: string;
-      name?: string;
-    };
-    return payload.name || payload.email || "Signed in";
+    if (!payloadPart) return UNKNOWN_TRAINER_LABEL;
+    const payload = JSON.parse(decodeBase64Url(payloadPart)) as SessionTokenPayload;
+    return getBestSessionLabel(payload);
   } catch {
-    return "Signed in";
+    return UNKNOWN_TRAINER_LABEL;
+  }
+}
+
+export interface SessionUserProfile {
+  label: string;
+  imageUrl: string | null;
+  fallbackInitial: string;
+}
+
+export function getSessionUserProfile(): SessionUserProfile | null {
+  const token = getSessionIdToken();
+  if (!token) return null;
+
+  try {
+    const payloadPart = token.split(".")[1];
+    if (!payloadPart) {
+      return { label: UNKNOWN_TRAINER_LABEL, imageUrl: null, fallbackInitial: "U" };
+    }
+
+    const payload = JSON.parse(decodeBase64Url(payloadPart)) as SessionTokenPayload;
+
+    return {
+      label: getBestSessionLabel(payload),
+      imageUrl: getBestSessionImageUrl(payload),
+      fallbackInitial: getFallbackInitial(payload),
+    };
+  } catch {
+    return { label: UNKNOWN_TRAINER_LABEL, imageUrl: null, fallbackInitial: "U" };
   }
 }
