@@ -9,7 +9,7 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
     ],
     region: "Kanto",
     evolutionStage: "First Stage",
-    formId: 100010,
+    formId: 99901,
     evolution: {
       to: [11],
     }
@@ -23,9 +23,9 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
     region: "Sinnoh",
     sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/female/449.png",
     evolutionStage: "First Stage",
-    formId: 100449,
+    formId: 90449,
     evolution: {
-      to: [100450],
+      to: [90450],
     }
   },
   {
@@ -40,9 +40,9 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
     evolutionTrigger: [
       "Evolved by Level"
     ],
-    formId: 100450,
+    formId: 90450,
     evolution: {
-      from: [100449],
+      from: [90449],
     }
   },
   {
@@ -58,7 +58,7 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
     evolutionTrigger: [
       "Evolved by Level"
     ],
-    formId: 100521,
+    formId: 90521,
     evolution: {
       from: [520],
     }

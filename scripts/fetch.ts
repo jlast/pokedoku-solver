@@ -39,7 +39,7 @@ import type {
   PokeAPISpecies,
   EvolutionNode,
 } from "./lib/types";
-import type { Pokemon, PokemonType, DexDifficulty, PokemonCategory } from "@pokedoku-helper/shared-types";
+import type { Pokemon, PokemonType, DexDifficulty, PokemonCategory, InternalPokemon } from "@pokedoku-helper/shared-types";
 import { CUSTOM_POKEMON } from "./custom_pokemon";
 
 const NO_CACHE = process.argv.includes("--no-cache");
@@ -49,7 +49,7 @@ const REQUEST_DELAY = 100;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_FILE = path.join(__dirname, "..", "public", "data", "pokemon.json");
 
-function getAllCategories(pokemon: Pokemon): string[] {
+function getAllCategories(pokemon: InternalPokemon): string[] {
   const categories: string[] = [];
 
   for (const type of pokemon.types) {
@@ -75,12 +75,12 @@ function getAllCategories(pokemon: Pokemon): string[] {
   return categories;
 }
 
-function addPokemonCategory(entry: Pokemon, category: PokemonCategory): void {
+function addPokemonCategory(entry: InternalPokemon, category: PokemonCategory): void {
   if (!entry.categories) entry.categories = [];
   if (!entry.categories.includes(category)) entry.categories.push(category);
 }
 
-function calculateDexDifficulties(pokemonList: Pokemon[]): void {
+function calculateDexDifficulties(pokemonList: InternalPokemon[]): Pokemon[] {
   const combinationCounts: Record<string, number> = {};
 
   for (const pokemon of pokemonList) {
@@ -97,7 +97,7 @@ function calculateDexDifficulties(pokemonList: Pokemon[]): void {
     }
   }
 
-  const scores: { pokemon: Pokemon; score: number }[] = [];
+  const scores: { pokemon: InternalPokemon; score: number }[] = [];
 
   for (const pokemon of pokemonList) {
     const categories = getAllCategories(pokemon);
@@ -117,6 +117,7 @@ function calculateDexDifficulties(pokemonList: Pokemon[]): void {
   scores.sort((a, b) => b.score - a.score);
 
   const total = scores.length;
+  const pokemon: Pokemon[] = [];
   for (let i = 0; i < total; i++) {
     const percentile = i / total;
     let grade: DexDifficulty;
@@ -126,9 +127,13 @@ function calculateDexDifficulties(pokemonList: Pokemon[]): void {
     else if (percentile < 0.98) grade = "Expert";
     else grade = "Nightmare";
 
-    scores[i].pokemon.dexDifficultyPercentile = Math.round(percentile * 1000)/1000;
-    scores[i].pokemon.dexDifficulty = grade;
+    pokemon.push({
+      ...scores[i].pokemon,
+      dexDifficultyPercentile: Math.round(percentile * 1000)/1000,
+      dexDifficulty: grade,
+    })
   }
+  return pokemon;
 }
 
 function getCategoryPairs(categories: string[]): string[] {
@@ -251,7 +256,7 @@ async function fetchForms() {
 function getEntry(
   formId: number,
   added: Set<number>,
-): Pokemon | undefined {
+): InternalPokemon | undefined {
   if (IGNORED_FORM_IDS.has(formId)) return;
   const form = loadForm(formId);
   if (!form) return;
@@ -283,7 +288,7 @@ function getEntry(
     | [PokemonType, PokemonType]
     | [PokemonType];
 
-  const entry: Pokemon = {
+  const entry: InternalPokemon = {
     id: species.id,
     name,
     types,
@@ -378,6 +383,7 @@ function getEntry(
 
   const formOverride = POKEMON_OVERRIDES[formId];
   if (formOverride) {
+    if (formOverride.formId) entry.formId = formOverride.formId;
     if (formOverride.types) entry.types = formOverride.types;
     if (formOverride.region) entry.region = formOverride.region;
     if (formOverride.evolution?.from) {
@@ -416,7 +422,7 @@ async function main() {
   await fetchForms();
 
   console.log("\nProcessing...");
-  const output: Pokemon[] = [];
+  const output: InternalPokemon[] = [];
   const added = new Set<number>();
 
   for (let formId = 1; formId <= 10553; formId++) {
@@ -431,11 +437,11 @@ async function main() {
   output.sort((a, b) => a.id - b.id);
 
   console.log("Calculating Dex difficulties...");
-  calculateDexDifficulties(output);
+  const pokemonResult = calculateDexDifficulties(output);
   
-  console.log(`Total: ${output.length} Pokemon`);
+  console.log(`Total: ${pokemonResult.length} Pokemon`);
 
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));
+  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(pokemonResult, null, 2));
   console.log(`Written to ${OUTPUT_FILE}`);
 }
 

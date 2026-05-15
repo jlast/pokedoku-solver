@@ -211,6 +211,7 @@ export const NAME_REPLACEMENTS: Record<string, string> = {
 };
 
 export interface PokemonOverride {
+  formId?: number,
   types?: [PokemonType, PokemonType] | [PokemonType];
   region?: PokemonRegion;
   evolution?: {
@@ -644,20 +645,23 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   10068: {
     // Deerling summer
+    formId: 91585,
     evolution: {
-      to: [10071],
+      to: [91586],
     },
   },
   10069: {
     // Deerling autumn
+    formId: 90585,
     evolution: {
-      to: [10072],
+      to: [90586],
     },
   },
   10070: {
     // Deerling winter
+    formId: 92585,
     evolution: {
-      to: [10073],
+      to: [92586],
     },
   },
   586: {
@@ -668,20 +672,23 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   10071: {
     // Sawsbuck summer
+    formId: 91586,
     evolution: {
-      from: [10068],
+      from: [91587],
     },
   },
   10072: {
     // Sawsbuck autumn
+    formId: 90586,
     evolution: {
-      from: [10069],
+      from: [90585],
     },
   },
   10073: {
     // Sawsbuck winter
+    formId: 92586,
     evolution: {
-      from: [10070],
+      from: [92585],
     },
   },
   677: {
@@ -1073,7 +1080,13 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   520: {
     // Tranquill
     evolution: {
-      to: [521, 100521],
+      to: [521, 90521],
     },
+  },
+  11: {
+    // Metapod
+    evolution: {
+      from: [10, 99901],
+    }
   }
 };
