@@ -5,8 +5,18 @@ on:
     branches: [main]
   workflow_dispatch:
     inputs:
-      force_deploy:
-        description: Force deploy all site and infra targets
+      force_site_deploy:
+        description: Force deploy website targets
+        required: false
+        default: false
+        type: boolean
+      force_infra_deploy:
+        description: Force deploy infrastructure targets
+        required: false
+        default: false
+        type: boolean
+      force_pokedoku_details_publish:
+        description: Force publish pokedoku-details app
         required: false
         default: false
         type: boolean
@@ -57,9 +67,9 @@ jobs:
     uses: ./.github/workflows/reusable-site-deploy.yml
     secrets: inherit
     with:
-      site_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.site_changed == 'true') && 'true' || 'false' }}
-      data_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.data_changed == 'true') && 'true' || 'false' }}
-      images_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.images_changed == 'true') && 'true' || 'false' }}
+      site_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_site_deploy) || needs.detect-changes.outputs.site_changed == 'true') && 'true' || 'false' }}
+      data_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_site_deploy) || needs.detect-changes.outputs.data_changed == 'true') && 'true' || 'false' }}
+      images_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_site_deploy) || needs.detect-changes.outputs.images_changed == 'true') && 'true' || 'false' }}
 
   infra-deploy:
     needs:
@@ -68,13 +78,13 @@ jobs:
     uses: ./.github/workflows/reusable-infra-deploy.yml
     secrets: inherit
     with:
-      daily_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.daily_lambda_changed == 'true') && 'true' || 'false' }}
-      stats_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.stats_lambda_changed == 'true') && 'true' || 'false' }}
-      daily_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.daily_stack_changed == 'true') && 'true' || 'false' }}
-      stats_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.stats_stack_changed == 'true') && 'true' || 'false' }}
+      daily_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_infra_deploy) || needs.detect-changes.outputs.daily_lambda_changed == 'true') && 'true' || 'false' }}
+      stats_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_infra_deploy) || needs.detect-changes.outputs.stats_lambda_changed == 'true') && 'true' || 'false' }}
+      daily_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_infra_deploy) || needs.detect-changes.outputs.daily_stack_changed == 'true') && 'true' || 'false' }}
+      stats_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_infra_deploy) || needs.detect-changes.outputs.stats_stack_changed == 'true') && 'true' || 'false' }}
 
   pokedoku-details-publish:
-    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_deploy) || needs.detect-changes.outputs.pokedoku_details_changed == 'true' }}
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_pokedoku_details_publish) || needs.detect-changes.outputs.pokedoku_details_changed == 'true' }}
     needs:
       - detect-changes
       - validate-and-pages
