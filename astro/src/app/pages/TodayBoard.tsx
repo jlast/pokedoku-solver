@@ -145,12 +145,10 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     () => Array(gridSize).fill(null).map(() => Array(gridSize).fill(null)),
   );
   const [showMissingOnly, setShowMissingOnly] = useState(false);
-  const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
+  const [caughtSet] = useState<Set<number>>(() =>
+    typeof window === "undefined" ? new Set<number>() : readCaughtSet(),
+  );
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    setCaughtSet(readCaughtSet());
-  }, []);
 
   useEffect(() => {
     if (!grid.selectedCell || !suggestionsRef.current) return;
@@ -183,8 +181,14 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   useEffect(() => {
     if (pokemonPool.length === 0) return;
     const { cells, suggestedKeys } = buildSuggestedCells(pokemonPool, puzzle.rowConstraints, puzzle.colConstraints);
-    setSuggestedPokemonKeys(suggestedKeys);
-    setGrid((prev) => ({ ...prev, cells }));
+    const timer = window.setTimeout(() => {
+      setSuggestedPokemonKeys(suggestedKeys);
+      setGrid((prev) => ({ ...prev, cells }));
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, [pokemonPool, puzzle.rowConstraints, puzzle.colConstraints]);
 
   const possiblePokemon = useMemo(() => {

@@ -255,16 +255,12 @@ export function MyPokedexPageClient() {
   const shinyCount = shinySet.size;
   const totalCount = pokemon.length;
   const completionRate = totalCount > 0 ? Math.round((caughtCount / totalCount) * 100) : 0;
-  const selectedPrestigeLevel = PRESTIGE_LEVELS.find((level) => level.id === selectedPrestigeLevelId) ?? PRESTIGE_LEVELS[0];
+  const selectedPrestigeLevel =
+    PRESTIGE_LEVELS.find((level, index) => level.id === selectedPrestigeLevelId && index <= unlockedPrestigeLevelIndex) ??
+    PRESTIGE_LEVELS[unlockedPrestigeLevelIndex] ??
+    PRESTIGE_LEVELS[0];
   const nextPrestigeLevel = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex + 1] ?? null;
   const canUnlockNextPrestige = Boolean(nextPrestigeLevel) && totalCount > 0 && caughtCount === totalCount;
-
-  useEffect(() => {
-    const selectedIndex = PRESTIGE_LEVELS.findIndex((level) => level.id === selectedPrestigeLevelId);
-    if (selectedIndex > unlockedPrestigeLevelIndex) {
-      setSelectedPrestigeLevelId(PRESTIGE_LEVELS[unlockedPrestigeLevelIndex]?.id ?? PRESTIGE_LEVELS[0]?.id ?? "pokeball");
-    }
-  }, [selectedPrestigeLevelId, unlockedPrestigeLevelIndex]);
 
   function unlockNextPrestigeLevel() {
     if (!nextPrestigeLevel || !canUnlockNextPrestige) return;
@@ -502,7 +498,7 @@ export function MyPokedexPageClient() {
                   onClick={() => setSelectedPrestigeLevelId(level.id)}
                   disabled={isLocked}
                   className={`flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition ${
-                    selectedPrestigeLevelId === level.id
+                    selectedPrestigeLevel.id === level.id
                       ? "bg-white text-slate-900 shadow-sm"
                       : "text-slate-600 hover:bg-slate-200 hover:text-slate-800"
                   } ${isLocked ? "cursor-not-allowed opacity-50 hover:bg-transparent hover:text-slate-600" : ""}`}
