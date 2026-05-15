@@ -1,28 +1,25 @@
 import { describe, expect, it, vi } from "vitest";
 import { fetchPuzzles } from "./puzzle-fetch-core";
 
-const RAW_PUZZLE_JSON = JSON.stringify({
+const RAW_PUZZLE = {
   type: "AUTOMATIC",
   date: "2025-01-01",
   size: 9,
-  x0: { type: "POKEMON_TYPE", obj: "water" },
-  x1: { type: "MONOTYPE", obj: true },
-  x2: { type: "GENERATION", obj: "generation-i" },
-  y0: { type: "EVOLUTION_POSITION", obj: "final" },
-  y1: { type: "LEGENDARY", obj: true },
-  y2: { type: "EVOLVED_BY", obj: "trade" },
-});
-const ESCAPED_PUZZLE_JSON = RAW_PUZZLE_JSON.replace(/"/g, '\\"');
-const PUSH_FRAGMENT = `2:[\\"$\\",\\"$L16\\",null,{\\"puzzle\\":${ESCAPED_PUZZLE_JSON},\\"isCurrentPuzzle\\":true}`;
-const PUSH_HTML = `<script>__next_f.push([1,"${PUSH_FRAGMENT}])</script>`;
+  x1: { type: "POKEMON_TYPE", obj: "water" },
+  x2: { type: "MONOTYPE", obj: true },
+  x3: { type: "GENERATION", obj: "generation-i" },
+  y1: { type: "EVOLUTION_POSITION", obj: "final" },
+  y2: { type: "LEGENDARY", obj: true },
+  y3: { type: "EVOLVED_BY", obj: "trade" },
+};
 
 describe("puzzle-fetch-core", () => {
-  it("maps puzzle constraints from fetched page", async () => {
+  it("maps puzzle constraints from API response", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
         ok: true,
-        text: async () => PUSH_HTML,
+        json: async () => RAW_PUZZLE,
       }),
     );
 

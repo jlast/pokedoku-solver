@@ -124,16 +124,6 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
   }
 }
 
-function extractPuzzlesFromPush(pushContent: string): RawPuzzle[] {
-  const matches = pushContent.matchAll(/\\"puzzle\\":\s*(\{.+?\})(?=,\s*\\"isCurrentPuzzle\\")/gs);
-  const puzzles: RawPuzzle[] = [];
-  for (const match of matches) {
-    const unescapedStr = match[1].replace(/\\"/g, '"');
-    puzzles.push(JSON.parse(unescapedStr) as RawPuzzle);
-  }
-  return puzzles;
-}
-
 function isRawConstraint(value: unknown): value is RawConstraint {
   return typeof value === "object" && value !== null && "type" in value && "obj" in value && typeof (value as RawConstraint).type === "string";
 }
@@ -302,30 +292,14 @@ export function enrichPuzzlesWithFeaturedPick(puzzles: MappedPuzzle[], pokemon: 
 }
 
 export async function fetchPuzzles(): Promise<MappedPuzzle[]> {
-  const response = await fetch("https://pokedoku.com/");
+  const response = await fetch("https://api.pokedoku.com/api/puzzle/current");
   if (!response.ok) {
     throw new Error(`Failed to fetch puzzle: ${response.status} ${response.statusText}`);
   }
-  const html = await response.text();
-  let pushStart = html.indexOf("__next_f");
-  let puzzlePush = "";
-  while (pushStart !== -1) {
-    const pushEnd = html.indexOf("])</script>", pushStart);
-    if (pushEnd !== -1) {
-      const push = html.slice(pushStart, pushEnd + 18);
-      if (push.includes('\\"puzzle\\"')) {
-        puzzlePush = push;
-        break;
-      }
-    }
-    pushStart = html.indexOf("__next_f", pushStart + 1);
-  }
-  if (!puzzlePush) {
-    throw new Error("Could not find puzzle data in page");
-  }
-  const rawPuzzles = extractPuzzlesFromPush(puzzlePush);
+  const data = (await response.json()) as RawPuzzle | RawPuzzle[];
+  const rawPuzzles = Array.isArray(data) ? data : [data];
   if (rawPuzzles.length === 0) {
-    throw new Error("Failed to parse puzzle data from page");
+    throw new Error("Failed to parse puzzle data from API response");
   }
   return rawPuzzles.map(mapPuzzle);
 }
