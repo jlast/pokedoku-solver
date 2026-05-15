@@ -193,8 +193,25 @@ jobs:
           COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}
           COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
         run: |
+          echo "User Dex deploy preflight values"
+          echo "- stack: ${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-user-dex-api"
+          echo "- domain: ${DOMAIN_NAME:-pokedoku-helper.com}"
+          echo "- subdomain: ${API_SUBDOMAIN:-api}"
+          echo "- hosted zone id present: $([ -n "${HOSTED_ZONE_ID:-}" ] && echo yes || echo no)"
+          echo "- certificate arn present: $([ -n "${API_CERTIFICATE_ARN:-}" ] && echo yes || echo no)"
+          echo "- cognito user pool id present: $([ -n "${COGNITO_USER_POOL_ID:-}" ] && echo yes || echo no)"
+          echo "- cognito client id present: $([ -n "${COGNITO_CLIENT_ID:-}" ] && echo yes || echo no)"
           export DOMAIN_NAME="${DOMAIN_NAME:-pokedoku-helper.com}"
           export API_SUBDOMAIN="${API_SUBDOMAIN:-api}"
           export ALLOWED_ORIGIN="${ALLOWED_ORIGIN:-https://www.pokedoku-helper.com}"
           export COGNITO_REGION="${COGNITO_REGION:-us-east-1}"
           bash .github/scripts/deploy-user-dex-stack.sh
+
+      - name: Debug user dex CloudFormation failure
+        if: failure() && (inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true')
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+        run: |
+          STACK_NAME="${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-user-dex-api"
+          echo "Recent events for ${STACK_NAME}"
+          aws cloudformation describe-stack-events --stack-name "${STACK_NAME}" --max-items 25 || true

@@ -2,15 +2,77 @@
 set -euo pipefail
 
 STACK_NAME="${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-user-dex-api"
+AWS_REGION="${AWS_REGION:-us-east-1}"
+
+require_var() {
+  local name="$1"
+  if [ -z "${!name:-}" ]; then
+    echo "Missing required environment variable: ${name}" >&2
+    exit 1
+  fi
+}
+
+for required_var in \
+  S3_BUCKET_NAME \
+  CLOUDFORMATION_STACK_NAME \
+  DOMAIN_NAME \
+  API_SUBDOMAIN \
+  HOSTED_ZONE_ID \
+  API_CERTIFICATE_ARN \
+  ALLOWED_ORIGIN \
+  COGNITO_REGION \
+  COGNITO_USER_POOL_ID \
+  COGNITO_CLIENT_ID \
+  USER_DEX_GET_LAMBDA_CHANGED \
+  USER_DEX_PATCH_LAMBDA_CHANGED
+do
+  require_var "${required_var}"
+done
+
+echo "Running preflight checks for user dex API stack"
+
+CERT_STATUS=$(aws acm describe-certificate \
+  --certificate-arn "${API_CERTIFICATE_ARN}" \
+  --region "${AWS_REGION}" \
+  --query 'Certificate.Status' \
+  --output text)
+
+if [ "${CERT_STATUS}" != "ISSUED" ]; then
+  echo "Certificate is not ready. Expected ISSUED, got: ${CERT_STATUS}" >&2
+  exit 1
+fi
+
+ZONE_NAME=$(aws route53 get-hosted-zone \
+  --id "${HOSTED_ZONE_ID}" \
+  --query 'HostedZone.Name' \
+  --output text)
+echo "Resolved hosted zone: ${ZONE_NAME}"
+
+aws cognito-idp describe-user-pool \
+  --user-pool-id "${COGNITO_USER_POOL_ID}" \
+  --region "${COGNITO_REGION}" \
+  >/dev/null
+
+aws cognito-idp describe-user-pool-client \
+  --user-pool-id "${COGNITO_USER_POOL_ID}" \
+  --client-id "${COGNITO_CLIENT_ID}" \
+  --region "${COGNITO_REGION}" \
+  >/dev/null
+
+aws s3api head-bucket --bucket "${S3_BUCKET_NAME}" >/dev/null
 
 if [ "${USER_DEX_GET_LAMBDA_CHANGED}" = "true" ]; then
   CURRENT_USER_DEX_GET_KEY="${USER_DEX_GET_LAMBDA_KEY}"
+  require_var USER_DEX_GET_LAMBDA_KEY
+  aws s3api head-object --bucket "${S3_BUCKET_NAME}" --key "${CURRENT_USER_DEX_GET_KEY}" >/dev/null
 else
   CURRENT_USER_DEX_GET_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='UserDexGetCodeS3Key'].ParameterValue" --output text)
 fi
 
 if [ "${USER_DEX_PATCH_LAMBDA_CHANGED}" = "true" ]; then
   CURRENT_USER_DEX_PATCH_KEY="${USER_DEX_PATCH_LAMBDA_KEY}"
+  require_var USER_DEX_PATCH_LAMBDA_KEY
+  aws s3api head-object --bucket "${S3_BUCKET_NAME}" --key "${CURRENT_USER_DEX_PATCH_KEY}" >/dev/null
 else
   CURRENT_USER_DEX_PATCH_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='UserDexPatchCodeS3Key'].ParameterValue" --output text)
 fi
