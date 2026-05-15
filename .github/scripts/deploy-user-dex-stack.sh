@@ -55,20 +55,30 @@ if [ "${CERT_STATUS}" != "ISSUED" ]; then
   exit 1
 fi
 
-CERT_DOMAINS=$(aws acm describe-certificate \
+CERT_PRIMARY_DOMAIN=$(aws acm describe-certificate \
   --certificate-arn "${API_CERTIFICATE_ARN}" \
   --region "${AWS_REGION}" \
-  --query "[Certificate.DomainName, Certificate.SubjectAlternativeNames[]]" \
+  --query 'Certificate.DomainName' \
   --output text)
 
-if [[ " ${CERT_DOMAINS} " != *" ${FULL_API_DOMAIN} "* ]]; then
-  echo "- cert_has_expected_full_domain: false"
-  echo "- cert_has_api_pokedoku_helper_domain: $([[ " ${CERT_DOMAINS} " == *" api.pokedoku-helper.com "* ]] && echo true || echo false)"
+CERT_SAN_MATCH=$(aws acm describe-certificate \
+  --certificate-arn "${API_CERTIFICATE_ARN}" \
+  --region "${AWS_REGION}" \
+  --query "contains(Certificate.SubjectAlternativeNames, '${FULL_API_DOMAIN}')" \
+  --output text)
+
+CERT_PRIMARY_MATCH=false
+if [ "${CERT_PRIMARY_DOMAIN}" = "${FULL_API_DOMAIN}" ]; then
+  CERT_PRIMARY_MATCH=true
+fi
+
+echo "- cert_primary_domain_matches_expected: ${CERT_PRIMARY_MATCH}"
+echo "- cert_san_contains_expected: $([ "${CERT_SAN_MATCH}" = "True" ] && echo true || echo false)"
+
+if [ "${CERT_PRIMARY_MATCH}" != "true" ] && [ "${CERT_SAN_MATCH}" != "True" ]; then
   echo "Certificate ${API_CERTIFICATE_ARN} does not include ${FULL_API_DOMAIN}" >&2
   exit 1
 fi
-
-echo "- cert_has_expected_full_domain: true"
 
 ZONE_NAME=$(aws route53 get-hosted-zone \
   --id "${HOSTED_ZONE_ID}" \
