@@ -127,7 +127,7 @@ export function HomeFeaturedPick() {
               <span>Top {topDifficultyPercent}% difficulty</span>
             </div>
             <p className="mt-2 mb-0 max-w-[30ch] text-sm leading-5 text-slate-700">
-              Today’s hardest valid answers. Fits only {featuredPick.featured.globalCategoryCombinationCount} category combinations.
+              Today’s hardest valid answer. Fits only {featuredPick.featured.globalCategoryCombinationCount} category combinations.
             </p>
           </div>
         </div>
