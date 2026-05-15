@@ -3,6 +3,8 @@ set -euo pipefail
 
 STACK_NAME="${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-user-dex-api"
 AWS_REGION="${AWS_REGION:-us-east-1}"
+TABLE_NAME="UserDexProfiles"
+FULL_API_DOMAIN="${API_SUBDOMAIN}.${DOMAIN_NAME}"
 
 require_var() {
   local name="$1"
@@ -31,6 +33,11 @@ done
 
 echo "Running preflight checks for user dex API stack"
 
+STACK_EXISTS=true
+if ! aws cloudformation describe-stacks --stack-name "${STACK_NAME}" >/dev/null 2>&1; then
+  STACK_EXISTS=false
+fi
+
 CERT_STATUS=$(aws acm describe-certificate \
   --certificate-arn "${API_CERTIFICATE_ARN}" \
   --region "${AWS_REGION}" \
@@ -39,6 +46,17 @@ CERT_STATUS=$(aws acm describe-certificate \
 
 if [ "${CERT_STATUS}" != "ISSUED" ]; then
   echo "Certificate is not ready. Expected ISSUED, got: ${CERT_STATUS}" >&2
+  exit 1
+fi
+
+CERT_DOMAINS=$(aws acm describe-certificate \
+  --certificate-arn "${API_CERTIFICATE_ARN}" \
+  --region "${AWS_REGION}" \
+  --query "[Certificate.DomainName, Certificate.SubjectAlternativeNames[]]" \
+  --output text)
+
+if [[ " ${CERT_DOMAINS} " != *" ${FULL_API_DOMAIN} "* ]]; then
+  echo "Certificate ${API_CERTIFICATE_ARN} does not include ${FULL_API_DOMAIN}" >&2
   exit 1
 fi
 
@@ -60,6 +78,18 @@ aws cognito-idp describe-user-pool-client \
   >/dev/null
 
 aws s3api head-bucket --bucket "${S3_BUCKET_NAME}" >/dev/null
+
+if [ "${STACK_EXISTS}" = "false" ]; then
+  if aws dynamodb describe-table --table-name "${TABLE_NAME}" --region "${AWS_REGION}" >/dev/null 2>&1; then
+    echo "DynamoDB table ${TABLE_NAME} already exists but stack ${STACK_NAME} does not. Either import existing resources or remove table before first deploy." >&2
+    exit 1
+  fi
+
+  if aws apigatewayv2 get-domain-name --domain-name "${FULL_API_DOMAIN}" --region "${AWS_REGION}" >/dev/null 2>&1; then
+    echo "API Gateway custom domain ${FULL_API_DOMAIN} already exists but stack ${STACK_NAME} does not. Remove or import it before first deploy." >&2
+    exit 1
+  fi
+fi
 
 if [ "${USER_DEX_GET_LAMBDA_CHANGED}" = "true" ]; then
   CURRENT_USER_DEX_GET_KEY="${USER_DEX_GET_LAMBDA_KEY}"
