@@ -90,7 +90,7 @@ export function HomeFeaturedPick() {
 
   return (
     <section className="mt-6">
-      <p className="m-0 text-lg font-bold text-slate-900">Featured pick</p>
+      <p className="m-0 text-lg font-bold text-slate-900">Today's featured pick</p>
       <a
         href="/pokedoku-answers-today/"
         className={`group mt-1.5 block rounded-2xl border bg-gradient-to-br p-4 no-underline shadow-[0_10px_30px_rgba(15,23,42,0.08)] transition duration-200 hover:-translate-y-[1px] hover:shadow-[0_14px_34px_rgba(15,23,42,0.12)] active:translate-y-0 ${accentClass}`}
