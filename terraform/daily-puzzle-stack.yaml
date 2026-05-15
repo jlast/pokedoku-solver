@@ -46,6 +46,11 @@ Resources:
                 Resource: 
                   - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/today-puzzle.json"
                   - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/puzzles/*"
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/data/pokemon.json"
       
   DailyPuzzleFetcherFunction:
     Type: AWS::Lambda::Function
