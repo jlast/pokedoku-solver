@@ -226,10 +226,6 @@ export interface PokemonOverride {
 }
 
 export const FORM_ID_OVERRIDES: Record<number, number> = {
-  449: 90449, // Hippopotas female
-  450: 90450, // Hippowdon female
-  521: 90521, // Unfezant female
-  527: 528, // Woobat
   718: 10119, // Zygarde 50%
   10028: 10013, // Castform sunny
   10029: 10014, // Castform rainy
@@ -879,12 +875,14 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   10034: {
     // Burmy sandy
+    formId: 90412,
     evolution: {
       to: [10036, 414],
     },
   },
   10035: {
     // Burmy trash
+    formId: 91412,
     evolution: {
       to: [10037],
     },
