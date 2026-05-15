@@ -1,0 +1,12 @@
+---
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import { AuthCallbackPage } from "../../app/pages/AuthCallbackPage";
+---
+
+<AppPageLayout
+  title="Auth Callback | Pokedoku Helper"
+  description="Completing sign in"
+  path="/auth/callback"
+>
+  <AuthCallbackPage client:load />
+</AppPageLayout>
