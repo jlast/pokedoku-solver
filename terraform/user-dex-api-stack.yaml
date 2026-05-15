@@ -1,0 +1,239 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Pokedoku Helper - User Dex API (api.pokedoku-helper.com)"
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: "pokedoku-helper.com"
+    Description: "Base domain managed in Route53"
+
+  ApiSubdomain:
+    Type: String
+    Default: "api"
+    Description: "API subdomain prefix"
+
+  HostedZoneId:
+    Type: String
+    Description: "Route53 hosted zone id for DomainName"
+
+  ApiCertificateArn:
+    Type: String
+    Description: "ACM certificate ARN for api.pokedoku-helper.com (same region as API Gateway)"
+
+  UserDexGetCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing user-dex-get Lambda zip"
+
+  UserDexGetCodeS3Key:
+    Type: String
+    Description: "S3 key for user-dex-get Lambda zip"
+
+  UserDexPatchCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing user-dex-patch Lambda zip"
+
+  UserDexPatchCodeS3Key:
+    Type: String
+    Description: "S3 key for user-dex-patch Lambda zip"
+
+  AllowedOrigin:
+    Type: String
+    Default: "https://www.pokedoku-helper.com"
+    Description: "CORS allowed origin"
+
+  CognitoRegion:
+    Type: String
+    Default: "us-east-1"
+
+  CognitoUserPoolId:
+    Type: String
+    Description: "Cognito User Pool ID"
+
+  CognitoClientId:
+    Type: String
+    Description: "Cognito App Client ID"
+
+Resources:
+  UserDexProfilesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: UserDexProfiles
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+
+  UserDexLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: UserDexDynamoPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                Resource: !GetAtt UserDexProfilesTable.Arn
+
+  UserDexGetFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: user-dex-get.handler
+      Role: !GetAtt UserDexLambdaRole.Arn
+      Timeout: 15
+      MemorySize: 256
+      Environment:
+        Variables:
+          USER_DEX_TABLE_NAME: !Ref UserDexProfilesTable
+          COGNITO_REGION: !Ref CognitoRegion
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+      Code:
+        S3Bucket: !Ref UserDexGetCodeS3Bucket
+        S3Key: !Ref UserDexGetCodeS3Key
+
+  UserDexPatchFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: user-dex-patch.handler
+      Role: !GetAtt UserDexLambdaRole.Arn
+      Timeout: 15
+      MemorySize: 256
+      Environment:
+        Variables:
+          USER_DEX_TABLE_NAME: !Ref UserDexProfilesTable
+          COGNITO_REGION: !Ref CognitoRegion
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+      Code:
+        S3Bucket: !Ref UserDexPatchCodeS3Bucket
+        S3Key: !Ref UserDexPatchCodeS3Key
+
+  UserDexApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub "${AWS::StackName}-user-dex-api"
+      ProtocolType: HTTP
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref AllowedOrigin
+        AllowMethods:
+          - GET
+          - PATCH
+          - OPTIONS
+        AllowHeaders:
+          - authorization
+          - content-type
+
+  UserDexGetIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UserDexApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt UserDexGetFunction.Arn
+      PayloadFormatVersion: "2.0"
+
+  UserDexPatchIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UserDexApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt UserDexPatchFunction.Arn
+      PayloadFormatVersion: "2.0"
+
+  UserDexGetRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UserDexApi
+      RouteKey: "GET /user-dex"
+      Target: !Sub "integrations/${UserDexGetIntegration}"
+
+  UserDexPatchRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UserDexApi
+      RouteKey: "PATCH /user-dex"
+      Target: !Sub "integrations/${UserDexPatchIntegration}"
+
+  UserDexApiStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref UserDexApi
+      StageName: prod
+      AutoDeploy: true
+
+  UserDexGetPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref UserDexGetFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${UserDexApi}/*/*/user-dex"
+
+  UserDexPatchPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref UserDexPatchFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${UserDexApi}/*/*/user-dex"
+
+  UserDexApiDomainName:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: !Sub "${ApiSubdomain}.${DomainName}"
+      DomainNameConfigurations:
+        - CertificateArn: !Ref ApiCertificateArn
+          EndpointType: REGIONAL
+          SecurityPolicy: TLS_1_2
+
+  UserDexApiMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties:
+      ApiId: !Ref UserDexApi
+      DomainName: !Ref UserDexApiDomainName
+      Stage: !Ref UserDexApiStage
+
+  UserDexApiRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Sub "${ApiSubdomain}.${DomainName}"
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt UserDexApiDomainName.RegionalDomainName
+        HostedZoneId: !GetAtt UserDexApiDomainName.RegionalHostedZoneId
+
+Outputs:
+  UserDexApiBaseUrl:
+    Description: User Dex API base URL
+    Value: !Sub "https://${ApiSubdomain}.${DomainName}"
+
+  UserDexGetFunctionName:
+    Description: User Dex GET Lambda function name
+    Value: !Ref UserDexGetFunction
+
+  UserDexPatchFunctionName:
+    Description: User Dex PATCH Lambda function name
+    Value: !Ref UserDexPatchFunction
+
+  UserDexProfilesTableName:
+    Description: User Dex DynamoDB table name
+    Value: !Ref UserDexProfilesTable

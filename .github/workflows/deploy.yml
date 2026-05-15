@@ -39,6 +39,9 @@ jobs:
       stats_lambda_changed: ${{ steps.changes.outputs.stats_lambda_changed }}
       daily_stack_changed: ${{ steps.changes.outputs.daily_stack_changed }}
       stats_stack_changed: ${{ steps.changes.outputs.stats_stack_changed }}
+      user_dex_get_lambda_changed: ${{ steps.changes.outputs.user_dex_get_lambda_changed }}
+      user_dex_patch_lambda_changed: ${{ steps.changes.outputs.user_dex_patch_lambda_changed }}
+      user_dex_stack_changed: ${{ steps.changes.outputs.user_dex_stack_changed }}
       pokedoku_details_changed: ${{ steps.changes.outputs.pokedoku_details_changed }}
     steps:
       - name: Checkout
@@ -82,6 +85,9 @@ jobs:
       stats_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_infra_deploy) || needs.detect-changes.outputs.stats_lambda_changed == 'true') && 'true' || 'false' }}
       daily_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_infra_deploy) || needs.detect-changes.outputs.daily_stack_changed == 'true') && 'true' || 'false' }}
       stats_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_infra_deploy) || needs.detect-changes.outputs.stats_stack_changed == 'true') && 'true' || 'false' }}
+      user_dex_get_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_infra_deploy) || needs.detect-changes.outputs.user_dex_get_lambda_changed == 'true') && 'true' || 'false' }}
+      user_dex_patch_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_infra_deploy) || needs.detect-changes.outputs.user_dex_patch_lambda_changed == 'true') && 'true' || 'false' }}
+      user_dex_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_infra_deploy) || needs.detect-changes.outputs.user_dex_stack_changed == 'true') && 'true' || 'false' }}
 
   pokedoku-details-publish:
     if: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_pokedoku_details_publish) || needs.detect-changes.outputs.pokedoku_details_changed == 'true' }}

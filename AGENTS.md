@@ -71,6 +71,44 @@ It uses Redis caching and realtime data from `www.pokedoku-helper.com`.
 - Keep shared domain models and contracts here.
 - Update consumers in both website and Devvit app when shared contracts change.
 
+# Infra and API
+
+## User Dex API (`api.pokedoku-helper.com`)
+- Infra template: `terraform/user-dex-api-stack.yaml`
+- Placeholder Lambdas:
+  - `terraform/lambda/user-dex-get.ts`
+  - `terraform/lambda/user-dex-patch.ts`
+- Build/package commands (root):
+  - `pnpm build:user-dex-get-lambda`
+  - `pnpm package:user-dex-get-lambda`
+  - `pnpm build:user-dex-patch-lambda`
+  - `pnpm package:user-dex-patch-lambda`
+  - `pnpm package:user-dex-lambdas`
+
+## Required infrastructure inputs
+- CloudFormation parameters expected by `terraform/user-dex-api-stack.yaml`:
+  - `DomainName` (default `pokedoku-helper.com`)
+  - `ApiSubdomain` (default `api`)
+  - `HostedZoneId` (Route53 hosted zone for domain)
+  - `ApiCertificateArn` (ACM cert for `api.pokedoku-helper.com` in API region)
+  - `UserDexGetCodeS3Bucket` / `UserDexGetCodeS3Key`
+  - `UserDexPatchCodeS3Bucket` / `UserDexPatchCodeS3Key`
+  - `AllowedOrigin` (default `https://www.pokedoku-helper.com`)
+  - `CognitoRegion`, `CognitoUserPoolId`, `CognitoClientId`
+
+## Frontend API configuration
+- Website uses `PUBLIC_USER_DEX_API_BASE_URL` for user dex API calls.
+- For production, set `PUBLIC_USER_DEX_API_BASE_URL=https://api.pokedoku-helper.com` in GitHub `production` environment vars.
+
+## CI/CD wiring
+- Infra deploy workflow: `.github/workflows/reusable-infra-deploy.yml`
+- Deploy entry workflow: `.github/workflows/deploy.yml`
+- Stack deploy script: `.github/scripts/deploy-user-dex-stack.sh`
+- Change detection script includes user dex stack/lambdas: `.github/scripts/detect-changes.sh`
+- Required GitHub environment values for infra deploy:
+  - Secrets: `S3_BUCKET_NAME`, `CLOUDFORMATION_STACK_NAME`, `HOSTED_ZONE_ID`, `API_CERTIFICATE_ARN`, `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`
+  - Vars (with defaults in workflow): `DOMAIN_NAME`, `API_SUBDOMAIN`, `ALLOWED_ORIGIN`, `COGNITO_REGION`
+
 # Code styling
 Follow existing repository style and avoid formatting churn.
 
@@ -79,6 +117,7 @@ Follow existing repository style and avoid formatting churn.
 - Prefer small, focused functions and clear naming.
 - Avoid broad refactors unrelated to the task.
 - Run lint and tests for touched areas before finishing.
+- For infra changes, validate templates with `aws cloudformation validate-template` before deploy.
 
 ## Linting source of truth
 - Root and website lint config: `eslint.config.js`
@@ -96,3 +135,4 @@ Follow existing repository style and avoid formatting churn.
 - Do not move files or rename public APIs unless required.
 - Do not add new dependencies unless necessary.
 - Document non-obvious decisions in PR or commit notes instead of adding excessive inline comments.
+- Keep this file up to date whenever project structure, commands, workflows, or conventions change.
