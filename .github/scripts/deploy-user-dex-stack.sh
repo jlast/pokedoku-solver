@@ -44,6 +44,12 @@ CERT_STATUS=$(aws acm describe-certificate \
   --query 'Certificate.Status' \
   --output text)
 
+echo "Debug checks"
+echo "- domain_is_expected: $([ "${DOMAIN_NAME}" = "pokedoku-helper.com" ] && echo true || echo false)"
+echo "- subdomain_is_expected: $([ "${API_SUBDOMAIN}" = "api" ] && echo true || echo false)"
+echo "- full_domain_is_expected: $([ "${FULL_API_DOMAIN}" = "api.pokedoku-helper.com" ] && echo true || echo false)"
+echo "- cert_status_is_issued: $([ "${CERT_STATUS}" = "ISSUED" ] && echo true || echo false)"
+
 if [ "${CERT_STATUS}" != "ISSUED" ]; then
   echo "Certificate is not ready. Expected ISSUED, got: ${CERT_STATUS}" >&2
   exit 1
@@ -56,9 +62,13 @@ CERT_DOMAINS=$(aws acm describe-certificate \
   --output text)
 
 if [[ " ${CERT_DOMAINS} " != *" ${FULL_API_DOMAIN} "* ]]; then
+  echo "- cert_has_expected_full_domain: false"
+  echo "- cert_has_api_pokedoku_helper_domain: $([[ " ${CERT_DOMAINS} " == *" api.pokedoku-helper.com "* ]] && echo true || echo false)"
   echo "Certificate ${API_CERTIFICATE_ARN} does not include ${FULL_API_DOMAIN}" >&2
   exit 1
 fi
+
+echo "- cert_has_expected_full_domain: true"
 
 ZONE_NAME=$(aws route53 get-hosted-zone \
   --id "${HOSTED_ZONE_ID}" \
