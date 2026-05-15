@@ -111,8 +111,6 @@ export function Header({
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pathname, setPathname] = useState("");
-  const [userLabel, setUserLabel] = useState<string | null>(null);
-  const [authEnabled, setAuthEnabled] = useState(false);
   const toolsMenuRef = useRef<HTMLDetailsElement | null>(null);
   const mobileToolsMenuRef = useRef<HTMLDetailsElement | null>(null);
 
@@ -134,6 +132,9 @@ export function Header({
 
   const normalizedPathname = pathname ? normalizePath(pathname) : "";
   const currentPath = stripBasePath(normalizedPathname);
+  const authEnabled =
+    typeof window !== "undefined" && isAuthFeatureEnabled(window.location.search);
+  const userLabel = typeof window !== "undefined" ? getSessionUserLabel() : null;
   const isToolsSectionPage = currentPath.startsWith(resolvePath("tools/"));
   const isToolRouteActive = (item: ToolMenuItem) => {
     const prefixes = [item.url, ...(item.matchPrefixes ?? [])];
@@ -232,12 +233,6 @@ export function Header({
       document.removeEventListener("astro:after-swap", updatePathname as EventListener);
     };
   }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setUserLabel(getSessionUserLabel());
-    setAuthEnabled(isAuthFeatureEnabled(window.location.search));
-  }, [pathname]);
 
   const signOut = () => {
     trackEvent("click_sign_out", { from: currentPage });

@@ -3,11 +3,13 @@ import { finishLoginFromCallback } from "../../lib/cognitoAuth";
 import { isAuthFeatureEnabled } from "../../lib/featureFlags";
 
 export function AuthCallbackPage() {
-  const [status, setStatus] = useState<"working" | "success" | "error">("working");
+  const [status, setStatus] = useState<"working" | "success" | "error">(() => {
+    if (typeof window === "undefined") return "working";
+    return isAuthFeatureEnabled(window.location.search) ? "working" : "error";
+  });
 
   useEffect(() => {
-    if (!isAuthFeatureEnabled(window.location.search)) {
-      setStatus("error");
+    if (status === "error") {
       return;
     }
 
@@ -22,7 +24,7 @@ export function AuthCallbackPage() {
     };
 
     void finish();
-  }, []);
+  }, [status]);
 
   return (
     <main className="mx-auto flex min-h-[50vh] max-w-xl items-center justify-center px-4 text-center">
