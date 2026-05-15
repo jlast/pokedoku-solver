@@ -1,0 +1,23 @@
+---
+import AppPageLayout from "../../layouts/AppPageLayout.astro";
+import { Header } from "../../app/components/Header";
+import { Footer } from "../../app/components/Footer";
+import { LoginPageClient } from "../../app/pages/LoginPageClient";
+---
+
+<AppPageLayout
+  title="Login | Pokedoku Helper"
+  description="Sign in to Pokedoku Helper"
+  path="/login"
+>
+  <div class="min-h-screen overflow-x-hidden p-5">
+    <Header
+      title="Pokedoku Helper"
+      subtitle="Sign in to continue"
+      currentPage="home"
+      client:load
+    />
+    <LoginPageClient client:load />
+    <Footer client:load />
+  </div>
+</AppPageLayout>

@@ -41,6 +41,15 @@ jobs:
         
       - name: Build
         if: inputs.site_changed == 'true' || inputs.data_changed == 'true'
+        env:
+          PUBLIC_ENABLE_AUTH: ${{ vars.PUBLIC_ENABLE_AUTH }}
+          PUBLIC_ALLOW_AUTH_QUERY_OVERRIDE: ${{ vars.PUBLIC_ALLOW_AUTH_QUERY_OVERRIDE }}
+          PUBLIC_COGNITO_REGION: ${{ vars.PUBLIC_COGNITO_REGION }}
+          PUBLIC_COGNITO_USER_POOL_ID: ${{ vars.PUBLIC_COGNITO_USER_POOL_ID }}
+          PUBLIC_COGNITO_CLIENT_ID: ${{ vars.PUBLIC_COGNITO_CLIENT_ID }}
+          PUBLIC_COGNITO_DOMAIN: ${{ vars.PUBLIC_COGNITO_DOMAIN }}
+          PUBLIC_COGNITO_REDIRECT_SIGN_IN: ${{ vars.PUBLIC_COGNITO_REDIRECT_SIGN_IN }}
+          PUBLIC_COGNITO_REDIRECT_SIGN_OUT: ${{ vars.PUBLIC_COGNITO_REDIRECT_SIGN_OUT }}
         run: pnpm build
 
       - name: Configure AWS credentials

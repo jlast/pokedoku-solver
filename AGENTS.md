@@ -31,6 +31,21 @@ Astro-based website for Pokedoku suggestions, statistics, tools, and tips.
 - Build: `pnpm build` (runs data fetch + Astro build)
 - Preview: `pnpm preview` or `pnpm --dir astro preview`
 
+## Auth and feature flags
+- Website auth uses AWS Cognito Hosted UI with Google federation.
+- Current login flow is Authorization Code + PKCE (SPA/public client; no client secret in frontend).
+- Login UI is feature-flagged.
+  - `PUBLIC_ENABLE_AUTH` controls default visibility.
+  - `PUBLIC_ALLOW_AUTH_QUERY_OVERRIDE` controls `?auth=1` / `?auth=0` override behavior.
+- Cognito-related public env vars used by website build:
+  - `PUBLIC_COGNITO_REGION`
+  - `PUBLIC_COGNITO_USER_POOL_ID`
+  - `PUBLIC_COGNITO_CLIENT_ID` (must be a public/SPA app client)
+  - `PUBLIC_COGNITO_DOMAIN` (custom domain, e.g. `auth.pokedoku-helper.com`)
+  - `PUBLIC_COGNITO_REDIRECT_SIGN_IN`
+  - `PUBLIC_COGNITO_REDIRECT_SIGN_OUT`
+- Production deploys are built in GitHub Actions; all `PUBLIC_*` values must be set in the GitHub `production` environment variables so Astro bakes correct values at build time.
+
 # Pokedoku Details Devvit app (`apps/pokedoku-details`)
 Devvit app that replies to tokens in posts and comments such as:
 - `[[Vulpix]]`

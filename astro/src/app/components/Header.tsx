@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "../../../../lib/browser/analytics";
+import { buildLogoutUrl, clearSession, getSessionUserLabel } from "../../lib/cognitoAuth";
+import { isAuthFeatureEnabled } from "../../lib/featureFlags";
 
 interface HeaderProps {
   title?: string;
@@ -109,6 +111,8 @@ export function Header({
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pathname, setPathname] = useState("");
+  const [userLabel, setUserLabel] = useState<string | null>(null);
+  const [authEnabled, setAuthEnabled] = useState(false);
   const toolsMenuRef = useRef<HTMLDetailsElement | null>(null);
   const mobileToolsMenuRef = useRef<HTMLDetailsElement | null>(null);
 
@@ -228,6 +232,18 @@ export function Header({
       document.removeEventListener("astro:after-swap", updatePathname as EventListener);
     };
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setUserLabel(getSessionUserLabel());
+    setAuthEnabled(isAuthFeatureEnabled(window.location.search));
+  }, [pathname]);
+
+  const signOut = () => {
+    trackEvent("click_sign_out", { from: currentPage });
+    clearSession();
+    window.location.assign(buildLogoutUrl());
+  };
 
   return (
     <>
@@ -398,6 +414,29 @@ export function Header({
             </nav>
 
             <div className="flex shrink-0 items-center justify-self-end gap-2">
+              {authEnabled ? userLabel ? (
+                <>
+                  <span className="hidden max-w-[200px] truncate text-sm text-slate-600 min-[1101px]:inline">
+                    {userLabel}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={signOut}
+                    className="cursor-pointer inline-flex h-10 items-center rounded-[10px] border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                  >
+                    Sign out
+                  </button>
+                </>
+              ) : (
+                <a
+                  href={`${import.meta.env.BASE_URL}login/`}
+                  onClick={() => trackEvent("click_navigate", { url: "login/", from: currentPage })}
+                  className="inline-flex h-10 items-center rounded-[10px] bg-slate-900 px-3 text-sm font-semibold text-white no-underline transition-colors hover:bg-slate-800"
+                >
+                  Login
+                </a>
+              ) : null}
+
               <a
                 href="https://buymeacoffee.com/jeroenvande"
                 target="_blank"
@@ -667,6 +706,30 @@ export function Header({
                         </a>
                       );
                     })}
+
+                    {authEnabled ? userLabel ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          closeMobileMenu("navigate");
+                          signOut();
+                        }}
+                        className={mobileNavButtonClass(false)}
+                      >
+                        Sign out
+                      </button>
+                    ) : (
+                      <a
+                        href={`${import.meta.env.BASE_URL}login/`}
+                        onClick={() => {
+                          trackEvent("click_navigate", { url: "login/", from: currentPage });
+                          closeMobileMenu("navigate");
+                        }}
+                        className={mobileNavButtonClass(false)}
+                      >
+                        Login
+                      </a>
+                    ) : null}
 
                     <a
                       href="https://buymeacoffee.com/jeroenvande"
