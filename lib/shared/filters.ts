@@ -1,4 +1,3 @@
-import { FILTER_CATEGORIES as SHARED_FILTER_CATEGORIES } from "@pokedoku-helper/shared-types";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { TYPE_COLORS, REGION_COLORS, EVOLUTION_COLORS, CATEGORY_COLORS } from './constants';
 
@@ -21,52 +20,141 @@ export interface FilterCategory {
   options: FilterOption[];
 }
 
+const TYPE_OPTIONS = [
+  'Normal',
+  'Fire',
+  'Water',
+  'Electric',
+  'Grass',
+  'Ice',
+  'Fighting',
+  'Poison',
+  'Ground',
+  'Flying',
+  'Psychic',
+  'Bug',
+  'Rock',
+  'Ghost',
+  'Dragon',
+  'Dark',
+  'Steel',
+  'Fairy',
+] as const;
+
+const REGION_OPTIONS = [
+  'Kanto',
+  'Johto',
+  'Hoenn',
+  'Sinnoh',
+  'Unova',
+  'Kalos',
+  'Alola',
+  'Galar',
+  'Hisui',
+  'Paldea',
+  'Unknown',
+] as const;
+
+const EVOLUTION_TRIGGER_OPTIONS = [
+  'Evolved by Level',
+  'Evolved by Item',
+  'Evolved by Trade',
+  'Evolved by Friendship',
+] as const;
+
+const CATEGORY_OPTIONS = [
+  'Legendary',
+  'Mythical',
+  'Ultra Beast',
+  'Paradox',
+  'Fossil',
+  'First Partner',
+  'Baby',
+  'Gigantamax',
+  'Mega Evolution',
+] as const;
+
 export const FILTER_CATEGORIES: FilterCategory[] = [
   {
     key: 'types',
     label: 'Types',
-    options: SHARED_FILTER_CATEGORIES.find((cat) => cat.key === 'types')!.options.map(
-      (option) => ({
-        name: option.name,
-        filter: option.matches,
-        color:
-          TYPE_COLORS[option.name] ??
-          (option.name === 'Monotype' ? '#E74C3C' : option.name === 'Dualtype' ? '#3498DB' : undefined),
-      })
-    ),
+    options: [
+      ...TYPE_OPTIONS.map((name) => ({
+        name,
+        filter: (pokemon: Pokemon) => pokemon.types.some((type) => type === name),
+        color: TYPE_COLORS[name],
+      })),
+      {
+        name: 'Monotype',
+        filter: (pokemon: Pokemon) => pokemon.types.length === 1,
+        color: '#E74C3C',
+      },
+      {
+        name: 'Dualtype',
+        filter: (pokemon: Pokemon) => pokemon.types.length === 2,
+        color: '#3498DB',
+      },
+    ],
   },
   {
     key: 'regions',
     label: 'Regions',
-    options: SHARED_FILTER_CATEGORIES.find((cat) => cat.key === 'regions')!.options.map(
-      (option) => ({
-        name: option.name,
-        filter: option.matches,
-        color: REGION_COLORS[option.name],
-      })
-    ),
+    options: REGION_OPTIONS.map((name) => ({
+      name,
+      filter: (pokemon: Pokemon) => pokemon.region === name,
+      color: REGION_COLORS[name],
+    })),
   },
   {
     key: 'evolution',
     label: 'Evolution',
-    options: SHARED_FILTER_CATEGORIES.find((cat) => cat.key === 'evolution')!.options.map(
-      (option) => ({
-        name: option.name,
-        filter: option.matches,
-        color: EVOLUTION_COLORS[option.name],
-      })
-    ),
+    options: [
+      {
+        name: 'First Stage',
+        filter: (pokemon: Pokemon) => pokemon.evolutionStage === 'First Stage',
+        color: EVOLUTION_COLORS['First Stage'],
+      },
+      {
+        name: 'Middle Stage',
+        filter: (pokemon: Pokemon) => pokemon.evolutionStage === 'Middle Stage',
+        color: EVOLUTION_COLORS['Middle Stage'],
+      },
+      {
+        name: 'Final Stage',
+        filter: (pokemon: Pokemon) => pokemon.evolutionStage === 'Final Stage',
+        color: EVOLUTION_COLORS['Final Stage'],
+      },
+      {
+        name: 'No Evolution Line',
+        filter: (pokemon: Pokemon) => pokemon.evolutionStage === 'No Evolution Line',
+        color: EVOLUTION_COLORS['No Evolution Line'],
+      },
+      {
+        name: 'Not Fully Evolved',
+        filter: (pokemon: Pokemon) =>
+          pokemon.evolutionStage === 'First Stage' || pokemon.evolutionStage === 'Middle Stage',
+        color: EVOLUTION_COLORS['Not Fully Evolved'],
+      },
+      ...EVOLUTION_TRIGGER_OPTIONS.map((trigger) => ({
+        name: trigger,
+        filter: (pokemon: Pokemon) => pokemon.evolutionTrigger?.includes(trigger) ?? false,
+        color: EVOLUTION_COLORS[trigger],
+      })),
+      {
+        name: 'Branched evolution',
+        filter: (pokemon: Pokemon) => pokemon.isBranched === true,
+        color: EVOLUTION_COLORS['Branched evolution'],
+      },
+    ],
   },
   {
     key: 'category',
     label: 'Categories',
-    options: SHARED_FILTER_CATEGORIES.find((cat) => cat.key === 'category')!.options.map(
-      (option) => ({
-        name: option.name,
-        filter: option.matches,
-        color: CATEGORY_COLORS[option.name],
-      })
-    ),
+    options: CATEGORY_OPTIONS.map((name) => ({
+      name,
+      filter: (pokemon: Pokemon) => pokemon.categories?.includes(name) ?? false,
+      color: CATEGORY_COLORS[name],
+    })),
   },
 ];
 
