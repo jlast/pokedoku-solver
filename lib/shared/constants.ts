@@ -99,6 +99,7 @@ export const MOVE_TYPE_ICON_MAP: Record<string, string> = {
   "Razor Leaf": "grass",
   "Shadow Ball": "ghost",
   Thunderbolt: "electric",
+  Surf: "water",
 };
 
 export interface ConstraintOption {
