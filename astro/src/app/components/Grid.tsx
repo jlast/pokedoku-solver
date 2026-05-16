@@ -44,6 +44,8 @@ function getConstraintParsedCategory(constraint: Constraint | null): ParsedCateg
     type: 'types',
     types: 'types',
     typeline: 'types',
+    move: 'move',
+    moves: 'move',
     region: 'regions',
     regions: 'regions',
     evolution: 'evolution',
