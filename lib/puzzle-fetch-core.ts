@@ -120,7 +120,7 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
     case "FOSSIL":
       return { category: "category", value: "Fossil" };
     case "POKEMON_MOVE":
-      return { category: "move", value: obj };
+      return { category: "move", value: obj.charAt(0).toUpperCase() + obj.slice(1); };
     default:
       return null;
   }
