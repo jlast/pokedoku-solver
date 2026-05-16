@@ -1,7 +1,7 @@
-import type { Pokemon } from "@pokedoku-helper/shared-types";
+import { POKEMON_LEARNED_MOVES, type Pokemon, type PokemonLearnedMove } from "@pokedoku-helper/shared-types";
 import { TYPE_COLORS, REGION_COLORS, EVOLUTION_COLORS, CATEGORY_COLORS } from './constants';
 
-export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category';
+export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category' | 'move';
 
 export interface Constraint {
   category: string;
@@ -73,6 +73,8 @@ const CATEGORY_OPTIONS = [
   'Gigantamax',
   'Mega Evolution',
 ] as const;
+
+const MOVE_OPTIONS = POKEMON_LEARNED_MOVES;
 
 export const FILTER_CATEGORIES: FilterCategory[] = [
   {
@@ -156,6 +158,15 @@ export const FILTER_CATEGORIES: FilterCategory[] = [
       color: CATEGORY_COLORS[name],
     })),
   },
+  {
+    key: 'move',
+    label: 'Moves',
+    options: MOVE_OPTIONS.map((name) => ({
+      name,
+      filter: (pokemon: Pokemon) => pokemon.learnedMoves?.includes(name) ?? false,
+      color: '#0ea5e9',
+    })),
+  },
 ];
 
 export const FILTER_KEY_TO_CONSTRAINT_CATEGORY: Record<string, string> = {
@@ -163,6 +174,7 @@ export const FILTER_KEY_TO_CONSTRAINT_CATEGORY: Record<string, string> = {
   regions: 'region',
   evolution: 'evolution',
   category: 'category',
+  move: 'move',
 };
 
 export function findConstraintOption(value: string): { value: string; category: string } | null {
@@ -177,6 +189,9 @@ export function findConstraintOption(value: string): { value: string; category: 
 
 export function matchesConstraint(pokemon: Pokemon, constraint: Constraint | null): boolean {
   if (!constraint) return true;
+  if (constraint.category === 'move') {
+    return pokemon.learnedMoves?.includes(constraint.value as PokemonLearnedMove) ?? false;
+  }
   for (const cat of FILTER_CATEGORIES) {
     const opt = cat.options.find(o => o.name === constraint.value);
     if (opt) {

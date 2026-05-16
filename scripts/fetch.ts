@@ -39,8 +39,9 @@ import type {
   PokeAPISpecies,
   EvolutionNode,
 } from "./lib/types";
-import type { Pokemon, PokemonType, DexDifficulty, PokemonCategory, InternalPokemon } from "@pokedoku-helper/shared-types";
+import { type Pokemon, type PokemonType, type DexDifficulty, type PokemonCategory, type InternalPokemon, type PokemonLearnedMove, POKEMON_LEARNED_MOVES } from "@pokedoku-helper/shared-types";
 import { CUSTOM_POKEMON } from "./custom_pokemon";
+import { getMoveOverridesForFormId } from './move_overrides';
 
 const NO_CACHE = process.argv.includes("--no-cache");
 
@@ -48,6 +49,29 @@ const POKEMON_API_BASE = "https://pokeapi.co/api/v2";
 const REQUEST_DELAY = 100;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_FILE = path.join(__dirname, "..", "public", "data", "pokemon.json");
+
+function toMoveSlug(moveLabel: string): string {
+  return moveLabel.toLowerCase().replace(/\s+/g, "-");
+}
+
+function extractTrackedMoves(pokemon: PokeAPIPokemon): PokemonLearnedMove[] {
+  const learnedMoveSet = new Set(pokemon.moves.map((entry) => entry.move.name));
+  const trackedMoves = POKEMON_LEARNED_MOVES.filter((moveLabel) =>
+    learnedMoveSet.has(toMoveSlug(moveLabel)),
+  );
+
+  return trackedMoves;
+}
+
+function applyMoveOverrides(entry: InternalPokemon): void {
+  if (!entry.formId) return;
+  const overrideMoves = getMoveOverridesForFormId(entry.formId);
+  if (!overrideMoves || overrideMoves.length === 0) return;
+
+  const currentMoves = entry.learnedMoves ?? [];
+  const mergedMoves = new Set<PokemonLearnedMove>([...currentMoves, ...overrideMoves]);
+  entry.learnedMoves = [...mergedMoves];
+}
 
 function getAllCategories(pokemon: InternalPokemon): string[] {
   const categories: string[] = [];
@@ -334,6 +358,9 @@ function getEntry(
     formId,
   };
 
+  const learnedMoves = extractTrackedMoves(pokemon);
+  if (learnedMoves.length > 0) entry.learnedMoves = learnedMoves;
+
   if (ULTRA_BEASTS.has(id)) addPokemonCategory(entry, "Ultra Beast");
   else if (FOSSIL_IDS.has(id)) addPokemonCategory(entry, "Fossil");
   else if (STARTER_IDS.has(formId)) addPokemonCategory(entry, "First Partner");
@@ -446,6 +473,8 @@ function getEntry(
   if(!formOverride?.sprite) {
     ensureFileExists('public/images/sprites', `${form.id}.png`, form?.sprites?.front_default);
   }
+
+  applyMoveOverrides(entry);
 
   return entry;
 }

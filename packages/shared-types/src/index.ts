@@ -99,6 +99,10 @@ export const POKEMON_CATEGORIES = [
 
 export type PokemonCategory = (typeof POKEMON_CATEGORIES)[number];
 
+export const POKEMON_LEARNED_MOVES = ['Surf'] as const;
+
+export type PokemonLearnedMove = (typeof POKEMON_LEARNED_MOVES)[number];
+
 export const DEX_DIFFICULTIES = [
   'Easy',
   'Normal',
@@ -135,6 +139,7 @@ export interface InternalPokemon {
   evolutionTrigger?: EvolutionTrigger[];
   isBranched?: boolean;
   categories?: PokemonCategory[];
+  learnedMoves?: PokemonLearnedMove[];
   sprite?: string;
   formId?: number;
 }
@@ -144,7 +149,7 @@ export interface Pokemon extends InternalPokemon {
   dexDifficultyPercentile: number;
 }
 
-export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category';
+export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category' | 'move';
 
 export interface FilterOptionDefinition {
   name: string;
@@ -224,6 +229,14 @@ export const FILTER_CATEGORIES: FilterCategoryDefinition[] = [
     options: POKEMON_CATEGORIES.map((name) => ({
       name,
       matches: (pokemon: Pokemon) => pokemon.categories?.includes(name) ?? false,
+    })),
+  },
+  {
+    key: 'move',
+    label: 'Moves',
+    options: POKEMON_LEARNED_MOVES.map((name) => ({
+      name,
+      matches: (pokemon: Pokemon) => pokemon.learnedMoves?.includes(name) ?? false,
     })),
   },
 ];
