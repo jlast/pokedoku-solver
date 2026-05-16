@@ -116,6 +116,7 @@ Follow existing repository style and avoid formatting churn.
 - Prefer TypeScript.
 - Prefer small, focused functions and clear naming.
 - Avoid broad refactors unrelated to the task.
+- Write and maintain unit tests and integration tests
 - Run lint and tests for touched areas before finishing.
 - For infra changes, validate templates with `aws cloudformation validate-template` before deploy.
 
