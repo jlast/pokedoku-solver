@@ -1,7 +1,7 @@
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { FILTER_CATEGORIES, matchesConstraint } from "./shared/filters";
 
-type ConstraintCategory = "regions" | "types" | "evolution" | "category";
+type ConstraintCategory = "regions" | "types" | "evolution" | "category" | "move";
 
 interface ConstraintMapping {
   category: ConstraintCategory;
@@ -119,6 +119,8 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
       return { category: "category", value: "Branched evolution" };
     case "FOSSIL":
       return { category: "category", value: "Fossil" };
+    case "MOVE":
+      return { category: "move", value: obj };
     default:
       return null;
   }
