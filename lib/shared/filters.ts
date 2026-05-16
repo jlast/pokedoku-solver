@@ -1,4 +1,5 @@
-import { POKEMON_LEARNED_MOVES, type Pokemon, type PokemonLearnedMove } from "@pokedoku-helper/shared-types";
+import type { Pokemon, PokemonLearnedMove } from "@pokedoku-helper/shared-types";
+import { POKEMON_LEARNED_MOVES } from "@pokedoku-helper/shared-types";
 import { TYPE_COLORS, REGION_COLORS, EVOLUTION_COLORS, CATEGORY_COLORS } from './constants';
 
 export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category' | 'move';
