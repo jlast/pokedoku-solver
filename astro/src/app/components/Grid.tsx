@@ -104,7 +104,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
         className={`flex w-full items-center justify-center rounded-md bg-[var(--bg)] px-2 py-1.5 text-center text-[10px] font-medium text-[var(--text-h)] md:text-xs ${isRow ? 'h-full' : ''}`}
         style={{ borderColor: getConstraintColor(constraint) }}
       >
-        {parsed ? <CategoryBadgeLink parsed={parsed} href={null} /> : <span>{constraint?.value || '-'}</span>}
+        {parsed ? <CategoryBadgeLink parsed={parsed} href={null} stacked /> : <span>{constraint?.value || '-'}</span>}
       </div>
     );
   };

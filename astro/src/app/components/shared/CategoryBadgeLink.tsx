@@ -7,13 +7,13 @@ interface ParsedCategory {
   label: string;
 }
 
-export function CategoryBadgeLink({ parsed, href }: { parsed: ParsedCategory; href: string | null }) {
+export function CategoryBadgeLink({ parsed, href, stacked = false }: { parsed: ParsedCategory; href: string | null; stacked?: boolean }) {
   const badge = (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-semibold text-white"
+      className={`inline-flex px-2 py-1 font-semibold text-white ${stacked ? 'min-w-[64px] rounded-md flex-col items-center gap-1 pt-2 text-[10px] leading-tight' : 'rounded-full items-center gap-1.5 text-xs'}`}
       style={{ backgroundColor: getCategoryBarColor(parsed) }}
     >
-      <CategoryIcon parsed={parsed} />
+      <CategoryIcon parsed={parsed} layout={stacked ? 'vertical' : 'horizontal'} className={stacked ? 'h-[22.5px] w-[22.5px]' : ''} />
       <span>{parsed.label}</span>
     </span>
   );
