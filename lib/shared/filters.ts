@@ -1,6 +1,7 @@
 import type { Pokemon, PokemonLearnedMove } from "@pokedoku-helper/shared-types";
-import { POKEMON_LEARNED_MOVES } from "@pokedoku-helper/shared-types";
 import { TYPE_COLORS, REGION_COLORS, EVOLUTION_COLORS, CATEGORY_COLORS } from './constants';
+
+export const POKEMON_LEARNED_MOVES = ['Surf'] as const;
 
 export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category' | 'move';
 
