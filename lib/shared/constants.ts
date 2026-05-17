@@ -91,13 +91,26 @@ export const CATEGORY_TYPE_COLORS: Record<string, string> = {
 };
 
 export const MOVE_TYPE_ICON_MAP: Record<string, string> = {
+  Acrobatics: "flying",
+  "Brick Break": "fighting",
   "Calm Mind": "psychic",
+  "Close Combat": "fighting",
+  Crunch: "dark",
+  "Dazzling Gleam": "fairy",
   Earthquake: "ground",
   Flamethrower: "fire",
+  Fly: "flying",
+  "Hydro Pump": "water",
   "Ice Beam": "ice",
+  "Ice Punch": "ice",
+  Metronome: "normal",
+  Protect: "normal",
+  Psychic: "psychic",
   "Psychic Move": "psychic",
   "Razor Leaf": "grass",
   "Shadow Ball": "ghost",
+  "Sludge Bomb": "poison",
+  "Tail Slap": "normal",
   Thunderbolt: "electric",
   Surf: "water",
 };

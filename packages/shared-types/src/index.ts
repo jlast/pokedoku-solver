@@ -99,7 +99,29 @@ export const POKEMON_CATEGORIES = [
 
 export type PokemonCategory = (typeof POKEMON_CATEGORIES)[number];
 
-export const POKEMON_LEARNED_MOVES = ['Surf'] as const;
+export const POKEMON_LEARNED_MOVES = [
+  'Acrobatics',
+  'Brick Break',
+  'Calm Mind',
+  'Close Combat',
+  'Crunch',
+  'Dazzling Gleam',
+  'Earthquake',
+  'Flamethrower',
+  'Fly',
+  'Hydro Pump',
+  'Ice Beam',
+  'Ice Punch',
+  'Metronome',
+  'Protect',
+  'Psychic',
+  'Razor Leaf',
+  'Shadow Ball',
+  'Surf',
+  'Sludge Bomb',
+  'Tail Slap',
+  'Thunderbolt',
+] as const;
 
 export type PokemonLearnedMove = (typeof POKEMON_LEARNED_MOVES)[number];
 

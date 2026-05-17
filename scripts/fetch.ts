@@ -41,7 +41,7 @@ import type {
 } from "./lib/types";
 import { type Pokemon, type PokemonType, type DexDifficulty, type PokemonCategory, type InternalPokemon, type PokemonLearnedMove, POKEMON_LEARNED_MOVES } from "@pokedoku-helper/shared-types";
 import { CUSTOM_POKEMON } from "./custom_pokemon";
-import { getMoveOverridesForFormId } from './move_overrides';
+import { getMoveOverridesForFormId, getMoveRemovalsForFormId } from './move_overrides';
 
 const NO_CACHE = process.argv.includes("--no-cache");
 
@@ -66,11 +66,19 @@ function extractTrackedMoves(pokemon: PokeAPIPokemon): PokemonLearnedMove[] {
 function applyMoveOverrides(entry: InternalPokemon): void {
   if (!entry.formId) return;
   const overrideMoves = getMoveOverridesForFormId(entry.formId);
-  if (!overrideMoves || overrideMoves.length === 0) return;
+  const removalMoves = getMoveRemovalsForFormId(entry.formId);
+  if ((!overrideMoves || overrideMoves.length === 0) && (!removalMoves || removalMoves.length === 0)) return;
 
-  const currentMoves = entry.learnedMoves ?? [];
-  const mergedMoves = new Set<PokemonLearnedMove>([...currentMoves, ...overrideMoves]);
+  const mergedMoves = new Set<PokemonLearnedMove>([...(entry.learnedMoves ?? []), ...overrideMoves]);
+  for (const move of removalMoves) {
+    mergedMoves.delete(move);
+  }
+
   entry.learnedMoves = [...mergedMoves];
+}
+
+function isMoveExcludedEntry(entry: InternalPokemon): boolean {
+  return entry.categories?.includes('Gigantamax') === true;
 }
 
 function getAllCategories(pokemon: InternalPokemon): string[] {
@@ -472,6 +480,11 @@ function getEntry(
   }
   if(!formOverride?.sprite) {
     ensureFileExists('public/images/sprites', `${form.id}.png`, form?.sprites?.front_default);
+  }
+
+  if (isMoveExcludedEntry(entry)) {
+    delete entry.learnedMoves;
+    return entry;
   }
 
   applyMoveOverrides(entry);
