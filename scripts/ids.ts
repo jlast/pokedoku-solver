@@ -1366,7 +1366,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   865: {
     // Sirfetch'd
     evolution: {
-      from: [10325],
+      from: [10166],
     },
   },
   520: {
