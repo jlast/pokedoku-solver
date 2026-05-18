@@ -157,7 +157,7 @@ function calculateDexDifficulties(pokemonList: InternalPokemon[]): Pokemon[] {
       dexDifficulty: grade,
     })
   }
-  return pokemon.sort((a, b) => b.id - a.id);;
+  return pokemon.sort((a, b) => a.id - b.id);
 }
 
 function getCategoryPairs(categories: string[]): string[] {
