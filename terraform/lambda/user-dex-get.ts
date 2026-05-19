@@ -2,26 +2,44 @@ import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyStructuredResultV2,
 } from 'aws-lambda';
-
-const CORS_HEADERS = {
-  'content-type': 'application/json',
-  'access-control-allow-origin': 'https://www.pokedoku-helper.com',
-  'access-control-allow-headers': 'authorization,content-type',
-  'access-control-allow-methods': 'GET,PATCH,OPTIONS',
-} as const;
+import {
+  authenticate,
+  fingerprintUser,
+  internalError,
+  logError,
+  logInfo,
+  ok,
+  readUserDex,
+  requestMeta,
+} from './user-dex-shared';
 
 export async function handler(
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyStructuredResultV2> {
-  return {
-    statusCode: 200,
-    headers: CORS_HEADERS,
-    body: JSON.stringify({
-      ok: true,
-      functionName: process.env.AWS_LAMBDA_FUNCTION_NAME ?? 'user-dex-get',
-      method: event.requestContext.http.method,
-      path: event.rawPath,
-      message: 'empty lambda placeholder',
-    }),
-  };
+  const meta = requestMeta(event);
+  logInfo('user_dex_get_start', meta);
+
+  try {
+    const authResult = await authenticate(event);
+    if ('statusCode' in authResult) {
+      logInfo('user_dex_get_auth_failed', meta);
+      return authResult;
+    }
+
+    const caughtPokemonKeyIds = await readUserDex(authResult.userId);
+    logInfo('user_dex_get_success', {
+      ...meta,
+      userIdHash: fingerprintUser(authResult.userId),
+      count: caughtPokemonKeyIds.length,
+    });
+
+    return ok({ caughtPokemonKeyIds });
+  } catch (error) {
+    logError('user_dex_get_error', {
+      ...meta,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    return internalError();
+  }
 }

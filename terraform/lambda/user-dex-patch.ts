@@ -2,26 +2,52 @@ import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyStructuredResultV2,
 } from 'aws-lambda';
-
-const CORS_HEADERS = {
-  'content-type': 'application/json',
-  'access-control-allow-origin': 'https://www.pokedoku-helper.com',
-  'access-control-allow-headers': 'authorization,content-type',
-  'access-control-allow-methods': 'GET,PATCH,OPTIONS',
-} as const;
+import {
+  authenticate,
+  badRequest,
+  fingerprintUser,
+  internalError,
+  logError,
+  logInfo,
+  ok,
+  requestMeta,
+  validateCaughtPokemonKeyIds,
+  writeUserDex,
+} from './user-dex-shared';
 
 export async function handler(
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyStructuredResultV2> {
-  return {
-    statusCode: 200,
-    headers: CORS_HEADERS,
-    body: JSON.stringify({
-      ok: true,
-      functionName: process.env.AWS_LAMBDA_FUNCTION_NAME ?? 'user-dex-patch',
-      method: event.requestContext.http.method,
-      path: event.rawPath,
-      message: 'empty lambda placeholder',
-    }),
-  };
+  const meta = requestMeta(event);
+  logInfo('user_dex_patch_start', meta);
+
+  try {
+    const authResult = await authenticate(event);
+    if ('statusCode' in authResult) {
+      logInfo('user_dex_patch_auth_failed', meta);
+      return authResult;
+    }
+
+    const caughtPokemonKeyIds = validateCaughtPokemonKeyIds(event.body);
+    if (!caughtPokemonKeyIds) {
+      logInfo('user_dex_patch_validation_failed', meta);
+      return badRequest('Invalid payload. Expected { "caughtPokemonKeyIds": number[] }.');
+    }
+
+    await writeUserDex(authResult.userId, caughtPokemonKeyIds);
+    logInfo('user_dex_patch_success', {
+      ...meta,
+      userIdHash: fingerprintUser(authResult.userId),
+      count: caughtPokemonKeyIds.length,
+    });
+
+    return ok({ caughtPokemonKeyIds });
+  } catch (error) {
+    logError('user_dex_patch_error', {
+      ...meta,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    return internalError();
+  }
 }
