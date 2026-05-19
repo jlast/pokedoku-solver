@@ -150,9 +150,9 @@ export const FILTER_CATEGORIES: FilterCategory[] = [
         color: EVOLUTION_COLORS[trigger],
       })),
       {
-        name: 'Branched evolution',
+        name: 'Branched Evolution',
         filter: (pokemon: Pokemon) => pokemon.isBranched === true,
-        color: EVOLUTION_COLORS['Branched evolution'],
+        color: EVOLUTION_COLORS['Branched Evolution'],
       },
     ],
   },

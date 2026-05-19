@@ -79,7 +79,7 @@ export const EVOLUTION_TRIGGERS = [
   'Evolved by Friendship',
 ] as const;
 
-export const EVOLUTION_BRANCHED = ['Branched evolution'] as const;
+export const EVOLUTION_BRANCHED = ['Branched Evolution'] as const;
 
 export type EvolutionMethod = (typeof EVOLUTION_METHODS)[number];
 export type EvolutionBranched = (typeof EVOLUTION_BRANCHED)[number];
@@ -251,7 +251,7 @@ export const FILTER_CATEGORIES: FilterCategoryDefinition[] = [
           pokemon.evolutionTrigger?.includes(trigger) ?? false,
       })),
       {
-        name: 'Branched evolution',
+        name: 'Branched Evolution',
         matches: (pokemon) => pokemon.isBranched === true,
       },
     ],
@@ -289,3 +289,5 @@ export function getCategoryOptionSlug(categoryKey: ConstraintCategory, optionNam
   }
   return baseSlug;
 }
+
+export { POKEDOKU_FORM_ID_MAPPING } from './pokemon-pokedoku-mapping';

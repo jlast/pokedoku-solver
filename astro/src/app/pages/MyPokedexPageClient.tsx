@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { getSessionIdToken, getSessionUserProfile } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
+import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 
 const LOCAL_STORAGE_KEY = "my_pokedex_caught_key_ids";
 const SHINY_LOCAL_STORAGE_KEY = "my_pokedex_shiny_key_ids";
@@ -301,7 +302,10 @@ export function MyPokedexPageClient() {
       if (Array.isArray(parsed.entries)) {
         for (const entry of parsed.entries) {
           if (entry?.["@t"] !== "upd") continue;
-          const pokemonId = Number(entry.pokemonId);
+          let pokemonId = Number(entry.pokemonId);
+          if(POKEDOKU_FORM_ID_MAPPING[pokemonId]) {
+            pokemonId = POKEDOKU_FORM_ID_MAPPING[pokemonId];
+          }
           if (!Number.isFinite(pokemonId) || !validIds.has(pokemonId)) continue;
           importedCaught.add(pokemonId);
           if (entry.shiny === true) {

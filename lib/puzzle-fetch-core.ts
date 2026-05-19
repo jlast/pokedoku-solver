@@ -116,7 +116,7 @@ function mapConstraintType(type: string, obj: string | boolean): ConstraintMappi
     case "PARADOX":
       return { category: "category", value: "Paradox" };
     case "EVOLUTION_BRANCHED":
-      return { category: "category", value: "Branched evolution" };
+      return { category: "category", value: "Branched Evolution" };
     case "FOSSIL":
       return { category: "category", value: "Fossil" };
     case "POKEMON_MOVE":
