@@ -11,6 +11,8 @@ const categoryTypeOrder: Record<string, number> = {
   regions: 1,
   evolution: 2,
   category: 3,
+  move: 4,
+  ability: 5,
 };
 
 const categoryTypeLabel: Record<string, string> = {
@@ -18,6 +20,8 @@ const categoryTypeLabel: Record<string, string> = {
   regions: "Regions",
   evolution: "Evolution",
   category: "Categories",
+  move: "Moves",
+  ability: "Abilities",
 };
 
 const categoriesByType = [...getCategories()].sort((a, b) => {

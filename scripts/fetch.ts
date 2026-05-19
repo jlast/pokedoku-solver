@@ -447,15 +447,8 @@ function getEntry(
   if (learnedMoves.length > 0) entry.learnedMoves = learnedMoves;
   const pokemonAbilityMap = loadPokemonAbilityMap();
   const baseAbilities = pokemonAbilityMap[String(id)] ?? [];
-  const mergedAbilities = new Set<PokemonAbility>(baseAbilities);
-  for (const ability of getAbilityOverridesForFormId(formId)) {
-    mergedAbilities.add(ability);
-  }
-  for (const ability of getAbilityRemovalsForFormId(formId)) {
-    mergedAbilities.delete(ability);
-  }
-  if (mergedAbilities.size > 0) {
-    entry.abilities = [...mergedAbilities].sort((a, b) => a.localeCompare(b));
+  if (baseAbilities.length > 0) {
+    entry.abilities = [...baseAbilities].sort((a, b) => a.localeCompare(b));
   }
 
   if (ULTRA_BEASTS.has(id)) addPokemonCategory(entry, "Ultra Beast");
@@ -566,6 +559,20 @@ function getEntry(
       entry.categories = formOverride.categories;
     }
     if (formOverride.sprite) entry.sprite = formOverride.sprite;
+  }
+
+  const effectiveFormId = entry.formId ?? formId;
+  const mergedAbilities = new Set<PokemonAbility>(entry.abilities ?? []);
+  for (const ability of getAbilityOverridesForFormId(effectiveFormId)) {
+    mergedAbilities.add(ability);
+  }
+  for (const ability of getAbilityRemovalsForFormId(effectiveFormId)) {
+    mergedAbilities.delete(ability);
+  }
+  if (mergedAbilities.size > 0) {
+    entry.abilities = [...mergedAbilities].sort((a, b) => a.localeCompare(b));
+  } else {
+    delete entry.abilities;
   }
   if(!formOverride?.sprite) {
     ensureFileExists('public/images/sprites', `${form.id}.png`, form?.sprites?.front_default);

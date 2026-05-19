@@ -3,7 +3,7 @@ import path from "node:path";
 import { FILTER_CATEGORIES } from "../../../lib/shared/filters";
 import { makePairSlug, slugify } from "./slug";
 import { SITE_URL } from "./site";
-import type { Pokemon } from "@pokedoku-helper/shared-types";
+import { getCategoryOptionSlug, type Pokemon } from "@pokedoku-helper/shared-types";
 
 export interface CategoryPageData {
   key: string;
@@ -107,7 +107,7 @@ function buildCategories(): CategoryPageData[] {
       const filtered = pokemon.filter((entry) => option.filter(entry as never));
       if (filtered.length === 0) continue;
       const key = `${category.key}:${option.name}`;
-      const slug = slugify(option.name);
+      const slug = getCategoryOptionSlug(category.key, option.name);
       const existing = seenSlugs.get(slug);
       if (existing && existing !== key) {
         throw new Error(`Duplicate category slug '${slug}' for '${existing}' and '${key}'`);

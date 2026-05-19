@@ -1,4 +1,5 @@
 import {
+  ABILITY_TYPE_ICON_MAP,
   CATEGORY_COLORS,
   EVOLUTION_COLORS,
   MOVE_TYPE_ICON_MAP,
@@ -35,6 +36,13 @@ export function parseCategoryId(categoryId: string): ParsedCategory {
 export function getCategoryBarColor(parsed: ParsedCategory): string {
   if (parsed.type === "move") {
     const mappedType = MOVE_TYPE_ICON_MAP[parsed.label];
+    if (mappedType) {
+      const typeName = mappedType.charAt(0).toUpperCase() + mappedType.slice(1);
+      return TYPE_COLORS[typeName] ?? "#0f766e";
+    }
+  }
+  if (parsed.type === "ability") {
+    const mappedType = ABILITY_TYPE_ICON_MAP[parsed.label];
     if (mappedType) {
       const typeName = mappedType.charAt(0).toUpperCase() + mappedType.slice(1);
       return TYPE_COLORS[typeName] ?? "#0f766e";

@@ -115,6 +115,14 @@ export const MOVE_TYPE_ICON_MAP: Record<string, string> = {
   Surf: "water",
 };
 
+export const ABILITY_TYPE_ICON_MAP: Record<string, string> = {
+  Intimidate: "dark",
+  "Keen Eye": "flying",
+  Levitate: "psychic",
+  Sturdy: "rock",
+  "Swift Swim": "water",
+};
+
 export interface ConstraintOption {
   value: string;
   label: string;

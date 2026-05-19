@@ -182,7 +182,7 @@ export interface Pokemon extends InternalPokemon {
   dexDifficultyPercentile: number;
 }
 
-export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category' | 'move';
+export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category' | 'move' | 'ability';
 
 export interface FilterOptionDefinition {
   name: string;
@@ -272,4 +272,20 @@ export const FILTER_CATEGORIES: FilterCategoryDefinition[] = [
       matches: (pokemon: Pokemon) => pokemon.learnedMoves?.includes(name) ?? false,
     })),
   },
+  {
+    key: 'ability',
+    label: 'Abilities',
+    options: POKEMON_ABILITIES.map((name) => ({
+      name,
+      matches: (pokemon: Pokemon) => pokemon.abilities?.includes(name) ?? false,
+    })),
+  },
 ];
+
+export function getCategoryOptionSlug(categoryKey: ConstraintCategory, optionName: string): string {
+  const baseSlug = optionName.toLowerCase().replaceAll(' ', '-').replaceAll('.', '');
+  if (categoryKey === 'move' && baseSlug === 'psychic') {
+    return 'psychic-move';
+  }
+  return baseSlug;
+}

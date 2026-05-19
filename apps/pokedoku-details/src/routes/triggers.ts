@@ -11,7 +11,7 @@ import {
   type TriggerResponse,
 } from '@devvit/web/shared';
 import { reddit, RichTextBuilder } from '@devvit/web/server';
-import { FILTER_CATEGORIES } from '@pokedoku-helper/shared-types';
+import { FILTER_CATEGORIES, getCategoryOptionSlug } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { getPokemonMap } from '../core/pokemonCache';
 import { log } from '../core/logger';
@@ -189,7 +189,7 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
       const filterMatch: MatchedFilter = {
         categoryLabel: `${leftCategory.label} + ${rightCategory.label}`,
         name: `${leftOption.name} + ${rightOption.name}`,
-        linkSlug: `${leftOption.name}/${rightOption.name}`,
+        linkSlug: `${getCategoryOptionSlug(leftCategory.key, leftOption.name)}/${getCategoryOptionSlug(rightCategory.key, rightOption.name)}`,
         count: matchedPokemonForFilter.length,
       };
 
@@ -228,7 +228,7 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
     const filterMatch: MatchedFilter = {
       categoryLabel: filterCategory.label,
       name: filterOption.name,
-      linkSlug: filterOption.name,
+      linkSlug: getCategoryOptionSlug(filterCategory.key, filterOption.name),
       count: matchedPokemonForFilter.length,
       difficultyDistribution: difficultyStats.distribution,
       runtimeCategoryName: filterOption.name,

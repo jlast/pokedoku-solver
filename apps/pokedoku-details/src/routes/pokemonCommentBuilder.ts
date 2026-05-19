@@ -49,7 +49,11 @@ const appendTypeRegionLine = (p: ParagraphContext, pokemon: Pokemon): void => {
 
 const appendCategoryLinks = (p: ParagraphContext, pokemon: Pokemon): void => {
   const categoryGroups = getCategoryGroups(pokemon).filter(
-    (group) => group.label !== 'Types' && group.label !== 'Regions'
+    (group) =>
+      group.label !== 'Types' &&
+      group.label !== 'Regions' &&
+      group.label !== 'Moves' &&
+      group.label !== 'Abilities'
   );
 
   if (categoryGroups.length === 0) {

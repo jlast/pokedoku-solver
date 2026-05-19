@@ -85,9 +85,6 @@ export const formatTypeDifficultyStats = (pokemon: Pokemon[]): {
   };
 };
 
-const slug = (value: string): string =>
-  value.toLowerCase().replaceAll(' ', '-').replaceAll('.', '');
-
 const formatDistributionWithEmoji = (distribution: string): string =>
   distribution
     .split('|')
@@ -110,7 +107,7 @@ export const appendFilterStats = (
   builder.paragraph((p) => {
     p.link({
       text: filter.name,
-      url: `${BASE_URL}/tools/category/${slug(filter.linkSlug)}`,
+      url: `${BASE_URL}/tools/category/${filter.linkSlug}`,
       formatting: [richTextBold(filter.name.length)],
     });
     p.linebreak();
@@ -139,7 +136,7 @@ export const appendFilterCompactLine = (
 ): void => {
     p.link({
       text: filter.name,
-      url: `${BASE_URL}/tools/category/${slug(filter.linkSlug)}`,
+      url: `${BASE_URL}/tools/category/${filter.linkSlug}`,
     });
     p.text({ text: ` - ${filter.count} answers` });
 };
