@@ -6,7 +6,7 @@ import Breadcrumb from "./Breadcrumb.astro";
 import SectionCard from "./SectionCard.astro";
 import { CategoryBadgeLink } from "../app/components/shared/CategoryBadgeLink";
 import { parseCategoryId } from "../app/components/puzzle-stats/categoryUtils";
-import { PokemonRuntimeStatsSectionsPanel, PokemonRuntimeStatsSummaryPanel } from "../app/components/pokemon-detail/PokemonRuntimeStatsPanel";
+import { PokemonRuntimeStatsSectionsPanel, PokemonRuntimeStatsSummaryPanel, PokemonRuntimeStatsTimelinePanel } from "../app/components/pokemon-detail/PokemonRuntimeStatsPanel";
 import {
   DEX_DIFFICULTY_COLORS,
   REGION_COLORS,
@@ -27,6 +27,8 @@ type PokemonWithEvolution = Pokemon & {
     from?: number[];
     to?: number[];
   };
+  learnedMoves?: string[];
+  abilities?: string[];
 };
 
 const { pokemon, slug, statsKeyId } = Astro.props as Props;
@@ -63,8 +65,14 @@ const applicableCategoryIds = Array.from(
     ),
   ),
 );
+const topCategoryIds = applicableCategoryIds.filter((categoryId) => {
+  const parsed = parseCategoryId(categoryId);
+  return parsed.type !== "move" && parsed.type !== "ability";
+});
 
 const categoryLabel = pokemon.categories?.length ? pokemon.categories.join(", ") : "-";
+const movesLabel = pokemonWithEvolution.learnedMoves?.length ? pokemonWithEvolution.learnedMoves.join(", ") : "-";
+const abilitiesLabel = pokemonWithEvolution.abilities?.length ? pokemonWithEvolution.abilities.join(", ") : "-";
 const pokemonByFormId = new Map<number, Pokemon>(
   getPokemonList().map((entry: Pokemon) => [entry.formId ?? entry.id, entry]),
 );
@@ -106,7 +114,7 @@ const hasEvolutionLine =
           </div>
 
           <div class="mt-3 flex flex-wrap gap-2">
-            {applicableCategoryIds.map((categoryId) => {
+            {topCategoryIds.map((categoryId) => {
               const parsed = parseCategoryId(categoryId);
               return <CategoryBadgeLink parsed={parsed} href={getCategoryHref(parsed.label)} />;
             })}
@@ -129,117 +137,124 @@ const hasEvolutionLine =
 
       <section class="grid items-start gap-4 lg:grid-cols-2">
         <div class="grid gap-4">
-          
-          <PokemonRuntimeStatsSectionsPanel statsKeyId={statsKeyId} client:load />
+          <div class="w-full lg:col-span-2">
+            <PokemonRuntimeStatsTimelinePanel statsKeyId={statsKeyId} client:load />
+          </div>
+
+          <SectionCard title="Rarity score" class="lg:col-span-2">
+            <div class="grid gap-4 md:grid-cols-[2fr_1fr]">
+              <div>
+                <div class="mt-2 flex items-center justify-center gap-3 sm:justify-start">
+                  <div
+                    class="grid h-32 w-32 place-items-center rounded-full"
+                    style={`background: conic-gradient(from 0deg, #4f6fff 0deg, #70b9ff ${rarityDegrees}deg, #e7ebf7 ${rarityDegrees}deg, #e7ebf7 360deg);`}
+                  >
+                    <div class="grid h-24 w-24 place-items-center rounded-full bg-white text-slate-800">
+                      <strong class="text-3xl leading-none font-bold">{rarityScore ?? "-"}</strong>
+                    </div>
+                  </div>
+                  <span class="ml-2 text-sm font-semibold text-slate-500">/100</span>
+                </div>
+                <p class="mt-2 text-left text-slate-500">{rarityScore === null ? "Rarity data unavailable." : `Rarer than ${rarityScore}% of all pokemon`}</p>
+              </div>
+              <div class="flex items-center justify-center border-t border-slate-200/80 pt-3 md:border-t-0 md:border-l md:pl-4 md:pt-0">
+                <Badge
+                  text={pokemon.dexDifficulty ?? "Unknown"}
+                  color={DEX_DIFFICULTY_COLORS[pokemon.dexDifficulty ?? ""] ?? "#64748b"}
+                />
+              </div>
+            </div>
+          </SectionCard>
+          {hasEvolutionLine ? (
+            <SectionCard title="Evolution line" class="lg:col-span-2">
+              <div class="grid gap-4">
+                {evolvesFrom.length > 0 ? (
+                  <section>
+                    <p class="mb-2 text-sm font-medium text-slate-500">Evolves from</p>
+                    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      {evolvesFrom.map((entry: Pokemon) => (
+                        <a
+                          class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-blue-300 hover:bg-blue-50"
+                          href={`/pokemon/${getPokemonSlug(entry)}/`}
+                        >
+                          {entry.sprite ? (
+                            <img src={entry.sprite} alt={entry.name} class="h-12 w-12 object-contain" loading="lazy" />
+                          ) : (
+                            <div class="grid h-12 w-12 place-items-center rounded-xl bg-slate-200 text-sm font-bold text-slate-700">
+                              {entry.name.slice(0, 1)}
+                            </div>
+                          )}
+                          <span class="font-semibold text-slate-800">{entry.name}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+
+                {evolvesTo.length > 0 ? (
+                  <section>
+                    <p class="mb-2 text-sm font-medium text-slate-500">Evolves to</p>
+                    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      {evolvesTo.map((entry: Pokemon) => (
+                        <a
+                          class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-blue-300 hover:bg-blue-50"
+                          href={`/pokemon/${getPokemonSlug(entry)}/`}
+                        >
+                          {entry.sprite ? (
+                            <img src={entry.sprite} alt={entry.name} class="h-12 w-12 object-contain" loading="lazy" />
+                          ) : (
+                            <div class="grid h-12 w-12 place-items-center rounded-xl bg-slate-200 text-sm font-bold text-slate-700">
+                              {entry.name.slice(0, 1)}
+                            </div>
+                          )}
+                          <span class="font-semibold text-slate-800">{entry.name}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+
+                {hasAlternativeForms ? (
+                  <section>
+                    <p class="mb-2 text-sm font-medium text-slate-500">Alternative forms</p>
+                    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      {alternativeForms.map((entry: Pokemon) => (
+                        <a
+                          class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-blue-300 hover:bg-blue-50"
+                          href={`/pokemon/${getPokemonSlug(entry)}/`}
+                        >
+                          {entry.sprite ? (
+                            <img src={entry.sprite} alt={entry.name} class="h-12 w-12 object-contain" loading="lazy" />
+                          ) : (
+                            <div class="grid h-12 w-12 place-items-center rounded-xl bg-slate-200 text-sm font-bold text-slate-700">
+                              {entry.name.slice(0, 1)}
+                            </div>
+                          )}
+                          <span class="font-semibold text-slate-800">{entry.name}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+              </div>
+            </SectionCard>
+          ) : null}
 
         </div>
 
         <div class="grid gap-4">
 
-        <SectionCard title="Rarity score" class="lg:col-span-2">
-          <div class="grid gap-4 md:grid-cols-[2fr_1fr]">
-            <div>
-              <div class="mt-2 flex items-center justify-center gap-3 sm:justify-start">
-                <div
-                  class="grid h-32 w-32 place-items-center rounded-full"
-                  style={`background: conic-gradient(from 0deg, #4f6fff 0deg, #70b9ff ${rarityDegrees}deg, #e7ebf7 ${rarityDegrees}deg, #e7ebf7 360deg);`}
-                >
-                  <div class="grid h-24 w-24 place-items-center rounded-full bg-white text-slate-800">
-                    <strong class="text-3xl leading-none font-bold">{rarityScore ?? "-"}</strong>
-                  </div>
-                </div>
-                <span class="ml-2 text-sm font-semibold text-slate-500">/100</span>
-              </div>
-              <p class="mt-2 text-left text-slate-500">{rarityScore === null ? "Rarity data unavailable." : `Rarer than ${rarityScore}% of all pokemon`}</p>
-            </div>
-            <div class="flex items-center justify-center border-t border-slate-200/80 pt-3 md:border-t-0 md:border-l md:pl-4 md:pt-0">
-              <Badge
-                text={pokemon.dexDifficulty ?? "Unknown"}
-                color={DEX_DIFFICULTY_COLORS[pokemon.dexDifficulty ?? ""] ?? "#64748b"}
-              />
-            </div>
-          </div>
-        </SectionCard>
-        {hasEvolutionLine ? (
-          <SectionCard title="Evolution line" class="lg:col-span-2">
-            <div class="grid gap-4">
-              {evolvesFrom.length > 0 ? (
-                <section>
-                  <p class="mb-2 text-sm font-medium text-slate-500">Evolves from</p>
-                  <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {evolvesFrom.map((entry: Pokemon) => (
-                      <a
-                        class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-blue-300 hover:bg-blue-50"
-                        href={`/pokemon/${getPokemonSlug(entry)}/`}
-                      >
-                        {entry.sprite ? (
-                          <img src={entry.sprite} alt={entry.name} class="h-12 w-12 object-contain" loading="lazy" />
-                        ) : (
-                          <div class="grid h-12 w-12 place-items-center rounded-xl bg-slate-200 text-sm font-bold text-slate-700">
-                            {entry.name.slice(0, 1)}
-                          </div>
-                        )}
-                        <span class="font-semibold text-slate-800">{entry.name}</span>
-                      </a>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-
-              {evolvesTo.length > 0 ? (
-                <section>
-                  <p class="mb-2 text-sm font-medium text-slate-500">Evolves to</p>
-                  <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {evolvesTo.map((entry: Pokemon) => (
-                      <a
-                        class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-blue-300 hover:bg-blue-50"
-                        href={`/pokemon/${getPokemonSlug(entry)}/`}
-                      >
-                        {entry.sprite ? (
-                          <img src={entry.sprite} alt={entry.name} class="h-12 w-12 object-contain" loading="lazy" />
-                        ) : (
-                          <div class="grid h-12 w-12 place-items-center rounded-xl bg-slate-200 text-sm font-bold text-slate-700">
-                            {entry.name.slice(0, 1)}
-                          </div>
-                        )}
-                        <span class="font-semibold text-slate-800">{entry.name}</span>
-                      </a>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-
-              {hasAlternativeForms ? (
-                <section>
-                  <p class="mb-2 text-sm font-medium text-slate-500">Alternative forms</p>
-                  <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {alternativeForms.map((entry: Pokemon) => (
-                      <a
-                        class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-blue-300 hover:bg-blue-50"
-                        href={`/pokemon/${getPokemonSlug(entry)}/`}
-                      >
-                        {entry.sprite ? (
-                          <img src={entry.sprite} alt={entry.name} class="h-12 w-12 object-contain" loading="lazy" />
-                        ) : (
-                          <div class="grid h-12 w-12 place-items-center rounded-xl bg-slate-200 text-sm font-bold text-slate-700">
-                            {entry.name.slice(0, 1)}
-                          </div>
-                        )}
-                        <span class="font-semibold text-slate-800">{entry.name}</span>
-                      </a>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-            </div>
-          </SectionCard>
-        ) : null}
+        <div class="w-full lg:col-span-2">
+          <PokemonRuntimeStatsSectionsPanel statsKeyId={statsKeyId} client:load />
+        </div>
         <SectionCard title="Core details" class="lg:col-span-2">
           <ul class="grid gap-2">
-            <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Region</span><strong style={`color:${REGION_COLORS[pokemon.region ?? ""] ?? "#0f172a"};`}>{pokemon.region ?? "Unknown"}</strong></li>
-            <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Evolution stage</span><strong>{pokemon.evolutionStage ?? "Unknown"}</strong></li>
-            <li class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Categories</span><strong>{categoryLabel}</strong></li>
-            <li class="flex items-center justify-between gap-3"><span class="text-slate-500">Evolution trigger</span><strong>{pokemon.evolutionTrigger?.join(", ") ?? "-"}</strong></li>
+            <li class="grid grid-cols-[120px_1fr] items-start gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Region</span><strong class="text-right" style={`color:${REGION_COLORS[pokemon.region ?? ""] ?? "#0f172a"};`}>{pokemon.region ?? "Unknown"}</strong></li>
+            <li class="grid grid-cols-[120px_1fr] items-start gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Evolution stage</span><strong class="text-right">{pokemon.evolutionStage ?? "Unknown"}</strong></li>
+            <li class="grid grid-cols-[120px_1fr] items-start gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Categories</span><strong class="text-right break-words">{categoryLabel}</strong></li>
+            <li class="grid grid-cols-[120px_1fr] items-start gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Evolution trigger</span><strong class="text-right break-words">{pokemon.evolutionTrigger?.join(", ") ?? "-"}</strong></li>
+            <li class="grid grid-cols-[120px_1fr] items-start gap-3 border-b border-slate-100 pb-2"><span class="text-slate-500">Moves</span><strong class="text-right break-words">{movesLabel}</strong></li>
+            <li class="grid grid-cols-[120px_1fr] items-start gap-3"><span class="text-slate-500">Abilities</span><strong class="text-right break-words">{abilitiesLabel}</strong></li>
           </ul>
         </SectionCard>
 

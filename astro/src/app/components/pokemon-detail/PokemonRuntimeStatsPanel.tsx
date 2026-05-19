@@ -37,7 +37,7 @@ interface PokemonRuntimeStatsPanelProps {
   statsKeyId: number;
 }
 
-function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntimeStatsPanelProps & { variant: "summary" | "sections" }) {
+function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntimeStatsPanelProps & { variant: "summary" | "sections" | "timeline" }) {
   const [stats, setStats] = useState<PokemonRuntimeStats | null>(null);
 
   useEffect(() => {
@@ -137,7 +137,7 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
         </>
       ) : null}
 
-      {variant === "sections" ? (
+      {variant === "timeline" ? (
         <HistoryTimelineCard
           dates={appearanceTimeline}
           title="Appearances over time"
@@ -197,4 +197,8 @@ export function PokemonRuntimeStatsSummaryPanel({ statsKeyId }: PokemonRuntimeSt
 
 export function PokemonRuntimeStatsSectionsPanel({ statsKeyId }: PokemonRuntimeStatsPanelProps) {
   return <PokemonRuntimeStatsPanelContent statsKeyId={statsKeyId} variant="sections" />;
+}
+
+export function PokemonRuntimeStatsTimelinePanel({ statsKeyId }: PokemonRuntimeStatsPanelProps) {
+  return <PokemonRuntimeStatsPanelContent statsKeyId={statsKeyId} variant="timeline" />;
 }
