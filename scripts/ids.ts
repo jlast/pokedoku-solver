@@ -533,7 +533,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Meowth, alolan form, evolution line is not branched
     isBranched: false,
     evolution: {
-      to: [10210],
+      to: [10108],
     },
   },
   10320: {
@@ -560,13 +560,13 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   980: {
     // Clodsire
     evolution: {
-      from: [10422]
+      from: [10253]
     }
   },
   866: {
     // Mr Rime
     evolution: {
-      from: [10327],
+      from: [10016],
     }
   },
   215: {
@@ -586,7 +586,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   903: {
     // Sneasler
     evolution: {
-      from: [10404],
+      from: [10235],
     },
   },
   562: {
@@ -606,7 +606,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   867: {
     // Runerigus    
     evolution: {
-      from: [10338],
+      from: [10077],
     },
   },
   65: {
@@ -642,7 +642,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   904: {
     // Overqwil
     evolution: {
-      from: [10403]
+      from: [10234]
     }
   },
   222: {
@@ -728,7 +728,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Slowbro, galarian form evolution trigger fix
     evolutionTrigger: ["Evolved by Item"],
     evolution: {
-      from: [10323],
+      from: [10012],
     },
   },
   10414: {
@@ -743,7 +743,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // basculin white striped
     region: "Hisui",
     evolution: {
-      to: [902, 10417],
+      to: [902, 10248],
     },
   },
   10340: {
@@ -775,7 +775,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Darmanitan Galar
     evolutionTrigger: ["Evolved by Item"],
     evolution: {
-      from: [10335],
+      from: [10018],
     },
   },
   10067: {
@@ -786,7 +786,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Darmanitan Galar zen
     evolutionTrigger: ["Evolved by Item"],
     evolution: {
-      from: [10335],
+      from: [10018],
     },
   },
   83: {
@@ -809,7 +809,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Galarian Slowking
     evolutionTrigger: ["Evolved by Item"],
     evolution: {
-      from: [10323],
+      from: [10012],
     },
   },
   10332: {
@@ -821,39 +821,39 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   10333: {
     // Zigzagoon galar
     evolution: {
-      to: [10334],
+      to: [10073],
     },
   },
   10334: {
     // Linoone galar
     evolution: {
-      from: [10333],
+      from: [10072],
       to: [862],
     },
   },
   862: {
     // Obstagoon galar
     evolution: {
-      from: [10334],
+      from: [92586],
     },
   },
   554: {
     // Darumaka
     evolution: {
-      to: [555, 10067],
+      to: [555, 10017],
     },
   },
   10335: {
     // Darumaka galar
     evolution: {
-      to: [10336, 10337],
+      to: [10177, 10178],
     },
   },
   10204: { 
     // Alolan Sandslash
     evolutionTrigger: ["Evolved by Item"],
     evolution: {
-      from: [10203],
+      from: [10101],
     },
   },
   1011: {
@@ -864,7 +864,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Electrode Hisui
     evolutionTrigger: ["Evolved by Item"],
     evolution: {
-      from: [10400],
+      from: [10231],
     },
   },
   412: {
@@ -877,14 +877,14 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
     // Burmy sandy
     formId: 90412,
     evolution: {
-      to: [10036, 414],
+      to: [10004, 414],
     },
   },
   10035: {
     // Burmy trash
     formId: 91412,
     evolution: {
-      to: [10037],
+      to: [10005],
     },
   },
   413: {
@@ -896,25 +896,25 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   10036: {
     // Wormadam sandy
     evolution: {
-      from: [10034],
+      from: [10004],
     },
   },
   10037: {
     // Wormadam trash
     evolution: {
-      from: [10035],
+      from: [10005],
     },
   },
   414: {
     // Mothim
     evolution: {
-      from: [412, 10034, 10035],
+      from: [412, 10004, 10005],
     }
   },
   420: {
     // Cherubi
     evolution: {
-      to: [421, 10038],
+      to: [421, 90421],
     }
   },
   10038: {
@@ -926,13 +926,13 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   10039: {
     // Shellos east
     evolution: {
-      to: [10040],
+      to: [90423],
     },
   },
   10040: {
     // Gastrodon east
     evolution: {
-      from: [10039],
+      from: [90422],
     },
   },
   585: {
@@ -944,19 +944,19 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   10068: {
     // Deerling summer
     evolution: {
-      to: [10071],
+      to: [91586],
     },
   },
   10069: {
     // Deerling autumn
     evolution: {
-      to: [10072],
+      to: [90586],
     },
   },
   10070: {
     // Deerling winter
     evolution: {
-      to: [10073],
+      to: [92586],
     },
   },
   586: {
@@ -968,37 +968,37 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   10071: {
     // Sawsbuck summer
     evolution: {
-      from: [10068],
+      from: [91585],
     },
   },
   10072: {
     // Sawsbuck autumn
     evolution: {
-      from: [10069],
+      from: [90585],
     },
   },
   10073: {
     // Sawsbuck winter
     evolution: {
-      from: [10070],
+      from: [92585],
     },
   },
   677: {
     // Espurr
     evolution: {
-      to: [678, 10124],
+      to: [678, 10025],
     },
   },
   680: {
     // Aegislash blade
     evolution: {
-      to: [681, 10125],
+      to: [681, 10026],
     },
   },
   10125: {
     // Aegislash blade
     evolution: {
-      from: [680],
+      from: [10026],
     },
   },
   710: {
@@ -1010,19 +1010,19 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   10126: {
     // Pumpkaboo small
     evolution: {
-      to: [10129],
+      to: [10015],
     },
   },
   10127: {
     // Pumpkaboo large
     evolution: {
-      to: [10130],
+      to: [10001],
     },
   },
   10128: {
     // Pumpkaboo super
     evolution: {
-      to: [10131],
+      to: [10002],
     },
   },
   711: {
@@ -1034,339 +1034,339 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   10129: {
     // Gourgeist small
     evolution: {
-      from: [10126],
+      from: [10027],
     },
   },
   10130: {
     // Gourgeist large
     evolution: {
-      from: [10127],
+      from: [10013],
     },
   },
   10131: {
     // Gourgeist super
     evolution: {
-      from: [10128],
+      from: [10014],
     },
   },
   10193: {
     // Rattata alola
     evolution: {
-      to: [10194],
+      to: [10092],
     },
   },
   10194: {
     // Raticate alola
     evolution: {
-      from: [10193],
+      from: [10091],
     },
   },
   25: {
     // Pikachu
     evolution: {
-      to: [26, 10202],
+      to: [26, 10100],
     },
   },
   10203: {
     // Sandshrew alola
     evolution: {
-      to: [10204],
+      to: [10102],
     },
   },
   10205: {
     // Vulpix alola
     evolution: {
-      to: [10206],
+      to: [10104],
     },
   },
   10206: {
     // Ninetales alola
     evolution: {
-      from: [10205],
+      from: [10103],
     },
   },
   10207: {
     // Diglett alola
     evolution: {
-      to: [10208],
+      to: [10106],
     },
   },
   10208: {
     // Dugtrio alola
     evolution: {
-      from: [10207],
+      from: [10105],
     },
   },
   10210: {
     // Persian alola
     evolution: {
-      from: [10209],
+      from: [10107],
     },
   },
   10211: {
     // Geodude alola
     evolution: {
-      to: [10212],
+      to: [10110],
     },
   },
   10212: {
     // Graveler alola
     evolution: {
-      from: [10211],
-      to: [10213],
+      from: [10109],
+      to: [10111],
     },
   },
   10213: {
     // Golem alola
     evolution: {
-      from: [10212],
+      from: [10110],
     },
   },
   10214: {
     // Grimer alola
     evolution: {
-      to: [10215],
+      to: [10113],
     },
   },
   10215: {
     // Muk alola
     evolution: {
-      from: [10214],
+      from: [10112],
     },
   },
   102: {
     // Exeggcute
     evolution: {
-      to: [103, 10216],
+      to: [103, 10114],
     },
   },
   104: {
     // Cubone
     evolution: {
-      to: [105, 10217],
+      to: [105, 10115],
     },
   },
   744: {
     // Rockruff
     evolution: {
-      to: [745, 10228],
+      to: [745, 10027],
     },
   },
   10310: {
     // Rockruff own tempo
     evolution: {
-      to: [10311],
+      to: [10052],
     },
   },
   10311: {
     // Lycanroc dusk
     evolution: {
-      from: [10310],
+      from: [10051],
     },
   },
   10321: {
     // Ponyta galar
     evolution: {
-      to: [10322],
+      to: [10011],
     },
   },
   10322: {
     // Rapidash galar
     evolution: {
-      from: [10321],
+      from: [10162],
     },
   },
   10323: {
     // Slowpoke galar
     evolution: {
-      to: [10324, 10331],
+      to: [10007, 92585],
     },
   },
   109: {
     // Koffing
     evolution: {
-      to: [110, 10326],
+      to: [110, 10065],
     },
   },
   439: {
     // Mime jr
     evolution: {
-      to: [122, 10327],
+      to: [122, 10016],
     },
   },
   848: {
     // Toxel
     evolution: {
-      to: [849, 10343],
+      to: [849, 10184],
     },
   },
   891: {
     // Kubfu
     evolution: {
-      to: [892, 10360],
+      to: [892, 10089],
     },
   },
   10398: {
     // Growlithe hisui
     evolution: {
-      to: [10399],
+      to: [10230],
     },
   },
   10399: {
     // Arcanine hisui
     evolution: {
-      from: [10398],
+      from: [10028],
     },
   },
   10400: {
     // Voltorb hisui
     evolution: {
-      to: [10401],
+      to: [10232],
     },
   },
   156: {
     // Quilava
     evolution: {
-      to: [157, 10402],
+      to: [157, 10233],
     },
   },
   502: {
     // Dewott
     evolution: {
-      to: [503, 10405],
+      to: [503, 10236],
     },
   },
   548: {
     // Petilil
     evolution: {
-      to: [549, 10406],
+      to: [549, 10237],
     },
   },
   10407: {
     // Zorua hisui
     evolution: {
-      to: [10408],
+      to: [10239],
     },
   },
   10408: {
     // Zoroark hisui
     evolution: {
-      from: [10407],
+      from: [10238],
     },
   },
   627: {
     // Rufflet
     evolution: {
-      to: [628, 10409],
+      to: [628, 10240],
     },
   },
   704: {
     // Goomy
     evolution: {
-      to: [705, 10410],
+      to: [705, 10241],
     },
   },
   10410: {
     // Sliggoo hisui
     evolution: {
-      from: [704],
-      to: [10411],
+      from: [10241],
+      to: [10242],
     },
   },
   10411: {
     // Goodra hisui
     evolution: {
-      from: [10410],
+      from: [10242],
     },
   },
   712: {
     // Bergmite
     evolution: {
-      to: [713, 10412],
+      to: [713, 10243],
     },
   },
   723: {
     // Dartrix
     evolution: {
-      to: [724, 10413],
+      to: [724, 10244],
     },
   },
   902: {
     // Basculegion male
     evolution: {
-      from: [10416],
+      from: [10247],
     },
   },
   10417: {
     // Basculegion female
     evolution: {
-      from: [10416],
+      from: [10247],
     },
   },
   915: {
     // Lechonk
     evolution: {
-      to: [916, 10423],
+      to: [916, 10254],
     },
   },
   206: {
     // Dunsparce
     evolution: {
-      to: [982, 10424],
+      to: [982, 10036],
     },
   },
   963: {
     // Finizen
     evolution: {
-      to: [964, 10425],
+      to: [964, 10037],
     },
   },
   924: {
     // Tandemaus
     evolution: {
-      to: [925, 10426],
+      to: [925, 10038],
     },
   },
   1000: {
     // Gholdengo
     evolution: {
-      from: [999, 10432],
+      from: [999, 10263],
     },
   },
   667: {
     // Litten
     evolution: {
-      to: [668, 10551],
+      to: [668, 90668],
     },
   },
   10552: {
     // Frillish female
     evolution: {
-      to: [10553],
+      to: [90593],
     },
   },
   10553: {
     // Jellicent female
     evolution: {
-      from: [10552],
+      from: [90592],
     },
   },
   863: {
     // Perrserker
     evolution: {
-      from: [10320],
+      from: [10161],
     },
   },
   864: {
     // Cursola
     evolution: {
-      from: [10332],
+      from: [91586],
     },
   },
   865: {
     // Sirfetch'd
     evolution: {
-      from: [10166],
+      from: [90166],
     },
   },
   520: {
