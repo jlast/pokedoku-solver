@@ -1,7 +1,29 @@
 import type { Pokemon, PokemonLearnedMove } from "@pokedoku-helper/shared-types";
 import { TYPE_COLORS, REGION_COLORS, EVOLUTION_COLORS, CATEGORY_COLORS } from './constants';
 
-export const POKEMON_LEARNED_MOVES = ['Surf'] as const;
+export const POKEMON_LEARNED_MOVES = [
+  'Acrobatics',
+  'Brick Break',
+  'Calm Mind',
+  'Close Combat',
+  'Crunch',
+  'Dazzling Gleam',
+  'Earthquake',
+  'Flamethrower',
+  'Fly',
+  'Hydro Pump',
+  'Ice Beam',
+  'Ice Punch',
+  'Metronome',
+  'Protect',
+  'Psychic',
+  'Razor Leaf',
+  'Shadow Ball',
+  'Surf',
+  'Sludge Bomb',
+  'Tail Slap',
+  'Thunderbolt',
+] as const;
 
 export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category' | 'move';
 
