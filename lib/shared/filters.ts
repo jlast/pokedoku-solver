@@ -1,4 +1,9 @@
-import type { Pokemon, PokemonLearnedMove } from "@pokedoku-helper/shared-types";
+import {
+  type Pokemon,
+  type PokemonAbility,
+  type PokemonLearnedMove,
+  POKEMON_ABILITIES,
+} from "@pokedoku-helper/shared-types";
 import { TYPE_COLORS, REGION_COLORS, EVOLUTION_COLORS, CATEGORY_COLORS } from './constants';
 
 export const POKEMON_LEARNED_MOVES = [
@@ -25,7 +30,7 @@ export const POKEMON_LEARNED_MOVES = [
   'Thunderbolt',
 ] as const;
 
-export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category' | 'move';
+export type ConstraintCategory = 'types' | 'regions' | 'evolution' | 'category' | 'move' | 'ability';
 
 export interface Constraint {
   category: string;
@@ -99,6 +104,7 @@ const CATEGORY_OPTIONS = [
 ] as const;
 
 const MOVE_OPTIONS = POKEMON_LEARNED_MOVES;
+const ABILITY_OPTIONS = POKEMON_ABILITIES;
 
 export const FILTER_CATEGORIES: FilterCategory[] = [
   {
@@ -191,6 +197,15 @@ export const FILTER_CATEGORIES: FilterCategory[] = [
       color: '#0ea5e9',
     })),
   },
+  {
+    key: 'ability',
+    label: 'Abilities',
+    options: ABILITY_OPTIONS.map((name) => ({
+      name,
+      filter: (pokemon: Pokemon) => pokemon.abilities?.includes(name as PokemonAbility) ?? false,
+      color: '#0d9488',
+    })),
+  },
 ];
 
 export const FILTER_KEY_TO_CONSTRAINT_CATEGORY: Record<string, string> = {
@@ -199,6 +214,7 @@ export const FILTER_KEY_TO_CONSTRAINT_CATEGORY: Record<string, string> = {
   evolution: 'evolution',
   category: 'category',
   move: 'move',
+  ability: 'ability',
 };
 
 export function findConstraintOption(value: string): { value: string; category: string } | null {
@@ -215,6 +231,9 @@ export function matchesConstraint(pokemon: Pokemon, constraint: Constraint | nul
   if (!constraint) return true;
   if (constraint.category === 'move') {
     return pokemon.learnedMoves?.includes(constraint.value as PokemonLearnedMove) ?? false;
+  }
+  if (constraint.category === 'ability') {
+    return pokemon.abilities?.includes(constraint.value as PokemonAbility) ?? false;
   }
   for (const cat of FILTER_CATEGORIES) {
     const opt = cat.options.find(o => o.name === constraint.value);

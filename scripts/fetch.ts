@@ -39,19 +39,96 @@ import type {
   PokeAPISpecies,
   EvolutionNode,
 } from "./lib/types";
-import { type Pokemon, type PokemonType, type DexDifficulty, type PokemonCategory, type InternalPokemon, type PokemonLearnedMove, POKEMON_LEARNED_MOVES } from "@pokedoku-helper/shared-types";
+import { type Pokemon, type PokemonType, type DexDifficulty, type PokemonCategory, type InternalPokemon, type PokemonLearnedMove, type PokemonAbility, POKEMON_LEARNED_MOVES, POKEMON_ABILITIES } from "@pokedoku-helper/shared-types";
 import { CUSTOM_POKEMON } from "./custom_pokemon";
 import { getMoveOverridesForFormId, getMoveRemovalsForFormId } from './move_overrides';
+import { getAbilityOverridesForFormId, getAbilityRemovalsForFormId } from './ability_overrides';
 
 const NO_CACHE = process.argv.includes("--no-cache");
 
 const POKEMON_API_BASE = "https://pokeapi.co/api/v2";
+const ABILITY_LIST_URL = `${POKEMON_API_BASE}/ability?limit=10000`;
 const REQUEST_DELAY = 100;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_FILE = path.join(__dirname, "..", "public", "data", "pokemon.json");
+const ABILITY_CACHE_DIR = path.join(__dirname, ".cache", "abilities");
+const ABILITY_LIST_CACHE_FILE = path.join(__dirname, ".cache", "abilities-list.json");
+
+let cachedPokemonAbilityMap: Record<string, PokemonAbility[]> | null = null;
+
+function loadPokemonAbilityMap(): Record<string, PokemonAbility[]> {
+  if (cachedPokemonAbilityMap) return cachedPokemonAbilityMap;
+
+  const abilityMap: Record<string, PokemonAbility[]> = {};
+
+  for (const abilityName of POKEMON_ABILITIES) {
+    const abilitySlug = abilityName.toLowerCase().replace(/\s+/g, "-");
+    const abilityCacheFile = path.join(ABILITY_CACHE_DIR, `${abilitySlug}.json`);
+    if (!fs.existsSync(abilityCacheFile)) continue;
+
+    try {
+      const parsed = JSON.parse(fs.readFileSync(abilityCacheFile, "utf-8")) as {
+        pokemon?: { pokemon: { url: string } }[];
+      };
+      const entries = parsed.pokemon ?? [];
+
+      for (const entry of entries) {
+        const match = entry.pokemon.url.match(/\/pokemon\/(\d+)\/$/);
+        if (!match) continue;
+        const pokemonIdKey = match[1];
+        const existing = abilityMap[pokemonIdKey] ?? [];
+        if (!existing.includes(abilityName)) {
+          existing.push(abilityName);
+          existing.sort((a, b) => a.localeCompare(b));
+          abilityMap[pokemonIdKey] = existing;
+        }
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  cachedPokemonAbilityMap = abilityMap;
+  return cachedPokemonAbilityMap;
+}
 
 function toMoveSlug(moveLabel: string): string {
   return moveLabel.toLowerCase().replace(/\s+/g, "-");
+}
+
+interface AbilityListResponse {
+  results: { name: string; url: string }[];
+}
+
+interface AbilityPokemonResponse {
+  pokemon: { pokemon: { name: string; url: string } }[];
+}
+
+function toAbilitySlug(value: string): string {
+  return value.toLowerCase().replace(/\s+/g, "-");
+}
+
+async function refreshAbilityCache(): Promise<void> {
+  const listResponse = await fetchWithRetry<AbilityListResponse>(ABILITY_LIST_URL);
+  if (!listResponse) {
+    throw new Error("Failed to fetch ability list from PokeAPI");
+  }
+
+  fs.mkdirSync(ABILITY_CACHE_DIR, { recursive: true });
+  fs.writeFileSync(ABILITY_LIST_CACHE_FILE, JSON.stringify(listResponse, null, 2));
+
+  const whitelistSlugs = new Set<string>(POKEMON_ABILITIES.map((ability) => toAbilitySlug(ability)));
+  const whitelistedAbilities = listResponse.results.filter((ability) => whitelistSlugs.has(ability.name));
+
+  for (const ability of whitelistedAbilities) {
+    const response = await fetchWithRetry<AbilityPokemonResponse>(ability.url);
+    if (!response) {
+      throw new Error(`Failed to fetch ability details for ${ability.name}`);
+    }
+
+    const abilityCacheFile = path.join(ABILITY_CACHE_DIR, `${ability.name}.json`);
+    fs.writeFileSync(abilityCacheFile, JSON.stringify(response, null, 2));
+  }
 }
 
 function extractTrackedMoves(pokemon: PokeAPIPokemon): PokemonLearnedMove[] {
@@ -368,6 +445,18 @@ function getEntry(
 
   const learnedMoves = extractTrackedMoves(pokemon);
   if (learnedMoves.length > 0) entry.learnedMoves = learnedMoves;
+  const pokemonAbilityMap = loadPokemonAbilityMap();
+  const baseAbilities = pokemonAbilityMap[String(id)] ?? [];
+  const mergedAbilities = new Set<PokemonAbility>(baseAbilities);
+  for (const ability of getAbilityOverridesForFormId(formId)) {
+    mergedAbilities.add(ability);
+  }
+  for (const ability of getAbilityRemovalsForFormId(formId)) {
+    mergedAbilities.delete(ability);
+  }
+  if (mergedAbilities.size > 0) {
+    entry.abilities = [...mergedAbilities].sort((a, b) => a.localeCompare(b));
+  }
 
   if (ULTRA_BEASTS.has(id)) addPokemonCategory(entry, "Ultra Beast");
   else if (FOSSIL_IDS.has(id)) addPokemonCategory(entry, "Fossil");
@@ -495,6 +584,8 @@ function getEntry(
 async function main() {
   fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
   fs.mkdirSync(path.join(__dirname, "..", "public", "images", "sprites"), { recursive: true });
+
+  await refreshAbilityCache();
 
   await fetchPokemons();
   await fetchSpecies();

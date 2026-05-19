@@ -233,7 +233,7 @@ function App() {
     <div className="min-h-screen p-5">
       <Header
         title="Custom Puzzle"
-        subtitle="Explore all valid Pokémon for any Pokedoku square. Set constraints and click a cell to see matching Pokémon."
+        subtitle="Explore all valid Pokémon for any Pokedoku square. Set type, region, move, or ability constraints and click a cell to see matches."
         currentPage="custom"
       />
 

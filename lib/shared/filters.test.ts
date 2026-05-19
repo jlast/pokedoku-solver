@@ -17,6 +17,7 @@ const SQUIRTLE: Pokemon = {
   region: "Kanto",
   evolutionStage: "First Stage",
   learnedMoves: ["Surf"],
+  abilities: ["Swift Swim"],
 };
 
 const GYARADOS: Pokemon = {
@@ -38,6 +39,8 @@ describe("shared/filters", () => {
     expect(matchesConstraint(SQUIRTLE, { category: "types", value: "Fire" })).toBe(false);
     expect(matchesConstraint(SQUIRTLE, { category: "move", value: "Surf" })).toBe(true);
     expect(matchesConstraint(SQUIRTLE, { category: "move", value: "Flamethrower" })).toBe(false);
+    expect(matchesConstraint(SQUIRTLE, { category: "ability", value: "Swift Swim" })).toBe(true);
+    expect(matchesConstraint(SQUIRTLE, { category: "ability", value: "Levitate" })).toBe(false);
     expect(matchesConstraint(SQUIRTLE, null)).toBe(true);
   });
 
@@ -58,6 +61,8 @@ describe("shared/filters", () => {
       regions: ["Kanto"],
       evolution: [],
       category: [],
+      move: [],
+      ability: [],
     };
     expect(applyFilters([SQUIRTLE, GYARADOS], filters)).toEqual([GYARADOS]);
     expect(getActiveFilters(filters)).toBe(3);

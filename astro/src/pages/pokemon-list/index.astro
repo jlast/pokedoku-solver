@@ -22,7 +22,7 @@ import { Footer } from "../../app/components/Footer";
         <input
           id="search-input"
           type="text"
-          placeholder="Search by name, type, or region..."
+          placeholder="Search by name, type, region, move, or ability..."
           class="w-full rounded-lg border-2 border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-[0.95rem] text-[var(--text-h)] placeholder:text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
         />
       </div>
@@ -111,7 +111,7 @@ import { Footer } from "../../app/components/Footer";
           <input
             id="search-input-drawer"
             type="text"
-            placeholder="Search by name, type, or region..."
+            placeholder="Search by name, type, region, move, or ability..."
             class="w-full rounded-lg border-2 border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-[0.95rem] text-[var(--text-h)] placeholder:text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
           />
         </div>
@@ -273,7 +273,7 @@ import { Footer } from "../../app/components/Footer";
       if (ogUrlEl) ogUrlEl.setAttribute("content", window.location.href);
     };
 
-    const baseFilterGroupClass = "flex flex-col overflow-hidden rounded-lg border border-[var(--border)]";
+    const baseFilterGroupClass = "flex flex-col overflow-hidden mb-4 rounded-lg border border-[var(--border)]";
     const expandedFilterGroupClass = `${baseFilterGroupClass} expanded`;
     const filterHeaderClass = "flex w-full items-center gap-2 bg-[var(--bg)] px-3 py-2.5 text-left";
     const filterButtonsClass = "filter-buttons flex flex-wrap gap-1.5 p-3";

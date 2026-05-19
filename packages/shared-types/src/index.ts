@@ -125,6 +125,16 @@ export const POKEMON_LEARNED_MOVES = [
 
 export type PokemonLearnedMove = (typeof POKEMON_LEARNED_MOVES)[number];
 
+export const POKEMON_ABILITIES = [
+  'Intimidate',
+  'Keen Eye',
+  'Levitate',
+  'Sturdy',
+  'Swift Swim',
+] as const;
+
+export type PokemonAbility = (typeof POKEMON_ABILITIES)[number];
+
 export const DEX_DIFFICULTIES = [
   'Easy',
   'Normal',
@@ -162,6 +172,7 @@ export interface InternalPokemon {
   isBranched?: boolean;
   categories?: PokemonCategory[];
   learnedMoves?: PokemonLearnedMove[];
+  abilities?: PokemonAbility[];
   sprite?: string;
   formId?: number;
 }
