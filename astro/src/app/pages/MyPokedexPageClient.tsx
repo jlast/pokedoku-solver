@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import type { ChangeEvent } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { getSessionIdToken, getSessionUserProfile } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
@@ -288,9 +289,9 @@ export function MyPokedexPageClient() {
     }
   }
 
-  function importPokedexJson() {
+  function applyImportedPokedexJson(rawJsonText: string, source: "paste" | "file") {
     try {
-      const parsed = JSON.parse(importJsonText) as {
+      const parsed = JSON.parse(rawJsonText) as {
         prestige?: unknown;
         entries?: Array<{ "@t"?: unknown; pokemonId?: unknown; shiny?: unknown }>;
       };
@@ -326,18 +327,34 @@ export function MyPokedexPageClient() {
       setShinySet(importedShiny);
       writeLocalCaughtSet(importedCaught);
       writeLocalShinySet(importedShiny);
-      setImportStatus(`Imported ${importedCaught.size} unlocked Pokemon and ${importedShiny.size} shinies.`);
-
-      const token = getSessionIdToken();
-      if (token) {
-        setSyncStatus("syncing");
-        void patchRemoteCaughtIds(token, Array.from(importedCaught)).then((didSync) => {
-          setSyncStatus(didSync ? "synced" : "offline");
-        });
-      }
+      setImportStatus(
+        `${source === "file" ? "Uploaded" : "Imported"} ${importedCaught.size} unlocked Pokemon and ${importedShiny.size} shinies.`,
+      );
+      setSyncStatus("offline");
     } catch {
-      setImportStatus("Import failed. Please paste valid JSON.");
+      setImportStatus(source === "file" ? "Upload failed. Please select valid JSON." : "Import failed. Please paste valid JSON.");
     }
+  }
+
+  function importPokedexJson() {
+    applyImportedPokedexJson(importJsonText, "paste");
+  }
+
+  function uploadPokedexJsonFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    void file
+      .text()
+      .then((text) => {
+        applyImportedPokedexJson(text, "file");
+      })
+      .catch(() => {
+        setImportStatus("Upload failed. Please select valid JSON.");
+      })
+      .finally(() => {
+        event.target.value = "";
+      });
   }
 
   async function toggleCaught(pokemonKeyId: number) {
@@ -451,16 +468,25 @@ export function MyPokedexPageClient() {
                 placeholder='Paste JSON like {"type":"DAILY_MODE","prestige":0,"entries":[...]}'
                 className="mt-2 h-28 w-full rounded-lg border border-slate-300 bg-white p-3 text-xs text-slate-900 outline-none ring-slate-300 transition focus:ring"
               />
-              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-                <button
-                  type="button"
-                  onClick={importPokedexJson}
-                  className="h-10 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
-                >
-                  Import Pokedex JSON
-                </button>
-                {importStatus ? <p className="m-0 text-xs text-slate-600">{importStatus}</p> : null}
-              </div>
+               <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                 <button
+                   type="button"
+                   onClick={importPokedexJson}
+                   className="h-10 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
+                 >
+                   Import Pokedex JSON
+                 </button>
+                 <label className="inline-flex h-10 cursor-pointer items-center rounded-lg bg-slate-200 px-4 text-sm font-semibold text-slate-800 transition hover:bg-slate-300">
+                   Upload JSON File
+                   <input
+                     type="file"
+                     accept=".json,application/json"
+                     onChange={uploadPokedexJsonFile}
+                     className="sr-only"
+                   />
+                 </label>
+                 {importStatus ? <p className="m-0 text-xs text-slate-600">{importStatus}</p> : null}
+               </div>
             </>
           ) : null}
         </div>
