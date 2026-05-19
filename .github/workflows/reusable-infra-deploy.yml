@@ -128,7 +128,9 @@ jobs:
         run: aws cloudformation validate-template --template-body file://terraform/user-dex-api-stack.yaml
 
       - name: Deploy user dex API CloudFormation stack
-        if: false && (inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true')
+        id: deploy_user_dex
+        if: inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true'
+        continue-on-error: true
         env:
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
@@ -160,13 +162,23 @@ jobs:
           bash .github/scripts/deploy-user-dex-stack.sh
 
       - name: Debug user dex CloudFormation failure
-        if: failure() && (inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true')
+        if: steps.deploy_user_dex.outcome == 'failure'
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
         run: |
           STACK_NAME="${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-user-dex-api"
           echo "Recent events for ${STACK_NAME}"
           aws cloudformation describe-stack-events --stack-name "${STACK_NAME}" --max-items 25 || true
+
+      - name: Report non-blocking user dex deploy failure
+        if: steps.deploy_user_dex.outcome == 'failure'
+        run: |
+          {
+            echo "## User Dex deploy warning"
+            echo
+            echo "- User Dex API deploy failed, but this failure is non-blocking by design."
+            echo "- Check the 'Debug user dex CloudFormation failure' step for stack events."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Deploy daily puzzle CloudFormation stack
         if: inputs.daily_lambda_changed == 'true' || inputs.daily_stack_changed == 'true'
