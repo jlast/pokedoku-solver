@@ -5,11 +5,10 @@ import { getSessionIdToken, getSessionUserProfile } from "../../lib/cognitoAuth"
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 
-const PRESTIGE_UNLOCK_LEVEL_KEY = "my_pokedex_unlocked_prestige_level";
-
 type UserDexPayload = {
   caughtPokemonKeyIds: number[];
   shinyPokemonKeyIds: number[];
+  unlockedPrestigeLevelIndex: number;
 };
 
 function getPrestigeToneClass(tone: string): string {
@@ -36,17 +35,6 @@ function PrestigeIcon({ tone, className }: { tone: string; className?: string })
   );
 }
 
-function readUnlockedPrestigeLevel(): number {
-  const raw = localStorage.getItem(PRESTIGE_UNLOCK_LEVEL_KEY);
-  const parsed = Number(raw);
-  if (!Number.isFinite(parsed)) return 0;
-  return Math.max(0, Math.min(PRESTIGE_LEVELS.length - 1, Math.floor(parsed)));
-}
-
-function writeUnlockedPrestigeLevel(levelIndex: number): void {
-  localStorage.setItem(PRESTIGE_UNLOCK_LEVEL_KEY, String(levelIndex));
-}
-
 function getPokemonKeyId(pokemon: Pokemon): number {
   return pokemon.formId ?? pokemon.id;
 }
@@ -62,6 +50,7 @@ function parseUserDexFromApi(data: unknown): UserDexPayload | null {
   const payload = data as {
     caughtPokemonKeyIds?: unknown;
     shinyPokemonKeyIds?: unknown;
+    unlockedPrestigeLevelIndex?: unknown;
   };
   if (!Array.isArray(payload.caughtPokemonKeyIds)) return null;
 
@@ -74,7 +63,12 @@ function parseUserDexFromApi(data: unknown): UserDexPayload | null {
     .map((entry) => Number(entry))
     .filter((entry) => Number.isFinite(entry) && entry > 0 && caughtSet.has(entry));
 
-  return { caughtPokemonKeyIds, shinyPokemonKeyIds };
+  const unlockedPrestigeLevelIndexRaw = Number(payload.unlockedPrestigeLevelIndex);
+  const unlockedPrestigeLevelIndex = Number.isInteger(unlockedPrestigeLevelIndexRaw) && unlockedPrestigeLevelIndexRaw >= 0
+    ? Math.min(unlockedPrestigeLevelIndexRaw, PRESTIGE_LEVELS.length - 1)
+    : 0;
+
+  return { caughtPokemonKeyIds, shinyPokemonKeyIds, unlockedPrestigeLevelIndex };
 }
 
 async function getRemoteUserDex(token: string): Promise<UserDexPayload | null> {
@@ -132,11 +126,10 @@ export function MyPokedexPageClient() {
 
     async function loadData() {
       setIsLoading(true);
-      const localUnlockedLevel = readUnlockedPrestigeLevel();
       if (!isCancelled) {
         setCaughtSet(new Set<number>());
         setShinySet(new Set<number>());
-        setUnlockedPrestigeLevelIndex(localUnlockedLevel);
+        setUnlockedPrestigeLevelIndex(0);
       }
 
       try {
@@ -169,6 +162,8 @@ export function MyPokedexPageClient() {
           if (!isCancelled) {
             setCaughtSet(remoteCaughtSet);
             setShinySet(remoteShinySet);
+            setUnlockedPrestigeLevelIndex(remoteUserDex.unlockedPrestigeLevelIndex);
+            setSelectedPrestigeLevelId(PRESTIGE_LEVELS[remoteUserDex.unlockedPrestigeLevelIndex]?.id ?? PRESTIGE_LEVELS[0].id);
           }
         }
       } catch {}
@@ -226,7 +221,6 @@ export function MyPokedexPageClient() {
 
     const nextIndex = unlockedPrestigeLevelIndex + 1;
     setUnlockedPrestigeLevelIndex(nextIndex);
-    writeUnlockedPrestigeLevel(nextIndex);
 
     const resetCaughtSet = new Set<number>();
     const resetShinySet = new Set<number>();
@@ -237,7 +231,11 @@ export function MyPokedexPageClient() {
 
     const token = getSessionIdToken();
     if (token) {
-      void patchRemoteUserDex(token, { caughtPokemonKeyIds: [], shinyPokemonKeyIds: [] });
+      void patchRemoteUserDex(token, {
+        caughtPokemonKeyIds: [],
+        shinyPokemonKeyIds: [],
+        unlockedPrestigeLevelIndex: nextIndex,
+      });
     }
   }
 
@@ -251,6 +249,7 @@ export function MyPokedexPageClient() {
       const validIds = new Set(pokemon.map((entry) => getPokemonKeyId(entry)));
       const importedCaught = new Set<number>();
       const importedShiny = new Set<number>();
+      let targetPrestigeLevelIndex = unlockedPrestigeLevelIndex;
 
       if (Array.isArray(parsed.entries)) {
         for (const entry of parsed.entries) {
@@ -270,8 +269,8 @@ export function MyPokedexPageClient() {
       const importedPrestige = Number(parsed.prestige);
       if (Number.isFinite(importedPrestige)) {
         const levelIndex = Math.max(0, Math.min(PRESTIGE_LEVELS.length - 1, Math.floor(importedPrestige)));
+        targetPrestigeLevelIndex = levelIndex;
         setUnlockedPrestigeLevelIndex(levelIndex);
-        writeUnlockedPrestigeLevel(levelIndex);
         setSelectedPrestigeLevelId(PRESTIGE_LEVELS[levelIndex]?.id ?? PRESTIGE_LEVELS[0].id);
       }
 
@@ -287,6 +286,7 @@ export function MyPokedexPageClient() {
       await patchRemoteUserDex(token, {
         caughtPokemonKeyIds: Array.from(importedCaught).sort((a, b) => a - b),
         shinyPokemonKeyIds: Array.from(importedShiny).sort((a, b) => a - b),
+        unlockedPrestigeLevelIndex: targetPrestigeLevelIndex,
       });
     } catch {
       setImportStatus(source === "file" ? "Upload failed. Please select valid JSON." : "Import failed. Please paste valid JSON.");
@@ -333,6 +333,7 @@ export function MyPokedexPageClient() {
     await patchRemoteUserDex(token, {
       caughtPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
       shinyPokemonKeyIds: Array.from(nextShinySet).sort((a, b) => a - b),
+      unlockedPrestigeLevelIndex,
     });
   }
 
@@ -355,6 +356,7 @@ export function MyPokedexPageClient() {
     void patchRemoteUserDex(token, {
       caughtPokemonKeyIds: Array.from(caughtSet).sort((a, b) => a - b),
       shinyPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
+      unlockedPrestigeLevelIndex,
     });
   }
 
