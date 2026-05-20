@@ -4,12 +4,10 @@ import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { getSessionIdToken, getSessionUserProfile } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
-
-type UserDexPayload = {
-  caughtPokemonKeyIds: number[];
-  shinyPokemonKeyIds: number[];
-  unlockedPrestigeLevelIndex: number;
-};
+import {
+  getRemoteUserDex,
+  patchRemoteUserDex,
+} from "@pokedoku-helper/user-dex-client";
 
 function getPrestigeToneClass(tone: string): string {
   if (tone === "greatball") return "text-blue-600";
@@ -39,68 +37,11 @@ function getPokemonKeyId(pokemon: Pokemon): number {
   return pokemon.formId ?? pokemon.id;
 }
 
+
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
   if (!baseUrl || typeof baseUrl !== "string") return null;
-  return baseUrl.replace(/\/+$/, "");
-}
-
-function parseUserDexFromApi(data: unknown): UserDexPayload | null {
-  if (!data || typeof data !== "object") return null;
-  const payload = data as {
-    caughtPokemonKeyIds?: unknown;
-    shinyPokemonKeyIds?: unknown;
-    unlockedPrestigeLevelIndex?: unknown;
-  };
-  if (!Array.isArray(payload.caughtPokemonKeyIds)) return null;
-
-  const caughtPokemonKeyIds = payload.caughtPokemonKeyIds
-    .map((entry) => Number(entry))
-    .filter((entry) => Number.isFinite(entry) && entry > 0);
-
-  const caughtSet = new Set(caughtPokemonKeyIds);
-  const shinyPokemonKeyIds = (Array.isArray(payload.shinyPokemonKeyIds) ? payload.shinyPokemonKeyIds : [])
-    .map((entry) => Number(entry))
-    .filter((entry) => Number.isFinite(entry) && entry > 0 && caughtSet.has(entry));
-
-  const unlockedPrestigeLevelIndexRaw = Number(payload.unlockedPrestigeLevelIndex);
-  const unlockedPrestigeLevelIndex = Number.isInteger(unlockedPrestigeLevelIndexRaw) && unlockedPrestigeLevelIndexRaw >= 0
-    ? Math.min(unlockedPrestigeLevelIndexRaw, PRESTIGE_LEVELS.length - 1)
-    : 0;
-
-  return { caughtPokemonKeyIds, shinyPokemonKeyIds, unlockedPrestigeLevelIndex };
-}
-
-async function getRemoteUserDex(token: string): Promise<UserDexPayload | null> {
-  const apiBaseUrl = getApiBaseUrl();
-  if (!apiBaseUrl) return null;
-
-  const response = await fetch(`${apiBaseUrl}/user-dex`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) return null;
-  const data = (await response.json()) as unknown;
-  return parseUserDexFromApi(data);
-}
-
-async function patchRemoteUserDex(token: string, payload: UserDexPayload): Promise<boolean> {
-  const apiBaseUrl = getApiBaseUrl();
-  if (!apiBaseUrl) return false;
-
-  const response = await fetch(`${apiBaseUrl}/user-dex`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(payload),
-  });
-
-  return response.ok;
+  return baseUrl;
 }
 
 export function MyPokedexPageClient() {
@@ -146,7 +87,8 @@ export function MyPokedexPageClient() {
       }
 
       const token = getSessionIdToken();
-      if (!token) {
+      const apiBaseUrl = getApiBaseUrl();
+      if (!token || !apiBaseUrl) {
         if (!isCancelled) {
           setIsLoading(false);
         }
@@ -154,7 +96,11 @@ export function MyPokedexPageClient() {
       }
 
       try {
-        const remoteUserDex = await getRemoteUserDex(token);
+        const remoteUserDex = await getRemoteUserDex({
+          token,
+          apiBaseUrl,
+          maxPrestigeLevelIndex: PRESTIGE_LEVELS.length - 1,
+        });
 
         if (remoteUserDex) {
           const remoteCaughtSet = new Set(remoteUserDex.caughtPokemonKeyIds);
@@ -230,11 +176,16 @@ export function MyPokedexPageClient() {
     setSelectedPrestigeLevelId(nextPrestigeLevel.id);
 
     const token = getSessionIdToken();
-    if (token) {
-      void patchRemoteUserDex(token, {
+    const apiBaseUrl = getApiBaseUrl();
+    if (token && apiBaseUrl) {
+      void patchRemoteUserDex({
+        token,
+        apiBaseUrl,
+        payload: {
         caughtPokemonKeyIds: [],
         shinyPokemonKeyIds: [],
         unlockedPrestigeLevelIndex: nextIndex,
+        },
       });
     }
   }
@@ -281,12 +232,17 @@ export function MyPokedexPageClient() {
       );
 
       const token = getSessionIdToken();
-      if (!token) return;
+      const apiBaseUrl = getApiBaseUrl();
+      if (!token || !apiBaseUrl) return;
 
-      await patchRemoteUserDex(token, {
+      await patchRemoteUserDex({
+        token,
+        apiBaseUrl,
+        payload: {
         caughtPokemonKeyIds: Array.from(importedCaught).sort((a, b) => a - b),
         shinyPokemonKeyIds: Array.from(importedShiny).sort((a, b) => a - b),
         unlockedPrestigeLevelIndex: targetPrestigeLevelIndex,
+        },
       });
     } catch {
       setImportStatus(source === "file" ? "Upload failed. Please select valid JSON." : "Import failed. Please paste valid JSON.");
@@ -328,12 +284,17 @@ export function MyPokedexPageClient() {
     setShinySet(nextShinySet);
 
     const token = getSessionIdToken();
-    if (!token) return;
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) return;
 
-    await patchRemoteUserDex(token, {
+    await patchRemoteUserDex({
+      token,
+      apiBaseUrl,
+      payload: {
       caughtPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
       shinyPokemonKeyIds: Array.from(nextShinySet).sort((a, b) => a - b),
       unlockedPrestigeLevelIndex,
+      },
     });
   }
 
@@ -351,12 +312,17 @@ export function MyPokedexPageClient() {
     setShinySet(nextSet);
 
     const token = getSessionIdToken();
-    if (!token) return;
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) return;
 
-    void patchRemoteUserDex(token, {
+    void patchRemoteUserDex({
+      token,
+      apiBaseUrl,
+      payload: {
       caughtPokemonKeyIds: Array.from(caughtSet).sort((a, b) => a - b),
       shinyPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
       unlockedPrestigeLevelIndex,
+      },
     });
   }
 

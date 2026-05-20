@@ -11,7 +11,12 @@ import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
 import { ActionButton, ActionLink } from "../components/shared/ActionButton";
 import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { slugify } from "../../lib/slug";
-import { getSessionUserProfile } from "../../lib/cognitoAuth";
+import { getSessionIdToken, getSessionUserProfile } from "../../lib/cognitoAuth";
+import {
+  getRemoteUserDex,
+  patchRemoteUserDex,
+  type UserDexPayload,
+} from "@pokedoku-helper/user-dex-client";
 
 export interface TodayPuzzle {
   date: string;
@@ -21,8 +26,6 @@ export interface TodayPuzzle {
   rowConstraints: Constraint[];
   colConstraints: Constraint[];
 }
-
-const MY_POKEDEX_CAUGHT_KEY = "my_pokedex_caught_key_ids";
 
 interface GridState {
   cells: (Pokemon | null)[][];
@@ -54,16 +57,10 @@ function getPokemonKeyId(pokemon: Pokemon): number {
   return pokemon.formId ?? pokemon.id;
 }
 
-function readCaughtSet(): Set<number> {
-  try {
-    const raw = localStorage.getItem(MY_POKEDEX_CAUGHT_KEY);
-    if (!raw) return new Set<number>();
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return new Set<number>();
-    return new Set(parsed.map((entry) => Number(entry)).filter((entry) => Number.isFinite(entry) && entry > 0));
-  } catch {
-    return new Set<number>();
-  }
+function getApiBaseUrl(): string | null {
+  const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
+  if (!baseUrl || typeof baseUrl !== "string") return null;
+  return baseUrl;
 }
 
 function buildSuggestedCells(
@@ -144,10 +141,9 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const [suggestedPokemonKeys, setSuggestedPokemonKeys] = useState<(string | null)[][]>(
     () => Array(gridSize).fill(null).map(() => Array(gridSize).fill(null)),
   );
-  const [showMissingOnly, setShowMissingOnly] = useState(false);
-  const [caughtSet] = useState<Set<number>>(() =>
-    typeof window === "undefined" ? new Set<number>() : readCaughtSet(),
-  );
+  const [showMissingOnly, setShowMissingOnly] = useState<boolean>(() => isLoggedIn);
+  const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
+  const [remoteUserDex, setRemoteUserDex] = useState<UserDexPayload | null>(null);
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -172,6 +168,27 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         setLoading(false);
       });
   }, [puzzle.colConstraints, puzzle.rowConstraints]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    let isCancelled = false;
+    const token = getSessionIdToken();
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) return;
+
+    void getRemoteUserDex({ token, apiBaseUrl })
+      .then((userDex) => {
+        if (!userDex || isCancelled) return;
+        setCaughtSet(new Set(userDex.caughtPokemonKeyIds));
+        setRemoteUserDex(userDex);
+      })
+      .catch(() => {});
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isLoggedIn]);
 
   const pokemonPool = useMemo(() => {
     if (!showMissingOnly) return pokemon;
@@ -246,6 +263,40 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     }));
   };
 
+  const markAllAsCompleted = async () => {
+    const completedIds = grid.cells
+      .flat()
+      .filter((cell): cell is Pokemon => Boolean(cell))
+      .map((cell) => getPokemonKeyId(cell));
+
+    if (completedIds.length === 0) return;
+    if (!remoteUserDex) return;
+
+    const token = getSessionIdToken();
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) return;
+
+    const mergedSet = new Set(caughtSet);
+    for (const id of completedIds) mergedSet.add(id);
+
+    const nextPayload: UserDexPayload = {
+      caughtPokemonKeyIds: Array.from(mergedSet).sort((a, b) => a - b),
+      shinyPokemonKeyIds: remoteUserDex.shinyPokemonKeyIds,
+      unlockedPrestigeLevelIndex: remoteUserDex.unlockedPrestigeLevelIndex,
+    };
+
+    const updated = await patchRemoteUserDex({
+      token,
+      apiBaseUrl,
+      payload: nextPayload,
+    });
+    if (!updated) return;
+
+    setCaughtSet(mergedSet);
+    setRemoteUserDex(nextPayload);
+    trackEvent("click_mark_all_completed", { count: completedIds.length.toString() });
+  };
+
   const hasGridData = grid.cells.some((row) => row.some((cell) => cell !== null));
   const selectedCellPossible = useMemo(() => {
     if (!grid.selectedCell) return [];
@@ -303,6 +354,17 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
               </button>
             </div>
           </div>
+          {showMissingOnly ? (
+            <div className="mt-2">
+              <ActionButton
+                onClick={markAllAsCompleted}
+                variant="secondary"
+                disabled={!hasGridData || !remoteUserDex}
+              >
+                Mark all as completed in My Pokedex
+              </ActionButton>
+            </div>
+          ) : null}
         </section>
       ) : null}
 

@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode } from "react";
 
-const base = "inline-flex items-center justify-center gap-1.5 text-sm font-medium transition-colors";
+const base = "inline-flex items-center justify-center gap-1.5 text-sm font-medium transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
 
 const variants = {
   destructiveGhost:
