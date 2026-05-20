@@ -195,7 +195,15 @@ function sanitizeIdArray(value: unknown): number[] {
   ).sort((a, b) => a - b);
 }
 
-export async function readUserDex(userId: string): Promise<{ caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[] }> {
+function sanitizePrestigeLevel(value: unknown): number {
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 0) return 0;
+  return parsed;
+}
+
+export async function readUserDex(
+  userId: string
+): Promise<{ caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[]; unlockedPrestigeLevelIndex: number }> {
   const result = await dynamo.send(
     new GetItemCommand({
       TableName: TABLE_NAME,
@@ -204,20 +212,27 @@ export async function readUserDex(userId: string): Promise<{ caughtPokemonKeyIds
     })
   );
 
-  if (!result.Item) return { caughtPokemonKeyIds: [], shinyPokemonKeyIds: [] };
+  if (!result.Item) return { caughtPokemonKeyIds: [], shinyPokemonKeyIds: [], unlockedPrestigeLevelIndex: 0 };
   const item = unmarshall(result.Item) as {
     caughtPokemonKeyIds?: unknown;
     shinyPokemonKeyIds?: unknown;
+    unlockedPrestigeLevelIndex?: unknown;
   };
 
   const caughtPokemonKeyIds = sanitizeIdArray(item.caughtPokemonKeyIds);
   const caughtSet = new Set(caughtPokemonKeyIds);
   const shinyPokemonKeyIds = sanitizeIdArray(item.shinyPokemonKeyIds).filter((entry) => caughtSet.has(entry));
 
-  return { caughtPokemonKeyIds, shinyPokemonKeyIds };
+  const unlockedPrestigeLevelIndex = sanitizePrestigeLevel(item.unlockedPrestigeLevelIndex);
+  return { caughtPokemonKeyIds, shinyPokemonKeyIds, unlockedPrestigeLevelIndex };
 }
 
-export async function writeUserDex(userId: string, caughtPokemonKeyIds: number[], shinyPokemonKeyIds: number[]): Promise<void> {
+export async function writeUserDex(
+  userId: string,
+  caughtPokemonKeyIds: number[],
+  shinyPokemonKeyIds: number[],
+  unlockedPrestigeLevelIndex: number
+): Promise<void> {
   await dynamo.send(
     new PutItemCommand({
       TableName: TABLE_NAME,
@@ -225,6 +240,7 @@ export async function writeUserDex(userId: string, caughtPokemonKeyIds: number[]
         userId,
         caughtPokemonKeyIds,
         shinyPokemonKeyIds,
+        unlockedPrestigeLevelIndex,
         updatedAt: new Date().toISOString(),
       }),
     })
@@ -233,7 +249,7 @@ export async function writeUserDex(userId: string, caughtPokemonKeyIds: number[]
 
 export function validateUserDexPayload(
   bodyText: string | undefined | null
-): { caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[] } | null {
+): { caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[]; unlockedPrestigeLevelIndex: number } | null {
   if (!bodyText) return null;
 
   let parsed: unknown;
@@ -247,6 +263,7 @@ export function validateUserDexPayload(
   const payload = parsed as {
     caughtPokemonKeyIds?: unknown;
     shinyPokemonKeyIds?: unknown;
+    unlockedPrestigeLevelIndex?: unknown;
   };
 
   if (!Array.isArray(payload.caughtPokemonKeyIds)) return null;
@@ -258,9 +275,12 @@ export function validateUserDexPayload(
   const shinyPokemonKeyIds = sanitizeIdArray(payload.shinyPokemonKeyIds).filter((entry) => caughtSet.has(entry));
   if (shinyPokemonKeyIds.length > 5000) return null;
 
+  const unlockedPrestigeLevelIndex = sanitizePrestigeLevel(payload.unlockedPrestigeLevelIndex);
+
   return {
     caughtPokemonKeyIds,
     shinyPokemonKeyIds,
+    unlockedPrestigeLevelIndex,
   };
 }
 

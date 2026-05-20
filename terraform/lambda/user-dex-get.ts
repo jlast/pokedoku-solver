@@ -32,6 +32,7 @@ export async function handler(
       userIdHash: fingerprintUser(authResult.userId),
       count: userDex.caughtPokemonKeyIds.length,
       shinyCount: userDex.shinyPokemonKeyIds.length,
+      unlockedPrestigeLevelIndex: userDex.unlockedPrestigeLevelIndex,
     });
 
     return ok(event, userDex);

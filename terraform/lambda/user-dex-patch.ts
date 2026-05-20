@@ -31,15 +31,21 @@ export async function handler(
     const payload = validateUserDexPayload(event.body);
     if (!payload) {
       logInfo('user_dex_patch_validation_failed', meta);
-      return badRequest(event, 'Invalid payload. Expected { "caughtPokemonKeyIds": number[], "shinyPokemonKeyIds"?: number[] }.');
+      return badRequest(event, 'Invalid payload. Expected { "caughtPokemonKeyIds": number[], "shinyPokemonKeyIds"?: number[], "unlockedPrestigeLevelIndex"?: number }.');
     }
 
-    await writeUserDex(authResult.userId, payload.caughtPokemonKeyIds, payload.shinyPokemonKeyIds);
+    await writeUserDex(
+      authResult.userId,
+      payload.caughtPokemonKeyIds,
+      payload.shinyPokemonKeyIds,
+      payload.unlockedPrestigeLevelIndex
+    );
     logInfo('user_dex_patch_success', {
       ...meta,
       userIdHash: fingerprintUser(authResult.userId),
       count: payload.caughtPokemonKeyIds.length,
       shinyCount: payload.shinyPokemonKeyIds.length,
+      unlockedPrestigeLevelIndex: payload.unlockedPrestigeLevelIndex,
     });
 
     return ok(event, payload);
