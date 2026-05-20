@@ -1,6 +1,11 @@
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { TYPE_COLORS, CATEGORY_COLORS } from '../../../../lib/shared/constants';
-import { FILTER_CATEGORIES, findConstraintOption, type Constraint } from '../../../../lib/shared/filters';
+import {
+  FILTER_CATEGORIES,
+  FILTER_KEY_TO_CONSTRAINT_CATEGORY,
+  findConstraintOption,
+  type Constraint,
+} from '../../../../lib/shared/filters';
 import { trackEvent } from '../../../../lib/browser/analytics';
 import { CategoryBadgeLink } from './shared/CategoryBadgeLink';
 import type { ParsedCategory } from './puzzle-stats/categoryUtils';
@@ -63,6 +68,8 @@ function getConstraintParsedCategory(constraint: Constraint | null): ParsedCateg
 }
 
 function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: Constraint | null; index: number; isRow: boolean; onChange: GridProps['onConstraintChange'] }) {
+  const selectedValue = constraint ? `${constraint.category}:${constraint.value}` : '';
+
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const option = findConstraintOption(e.target.value);
     onChange(index, isRow, option);
@@ -78,7 +85,7 @@ function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: 
   return (
     <select
       className={`w-full cursor-pointer rounded-md border-2 border-[var(--border)] bg-[var(--bg)] px-2 py-1.5 text-center text-[10px] text-[var(--text-h)] focus:border-[var(--accent)] focus:outline-none md:text-xs ${isRow ? 'h-full' : ''}`}
-      value={constraint?.value || ''}
+      value={selectedValue}
       onChange={handleChange}
       style={{ borderColor: getConstraintColor(constraint) }}
     >
@@ -86,7 +93,7 @@ function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: 
       {FILTER_CATEGORIES.map(cat => (
         <optgroup key={cat.key} label={cat.label}>
           {cat.options.map(opt => (
-            <option key={opt.name} value={opt.name}>{opt.name}</option>
+            <option key={`${cat.key}-${opt.name}`} value={`${FILTER_KEY_TO_CONSTRAINT_CATEGORY[cat.key]}:${opt.name}`}>{opt.name}</option>
           ))}
         </optgroup>
       ))}

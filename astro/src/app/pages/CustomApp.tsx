@@ -102,7 +102,7 @@ function App() {
     const params = new URLSearchParams(window.location.search);
     const toQueryString = (constraints: (Constraint | null)[]): string =>
       constraints
-        .map((c) => c?.value || "")
+        .map((c) => (c ? `${c.category}:${c.value}` : ""))
         .filter(Boolean)
         .join(",");
     const rowsStr = toQueryString(grid.rowConstraints);

@@ -195,6 +195,24 @@ export const FILTER_KEY_TO_CONSTRAINT_CATEGORY: Record<string, string> = {
 };
 
 export function findConstraintOption(value: string): { value: string; category: string } | null {
+  const [rawCategory, ...rawValueParts] = value.split(':');
+  const rawValue = rawValueParts.join(':');
+  const categoryFromToken = rawValueParts.length > 0 ? rawCategory : null;
+
+  if (categoryFromToken && rawValue) {
+    const filterKey = Object.entries(FILTER_KEY_TO_CONSTRAINT_CATEGORY).find(
+      ([, constraintCategory]) => constraintCategory === categoryFromToken,
+    )?.[0] as ConstraintCategory | undefined;
+
+    if (filterKey) {
+      const category = FILTER_CATEGORIES.find((cat) => cat.key === filterKey);
+      const opt = category?.options.find((option) => option.name === rawValue);
+      if (opt) {
+        return { value: opt.name, category: categoryFromToken };
+      }
+    }
+  }
+
   for (const cat of FILTER_CATEGORIES) {
     const opt = cat.options.find(o => o.name === value);
     if (opt) {
@@ -212,11 +230,19 @@ export function matchesConstraint(pokemon: Pokemon, constraint: Constraint | nul
   if (constraint.category === 'ability') {
     return pokemon.abilities?.includes(constraint.value as PokemonAbility) ?? false;
   }
+  const filterKey = Object.entries(FILTER_KEY_TO_CONSTRAINT_CATEGORY).find(
+    ([, constraintCategory]) => constraintCategory === constraint.category,
+  )?.[0] as ConstraintCategory | undefined;
+
+  if (filterKey) {
+    const category = FILTER_CATEGORIES.find((cat) => cat.key === filterKey);
+    const opt = category?.options.find((option) => option.name === constraint.value);
+    if (opt) return opt.filter(pokemon);
+  }
+
   for (const cat of FILTER_CATEGORIES) {
-    const opt = cat.options.find(o => o.name === constraint.value);
-    if (opt) {
-      return opt.filter(pokemon);
-    }
+    const opt = cat.options.find((o) => o.name === constraint.value);
+    if (opt) return opt.filter(pokemon);
   }
   return false;
 }
