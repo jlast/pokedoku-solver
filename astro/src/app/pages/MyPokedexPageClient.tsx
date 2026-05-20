@@ -8,6 +8,7 @@ import {
   getRemoteUserDex,
   patchRemoteUserDex,
 } from "@pokedoku-helper/user-dex-client";
+import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 
 function getPrestigeToneClass(tone: string): string {
   if (tone === "greatball") return "text-blue-600";
@@ -365,60 +366,15 @@ export function MyPokedexPageClient() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-          <button
-            type="button"
-            onClick={() => setShowImportPanel((prev) => !prev)}
-            className="flex w-full items-center justify-between gap-3 text-left"
-            aria-expanded={showImportPanel}
-          >
-            <span className="text-sm font-semibold text-slate-800">Import Pokedoku Pokedex JSON</span>
-            <span className="text-xs font-semibold text-slate-500">{showImportPanel ? "Hide" : "Show"}</span>
-          </button>
-
-          {showImportPanel ? (
-            <>
-              <p className="mb-0 mt-2 text-xs text-slate-600">
-                To export your Pokedoku dex JSON, open
-                {" "}
-                <a
-                  href="https://api.pokedoku.com/api/user/dex?type=1"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-semibold text-slate-800 underline decoration-slate-400 underline-offset-2 hover:text-slate-900"
-                >
-                  api.pokedoku.com/api/user/dex?type=1
-                </a>
-                , copy the full JSON response, then paste it below.
-              </p>
-              <textarea
-                value={importJsonText}
-                onChange={(event) => setImportJsonText(event.target.value)}
-                placeholder='Paste JSON like {"type":"DAILY_MODE","prestige":0,"entries":[...]}'
-                className="mt-2 h-28 w-full rounded-lg border border-slate-300 bg-white p-3 text-xs text-slate-900 outline-none ring-slate-300 transition focus:ring"
-              />
-               <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-                 <button
-                   type="button"
-                   onClick={importPokedexJson}
-                   className="h-10 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
-                 >
-                   Import Pokedex JSON
-                 </button>
-                 <label className="inline-flex h-10 cursor-pointer items-center rounded-lg bg-slate-200 px-4 text-sm font-semibold text-slate-800 transition hover:bg-slate-300">
-                   Upload JSON File
-                   <input
-                     type="file"
-                     accept=".json,application/json"
-                     onChange={uploadPokedexJsonFile}
-                     className="sr-only"
-                   />
-                 </label>
-                 {importStatus ? <p className="m-0 text-xs text-slate-600">{importStatus}</p> : null}
-               </div>
-            </>
-          ) : null}
-        </div>
+        <PokedexImportPanel
+          importJsonText={importJsonText}
+          importStatus={importStatus}
+          showImportPanel={showImportPanel}
+          onTogglePanel={() => setShowImportPanel((prev) => !prev)}
+          onImportTextChange={setImportJsonText}
+          onImportClick={importPokedexJson}
+          onUploadChange={uploadPokedexJsonFile}
+        />
 
         <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
