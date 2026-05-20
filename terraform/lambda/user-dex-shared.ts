@@ -184,7 +184,18 @@ export async function authenticate(event: APIGatewayProxyEventV2): Promise<{ use
   return { userId: verification.payload.sub as string };
 }
 
-export async function readUserDex(userId: string): Promise<number[]> {
+function sanitizeIdArray(value: unknown): number[] {
+  if (!Array.isArray(value)) return [];
+  return Array.from(
+    new Set(
+      value
+        .map((entry) => Number(entry))
+        .filter((entry) => Number.isInteger(entry) && entry > 0)
+    )
+  ).sort((a, b) => a - b);
+}
+
+export async function readUserDex(userId: string): Promise<{ caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[] }> {
   const result = await dynamo.send(
     new GetItemCommand({
       TableName: TABLE_NAME,
@@ -193,30 +204,36 @@ export async function readUserDex(userId: string): Promise<number[]> {
     })
   );
 
-  if (!result.Item) return [];
-  const item = unmarshall(result.Item) as { caughtPokemonKeyIds?: unknown };
-  if (!Array.isArray(item.caughtPokemonKeyIds)) return [];
+  if (!result.Item) return { caughtPokemonKeyIds: [], shinyPokemonKeyIds: [] };
+  const item = unmarshall(result.Item) as {
+    caughtPokemonKeyIds?: unknown;
+    shinyPokemonKeyIds?: unknown;
+  };
 
-  return item.caughtPokemonKeyIds
-    .map((entry) => Number(entry))
-    .filter((entry) => Number.isInteger(entry) && entry > 0)
-    .sort((a, b) => a - b);
+  const caughtPokemonKeyIds = sanitizeIdArray(item.caughtPokemonKeyIds);
+  const caughtSet = new Set(caughtPokemonKeyIds);
+  const shinyPokemonKeyIds = sanitizeIdArray(item.shinyPokemonKeyIds).filter((entry) => caughtSet.has(entry));
+
+  return { caughtPokemonKeyIds, shinyPokemonKeyIds };
 }
 
-export async function writeUserDex(userId: string, caughtPokemonKeyIds: number[]): Promise<void> {
+export async function writeUserDex(userId: string, caughtPokemonKeyIds: number[], shinyPokemonKeyIds: number[]): Promise<void> {
   await dynamo.send(
     new PutItemCommand({
       TableName: TABLE_NAME,
       Item: marshall({
         userId,
         caughtPokemonKeyIds,
+        shinyPokemonKeyIds,
         updatedAt: new Date().toISOString(),
       }),
     })
   );
 }
 
-export function validateCaughtPokemonKeyIds(bodyText: string | undefined | null): number[] | null {
+export function validateUserDexPayload(
+  bodyText: string | undefined | null
+): { caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[] } | null {
   if (!bodyText) return null;
 
   let parsed: unknown;
@@ -227,16 +244,24 @@ export function validateCaughtPokemonKeyIds(bodyText: string | undefined | null)
   }
 
   if (!parsed || typeof parsed !== 'object') return null;
-  const candidate = (parsed as { caughtPokemonKeyIds?: unknown }).caughtPokemonKeyIds;
-  if (!Array.isArray(candidate)) return null;
+  const payload = parsed as {
+    caughtPokemonKeyIds?: unknown;
+    shinyPokemonKeyIds?: unknown;
+  };
 
-  const normalized = candidate
-    .map((entry) => Number(entry))
-    .filter((entry) => Number.isInteger(entry) && entry > 0);
+  if (!Array.isArray(payload.caughtPokemonKeyIds)) return null;
 
-  const uniqueSorted = Array.from(new Set(normalized)).sort((a, b) => a - b);
-  if (uniqueSorted.length > 5000) return null;
-  return uniqueSorted;
+  const caughtPokemonKeyIds = sanitizeIdArray(payload.caughtPokemonKeyIds);
+  if (caughtPokemonKeyIds.length > 5000) return null;
+
+  const caughtSet = new Set(caughtPokemonKeyIds);
+  const shinyPokemonKeyIds = sanitizeIdArray(payload.shinyPokemonKeyIds).filter((entry) => caughtSet.has(entry));
+  if (shinyPokemonKeyIds.length > 5000) return null;
+
+  return {
+    caughtPokemonKeyIds,
+    shinyPokemonKeyIds,
+  };
 }
 
 export function requestMeta(event: APIGatewayProxyEventV2): Record<string, unknown> {

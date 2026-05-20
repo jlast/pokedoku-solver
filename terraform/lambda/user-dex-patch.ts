@@ -11,7 +11,7 @@ import {
   logInfo,
   ok,
   requestMeta,
-  validateCaughtPokemonKeyIds,
+  validateUserDexPayload,
   writeUserDex,
 } from './user-dex-shared';
 
@@ -28,20 +28,21 @@ export async function handler(
       return authResult;
     }
 
-    const caughtPokemonKeyIds = validateCaughtPokemonKeyIds(event.body);
-    if (!caughtPokemonKeyIds) {
+    const payload = validateUserDexPayload(event.body);
+    if (!payload) {
       logInfo('user_dex_patch_validation_failed', meta);
-      return badRequest(event, 'Invalid payload. Expected { "caughtPokemonKeyIds": number[] }.');
+      return badRequest(event, 'Invalid payload. Expected { "caughtPokemonKeyIds": number[], "shinyPokemonKeyIds"?: number[] }.');
     }
 
-    await writeUserDex(authResult.userId, caughtPokemonKeyIds);
+    await writeUserDex(authResult.userId, payload.caughtPokemonKeyIds, payload.shinyPokemonKeyIds);
     logInfo('user_dex_patch_success', {
       ...meta,
       userIdHash: fingerprintUser(authResult.userId),
-      count: caughtPokemonKeyIds.length,
+      count: payload.caughtPokemonKeyIds.length,
+      shinyCount: payload.shinyPokemonKeyIds.length,
     });
 
-    return ok(event, { caughtPokemonKeyIds });
+    return ok(event, payload);
   } catch (error) {
     logError('user_dex_patch_error', {
       ...meta,

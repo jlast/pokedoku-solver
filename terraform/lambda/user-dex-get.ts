@@ -26,14 +26,15 @@ export async function handler(
       return authResult;
     }
 
-    const caughtPokemonKeyIds = await readUserDex(authResult.userId);
+    const userDex = await readUserDex(authResult.userId);
     logInfo('user_dex_get_success', {
       ...meta,
       userIdHash: fingerprintUser(authResult.userId),
-      count: caughtPokemonKeyIds.length,
+      count: userDex.caughtPokemonKeyIds.length,
+      shinyCount: userDex.shinyPokemonKeyIds.length,
     });
 
-    return ok(event, { caughtPokemonKeyIds });
+    return ok(event, userDex);
   } catch (error) {
     logError('user_dex_get_error', {
       ...meta,
