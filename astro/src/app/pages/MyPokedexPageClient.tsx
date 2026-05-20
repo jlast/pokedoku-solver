@@ -289,7 +289,7 @@ export function MyPokedexPageClient() {
     }
   }
 
-  function applyImportedPokedexJson(rawJsonText: string, source: "paste" | "file") {
+  async function applyImportedPokedexJson(rawJsonText: string, source: "paste" | "file") {
     try {
       const parsed = JSON.parse(rawJsonText) as {
         prestige?: unknown;
@@ -330,14 +330,23 @@ export function MyPokedexPageClient() {
       setImportStatus(
         `${source === "file" ? "Uploaded" : "Imported"} ${importedCaught.size} unlocked Pokemon and ${importedShiny.size} shinies.`,
       );
-      setSyncStatus("offline");
+
+      const token = getSessionIdToken();
+      if (!token) {
+        setSyncStatus("offline");
+        return;
+      }
+
+      setSyncStatus("syncing");
+      const didSync = await patchRemoteCaughtIds(token, Array.from(importedCaught).sort((a, b) => a - b));
+      setSyncStatus(didSync ? "synced" : "offline");
     } catch {
       setImportStatus(source === "file" ? "Upload failed. Please select valid JSON." : "Import failed. Please paste valid JSON.");
     }
   }
 
   function importPokedexJson() {
-    applyImportedPokedexJson(importJsonText, "paste");
+    void applyImportedPokedexJson(importJsonText, "paste");
   }
 
   function uploadPokedexJsonFile(event: ChangeEvent<HTMLInputElement>) {
@@ -347,7 +356,7 @@ export function MyPokedexPageClient() {
     void file
       .text()
       .then((text) => {
-        applyImportedPokedexJson(text, "file");
+        return applyImportedPokedexJson(text, "file");
       })
       .catch(() => {
         setImportStatus("Upload failed. Please select valid JSON.");
@@ -382,6 +391,7 @@ export function MyPokedexPageClient() {
     const didSync = await patchRemoteCaughtIds(token, Array.from(nextSet));
     setSyncStatus(didSync ? "synced" : "offline");
   }
+
 
   function toggleShiny(pokemonKeyId: number) {
     if (!caughtSet.has(pokemonKeyId)) return;
