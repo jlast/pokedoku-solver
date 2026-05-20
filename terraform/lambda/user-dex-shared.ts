@@ -3,12 +3,12 @@ import { DynamoDBClient, GetItemCommand, PutItemCommand } from '@aws-sdk/client-
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import type { APIGatewayProxyEventV2, APIGatewayProxyStructuredResultV2 } from 'aws-lambda';
 
-const CORS_HEADERS = {
-  'content-type': 'application/json',
-  'access-control-allow-origin': 'https://www.pokedoku-helper.com',
-  'access-control-allow-headers': 'authorization,content-type',
-  'access-control-allow-methods': 'GET,PATCH,OPTIONS',
-} as const;
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? 'https://www.pokedoku-helper.com')
+  .split(',')
+  .map((value) => value.trim())
+  .filter((value) => value.length > 0);
+
+const DEFAULT_ORIGIN = ALLOWED_ORIGINS[0] ?? 'https://www.pokedoku-helper.com';
 
 const REGION = process.env.COGNITO_REGION ?? '';
 const USER_POOL_ID = process.env.COGNITO_USER_POOL_ID ?? '';
@@ -58,12 +58,33 @@ function base64UrlToBuffer(value: string): Buffer {
   return Buffer.from(normalized + '='.repeat(padLength), 'base64');
 }
 
-function jsonResponse(statusCode: number, body: Record<string, unknown>): APIGatewayProxyStructuredResultV2 {
+function buildCorsHeaders(requestOrigin: string | null): Record<string, string> {
+  const responseOrigin = requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : DEFAULT_ORIGIN;
+  return {
+    'content-type': 'application/json',
+    'access-control-allow-origin': responseOrigin,
+    'access-control-allow-headers': 'authorization,content-type',
+    'access-control-allow-methods': 'GET,PATCH,OPTIONS',
+    vary: 'Origin',
+  };
+}
+
+function jsonResponse(
+  statusCode: number,
+  body: Record<string, unknown>,
+  requestOrigin: string | null
+): APIGatewayProxyStructuredResultV2 {
   return {
     statusCode,
-    headers: CORS_HEADERS,
+    headers: buildCorsHeaders(requestOrigin),
     body: JSON.stringify(body),
   };
+}
+
+function getRequestOrigin(event: APIGatewayProxyEventV2): string | null {
+  const originHeader = event.headers?.origin ?? event.headers?.Origin;
+  if (!originHeader) return null;
+  return originHeader.trim();
 }
 
 async function getJwk(kid: string): Promise<Jwk | null> {
@@ -139,13 +160,15 @@ async function verifyJwt(token: string): Promise<{ ok: true; payload: JwtPayload
 }
 
 export async function authenticate(event: APIGatewayProxyEventV2): Promise<{ userId: string } | APIGatewayProxyStructuredResultV2> {
+  const requestOrigin = getRequestOrigin(event);
+
   if (!REGION || !USER_POOL_ID || !CLIENT_ID || !TABLE_NAME) {
-    return jsonResponse(500, { error: 'Server auth configuration is incomplete.' });
+    return jsonResponse(500, { error: 'Server auth configuration is incomplete.' }, requestOrigin);
   }
 
   const authHeader = event.headers?.authorization ?? event.headers?.Authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return jsonResponse(401, { error: 'Missing bearer token.' });
+    return jsonResponse(401, { error: 'Missing bearer token.' }, requestOrigin);
   }
 
   const token = authHeader.slice('Bearer '.length).trim();
@@ -155,7 +178,7 @@ export async function authenticate(event: APIGatewayProxyEventV2): Promise<{ use
       reason: verification.reason,
       requestId: event.requestContext.requestId,
     });
-    return jsonResponse(401, { error: 'Invalid token.' });
+    return jsonResponse(401, { error: 'Invalid token.' }, requestOrigin);
   }
 
   return { userId: verification.payload.sub as string };
@@ -234,16 +257,16 @@ export function logError(message: string, details: Record<string, unknown>): voi
   log('error', message, details);
 }
 
-export function ok(body: Record<string, unknown>): APIGatewayProxyStructuredResultV2 {
-  return jsonResponse(200, body);
+export function ok(event: APIGatewayProxyEventV2, body: Record<string, unknown>): APIGatewayProxyStructuredResultV2 {
+  return jsonResponse(200, body, getRequestOrigin(event));
 }
 
-export function badRequest(error: string): APIGatewayProxyStructuredResultV2 {
-  return jsonResponse(400, { error });
+export function badRequest(event: APIGatewayProxyEventV2, error: string): APIGatewayProxyStructuredResultV2 {
+  return jsonResponse(400, { error }, getRequestOrigin(event));
 }
 
-export function internalError(): APIGatewayProxyStructuredResultV2 {
-  return jsonResponse(500, { error: 'Internal server error.' });
+export function internalError(event: APIGatewayProxyEventV2): APIGatewayProxyStructuredResultV2 {
+  return jsonResponse(500, { error: 'Internal server error.' }, getRequestOrigin(event));
 }
 
 export function fingerprintUser(userId: string): string {

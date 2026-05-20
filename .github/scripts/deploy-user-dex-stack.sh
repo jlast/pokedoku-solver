@@ -21,7 +21,7 @@ for required_var in \
   API_SUBDOMAIN \
   HOSTED_ZONE_ID \
   API_CERTIFICATE_ARN \
-  ALLOWED_ORIGIN \
+  ALLOWED_ORIGINS \
   COGNITO_REGION \
   COGNITO_USER_POOL_ID \
   COGNITO_CLIENT_ID \
@@ -141,7 +141,7 @@ aws cloudformation deploy \
     UserDexGetCodeS3Key="${CURRENT_USER_DEX_GET_KEY}" \
     UserDexPatchCodeS3Bucket="${S3_BUCKET_NAME}" \
     UserDexPatchCodeS3Key="${CURRENT_USER_DEX_PATCH_KEY}" \
-    AllowedOrigin="${ALLOWED_ORIGIN}" \
+    AllowedOrigins="${ALLOWED_ORIGINS}" \
     CognitoRegion="${COGNITO_REGION}" \
     CognitoUserPoolId="${COGNITO_USER_POOL_ID}" \
     CognitoClientId="${COGNITO_CLIENT_ID}"

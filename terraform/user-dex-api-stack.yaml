@@ -36,10 +36,10 @@ Parameters:
     Type: String
     Description: "S3 key for user-dex-patch Lambda zip"
 
-  AllowedOrigin:
+  AllowedOrigins:
     Type: String
-    Default: "https://www.pokedoku-helper.com"
-    Description: "CORS allowed origin"
+    Default: "https://www.pokedoku-helper.com,http://localhost:4321,http://127.0.0.1:4321"
+    Description: "Comma-separated CORS allowed origins"
 
   CognitoRegion:
     Type: String
@@ -104,6 +104,7 @@ Resources:
           COGNITO_REGION: !Ref CognitoRegion
           COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
           COGNITO_CLIENT_ID: !Ref CognitoClientId
+          ALLOWED_ORIGINS: !Ref AllowedOrigins
       Code:
         S3Bucket: !Ref UserDexGetCodeS3Bucket
         S3Key: !Ref UserDexGetCodeS3Key
@@ -122,6 +123,7 @@ Resources:
           COGNITO_REGION: !Ref CognitoRegion
           COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
           COGNITO_CLIENT_ID: !Ref CognitoClientId
+          ALLOWED_ORIGINS: !Ref AllowedOrigins
       Code:
         S3Bucket: !Ref UserDexPatchCodeS3Bucket
         S3Key: !Ref UserDexPatchCodeS3Key
@@ -132,8 +134,7 @@ Resources:
       Name: !Sub "${AWS::StackName}-user-dex-api"
       ProtocolType: HTTP
       CorsConfiguration:
-        AllowOrigins:
-          - !Ref AllowedOrigin
+        AllowOrigins: !Split [",", !Ref AllowedOrigins]
         AllowMethods:
           - GET
           - PATCH

@@ -9,6 +9,7 @@ interface ImportMetaEnv {
   readonly PUBLIC_COGNITO_DOMAIN: string;
   readonly PUBLIC_COGNITO_REDIRECT_SIGN_IN: string;
   readonly PUBLIC_COGNITO_REDIRECT_SIGN_OUT: string;
+  readonly PUBLIC_USER_DEX_API_BASE_URL?: string;
 }
 
 interface ImportMeta {

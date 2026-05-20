@@ -33,13 +33,13 @@ export async function handler(
       count: caughtPokemonKeyIds.length,
     });
 
-    return ok({ caughtPokemonKeyIds });
+    return ok(event, { caughtPokemonKeyIds });
   } catch (error) {
     logError('user_dex_get_error', {
       ...meta,
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     });
-    return internalError();
+    return internalError(event);
   }
 }
