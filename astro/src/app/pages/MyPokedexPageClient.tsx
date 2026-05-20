@@ -5,11 +5,12 @@ import { getSessionIdToken, getSessionUserProfile } from "../../lib/cognitoAuth"
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 
-const LOCAL_STORAGE_KEY = "my_pokedex_caught_key_ids";
-const SHINY_LOCAL_STORAGE_KEY = "my_pokedex_shiny_key_ids";
 const PRESTIGE_UNLOCK_LEVEL_KEY = "my_pokedex_unlocked_prestige_level";
 
-type SyncStatus = "idle" | "syncing" | "synced" | "offline";
+type UserDexPayload = {
+  caughtPokemonKeyIds: number[];
+  shinyPokemonKeyIds: number[];
+};
 
 function getPrestigeToneClass(tone: string): string {
   if (tone === "greatball") return "text-blue-600";
@@ -50,65 +51,33 @@ function getPokemonKeyId(pokemon: Pokemon): number {
   return pokemon.formId ?? pokemon.id;
 }
 
-function readLocalCaughtSet(): Set<number> {
-  try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (!raw) return new Set<number>();
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return new Set<number>();
-
-    return new Set(
-      parsed
-        .map((entry) => Number(entry))
-        .filter((entry) => Number.isFinite(entry) && entry > 0),
-    );
-  } catch {
-    return new Set<number>();
-  }
-}
-
-function writeLocalCaughtSet(caughtSet: Set<number>): void {
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(Array.from(caughtSet).sort((a, b) => a - b)));
-}
-
-function readLocalShinySet(): Set<number> {
-  try {
-    const raw = localStorage.getItem(SHINY_LOCAL_STORAGE_KEY);
-    if (!raw) return new Set<number>();
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return new Set<number>();
-
-    return new Set(
-      parsed
-        .map((entry) => Number(entry))
-        .filter((entry) => Number.isFinite(entry) && entry > 0),
-    );
-  } catch {
-    return new Set<number>();
-  }
-}
-
-function writeLocalShinySet(shinySet: Set<number>): void {
-  localStorage.setItem(SHINY_LOCAL_STORAGE_KEY, JSON.stringify(Array.from(shinySet).sort((a, b) => a - b)));
-}
-
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
   if (!baseUrl || typeof baseUrl !== "string") return null;
   return baseUrl.replace(/\/+$/, "");
 }
 
-function parseCaughtIdsFromApi(data: unknown): number[] | null {
+function parseUserDexFromApi(data: unknown): UserDexPayload | null {
   if (!data || typeof data !== "object") return null;
-  const candidate = (data as { caughtPokemonKeyIds?: unknown }).caughtPokemonKeyIds;
-  if (!Array.isArray(candidate)) return null;
+  const payload = data as {
+    caughtPokemonKeyIds?: unknown;
+    shinyPokemonKeyIds?: unknown;
+  };
+  if (!Array.isArray(payload.caughtPokemonKeyIds)) return null;
 
-  return candidate
+  const caughtPokemonKeyIds = payload.caughtPokemonKeyIds
     .map((entry) => Number(entry))
     .filter((entry) => Number.isFinite(entry) && entry > 0);
+
+  const caughtSet = new Set(caughtPokemonKeyIds);
+  const shinyPokemonKeyIds = (Array.isArray(payload.shinyPokemonKeyIds) ? payload.shinyPokemonKeyIds : [])
+    .map((entry) => Number(entry))
+    .filter((entry) => Number.isFinite(entry) && entry > 0 && caughtSet.has(entry));
+
+  return { caughtPokemonKeyIds, shinyPokemonKeyIds };
 }
 
-async function getRemoteCaughtIds(token: string): Promise<number[] | null> {
+async function getRemoteUserDex(token: string): Promise<UserDexPayload | null> {
   const apiBaseUrl = getApiBaseUrl();
   if (!apiBaseUrl) return null;
 
@@ -121,10 +90,10 @@ async function getRemoteCaughtIds(token: string): Promise<number[] | null> {
 
   if (!response.ok) return null;
   const data = (await response.json()) as unknown;
-  return parseCaughtIdsFromApi(data);
+  return parseUserDexFromApi(data);
 }
 
-async function patchRemoteCaughtIds(token: string, caughtPokemonKeyIds: number[]): Promise<boolean> {
+async function patchRemoteUserDex(token: string, payload: UserDexPayload): Promise<boolean> {
   const apiBaseUrl = getApiBaseUrl();
   if (!apiBaseUrl) return false;
 
@@ -134,7 +103,7 @@ async function patchRemoteCaughtIds(token: string, caughtPokemonKeyIds: number[]
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ caughtPokemonKeyIds }),
+    body: JSON.stringify(payload),
   });
 
   return response.ok;
@@ -155,7 +124,6 @@ export function MyPokedexPageClient() {
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [showImportPanel, setShowImportPanel] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [syncStatus, setSyncStatus] = useState<SyncStatus>("idle");
 
   useEffect(() => {
     if (!userLabel) return;
@@ -164,14 +132,10 @@ export function MyPokedexPageClient() {
 
     async function loadData() {
       setIsLoading(true);
-      setSyncStatus("syncing");
-
-      const localCaught = readLocalCaughtSet();
-      const localShiny = readLocalShinySet();
       const localUnlockedLevel = readUnlockedPrestigeLevel();
       if (!isCancelled) {
-        setCaughtSet(new Set(localCaught));
-        setShinySet(new Set(localShiny));
+        setCaughtSet(new Set<number>());
+        setShinySet(new Set<number>());
         setUnlockedPrestigeLevelIndex(localUnlockedLevel);
       }
 
@@ -191,30 +155,23 @@ export function MyPokedexPageClient() {
       const token = getSessionIdToken();
       if (!token) {
         if (!isCancelled) {
-          setSyncStatus("offline");
           setIsLoading(false);
         }
         return;
       }
 
       try {
-        const remoteCaughtIds = await getRemoteCaughtIds(token);
+        const remoteUserDex = await getRemoteUserDex(token);
 
-        if (remoteCaughtIds) {
-          const remoteSet = new Set(remoteCaughtIds);
-          writeLocalCaughtSet(remoteSet);
+        if (remoteUserDex) {
+          const remoteCaughtSet = new Set(remoteUserDex.caughtPokemonKeyIds);
+          const remoteShinySet = new Set(remoteUserDex.shinyPokemonKeyIds);
           if (!isCancelled) {
-            setCaughtSet(remoteSet);
-            setSyncStatus("synced");
+            setCaughtSet(remoteCaughtSet);
+            setShinySet(remoteShinySet);
           }
-        } else if (!isCancelled) {
-          setSyncStatus("offline");
         }
-      } catch {
-        if (!isCancelled) {
-          setSyncStatus("offline");
-        }
-      }
+      } catch {}
 
       if (!isCancelled) {
         setIsLoading(false);
@@ -275,17 +232,12 @@ export function MyPokedexPageClient() {
     const resetShinySet = new Set<number>();
     setCaughtSet(resetCaughtSet);
     setShinySet(resetShinySet);
-    writeLocalCaughtSet(resetCaughtSet);
-    writeLocalShinySet(resetShinySet);
 
     setSelectedPrestigeLevelId(nextPrestigeLevel.id);
 
     const token = getSessionIdToken();
     if (token) {
-      setSyncStatus("syncing");
-      void patchRemoteCaughtIds(token, []).then((didSync) => {
-        setSyncStatus(didSync ? "synced" : "offline");
-      });
+      void patchRemoteUserDex(token, { caughtPokemonKeyIds: [], shinyPokemonKeyIds: [] });
     }
   }
 
@@ -325,21 +277,17 @@ export function MyPokedexPageClient() {
 
       setCaughtSet(importedCaught);
       setShinySet(importedShiny);
-      writeLocalCaughtSet(importedCaught);
-      writeLocalShinySet(importedShiny);
       setImportStatus(
         `${source === "file" ? "Uploaded" : "Imported"} ${importedCaught.size} unlocked Pokemon and ${importedShiny.size} shinies.`,
       );
 
       const token = getSessionIdToken();
-      if (!token) {
-        setSyncStatus("offline");
-        return;
-      }
+      if (!token) return;
 
-      setSyncStatus("syncing");
-      const didSync = await patchRemoteCaughtIds(token, Array.from(importedCaught).sort((a, b) => a - b));
-      setSyncStatus(didSync ? "synced" : "offline");
+      await patchRemoteUserDex(token, {
+        caughtPokemonKeyIds: Array.from(importedCaught).sort((a, b) => a - b),
+        shinyPokemonKeyIds: Array.from(importedShiny).sort((a, b) => a - b),
+      });
     } catch {
       setImportStatus(source === "file" ? "Upload failed. Please select valid JSON." : "Import failed. Please paste valid JSON.");
     }
@@ -378,18 +326,14 @@ export function MyPokedexPageClient() {
 
     setCaughtSet(nextSet);
     setShinySet(nextShinySet);
-    writeLocalCaughtSet(nextSet);
-    writeLocalShinySet(nextShinySet);
 
     const token = getSessionIdToken();
-    if (!token) {
-      setSyncStatus("offline");
-      return;
-    }
+    if (!token) return;
 
-    setSyncStatus("syncing");
-    const didSync = await patchRemoteCaughtIds(token, Array.from(nextSet));
-    setSyncStatus(didSync ? "synced" : "offline");
+    await patchRemoteUserDex(token, {
+      caughtPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
+      shinyPokemonKeyIds: Array.from(nextShinySet).sort((a, b) => a - b),
+    });
   }
 
 
@@ -404,7 +348,14 @@ export function MyPokedexPageClient() {
     }
 
     setShinySet(nextSet);
-    writeLocalShinySet(nextSet);
+
+    const token = getSessionIdToken();
+    if (!token) return;
+
+    void patchRemoteUserDex(token, {
+      caughtPokemonKeyIds: Array.from(caughtSet).sort((a, b) => a - b),
+      shinyPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
+    });
   }
 
   if (!userLabel) {
@@ -560,17 +511,6 @@ export function MyPokedexPageClient() {
               Prestige: <span className="font-semibold text-slate-700">{selectedPrestigeLevel.label}</span> (Shiny odds: {selectedPrestigeLevel.oddsLabel})
             </p>
           </div>
-          <span
-            className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
-              syncStatus === "synced"
-                ? "bg-emerald-100 text-emerald-700"
-                : syncStatus === "syncing"
-                  ? "bg-amber-100 text-amber-700"
-                  : "bg-slate-100 text-slate-600"
-            }`}
-          >
-            {syncStatus === "synced" ? "Synced" : syncStatus === "syncing" ? "Syncing..." : "Local only"}
-          </span>
         </div>
 
         <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
