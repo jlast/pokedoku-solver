@@ -645,23 +645,20 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   10068: {
     // Deerling summer
-    formId: 91585,
     evolution: {
-      to: [91586],
+      to: [10071],
     },
   },
   10069: {
     // Deerling autumn
-    formId: 90585,
     evolution: {
-      to: [90586],
+      to: [10072],
     },
   },
   10070: {
     // Deerling winter
-    formId: 92585,
     evolution: {
-      to: [92586],
+      to: [10073],
     },
   },
   586: {
@@ -672,23 +669,20 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   10071: {
     // Sawsbuck summer
-    formId: 91586,
     evolution: {
-      from: [91587],
+      from: [10068],
     },
   },
   10072: {
     // Sawsbuck autumn
-    formId: 90586,
     evolution: {
-      from: [90585],
+      from: [10069],
     },
   },
   10073: {
     // Sawsbuck winter
-    formId: 92586,
     evolution: {
-      from: [92585],
+      from: [10070],
     },
   },
   677: {

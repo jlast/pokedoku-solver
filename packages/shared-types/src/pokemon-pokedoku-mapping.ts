@@ -6,6 +6,8 @@ export const POKEDOKU_FORM_ID_MAPPING: Record<number, number> = {
   10001: 10031, // Deoxys attack
   10002: 10032, // Deoxys defense
   10003: 10033, // Deoxys speed
+  90412: 10034, // Burmy Sandy
+  91412: 10035, // Burmy Trash
   10004: 10036, // Wormadam sandy
   10005: 10037, // Wormadam trash
   90421: 10038, // Cherrim sunshine
