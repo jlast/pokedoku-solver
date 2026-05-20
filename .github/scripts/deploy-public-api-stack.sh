@@ -31,7 +31,7 @@ do
   require_var "${required_var}"
 done
 
-echo "Running preflight checks for user dex API stack"
+echo "Running preflight checks for public API stack"
 
 STACK_EXISTS=true
 if ! aws cloudformation describe-stacks --stack-name "${STACK_NAME}" >/dev/null 2>&1; then
@@ -127,7 +127,7 @@ else
   CURRENT_USER_DEX_PATCH_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='UserDexPatchCodeS3Key'].ParameterValue" --output text)
 fi
 
-echo "Deploying user dex API stack ${STACK_NAME} for commit ${GITHUB_SHA}"
+echo "Deploying public API stack ${STACK_NAME} for commit ${GITHUB_SHA}"
 aws cloudformation deploy \
   --template-file terraform/user-dex-api-stack.yaml \
   --stack-name "${STACK_NAME}" \
