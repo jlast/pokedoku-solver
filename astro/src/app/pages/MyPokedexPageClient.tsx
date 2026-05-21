@@ -53,7 +53,7 @@ export function MyPokedexPageClient() {
   const [shinySet, setShinySet] = useState<Set<number>>(new Set<number>());
   const [searchQuery, setSearchQuery] = useState("");
   const [showCaughtOnly, setShowCaughtOnly] = useState(false);
-  const [showMissingOnly, setShowMissingOnly] = useState(false);
+  const [showMissingOnly, setShowMissingOnly] = useState(true);
   const [selectedPrestigeLevelId, setSelectedPrestigeLevelId] = useState(PRESTIGE_LEVELS[0]?.id ?? "pokeball");
   const [unlockedPrestigeLevelIndex, setUnlockedPrestigeLevelIndex] = useState(0);
   const [importJsonText, setImportJsonText] = useState("");
@@ -155,11 +155,14 @@ export function MyPokedexPageClient() {
   const caughtCount = caughtSet.size;
   const shinyCount = shinySet.size;
   const totalCount = pokemon.length;
-  const completionRate = totalCount > 0 ? Math.round((caughtCount / totalCount) * 100) : 0;
   const selectedPrestigeLevel =
     PRESTIGE_LEVELS.find((level, index) => level.id === selectedPrestigeLevelId && index <= unlockedPrestigeLevelIndex) ??
     PRESTIGE_LEVELS[unlockedPrestigeLevelIndex] ??
     PRESTIGE_LEVELS[0];
+  const selectedPrestigeLevelIndex = PRESTIGE_LEVELS.findIndex((level) => level.id === selectedPrestigeLevel.id);
+  const isViewingPastPrestige = selectedPrestigeLevelIndex >= 0 && selectedPrestigeLevelIndex < unlockedPrestigeLevelIndex;
+  const displayedCaughtCount = isViewingPastPrestige ? totalCount : caughtCount;
+  const completionRate = totalCount > 0 ? Math.round((displayedCaughtCount / totalCount) * 100) : 0;
   const nextPrestigeLevel = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex + 1] ?? null;
   const canUnlockNextPrestige = Boolean(nextPrestigeLevel) && totalCount > 0 && caughtCount === totalCount;
 
@@ -409,6 +412,7 @@ export function MyPokedexPageClient() {
           <div className="inline-flex min-w-full gap-2 rounded-xl bg-slate-100 p-1">
             {PRESTIGE_LEVELS.map((level, levelIndex) => {
               const isLocked = levelIndex > unlockedPrestigeLevelIndex;
+              const isSelected = selectedPrestigeLevel.id === level.id;
 
               return (
                 <button
@@ -417,8 +421,10 @@ export function MyPokedexPageClient() {
                   onClick={() => setSelectedPrestigeLevelId(level.id)}
                   disabled={isLocked}
                   className={`flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition ${
-                    selectedPrestigeLevel.id === level.id
-                      ? "bg-white text-slate-900 shadow-sm"
+                    isSelected
+                      ? isViewingPastPrestige
+                        ? "bg-amber-100 text-amber-900 shadow-sm"
+                        : "bg-white text-slate-900 shadow-sm"
                       : "text-slate-600 hover:bg-slate-200 hover:text-slate-800"
                   } ${isLocked ? "cursor-not-allowed opacity-50 hover:bg-transparent hover:text-slate-600" : ""}`}
                 >
@@ -438,6 +444,9 @@ export function MyPokedexPageClient() {
             <p className="mb-0 mt-1 text-xs text-slate-500">
               Prestige: <span className="font-semibold text-slate-700">{selectedPrestigeLevel.label}</span> (Shiny odds: {selectedPrestigeLevel.oddsLabel})
             </p>
+            {isViewingPastPrestige ? (
+              <p className="mb-0 mt-1 text-xs font-semibold text-amber-700">Previous prestiges are view-only and fully unlocked.</p>
+            ) : null}
           </div>
         </div>
 
@@ -446,13 +455,13 @@ export function MyPokedexPageClient() {
             <div>
               <p className="m-0 text-sm text-slate-500">Completion</p>
               <p className="m-0 text-2xl font-bold text-slate-900">
-                {caughtCount} / {totalCount}
+                {displayedCaughtCount} / {totalCount}
               </p>
               <p className="m-0 mt-1 text-xs font-semibold text-amber-700">Shinies: {shinyCount}</p>
             </div>
             <p className="m-0 text-sm font-semibold text-slate-700">{completionRate}%</p>
           </div>
-          <progress className="mt-3 h-2 w-full overflow-hidden rounded-full" max={Math.max(totalCount, 1)} value={caughtCount} />
+          <progress className="mt-3 h-2 w-full overflow-hidden rounded-full" max={Math.max(totalCount, 1)} value={displayedCaughtCount} />
         </div>
 
         <div className="mt-4 flex flex-col gap-3 sm:flex-row">
@@ -505,7 +514,7 @@ export function MyPokedexPageClient() {
           <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
             {filteredPokemon.map((entry) => {
               const pokemonKeyId = getPokemonKeyId(entry);
-              const isCaught = caughtSet.has(pokemonKeyId);
+              const isCaught = isViewingPastPrestige ? true : caughtSet.has(pokemonKeyId);
               const isShiny = shinySet.has(pokemonKeyId);
 
               return (
@@ -513,17 +522,24 @@ export function MyPokedexPageClient() {
                   key={pokemonKeyId}
                   type="button"
                   onClick={() => {
-                    void toggleCaught(pokemonKeyId);
+                    if (!isViewingPastPrestige) {
+                      void toggleCaught(pokemonKeyId);
+                    }
                   }}
+                  disabled={isViewingPastPrestige}
                   className={`rounded-xl border p-3 text-left transition ${
                     isCaught
-                      ? "border-emerald-300 bg-emerald-50 hover:bg-emerald-100"
-                      : "border-slate-200 bg-white hover:bg-slate-50"
-                  }`}
+                      ? isViewingPastPrestige
+                        ? "border-amber-300 bg-amber-50"
+                        : "border-emerald-300 bg-emerald-50 hover:bg-emerald-100"
+                      : isViewingPastPrestige
+                        ? "border-slate-200 bg-white"
+                        : "border-slate-200 bg-white hover:bg-slate-50"
+                  } ${isViewingPastPrestige ? "cursor-not-allowed" : ""}`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-xs text-slate-500">#{entry.id}</span>
-                    <span className={`text-xs font-semibold ${isCaught ? "text-emerald-700" : "text-slate-500"}`}>
+                    <span className={`text-xs font-semibold ${isCaught ? (isViewingPastPrestige ? "text-amber-700" : "text-emerald-700") : "text-slate-500"}`}>
                       {isCaught ? "Caught" : "Missing"}
                     </span>
                   </div>
@@ -540,25 +556,29 @@ export function MyPokedexPageClient() {
                       <p className="m-0 text-xs text-slate-500">{entry.types.join(" / ")}</p>
                     </div>
                   </div>
-                  <div className="mt-2">
-                    <button
-                      type="button"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        toggleShiny(pokemonKeyId);
-                      }}
-                      disabled={!isCaught}
-                      className={`rounded-md px-2 py-1 text-[11px] font-semibold transition ${
-                        isShiny
-                          ? "bg-amber-400 text-amber-900"
-                          : isCaught
-                            ? "bg-slate-200 text-slate-700 hover:bg-slate-300"
-                            : "cursor-not-allowed bg-slate-100 text-slate-400"
-                      }`}
-                    >
-                      {isShiny ? "Shiny unlocked" : "Mark shiny"}
-                    </button>
-                  </div>
+                  {(!isViewingPastPrestige || isShiny) ? (
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          if (!isViewingPastPrestige) {
+                            toggleShiny(pokemonKeyId);
+                          }
+                        }}
+                        disabled={!isCaught || isViewingPastPrestige}
+                        className={`rounded-md px-2 py-1 text-[11px] font-semibold transition ${
+                          isShiny
+                            ? "bg-amber-400 text-amber-900"
+                            : isCaught
+                              ? "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                              : "cursor-not-allowed bg-slate-100 text-slate-400"
+                        }`}
+                      >
+                        {isShiny ? "Shiny unlocked" : "Mark shiny"}
+                      </button>
+                    </div>
+                  ) : null}
                 </button>
               );
             })}
