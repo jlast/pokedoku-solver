@@ -22,6 +22,7 @@ Astro-based website for Pokedoku suggestions, statistics, tools, and tips.
 ## Rules
 - Use Tailwind utility classes; do not introduce custom CSS unless already established in that file or feature.
 - Do not add inline styles (for example, `style={...}` in JSX/TSX).
+- Use React components for dynamic/interactive frontend behavior; do not implement dynamic UI with plain JavaScript scripts.
 - Put reusable UI patterns in `astro/src/components`.
 - Keep pages and components lightweight and composable.
 - Preserve existing visual and structural patterns when modifying existing pages.

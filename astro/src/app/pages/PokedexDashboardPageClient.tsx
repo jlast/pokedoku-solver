@@ -7,6 +7,7 @@ import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognito
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { FILTER_CATEGORIES } from "../../../../lib/shared/filters";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
+import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
@@ -293,7 +294,7 @@ export function PokedexDashboardPageClient() {
           <div className="mt-3 space-y-2">
             {mostLeft.map((entry) => (
               <div key={`${entry.groupKey}:${entry.name}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
-                <p className="m-0 text-sm text-slate-700">{entry.groupLabel} - {entry.name}</p>
+                <CategoryBadgeLink parsed={{ raw: `${entry.groupKey}:${entry.name}`, type: entry.groupKey, label: entry.name }} href={null} />
                 <p className="m-0 text-sm font-semibold text-slate-900">{entry.remaining} left</p>
               </div>
             ))}
@@ -305,7 +306,7 @@ export function PokedexDashboardPageClient() {
           <div className="mt-3 space-y-2">
             {leastLeft.map((entry) => (
               <div key={`${entry.groupKey}:${entry.name}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
-                <p className="m-0 text-sm text-slate-700">{entry.groupLabel} - {entry.name}</p>
+                <CategoryBadgeLink parsed={{ raw: `${entry.groupKey}:${entry.name}`, type: entry.groupKey, label: entry.name }} href={null} />
                 <p className="m-0 text-sm font-semibold text-slate-900">{entry.remaining} left</p>
               </div>
             ))}
@@ -330,7 +331,7 @@ export function PokedexDashboardPageClient() {
                   return (
                     <div key={`${group.key}:${option.name}`} className="rounded-lg bg-white px-3 py-2">
                       <div className="flex items-center justify-between gap-2">
-                        <p className="m-0 text-sm text-slate-700">{option.name}</p>
+                        <CategoryBadgeLink parsed={{ raw: `${group.key}:${option.name}`, type: group.key, label: option.name }} href={null} />
                         <p className="m-0 text-xs font-semibold text-slate-600">{option.remaining} left / {option.total}</p>
                       </div>
                       <progress
