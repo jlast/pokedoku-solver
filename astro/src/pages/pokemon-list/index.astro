@@ -46,7 +46,7 @@ import { Footer } from "../../app/components/Footer";
     </div>
 
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <label class="flex items-center gap-1">
           <span class="text-[0.8rem] text-[#666]" aria-hidden="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -83,6 +83,11 @@ import { Footer } from "../../app/components/Footer";
             </span>
           </span>
         </label>
+        <div id="ownership-toggle" class="hidden items-center rounded-md border border-[var(--border)] bg-[var(--bg)] p-1" role="group" aria-label="Ownership filter">
+          <button id="ownership-all" type="button" class="rounded px-2 py-1 text-xs font-medium text-[var(--text)]">All</button>
+          <button id="ownership-unowned" type="button" class="rounded px-2 py-1 text-xs font-medium text-[var(--text)]">Unowned</button>
+          <button id="ownership-owned" type="button" class="rounded px-2 py-1 text-xs font-medium text-[var(--text)]">Owned</button>
+        </div>
       </div>
       <div class="text-sm text-[var(--text)]" id="results-count">0 of 0 Pokemon</div>
     </div>
@@ -128,6 +133,8 @@ import { Footer } from "../../app/components/Footer";
     import { FILTER_CATEGORIES, parseFiltersFromUrl, getActiveFilters, getFiltersForUrl, applyFilters } from "../../../../lib/shared/filters";
     import { DEX_DIFFICULTY_COLORS, TYPE_COLORS } from "../../../../lib/shared/constants";
     import { slugify } from "../../lib/slug";
+    import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
+    import { getRemoteUserDex } from "@pokedoku-helper/user-dex-client";
 
     const INITIAL_RENDER_COUNT = 120;
     const RENDER_BATCH_SIZE = 80;
@@ -138,6 +145,9 @@ import { Footer } from "../../app/components/Footer";
       pokemon: [],
       loading: true,
       sortBy: "number-asc",
+      ownershipFilter: "all",
+      ownedPokemonKeyIds: new Set(),
+      canUseOwnershipFilter: false,
       filters: Object.fromEntries(FILTER_CATEGORIES.map((cat) => [cat.key, []])),
       difficultyFilter: [],
       expandedFilters: new Set(),
@@ -165,7 +175,13 @@ import { Footer } from "../../app/components/Footer";
       drawerOverlay: document.getElementById("filter-drawer-overlay"),
       activeFilterCount: document.getElementById("active-filter-count"),
       loadMoreSentinel: document.getElementById("load-more-sentinel"),
+      ownershipToggle: document.getElementById("ownership-toggle"),
+      ownershipAll: document.getElementById("ownership-all"),
+      ownershipUnowned: document.getElementById("ownership-unowned"),
+      ownershipOwned: document.getElementById("ownership-owned"),
     };
+
+    const OWNERSHIP_OPTIONS = new Set(["all", "unowned", "owned"]);
 
     const trackEvent = (name, metadata) => {
       if (window.sa_loaded) window.sa_event(name, metadata);
@@ -197,7 +213,20 @@ import { Footer } from "../../app/components/Footer";
       if (state.difficultyFilter.length > 0) {
         result = result.filter((p) => p.dexDifficulty && state.difficultyFilter.includes(p.dexDifficulty));
       }
+      if (state.canUseOwnershipFilter && state.ownershipFilter !== "all") {
+        result = result.filter((p) => {
+          const keyId = p.formId ?? p.id;
+          const isOwned = state.ownedPokemonKeyIds.has(keyId);
+          return state.ownershipFilter === "owned" ? isOwned : !isOwned;
+        });
+      }
       return result;
+    };
+
+    const getUserDexApiBaseUrl = () => {
+      const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
+      if (!baseUrl || typeof baseUrl !== "string") return null;
+      return baseUrl;
     };
 
     const getSortedPokemon = () => {
@@ -265,6 +294,11 @@ import { Footer } from "../../app/components/Footer";
       params.delete("difficulty");
       state.difficultyFilter.forEach((value) => params.append("difficulty", value));
       params.set("sortBy", state.sortBy);
+      if (state.canUseOwnershipFilter && state.ownershipFilter !== "all") {
+        params.set("ownership", state.ownershipFilter);
+      } else {
+        params.delete("ownership");
+      }
 
       const newUrl = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
       window.history.replaceState({}, "", newUrl);
@@ -468,6 +502,28 @@ import { Footer } from "../../app/components/Footer";
       els.searchInput.value = state.searchQuery;
       els.searchInputDrawer.value = state.searchQuery;
       els.sortSelect.value = state.sortBy;
+
+      if (state.canUseOwnershipFilter) {
+        els.ownershipToggle.classList.remove("hidden");
+        els.ownershipToggle.classList.add("inline-flex");
+      } else {
+        els.ownershipToggle.classList.add("hidden");
+        els.ownershipToggle.classList.remove("inline-flex");
+      }
+
+      const toggleStyles = {
+        active: ["bg-slate-900", "text-white"],
+        inactive: ["text-[var(--text)]", "hover:bg-slate-100"],
+      };
+
+      [els.ownershipAll, els.ownershipUnowned, els.ownershipOwned].forEach((button) => {
+        button.classList.remove(...toggleStyles.active, ...toggleStyles.inactive);
+        const selected =
+          (button === els.ownershipAll && state.ownershipFilter === "all") ||
+          (button === els.ownershipUnowned && state.ownershipFilter === "unowned") ||
+          (button === els.ownershipOwned && state.ownershipFilter === "owned");
+        button.classList.add(...(selected ? toggleStyles.active : toggleStyles.inactive));
+      });
     };
 
     const applyAndRender = () => {
@@ -538,9 +594,11 @@ import { Footer } from "../../app/components/Footer";
       state.searchQuery = params.get("search") ?? "";
       state.difficultyFilter = params.getAll("difficulty");
       const sortParam = params.get("sortBy");
+      const ownershipParam = params.get("ownership");
       const savedSort = localStorage.getItem("pokedoku-sort");
       const candidate = sortParam || savedSort || "number-asc";
       state.sortBy = SORT_OPTIONS.has(candidate) ? candidate : "number-asc";
+      state.ownershipFilter = OWNERSHIP_OPTIONS.has(ownershipParam ?? "") ? ownershipParam : "all";
     };
 
     const bindEvents = () => {
@@ -575,12 +633,54 @@ import { Footer } from "../../app/components/Footer";
       els.drawerOverlay.addEventListener("click", () => setDrawerVisible(false));
       els.clearFilters.addEventListener("click", clearFilters);
       els.clearFiltersDrawer.addEventListener("click", clearFilters);
+      els.ownershipAll.addEventListener("click", () => {
+        state.ownershipFilter = "all";
+        state.visibleCount = INITIAL_RENDER_COUNT;
+        applyAndRender();
+      });
+      els.ownershipUnowned.addEventListener("click", () => {
+        state.ownershipFilter = "unowned";
+        state.visibleCount = INITIAL_RENDER_COUNT;
+        applyAndRender();
+      });
+      els.ownershipOwned.addEventListener("click", () => {
+        state.ownershipFilter = "owned";
+        state.visibleCount = INITIAL_RENDER_COUNT;
+        applyAndRender();
+      });
+    };
+
+    const loadOwnedPokemon = async () => {
+      const profile = getSessionUserProfile();
+      if (!profile) {
+        state.canUseOwnershipFilter = false;
+        state.ownershipFilter = "all";
+        return;
+      }
+
+      const token = await getValidSessionIdToken();
+      const apiBaseUrl = getUserDexApiBaseUrl();
+      if (!token || !apiBaseUrl) {
+        state.canUseOwnershipFilter = false;
+        state.ownershipFilter = "all";
+        return;
+      }
+
+      try {
+        const remoteUserDex = await getRemoteUserDex({ token, apiBaseUrl });
+        state.ownedPokemonKeyIds = new Set(remoteUserDex?.caughtPokemonKeyIds ?? []);
+        state.canUseOwnershipFilter = true;
+      } catch {
+        state.canUseOwnershipFilter = false;
+        state.ownershipFilter = "all";
+      }
     };
 
     const init = async () => {
       initFromUrl();
       bindEvents();
       setupLoadMoreObserver();
+      await loadOwnedPokemon();
 
       try {
         const pokemonRes = await fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`);

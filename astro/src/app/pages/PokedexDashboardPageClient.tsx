@@ -23,6 +23,13 @@ function getProgressColorClass(completionPercent: number): string {
   return "[&::-webkit-progress-value]:bg-rose-500 [&::-moz-progress-bar]:bg-rose-500";
 }
 
+function getCategoryHref(groupKey: string, optionName: string): string {
+  const params = new URLSearchParams();
+  params.set(groupKey, optionName);
+  params.set("ownership", "unowned");
+  return `${import.meta.env.BASE_URL}pokemon-list/?${params.toString()}`;
+}
+
 export function PokedexDashboardPageClient() {
   const profile = typeof window === "undefined" ? null : getSessionUserProfile();
   const userLabel = profile?.label ?? null;
@@ -294,7 +301,10 @@ export function PokedexDashboardPageClient() {
           <div className="mt-3 space-y-2">
             {mostLeft.map((entry) => (
               <div key={`${entry.groupKey}:${entry.name}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
-                <CategoryBadgeLink parsed={{ raw: `${entry.groupKey}:${entry.name}`, type: entry.groupKey, label: entry.name }} href={null} />
+                <CategoryBadgeLink
+                  parsed={{ raw: `${entry.groupKey}:${entry.name}`, type: entry.groupKey, label: entry.name }}
+                  href={getCategoryHref(entry.groupKey, entry.name)}
+                />
                 <p className="m-0 text-sm font-semibold text-slate-900">{entry.remaining} left</p>
               </div>
             ))}
@@ -306,7 +316,10 @@ export function PokedexDashboardPageClient() {
           <div className="mt-3 space-y-2">
             {leastLeft.map((entry) => (
               <div key={`${entry.groupKey}:${entry.name}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
-                <CategoryBadgeLink parsed={{ raw: `${entry.groupKey}:${entry.name}`, type: entry.groupKey, label: entry.name }} href={null} />
+                <CategoryBadgeLink
+                  parsed={{ raw: `${entry.groupKey}:${entry.name}`, type: entry.groupKey, label: entry.name }}
+                  href={getCategoryHref(entry.groupKey, entry.name)}
+                />
                 <p className="m-0 text-sm font-semibold text-slate-900">{entry.remaining} left</p>
               </div>
             ))}
@@ -331,7 +344,10 @@ export function PokedexDashboardPageClient() {
                   return (
                     <div key={`${group.key}:${option.name}`} className="rounded-lg bg-white px-3 py-2">
                       <div className="flex items-center justify-between gap-2">
-                        <CategoryBadgeLink parsed={{ raw: `${group.key}:${option.name}`, type: group.key, label: option.name }} href={null} />
+                        <CategoryBadgeLink
+                          parsed={{ raw: `${group.key}:${option.name}`, type: group.key, label: option.name }}
+                          href={getCategoryHref(group.key, option.name)}
+                        />
                         <p className="m-0 text-xs font-semibold text-slate-600">{option.remaining} left / {option.total}</p>
                       </div>
                       <progress
