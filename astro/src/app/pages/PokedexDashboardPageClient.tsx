@@ -3,7 +3,7 @@ import type { ChangeEvent } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 import { getRemoteUserDex, patchRemoteUserDex } from "@pokedoku-helper/user-dex-client";
-import { getSessionIdToken, getSessionUserProfile } from "../../lib/cognitoAuth";
+import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { FILTER_CATEGORIES } from "../../../../lib/shared/filters";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
@@ -48,7 +48,7 @@ export function PokedexDashboardPageClient() {
           setPokemon(Array.isArray(pokemonData) ? pokemonData : []);
         }
 
-        const token = getSessionIdToken();
+        const token = await getValidSessionIdToken();
         const apiBaseUrl = getApiBaseUrl();
         if (!token || !apiBaseUrl) {
           if (!isCancelled) {
@@ -130,7 +130,7 @@ export function PokedexDashboardPageClient() {
       setHasPokedexData(targetPrestigeLevelIndex > 0 || importedCaught.size > 0 || importedShiny.size > 0);
       setImportStatus(`${source === "file" ? "Uploaded" : "Imported"} ${importedCaught.size} unlocked Pokemon and ${importedShiny.size} shinies.`);
 
-      const token = getSessionIdToken();
+      const token = await getValidSessionIdToken();
       const apiBaseUrl = getApiBaseUrl();
       if (!token || !apiBaseUrl) return;
 

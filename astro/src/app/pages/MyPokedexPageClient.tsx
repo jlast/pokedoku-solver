@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
-import { getSessionIdToken, getSessionUserProfile } from "../../lib/cognitoAuth";
+import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 import {
@@ -87,7 +87,7 @@ export function MyPokedexPageClient() {
         }
       }
 
-      const token = getSessionIdToken();
+      const token = await getValidSessionIdToken();
       const apiBaseUrl = getApiBaseUrl();
       if (!token || !apiBaseUrl) {
         if (!isCancelled) {
@@ -176,19 +176,21 @@ export function MyPokedexPageClient() {
 
     setSelectedPrestigeLevelId(nextPrestigeLevel.id);
 
-    const token = getSessionIdToken();
-    const apiBaseUrl = getApiBaseUrl();
-    if (token && apiBaseUrl) {
-      void patchRemoteUserDex({
-        token,
-        apiBaseUrl,
-        payload: {
-        caughtPokemonKeyIds: [],
-        shinyPokemonKeyIds: [],
-        unlockedPrestigeLevelIndex: nextIndex,
-        },
-      });
-    }
+    void (async () => {
+      const token = await getValidSessionIdToken();
+      const apiBaseUrl = getApiBaseUrl();
+      if (token && apiBaseUrl) {
+        await patchRemoteUserDex({
+          token,
+          apiBaseUrl,
+          payload: {
+            caughtPokemonKeyIds: [],
+            shinyPokemonKeyIds: [],
+            unlockedPrestigeLevelIndex: nextIndex,
+          },
+        });
+      }
+    })();
   }
 
   async function applyImportedPokedexJson(rawJsonText: string, source: "paste" | "file") {
@@ -232,7 +234,7 @@ export function MyPokedexPageClient() {
         `${source === "file" ? "Uploaded" : "Imported"} ${importedCaught.size} unlocked Pokemon and ${importedShiny.size} shinies.`,
       );
 
-      const token = getSessionIdToken();
+      const token = await getValidSessionIdToken();
       const apiBaseUrl = getApiBaseUrl();
       if (!token || !apiBaseUrl) return;
 
@@ -284,7 +286,7 @@ export function MyPokedexPageClient() {
     setCaughtSet(nextSet);
     setShinySet(nextShinySet);
 
-    const token = getSessionIdToken();
+    const token = await getValidSessionIdToken();
     const apiBaseUrl = getApiBaseUrl();
     if (!token || !apiBaseUrl) return;
 
@@ -312,19 +314,21 @@ export function MyPokedexPageClient() {
 
     setShinySet(nextSet);
 
-    const token = getSessionIdToken();
-    const apiBaseUrl = getApiBaseUrl();
-    if (!token || !apiBaseUrl) return;
+    void (async () => {
+      const token = await getValidSessionIdToken();
+      const apiBaseUrl = getApiBaseUrl();
+      if (!token || !apiBaseUrl) return;
 
-    void patchRemoteUserDex({
-      token,
-      apiBaseUrl,
-      payload: {
-      caughtPokemonKeyIds: Array.from(caughtSet).sort((a, b) => a - b),
-      shinyPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
-      unlockedPrestigeLevelIndex,
-      },
-    });
+      await patchRemoteUserDex({
+        token,
+        apiBaseUrl,
+        payload: {
+          caughtPokemonKeyIds: Array.from(caughtSet).sort((a, b) => a - b),
+          shinyPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
+          unlockedPrestigeLevelIndex,
+        },
+      });
+    })();
   }
 
   if (!userLabel) {

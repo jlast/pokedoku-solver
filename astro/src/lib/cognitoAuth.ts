@@ -1,9 +1,13 @@
 const TOKEN_KEY = "cognito_id_token";
+const ACCESS_TOKEN_KEY = "cognito_access_token";
+const REFRESH_TOKEN_KEY = "cognito_refresh_token";
 const EXPIRES_AT_KEY = "cognito_token_expires_at";
 const STATE_KEY = "cognito_oauth_state";
 const PKCE_VERIFIER_KEY = "cognito_pkce_verifier";
 
 type ProviderName = "Google";
+const REFRESH_BUFFER_MS = 60 * 1000;
+let refreshInFlight: Promise<string | null> | null = null;
 
 function getRequiredEnv(name: keyof ImportMetaEnv): string {
   const value = import.meta.env[name];
@@ -105,7 +109,6 @@ export async function buildLoginUrl(provider: ProviderName): Promise<string> {
 
   localStorage.setItem(STATE_KEY, state);
   localStorage.setItem(PKCE_VERIFIER_KEY, verifier);
-  console.log("PKCE verifier:", verifier);
 
   const params = new URLSearchParams({
     client_id: getRequiredEnv("PUBLIC_COGNITO_CLIENT_ID"),
@@ -132,9 +135,31 @@ export function buildLogoutUrl(): string {
 
 export function clearSession(): void {
   localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(EXPIRES_AT_KEY);
   localStorage.removeItem(STATE_KEY);
   localStorage.removeItem(PKCE_VERIFIER_KEY);
+}
+
+function persistSessionTokens(tokens: {
+  idToken: string;
+  accessToken?: string;
+  refreshToken?: string;
+  expiresIn: number;
+}): void {
+  localStorage.setItem(TOKEN_KEY, tokens.idToken);
+  if (tokens.accessToken) {
+    localStorage.setItem(ACCESS_TOKEN_KEY, tokens.accessToken);
+  }
+  if (tokens.refreshToken) {
+    localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
+  }
+  localStorage.setItem(EXPIRES_AT_KEY, String(Date.now() + tokens.expiresIn * 1000));
+}
+
+function isTokenFresh(expiresAt: number, bufferMs = 0): boolean {
+  return Number.isFinite(expiresAt) && Date.now() + bufferMs < expiresAt;
 }
 
 function finishLoginFromHash(hash: string): boolean {
@@ -188,7 +213,12 @@ async function finishLoginFromCode(code: string, state: string): Promise<boolean
     return false;
   }
 
-  const data = (await response.json()) as { id_token?: string; expires_in?: number };
+  const data = (await response.json()) as {
+    id_token?: string;
+    access_token?: string;
+    refresh_token?: string;
+    expires_in?: number;
+  };
   const idToken = data.id_token;
   const expiresIn = Number(data.expires_in || 0);
 
@@ -198,9 +228,77 @@ async function finishLoginFromCode(code: string, state: string): Promise<boolean
 
   localStorage.removeItem(STATE_KEY);
   localStorage.removeItem(PKCE_VERIFIER_KEY);
-  localStorage.setItem(TOKEN_KEY, idToken);
-  localStorage.setItem(EXPIRES_AT_KEY, String(Date.now() + expiresIn * 1000));
+  persistSessionTokens({
+    idToken,
+    accessToken: data.access_token,
+    refreshToken: data.refresh_token,
+    expiresIn,
+  });
   return true;
+}
+
+async function refreshSessionToken(): Promise<string | null> {
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+  if (!refreshToken) {
+    clearSession();
+    return null;
+  }
+
+  const tokenUrl = `${getDomainUrl()}/oauth2/token`;
+  const body = new URLSearchParams({
+    grant_type: "refresh_token",
+    client_id: getRequiredEnv("PUBLIC_COGNITO_CLIENT_ID"),
+    refresh_token: refreshToken,
+  });
+
+  try {
+    const response = await fetch(tokenUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body,
+    });
+
+    if (!response.ok) {
+      clearSession();
+      return null;
+    }
+
+    const data = (await response.json()) as {
+      id_token?: string;
+      access_token?: string;
+      refresh_token?: string;
+      expires_in?: number;
+    };
+    const idToken = data.id_token;
+    const expiresIn = Number(data.expires_in || 0);
+
+    if (!idToken || !Number.isFinite(expiresIn) || expiresIn <= 0) {
+      clearSession();
+      return null;
+    }
+
+    persistSessionTokens({
+      idToken,
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token ?? refreshToken,
+      expiresIn,
+    });
+    return idToken;
+  } catch {
+    clearSession();
+    return null;
+  }
+}
+
+async function refreshSessionTokenSingleFlight(): Promise<string | null> {
+  if (!refreshInFlight) {
+    refreshInFlight = refreshSessionToken().finally(() => {
+      refreshInFlight = null;
+    });
+  }
+  return refreshInFlight;
 }
 
 export async function finishLoginFromCallback(url: URL): Promise<boolean> {
@@ -222,13 +320,33 @@ export async function finishLoginFromCallback(url: URL): Promise<boolean> {
 export function getSessionIdToken(): string | null {
   const idToken = localStorage.getItem(TOKEN_KEY);
   const expiresAt = Number(localStorage.getItem(EXPIRES_AT_KEY) || "0");
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
 
-  if (!idToken || !Number.isFinite(expiresAt) || Date.now() >= expiresAt) {
-    clearSession();
+  if (!idToken) {
+    return null;
+  }
+
+  if (!isTokenFresh(expiresAt) && !refreshToken) {
     return null;
   }
 
   return idToken;
+}
+
+export async function getValidSessionIdToken(): Promise<string | null> {
+  const idToken = localStorage.getItem(TOKEN_KEY);
+  const expiresAt = Number(localStorage.getItem(EXPIRES_AT_KEY) || "0");
+
+  if (idToken && isTokenFresh(expiresAt, REFRESH_BUFFER_MS)) {
+    return idToken;
+  }
+
+  return refreshSessionTokenSingleFlight();
+}
+
+export async function refreshSessionIfNeeded(): Promise<boolean> {
+  const token = await getValidSessionIdToken();
+  return Boolean(token);
 }
 
 export function getSessionUserLabel(): string | null {

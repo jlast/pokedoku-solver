@@ -11,7 +11,7 @@ import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
 import { ActionButton, ActionLink } from "../components/shared/ActionButton";
 import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { slugify } from "../../lib/slug";
-import { getSessionIdToken, getSessionUserProfile } from "../../lib/cognitoAuth";
+import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import {
   getRemoteUserDex,
   patchRemoteUserDex,
@@ -173,17 +173,18 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     if (!isLoggedIn) return;
 
     let isCancelled = false;
-    const token = getSessionIdToken();
-    const apiBaseUrl = getApiBaseUrl();
-    if (!token || !apiBaseUrl) return;
+    void (async () => {
+      const token = await getValidSessionIdToken();
+      const apiBaseUrl = getApiBaseUrl();
+      if (!token || !apiBaseUrl) return;
 
-    void getRemoteUserDex({ token, apiBaseUrl })
-      .then((userDex) => {
+      try {
+        const userDex = await getRemoteUserDex({ token, apiBaseUrl });
         if (!userDex || isCancelled) return;
         setCaughtSet(new Set(userDex.caughtPokemonKeyIds));
         setRemoteUserDex(userDex);
-      })
-      .catch(() => {});
+      } catch {}
+    })();
 
     return () => {
       isCancelled = true;
@@ -272,7 +273,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     if (completedIds.length === 0) return;
     if (!remoteUserDex) return;
 
-    const token = getSessionIdToken();
+    const token = await getValidSessionIdToken();
     const apiBaseUrl = getApiBaseUrl();
     if (!token || !apiBaseUrl) return;
 

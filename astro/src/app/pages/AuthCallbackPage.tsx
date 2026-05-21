@@ -15,7 +15,7 @@ export function AuthCallbackPage() {
       const ok = await finishLoginFromCallback(new URL(window.location.href));
       setStatus(ok ? "success" : "error");
 
-      const destination = import.meta.env.BASE_URL || "/";
+      const destination = `${import.meta.env.BASE_URL || "/"}user/`;
       window.setTimeout(() => {
         window.location.replace(destination);
       }, ok ? 250 : 1200);
