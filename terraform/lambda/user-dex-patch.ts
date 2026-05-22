@@ -11,6 +11,9 @@ import {
   logInfo,
   ok,
   requestMeta,
+} from './public-api-shared';
+import {
+  validateUserDexTableConfigured,
   validateUserDexPayload,
   writeUserDex,
 } from './user-dex-shared';
@@ -26,6 +29,11 @@ export async function handler(
     if ('statusCode' in authResult) {
       logInfo('user_dex_patch_auth_failed', meta);
       return authResult;
+    }
+
+    if (!validateUserDexTableConfigured()) {
+      logError('user_dex_patch_misconfigured', meta);
+      return internalError(event);
     }
 
     const payload = validateUserDexPayload(event.body);

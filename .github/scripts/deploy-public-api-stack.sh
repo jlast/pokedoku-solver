@@ -26,7 +26,9 @@ for required_var in \
   COGNITO_USER_POOL_ID \
   COGNITO_CLIENT_ID \
   USER_DEX_GET_LAMBDA_CHANGED \
-  USER_DEX_PATCH_LAMBDA_CHANGED
+  USER_DEX_PATCH_LAMBDA_CHANGED \
+  SETTINGS_GET_LAMBDA_CHANGED \
+  SETTINGS_PATCH_LAMBDA_CHANGED
 do
   require_var "${required_var}"
 done
@@ -127,6 +129,22 @@ else
   CURRENT_USER_DEX_PATCH_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='UserDexPatchCodeS3Key'].ParameterValue" --output text)
 fi
 
+if [ "${SETTINGS_GET_LAMBDA_CHANGED}" = "true" ]; then
+  CURRENT_SETTINGS_GET_KEY="${SETTINGS_GET_LAMBDA_KEY}"
+  require_var SETTINGS_GET_LAMBDA_KEY
+  aws s3api head-object --bucket "${S3_BUCKET_NAME}" --key "${CURRENT_SETTINGS_GET_KEY}" >/dev/null
+else
+  CURRENT_SETTINGS_GET_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='SettingsGetCodeS3Key'].ParameterValue" --output text)
+fi
+
+if [ "${SETTINGS_PATCH_LAMBDA_CHANGED}" = "true" ]; then
+  CURRENT_SETTINGS_PATCH_KEY="${SETTINGS_PATCH_LAMBDA_KEY}"
+  require_var SETTINGS_PATCH_LAMBDA_KEY
+  aws s3api head-object --bucket "${S3_BUCKET_NAME}" --key "${CURRENT_SETTINGS_PATCH_KEY}" >/dev/null
+else
+  CURRENT_SETTINGS_PATCH_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='SettingsPatchCodeS3Key'].ParameterValue" --output text)
+fi
+
 echo "Deploying public API stack ${STACK_NAME} for commit ${GITHUB_SHA}"
 aws cloudformation deploy \
   --template-file terraform/user-dex-api-stack.yaml \
@@ -141,6 +159,10 @@ aws cloudformation deploy \
     UserDexGetCodeS3Key="${CURRENT_USER_DEX_GET_KEY}" \
     UserDexPatchCodeS3Bucket="${S3_BUCKET_NAME}" \
     UserDexPatchCodeS3Key="${CURRENT_USER_DEX_PATCH_KEY}" \
+    SettingsGetCodeS3Bucket="${S3_BUCKET_NAME}" \
+    SettingsGetCodeS3Key="${CURRENT_SETTINGS_GET_KEY}" \
+    SettingsPatchCodeS3Bucket="${S3_BUCKET_NAME}" \
+    SettingsPatchCodeS3Key="${CURRENT_SETTINGS_PATCH_KEY}" \
     AllowedOrigins="${ALLOWED_ORIGINS}" \
     CognitoRegion="${COGNITO_REGION}" \
     CognitoUserPoolId="${COGNITO_USER_POOL_ID}" \

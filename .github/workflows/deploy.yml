@@ -46,6 +46,8 @@ jobs:
       stats_stack_changed: ${{ steps.changes.outputs.stats_stack_changed }}
       user_dex_get_lambda_changed: ${{ steps.changes.outputs.user_dex_get_lambda_changed }}
       user_dex_patch_lambda_changed: ${{ steps.changes.outputs.user_dex_patch_lambda_changed }}
+      settings_get_lambda_changed: ${{ steps.changes.outputs.settings_get_lambda_changed }}
+      settings_patch_lambda_changed: ${{ steps.changes.outputs.settings_patch_lambda_changed }}
       user_dex_stack_changed: ${{ steps.changes.outputs.user_dex_stack_changed }}
       pokedoku_details_changed: ${{ steps.changes.outputs.pokedoku_details_changed }}
     steps:
@@ -115,6 +117,8 @@ jobs:
     with:
       user_dex_get_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.user_dex_get_lambda_changed == 'true') && 'true' || 'false' }}
       user_dex_patch_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.user_dex_patch_lambda_changed == 'true') && 'true' || 'false' }}
+      settings_get_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.settings_get_lambda_changed == 'true') && 'true' || 'false' }}
+      settings_patch_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.settings_patch_lambda_changed == 'true') && 'true' || 'false' }}
       user_dex_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.user_dex_stack_changed == 'true') && 'true' || 'false' }}
 
   pokedoku-details-publish:

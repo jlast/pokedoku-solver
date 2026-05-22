@@ -7,7 +7,7 @@ import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 import {
   getRemoteUserDex,
   patchRemoteUserDex,
-} from "@pokedoku-helper/user-dex-client";
+} from "@pokedoku-helper/user-api-client";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 
 function getPrestigeToneClass(tone: string): string {

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
-import { getRemoteUserDex, patchRemoteUserDex } from "@pokedoku-helper/user-dex-client";
+import { getRemoteUserDex, patchRemoteUserDex } from "@pokedoku-helper/user-api-client";
 import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { FILTER_CATEGORIES } from "../../../../lib/shared/filters";

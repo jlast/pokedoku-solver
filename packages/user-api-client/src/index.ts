@@ -4,13 +4,19 @@ export type UserDexPayload = {
   unlockedPrestigeLevelIndex: number;
 };
 
+export type SettingsPayload = {
+  preventSpoilerMode: boolean;
+  myPokedexFilter: boolean;
+  displayName: string;
+};
+
 function normalizeApiBaseUrl(apiBaseUrl: string): string {
   return apiBaseUrl.replace(/\/+$/, '');
 }
 
 export function parseUserDexFromApi(
   data: unknown,
-  maxPrestigeLevelIndex = Number.POSITIVE_INFINITY,
+  maxPrestigeLevelIndex = Number.POSITIVE_INFINITY
 ): UserDexPayload | null {
   if (!data || typeof data !== 'object') return null;
   const payload = data as {
@@ -77,4 +83,65 @@ export async function patchRemoteUserDex({
   });
 
   return response.ok;
+}
+
+export function parseSettingsFromApi(data: unknown): SettingsPayload | null {
+  if (!data || typeof data !== 'object') return null;
+  const payload = data as {
+    preventSpoilerMode?: unknown;
+    myPokedexFilter?: unknown;
+    displayName?: unknown;
+  };
+
+  if (typeof payload.preventSpoilerMode !== 'boolean') return null;
+  if (typeof payload.myPokedexFilter !== 'boolean') return null;
+  if (typeof payload.displayName !== 'string') return null;
+
+  return {
+    preventSpoilerMode: payload.preventSpoilerMode,
+    myPokedexFilter: payload.myPokedexFilter,
+    displayName: payload.displayName,
+  };
+}
+
+export async function getRemoteSettings({
+  token,
+  apiBaseUrl,
+}: {
+  token: string;
+  apiBaseUrl: string;
+}): Promise<SettingsPayload | null> {
+  const response = await fetch(`${normalizeApiBaseUrl(apiBaseUrl)}/settings`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) return null;
+  const data = (await response.json()) as unknown;
+  return parseSettingsFromApi(data);
+}
+
+export async function patchRemoteSettings({
+  token,
+  apiBaseUrl,
+  patch,
+}: {
+  token: string;
+  apiBaseUrl: string;
+  patch: Partial<SettingsPayload>;
+}): Promise<SettingsPayload | null> {
+  const response = await fetch(`${normalizeApiBaseUrl(apiBaseUrl)}/settings`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(patch),
+  });
+
+  if (!response.ok) return null;
+  const data = (await response.json()) as unknown;
+  return parseSettingsFromApi(data);
 }

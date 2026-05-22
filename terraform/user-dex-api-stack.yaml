@@ -36,6 +36,22 @@ Parameters:
     Type: String
     Description: "S3 key for user-dex-patch Lambda zip"
 
+  SettingsGetCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing settings-get Lambda zip"
+
+  SettingsGetCodeS3Key:
+    Type: String
+    Description: "S3 key for settings-get Lambda zip"
+
+  SettingsPatchCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing settings-patch Lambda zip"
+
+  SettingsPatchCodeS3Key:
+    Type: String
+    Description: "S3 key for settings-patch Lambda zip"
+
   AllowedOrigins:
     Type: String
     Default: "https://www.pokedoku-helper.com,http://localhost:4321,http://127.0.0.1:4321"
@@ -66,6 +82,18 @@ Resources:
         - AttributeName: userId
           KeyType: HASH
 
+  UserSettingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: UserSettings
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+
   UserDexLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -88,7 +116,9 @@ Resources:
                   - dynamodb:GetItem
                   - dynamodb:PutItem
                   - dynamodb:UpdateItem
-                Resource: !GetAtt UserDexProfilesTable.Arn
+                Resource:
+                  - !GetAtt UserDexProfilesTable.Arn
+                  - !GetAtt UserSettingsTable.Arn
 
   UserDexGetFunction:
     Type: AWS::Lambda::Function
@@ -128,6 +158,46 @@ Resources:
         S3Bucket: !Ref UserDexPatchCodeS3Bucket
         S3Key: !Ref UserDexPatchCodeS3Key
 
+  SettingsGetFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: settings-get.handler
+      Role: !GetAtt UserDexLambdaRole.Arn
+      Timeout: 15
+      MemorySize: 256
+      Environment:
+        Variables:
+          USER_DEX_TABLE_NAME: !Ref UserDexProfilesTable
+          SETTINGS_TABLE_NAME: !Ref UserSettingsTable
+          COGNITO_REGION: !Ref CognitoRegion
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+          ALLOWED_ORIGINS: !Ref AllowedOrigins
+      Code:
+        S3Bucket: !Ref SettingsGetCodeS3Bucket
+        S3Key: !Ref SettingsGetCodeS3Key
+
+  SettingsPatchFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: settings-patch.handler
+      Role: !GetAtt UserDexLambdaRole.Arn
+      Timeout: 15
+      MemorySize: 256
+      Environment:
+        Variables:
+          USER_DEX_TABLE_NAME: !Ref UserDexProfilesTable
+          SETTINGS_TABLE_NAME: !Ref UserSettingsTable
+          COGNITO_REGION: !Ref CognitoRegion
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+          ALLOWED_ORIGINS: !Ref AllowedOrigins
+      Code:
+        S3Bucket: !Ref SettingsPatchCodeS3Bucket
+        S3Key: !Ref SettingsPatchCodeS3Key
+
   UserDexApi:
     Type: AWS::ApiGatewayV2::Api
     Properties:
@@ -159,6 +229,22 @@ Resources:
       IntegrationUri: !GetAtt UserDexPatchFunction.Arn
       PayloadFormatVersion: "2.0"
 
+  SettingsGetIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UserDexApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt SettingsGetFunction.Arn
+      PayloadFormatVersion: "2.0"
+
+  SettingsPatchIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UserDexApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt SettingsPatchFunction.Arn
+      PayloadFormatVersion: "2.0"
+
   UserDexGetRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -172,6 +258,20 @@ Resources:
       ApiId: !Ref UserDexApi
       RouteKey: "PATCH /user-dex"
       Target: !Sub "integrations/${UserDexPatchIntegration}"
+
+  SettingsGetRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UserDexApi
+      RouteKey: "GET /settings"
+      Target: !Sub "integrations/${SettingsGetIntegration}"
+
+  SettingsPatchRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UserDexApi
+      RouteKey: "PATCH /settings"
+      Target: !Sub "integrations/${SettingsPatchIntegration}"
 
   UserDexApiStage:
     Type: AWS::ApiGatewayV2::Stage
@@ -195,6 +295,22 @@ Resources:
       FunctionName: !Ref UserDexPatchFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${UserDexApi}/*/*/user-dex"
+
+  SettingsGetPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref SettingsGetFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${UserDexApi}/*/*/settings"
+
+  SettingsPatchPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref SettingsPatchFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${UserDexApi}/*/*/settings"
 
   UserDexApiDomainName:
     Type: AWS::ApiGatewayV2::DomainName
@@ -238,3 +354,7 @@ Outputs:
   UserDexProfilesTableName:
     Description: User Dex DynamoDB table name
     Value: !Ref UserDexProfilesTable
+
+  UserSettingsTableName:
+    Description: User Settings DynamoDB table name
+    Value: !Ref UserSettingsTable

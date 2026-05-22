@@ -16,7 +16,7 @@ import {
   getRemoteUserDex,
   patchRemoteUserDex,
   type UserDexPayload,
-} from "@pokedoku-helper/user-dex-client";
+} from "@pokedoku-helper/user-api-client";
 
 export interface TodayPuzzle {
   date: string;

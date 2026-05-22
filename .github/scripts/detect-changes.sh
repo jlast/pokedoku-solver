@@ -26,7 +26,7 @@ CHANGED_FILES_LIST_FILE=$(mktemp)
 printf '%s\n' "${CHANGED_FILES}" > "${CHANGED_FILES_LIST_FILE}"
 
 cleanup() {
-  rm -f "${CHANGED_FILES_LIST_FILE}" "${DAILY_META_FILE:-}" "${STATS_META_FILE:-}" "${USER_DEX_GET_META_FILE:-}" "${USER_DEX_PATCH_META_FILE:-}" "${DAILY_BUNDLE_FILE:-}" "${STATS_BUNDLE_FILE:-}" "${USER_DEX_GET_BUNDLE_FILE:-}" "${USER_DEX_PATCH_BUNDLE_FILE:-}"
+  rm -f "${CHANGED_FILES_LIST_FILE}" "${DAILY_META_FILE:-}" "${STATS_META_FILE:-}" "${USER_DEX_GET_META_FILE:-}" "${USER_DEX_PATCH_META_FILE:-}" "${SETTINGS_GET_META_FILE:-}" "${SETTINGS_PATCH_META_FILE:-}" "${DAILY_BUNDLE_FILE:-}" "${STATS_BUNDLE_FILE:-}" "${USER_DEX_GET_BUNDLE_FILE:-}" "${USER_DEX_PATCH_BUNDLE_FILE:-}" "${SETTINGS_GET_BUNDLE_FILE:-}" "${SETTINGS_PATCH_BUNDLE_FILE:-}"
 }
 trap cleanup EXIT
 
@@ -49,6 +49,8 @@ daily_stack_changed=false
 stats_stack_changed=false
 user_dex_get_lambda_changed=false
 user_dex_patch_lambda_changed=false
+settings_get_lambda_changed=false
+settings_patch_lambda_changed=false
 user_dex_stack_changed=false
 pokedoku_details_changed=false
 
@@ -73,25 +75,35 @@ if changed_in_paths '^package.json$' '^pnpm-lock.yaml$' '^package-lock.json$'; t
   stats_lambda_changed=true
   user_dex_get_lambda_changed=true
   user_dex_patch_lambda_changed=true
+  settings_get_lambda_changed=true
+  settings_patch_lambda_changed=true
 elif ! changed_in_paths '^terraform/lambda/' '^lib/shared/' '^scripts/' '^packages/shared-types/' '^tsconfig' '^package.json$'; then
   daily_lambda_changed=false
   stats_lambda_changed=false
   user_dex_get_lambda_changed=false
   user_dex_patch_lambda_changed=false
+  settings_get_lambda_changed=false
+  settings_patch_lambda_changed=false
 else
   DAILY_META_FILE=$(mktemp)
   STATS_META_FILE=$(mktemp)
   USER_DEX_GET_META_FILE=$(mktemp)
   USER_DEX_PATCH_META_FILE=$(mktemp)
+  SETTINGS_GET_META_FILE=$(mktemp)
+  SETTINGS_PATCH_META_FILE=$(mktemp)
   DAILY_BUNDLE_FILE=$(mktemp)
   STATS_BUNDLE_FILE=$(mktemp)
   USER_DEX_GET_BUNDLE_FILE=$(mktemp)
   USER_DEX_PATCH_BUNDLE_FILE=$(mktemp)
+  SETTINGS_GET_BUNDLE_FILE=$(mktemp)
+  SETTINGS_PATCH_BUNDLE_FILE=$(mktemp)
 
   npx esbuild terraform/lambda/daily-puzzle-fetcher.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile="${DAILY_BUNDLE_FILE}" --metafile="${DAILY_META_FILE}" --log-level=error >/dev/null
   npx esbuild terraform/lambda/puzzle-statistics.ts --bundle --platform=node --target=node20 --format=cjs --external:@aws-sdk/* --outfile="${STATS_BUNDLE_FILE}" --metafile="${STATS_META_FILE}" --log-level=error >/dev/null
   npx esbuild terraform/lambda/user-dex-get.ts --bundle --platform=node --target=node20 --format=cjs --outfile="${USER_DEX_GET_BUNDLE_FILE}" --metafile="${USER_DEX_GET_META_FILE}" --log-level=error >/dev/null
   npx esbuild terraform/lambda/user-dex-patch.ts --bundle --platform=node --target=node20 --format=cjs --outfile="${USER_DEX_PATCH_BUNDLE_FILE}" --metafile="${USER_DEX_PATCH_META_FILE}" --log-level=error >/dev/null
+  npx esbuild terraform/lambda/settings-get.ts --bundle --platform=node --target=node20 --format=cjs --outfile="${SETTINGS_GET_BUNDLE_FILE}" --metafile="${SETTINGS_GET_META_FILE}" --log-level=error >/dev/null
+  npx esbuild terraform/lambda/settings-patch.ts --bundle --platform=node --target=node20 --format=cjs --outfile="${SETTINGS_PATCH_BUNDLE_FILE}" --metafile="${SETTINGS_PATCH_META_FILE}" --log-level=error >/dev/null
 
   daily_lambda_changed=$(node -e '
 const fs = require("fs");
@@ -148,6 +160,34 @@ for (const inputPath of Object.keys(meta.inputs || {})) {
 }
 process.stdout.write("false");
 ' "${CHANGED_FILES_LIST_FILE}" "${USER_DEX_PATCH_META_FILE}")
+
+  settings_get_lambda_changed=$(node -e '
+const fs = require("fs");
+const changed = new Set(fs.readFileSync(process.argv[1], "utf8").split(/\r?\n/).filter(Boolean));
+const meta = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const normalize = (p) => p.replace(/\\\\/g, "/").replace(/^\.\//, "");
+for (const inputPath of Object.keys(meta.inputs || {})) {
+  if (changed.has(normalize(inputPath))) {
+    process.stdout.write("true");
+    process.exit(0);
+  }
+}
+process.stdout.write("false");
+' "${CHANGED_FILES_LIST_FILE}" "${SETTINGS_GET_META_FILE}")
+
+  settings_patch_lambda_changed=$(node -e '
+const fs = require("fs");
+const changed = new Set(fs.readFileSync(process.argv[1], "utf8").split(/\r?\n/).filter(Boolean));
+const meta = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const normalize = (p) => p.replace(/\\\\/g, "/").replace(/^\.\//, "");
+for (const inputPath of Object.keys(meta.inputs || {})) {
+  if (changed.has(normalize(inputPath))) {
+    process.stdout.write("true");
+    process.exit(0);
+  }
+}
+process.stdout.write("false");
+' "${CHANGED_FILES_LIST_FILE}" "${SETTINGS_PATCH_META_FILE}")
 fi
 
 if changed_in_paths '^terraform/daily-puzzle-stack.yaml$'; then
@@ -176,5 +216,7 @@ echo "daily_stack_changed=${daily_stack_changed}" >> "${GITHUB_OUTPUT}"
 echo "stats_stack_changed=${stats_stack_changed}" >> "${GITHUB_OUTPUT}"
 echo "user_dex_get_lambda_changed=${user_dex_get_lambda_changed}" >> "${GITHUB_OUTPUT}"
 echo "user_dex_patch_lambda_changed=${user_dex_patch_lambda_changed}" >> "${GITHUB_OUTPUT}"
+echo "settings_get_lambda_changed=${settings_get_lambda_changed}" >> "${GITHUB_OUTPUT}"
+echo "settings_patch_lambda_changed=${settings_patch_lambda_changed}" >> "${GITHUB_OUTPUT}"
 echo "user_dex_stack_changed=${user_dex_stack_changed}" >> "${GITHUB_OUTPUT}"
 echo "pokedoku_details_changed=${pokedoku_details_changed}" >> "${GITHUB_OUTPUT}"

@@ -1,5 +1,5 @@
 {
-  "name": "@pokedoku-helper/user-dex-client",
+  "name": "@pokedoku-helper/user-api-client",
   "private": true,
   "version": "0.0.0",
   "type": "module",

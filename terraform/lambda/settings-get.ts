@@ -11,38 +11,35 @@ import {
   ok,
   requestMeta,
 } from './public-api-shared';
-import { readUserDex, validateUserDexTableConfigured } from './user-dex-shared';
+import { readSettings, validateSettingsTableConfigured } from './settings-shared';
 
 export async function handler(
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyStructuredResultV2> {
   const meta = requestMeta(event);
-  logInfo('user_dex_get_start', meta);
+  logInfo('settings_get_start', meta);
 
   try {
     const authResult = await authenticate(event);
     if ('statusCode' in authResult) {
-      logInfo('user_dex_get_auth_failed', meta);
+      logInfo('settings_get_auth_failed', meta);
       return authResult;
     }
 
-    if (!validateUserDexTableConfigured()) {
-      logError('user_dex_get_misconfigured', meta);
+    if (!validateSettingsTableConfigured()) {
+      logError('settings_get_misconfigured', meta);
       return internalError(event);
     }
 
-    const userDex = await readUserDex(authResult.userId);
-    logInfo('user_dex_get_success', {
+    const settings = await readSettings(authResult.userId);
+    logInfo('settings_get_success', {
       ...meta,
       userIdHash: fingerprintUser(authResult.userId),
-      count: userDex.caughtPokemonKeyIds.length,
-      shinyCount: userDex.shinyPokemonKeyIds.length,
-      unlockedPrestigeLevelIndex: userDex.unlockedPrestigeLevelIndex,
     });
 
-    return ok(event, userDex);
+    return ok(event, settings);
   } catch (error) {
-    logError('user_dex_get_error', {
+    logError('settings_get_error', {
       ...meta,
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
