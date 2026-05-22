@@ -510,7 +510,7 @@ export function MyPokedexPageClient() {
                     }
                   }}
                   disabled={isViewingPastPrestige}
-                  className={`rounded-xl border p-3 text-left transition ${
+                  className={`rounded-xl border p-3 text-left transition cursor-pointer  ${
                     isShiny ? 
                       "border-amber-300 bg-amber-50"
                       : isCaught
@@ -556,7 +556,7 @@ export function MyPokedexPageClient() {
                           isShiny
                             ? "bg-amber-400 text-amber-900"
                             : isCaught
-                              ? "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                              ? "cursor-pointer bg-slate-200 text-slate-700 hover:bg-slate-300"
                               : "cursor-not-allowed bg-slate-100 text-slate-400"
                         }`}
                       >
