@@ -397,6 +397,23 @@ export function PokedexDashboardPageClient() {
 
   return (
     <main className="mx-auto mt-4 flex w-full max-w-5xl flex-col gap-4">
+      <section className="rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-6 shadow-sm">
+        <h2 className="m-0 text-2xl font-semibold text-emerald-950">Today&apos;s personalized board</h2>
+        <p className="mb-0 mt-2 text-sm text-emerald-900/80">
+          Use your My Pokedex filter to get suggestions tailored to what you still need.
+        </p>
+        <a
+          href={`${import.meta.env.BASE_URL}pokedoku-answers-today/`}
+          className="mt-4 inline-flex h-10 items-center gap-2 rounded-[10px] bg-emerald-800 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-emerald-900"
+        >
+          Open personalized Today&apos;s board
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+            <path d="M5 12h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            <path d="m13 7 6 5-6 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
+      </section>
+
       <section className="grid gap-4 md:grid-cols-3">
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Edit current dex</p>
