@@ -405,8 +405,12 @@ export function PokedexDashboardPageClient() {
           <p className="mb-0 mt-2 text-sm text-slate-600">Open the full editor page to update your current dex.</p>
           <a
             href={`${import.meta.env.BASE_URL}user/pokedex/`}
-            className="mt-4 inline-flex h-10 items-center rounded-[10px] bg-slate-900 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-slate-800"
+            className="mt-4 inline-flex h-10 items-center gap-2 rounded-[10px] bg-slate-900 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-slate-800"
           >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+              <path d="M4 16.5V20h3.5L18.9 8.6l-3.5-3.5L4 16.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="m13.9 6.1 3.5 3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
             Edit current dex
           </a>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -415,8 +419,12 @@ export function PokedexDashboardPageClient() {
               onClick={() => {
                 void copyShareLink();
               }}
-              className="inline-flex h-10 items-center rounded-[10px] border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50"
+              className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50"
             >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+                <rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.8" />
+                <rect x="4" y="4" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.8" />
+              </svg>
               Copy share link
             </button>
             {(() => {
@@ -429,8 +437,13 @@ export function PokedexDashboardPageClient() {
                   href={shareHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-10 items-center rounded-[10px] border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 no-underline transition-colors hover:bg-slate-50"
+                  className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 no-underline transition-colors hover:bg-slate-50"
                 >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+                    <path d="M14 4h6v6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M10 14 20 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                    <path d="M20 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                   Open shared profile
                 </a>
               );
@@ -462,11 +475,27 @@ export function PokedexDashboardPageClient() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Shiny progress</p>
-          <h3 className="m-0 mt-2 text-xl font-semibold text-slate-900">{shinyCount} shinies</h3>
-          <p className="m-0 mt-1 text-sm text-slate-600">{shinyOverallRate}% of full dex</p>
-          <p className="m-0 mt-1 text-xs text-slate-500">{shinyCaughtRate}% of caught Pokemon</p>
+        <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50 p-6 shadow-sm">
+          <p className="m-0 text-xs font-semibold tracking-wide text-amber-700 uppercase">Shiny progress</p>
+          <div className="mt-2 flex items-center justify-between gap-3">
+            <h3 className="m-0 text-xl font-bold text-amber-900">{shinyCount} shinies</h3>
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+              ✨
+            </span>
+          </div>
+          <div className="mt-3 space-y-2">
+            <div>
+              <div className="flex items-center justify-between">
+                <p className="m-0 text-sm font-semibold text-amber-800">Full dex</p>
+                <p className="m-0 text-base font-bold text-amber-900">{shinyOverallRate}%</p>
+              </div>
+              <progress
+                value={Math.max(0, shinyOverallRate)}
+                max={100}
+                className="mt-1.5 h-2.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-amber-100 [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-amber-500 [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-amber-500"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
