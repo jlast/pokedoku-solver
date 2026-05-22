@@ -47,6 +47,7 @@ function getApiBaseUrl(): string | null {
 
 export function MyPokedexPageClient() {
   const profile = typeof window === "undefined" ? null : getSessionUserProfile();
+  const isSignedIn = Boolean(profile);
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const [shinySet, setShinySet] = useState<Set<number>>(new Set<number>());
@@ -61,17 +62,12 @@ export function MyPokedexPageClient() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!profile) return;
+    if (!isSignedIn) return;
 
     let isCancelled = false;
 
     async function loadData() {
       setIsLoading(true);
-      if (!isCancelled) {
-        setCaughtSet(new Set<number>());
-        setShinySet(new Set<number>());
-        setUnlockedPrestigeLevelIndex(0);
-      }
 
       try {
         const pokemonResponse = await fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`);
@@ -124,7 +120,7 @@ export function MyPokedexPageClient() {
     return () => {
       isCancelled = true;
     };
-  }, [profile]);
+  }, [isSignedIn]);
 
   const filteredPokemon = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -434,14 +430,31 @@ export function MyPokedexPageClient() {
           <div className="flex items-end justify-between gap-3">
             <div>
               <p className="m-0 text-sm text-slate-500">Completion</p>
-              <p className="m-0 text-2xl font-bold text-slate-900">
-                {displayedCaughtCount} / {totalCount}
-              </p>
-              <p className="m-0 mt-1 text-xs font-semibold text-amber-700">Shinies: {shinyCount}</p>
+              {isLoading ? (
+                <>
+                  <span className="mt-1 block h-7 w-24 animate-pulse rounded bg-slate-200" aria-hidden="true" />
+                  <span className="mt-2 block h-3 w-16 animate-pulse rounded bg-slate-200" aria-hidden="true" />
+                </>
+              ) : (
+                <>
+                  <p className="m-0 text-2xl font-bold text-slate-900">
+                    {displayedCaughtCount} / {totalCount}
+                  </p>
+                  <p className="m-0 mt-1 text-xs font-semibold text-amber-700">Shinies: {shinyCount}</p>
+                </>
+              )}
             </div>
-            <p className="m-0 text-sm font-semibold text-slate-700">{completionRate}%</p>
+            {isLoading ? (
+              <span className="block h-5 w-10 animate-pulse rounded bg-slate-200" aria-hidden="true" />
+            ) : (
+              <p className="m-0 text-sm font-semibold text-slate-700">{completionRate}%</p>
+            )}
           </div>
-          <progress className="mt-3 h-2 w-full overflow-hidden rounded-full" max={Math.max(totalCount, 1)} value={displayedCaughtCount} />
+          {isLoading ? (
+            <span className="mt-3 block h-2 w-full animate-pulse rounded-full bg-slate-200" aria-hidden="true" />
+          ) : (
+            <progress className="mt-3 h-2 w-full overflow-hidden rounded-full" max={Math.max(totalCount, 1)} value={displayedCaughtCount} />
+          )}
         </div>
 
         <div className="mt-4 flex flex-col gap-3 sm:flex-row">

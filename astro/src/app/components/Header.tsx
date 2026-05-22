@@ -115,9 +115,9 @@ export function Header({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pathname, setPathname] = useState("");
   const [authEnabled, setAuthEnabled] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isUserLabelLoading, setIsUserLabelLoading] = useState(false);
   const [userLabel, setUserLabel] = useState<string | null>(null);
-  const [userImageUrl, setUserImageUrl] = useState<string | null>(null);
-  const [userFallbackInitial, setUserFallbackInitial] = useState("U");
   const toolsMenuRef = useRef<HTMLDetailsElement | null>(null);
   const profileMenuRef = useRef<HTMLDetailsElement | null>(null);
   const mobileToolsMenuRef = useRef<HTMLDetailsElement | null>(null);
@@ -245,9 +245,9 @@ export function Header({
       setPathname(window.location.pathname);
       setAuthEnabled(isAuthFeatureEnabled(window.location.search));
       const profile = getSessionUserProfile();
-      setUserLabel(profile ? UNNAMED_TRAINER_LABEL : null);
-      setUserImageUrl(profile?.imageUrl ?? null);
-      setUserFallbackInitial(profile?.fallbackInitial ?? "U");
+      setIsSignedIn(Boolean(profile));
+      setIsUserLabelLoading(Boolean(profile));
+      setUserLabel(null);
 
       if (!profile) return;
 
@@ -259,11 +259,11 @@ export function Header({
 
           const remoteSettings = await getRemoteSettings({ token, apiBaseUrl });
           const nextDisplayName = remoteSettings?.displayName.trim() ?? "";
-          if (nextDisplayName) {
-            setUserLabel(nextDisplayName);
-          }
+          setUserLabel(nextDisplayName || UNNAMED_TRAINER_LABEL);
         } catch {
-          // keep fallback label
+          setUserLabel(UNNAMED_TRAINER_LABEL);
+        } finally {
+          setIsUserLabelLoading(false);
         }
       })();
     };
@@ -276,6 +276,7 @@ export function Header({
       const customEvent = event as CustomEvent<{ displayName?: string }>;
       const nextDisplayName = customEvent.detail?.displayName?.trim() ?? "";
       setUserLabel(nextDisplayName || UNNAMED_TRAINER_LABEL);
+      setIsUserLabelLoading(false);
     };
 
     syncFromNav();
@@ -297,7 +298,7 @@ export function Header({
     window.location.assign(buildLogoutUrl());
   };
 
-  const userInitial = userFallbackInitial;
+  const resolvedUserLabel = userLabel ?? UNNAMED_TRAINER_LABEL;
 
   return (
     <>
@@ -468,22 +469,21 @@ export function Header({
             </nav>
 
             <div className="flex shrink-0 items-center justify-self-end gap-2">
-              {authEnabled ? userLabel ? (
+              {authEnabled ? isSignedIn ? (
                 <details ref={profileMenuRef} className="group relative hidden min-[1101px]:block">
                   <summary className="inline-flex h-10 cursor-pointer list-none items-center gap-2 rounded-[10px] border border-slate-300 bg-white px-2.5 pr-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">
-                    {userImageUrl ? (
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-slate-700">
                       <img
-                        src={userImageUrl}
-                        alt={`${userLabel} profile`}
-                        className="h-6 w-6 rounded-full border border-slate-200 object-cover"
-                        referrerPolicy="no-referrer"
+                        src={`${import.meta.env.BASE_URL}images/content/trainer.png`}
+                        alt="Trainer"
+                        className="h-5 w-5"
                       />
+                    </span>
+                    {isUserLabelLoading ? (
+                      <span className="h-3 w-24 animate-pulse rounded bg-slate-200" aria-hidden="true" />
                     ) : (
-                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
-                        {userInitial}
-                      </span>
+                      <span className="max-w-[180px] truncate">{resolvedUserLabel}</span>
                     )}
-                    <span className="max-w-[180px] truncate">{userLabel}</span>
                     <svg
                       width="12"
                       height="12"
@@ -844,25 +844,24 @@ export function Header({
                         </summary>
 
                         <div className="bg-red-50/80 px-2 py-2">
-                          {userLabel ? (
+                          {isSignedIn ? (
                             <div className="mb-1 mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700">
-                              {userImageUrl ? (
+                              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-200 text-slate-700">
                                 <img
-                                  src={userImageUrl}
-                                  alt={`${userLabel} profile`}
-                                  className="h-7 w-7 rounded-full border border-slate-200 object-cover"
-                                  referrerPolicy="no-referrer"
+                                  src={`${import.meta.env.BASE_URL}images/content/trainer.png`}
+                                  alt="Trainer"
+                                  className="h-6 w-6"
                                 />
+                              </span>
+                              {isUserLabelLoading ? (
+                                <span className="h-3 w-24 animate-pulse rounded bg-slate-200" aria-hidden="true" />
                               ) : (
-                                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
-                                  {userInitial}
-                                </span>
+                                <span className="truncate">{resolvedUserLabel}</span>
                               )}
-                              <span className="truncate">{userLabel}</span>
                             </div>
                           ) : null}
 
-                          {userLabel ? (
+                          {isSignedIn ? (
                             <>
                               <a
                                 href={`${import.meta.env.BASE_URL}user/`}
