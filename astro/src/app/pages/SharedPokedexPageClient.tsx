@@ -4,6 +4,7 @@ import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { getSharedUserDex, type SharedUserDexPayload } from "@pokedoku-helper/user-api-client";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { getPrestigeUiTone } from "../lib/prestigeUi";
+import { PokeballIcon } from "../components/shared/PokeballIcon";
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
@@ -15,19 +16,6 @@ function getPokemonKeyId(pokemon: Pokemon): number {
   return pokemon.formId ?? pokemon.id;
 }
 
-function PrestigeIcon({ tone, className }: { tone: string; className?: string }) {
-  const toneClass = getPrestigeUiTone(tone).iconText;
-
-  return (
-    <svg className={`${toneClass} ${className ?? ""}`} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" stroke="rgb(30 41 59)" strokeWidth="1.35" />
-      <path d="M3 12h18" stroke="rgb(30 41 59)" strokeWidth="1.35" strokeLinecap="round" />
-      <path d="M5.2 12a6.8 6.8 0 0 1 13.6 0" className="fill-current" />
-      <path d="M5.2 12a6.8 6.8 0 0 0 13.6 0" fill={tone === "cherishball" ? "currentColor" : "white"} />
-      <circle cx="12" cy="12" r="2.5" fill="white" stroke="rgb(30 41 59)" strokeWidth="1.1" />
-    </svg>
-  );
-}
 
 export function SharedPokedexPageClient({ userId }: { userId?: string }) {
   const [resolvedUserId] = useState(() => {
@@ -195,7 +183,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
           </div>
 
           <div className={`flex items-center gap-3 rounded-xl border p-3 md:col-span-1 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
-            <PrestigeIcon tone={selectedPrestigeLevel.tone} className="h-6 w-6" />
+            <PokeballIcon tone={selectedPrestigeLevel.tone} className="h-6 w-6" />
             <div>
               <p className={`m-0 text-[11px] font-semibold uppercase tracking-wide ${prestigeUiTone.bannerLabelText}`}>Current Prestige</p>
               <p className={`m-0 text-base font-bold ${prestigeUiTone.bannerTitleText}`}>{selectedPrestigeLevel.label}</p>
@@ -278,7 +266,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
                 </div>
                 {isShiny ? (
                   <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
-                    <PrestigeIcon tone="ultraball" className="h-3.5 w-3.5" />
+                    <PokeballIcon tone="ultraball" className="h-3.5 w-3.5" />
                     Shiny
                   </div>
                 ) : null}

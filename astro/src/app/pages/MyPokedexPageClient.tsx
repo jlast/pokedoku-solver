@@ -4,6 +4,7 @@ import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { getPrestigeUiTone } from "../lib/prestigeUi";
+import { PokeballIcon } from "../components/shared/PokeballIcon";
 import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 import {
   getRemoteUserDex,
@@ -11,19 +12,6 @@ import {
 } from "@pokedoku-helper/user-api-client";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 
-function PrestigeIcon({ tone, className }: { tone: string; className?: string }) {
-  const toneClass = getPrestigeUiTone(tone).iconText;
-
-  return (
-    <svg className={`${toneClass} ${className ?? ""}`} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" stroke="rgb(30 41 59)" strokeWidth="1.35" />
-      <path d="M3 12h18" stroke="rgb(30 41 59)" strokeWidth="1.35" strokeLinecap="round" />
-      <path d="M5.2 12a6.8 6.8 0 0 1 13.6 0" className="fill-current" />
-      <path d="M5.2 12a6.8 6.8 0 0 0 13.6 0" fill={tone === "cherishball" ? "currentColor" : "white"} />
-      <circle cx="12" cy="12" r="2.5" fill="white" stroke="rgb(30 41 59)" strokeWidth="1.1" />
-    </svg>
-  );
-}
 
 function getPokemonKeyId(pokemon: Pokemon): number {
   return pokemon.formId ?? pokemon.id;
@@ -396,7 +384,7 @@ export function MyPokedexPageClient() {
                       : "text-slate-600 hover:bg-slate-200 hover:text-slate-800"
                   } ${isLocked ? "cursor-not-allowed opacity-50 hover:bg-transparent hover:text-slate-600" : ""}`}
                 >
-                  <PrestigeIcon tone={level.tone} className="h-4 w-4" />
+                  <PokeballIcon tone={level.tone} className="h-4 w-4" />
                   <span>{level.label}</span>
                   {isLocked ? <span className="text-[10px]">Locked</span> : null}
                 </button>
@@ -410,7 +398,7 @@ export function MyPokedexPageClient() {
             <h2 className="m-0 text-xl font-semibold text-slate-900">My Pokedex</h2>
             <p className="mb-0 mt-1 text-sm text-slate-500">Track your collection and keep your progress synced.</p>
             <div className={`mt-2 inline-flex items-center gap-3 rounded-xl border px-3 py-2 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
-              <PrestigeIcon tone={selectedPrestigeLevel.tone} className="h-5 w-5" />
+              <PokeballIcon tone={selectedPrestigeLevel.tone} className="h-5 w-5" />
               <div>
                 <p className={`m-0 text-[11px] font-semibold uppercase tracking-wide ${prestigeUiTone.bannerLabelText}`}>Current Prestige</p>
                 <p className={`m-0 text-base font-bold ${prestigeUiTone.bannerTitleText}`}>{selectedPrestigeLevel.label}</p>

@@ -1,6 +1,7 @@
 import { trackEvent } from "../../../../lib/browser/analytics";
 import { buildLoginUrl } from "../../lib/cognitoAuth";
 import { isAuthFeatureEnabled } from "../../lib/featureFlags";
+import { PokeballIcon } from "../components/shared/PokeballIcon";
 
 type Provider = {
   id: "Google";
@@ -44,6 +45,11 @@ export function LoginPageClient() {
       <section className="rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6 shadow-sm md:p-8">
         <h1 className="m-0 text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">Your Personal Pokedoku Companion</h1>
         <p className="mb-0 mt-3 max-w-xl text-slate-600">Choose a sign-in option to continue. Google is ready today, and more choices are on the way.</p>
+        <div className="mt-4 flex items-center gap-3" aria-hidden="true">
+          <span className="h-px flex-1 bg-slate-200" />
+          <PokeballIcon tone="pokeball" className="h-5 w-5" />
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
         <ul className="mb-0 mt-4 space-y-1 text-sm text-slate-700">
           <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Import your existing Pokedoku dex</li>
           <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Track completion progress</li>
