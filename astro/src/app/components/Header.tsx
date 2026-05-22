@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "../../../../lib/browser/analytics";
-import { buildLogoutUrl, clearSession, getSessionUserProfile } from "../../lib/cognitoAuth";
+import { getRemoteSettings } from "@pokedoku-helper/user-api-client";
+import { buildLogoutUrl, clearSession, getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { isAuthFeatureEnabled } from "../../lib/featureFlags";
+
+const UNNAMED_TRAINER_LABEL = "Unnamed trainer";
 
 interface HeaderProps {
   title?: string;
@@ -242,23 +245,49 @@ export function Header({
       setPathname(window.location.pathname);
       setAuthEnabled(isAuthFeatureEnabled(window.location.search));
       const profile = getSessionUserProfile();
-      setUserLabel(profile?.label ?? null);
+      setUserLabel(profile ? UNNAMED_TRAINER_LABEL : null);
       setUserImageUrl(profile?.imageUrl ?? null);
       setUserFallbackInitial(profile?.fallbackInitial ?? "U");
+
+      if (!profile) return;
+
+      void (async () => {
+        try {
+          const token = await getValidSessionIdToken();
+          const apiBaseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
+          if (!token || !apiBaseUrl) return;
+
+          const remoteSettings = await getRemoteSettings({ token, apiBaseUrl });
+          const nextDisplayName = remoteSettings?.displayName.trim() ?? "";
+          if (nextDisplayName) {
+            setUserLabel(nextDisplayName);
+          }
+        } catch {
+          // keep fallback label
+        }
+      })();
     };
 
     const syncFromNav = () => {
       window.setTimeout(syncClientState, 0);
     };
 
+    const handleDisplayNameUpdated = (event: Event) => {
+      const customEvent = event as CustomEvent<{ displayName?: string }>;
+      const nextDisplayName = customEvent.detail?.displayName?.trim() ?? "";
+      setUserLabel(nextDisplayName || UNNAMED_TRAINER_LABEL);
+    };
+
     syncFromNav();
     window.addEventListener("popstate", syncFromNav);
     window.addEventListener("astro:page-load", syncFromNav as EventListener);
     document.addEventListener("astro:after-swap", syncFromNav as EventListener);
+    window.addEventListener("user-display-name-updated", handleDisplayNameUpdated as EventListener);
     return () => {
       window.removeEventListener("popstate", syncFromNav);
       window.removeEventListener("astro:page-load", syncFromNav as EventListener);
       document.removeEventListener("astro:after-swap", syncFromNav as EventListener);
+      window.removeEventListener("user-display-name-updated", handleDisplayNameUpdated as EventListener);
     };
   }, []);
 

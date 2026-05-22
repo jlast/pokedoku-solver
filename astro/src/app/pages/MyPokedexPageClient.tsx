@@ -47,7 +47,6 @@ function getApiBaseUrl(): string | null {
 
 export function MyPokedexPageClient() {
   const profile = typeof window === "undefined" ? null : getSessionUserProfile();
-  const userLabel = profile?.label ?? null;
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const [shinySet, setShinySet] = useState<Set<number>>(new Set<number>());
@@ -62,7 +61,7 @@ export function MyPokedexPageClient() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!userLabel) return;
+    if (!profile) return;
 
     let isCancelled = false;
 
@@ -125,7 +124,7 @@ export function MyPokedexPageClient() {
     return () => {
       isCancelled = true;
     };
-  }, [userLabel]);
+  }, [profile]);
 
   const filteredPokemon = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -334,7 +333,7 @@ export function MyPokedexPageClient() {
     })();
   }
 
-  if (!userLabel) {
+  if (!profile) {
     return (
       <main className="mx-auto mt-4 w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
         <h2 className="m-0 text-2xl font-semibold text-slate-900">Sign in required</h2>
@@ -353,25 +352,6 @@ export function MyPokedexPageClient() {
 
   return (
     <main className="mx-auto mt-4 flex w-full max-w-4xl flex-col gap-4">
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="m-0 text-sm text-slate-500">Signed in as</p>
-        <div className="mt-2 flex items-center gap-3">
-          {profile?.imageUrl ? (
-            <img
-              src={profile.imageUrl}
-              alt={`${userLabel} profile`}
-              className="h-10 w-10 rounded-full border border-slate-200 object-cover"
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-sm font-semibold text-slate-700">
-              {profile?.fallbackInitial ?? "U"}
-            </span>
-          )}
-          <p className="mb-0 mt-0 text-lg font-semibold text-slate-900">{userLabel}</p>
-        </div>
-      </section>
-
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <PokedexImportPanel
           importJsonText={importJsonText}

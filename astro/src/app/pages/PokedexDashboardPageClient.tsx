@@ -2,7 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
-import { getRemoteUserDex, patchRemoteUserDex } from "@pokedoku-helper/user-api-client";
+import {
+  getRemoteSettings,
+  getRemoteUserDex,
+  patchRemoteSettings,
+  patchRemoteUserDex,
+} from "@pokedoku-helper/user-api-client";
 import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { FILTER_CATEGORIES } from "../../../../lib/shared/filters";
@@ -42,6 +47,12 @@ export function PokedexDashboardPageClient() {
   const [importJsonText, setImportJsonText] = useState("");
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [showImportPanel, setShowImportPanel] = useState(true);
+  const [settingsLoading, setSettingsLoading] = useState(Boolean(userLabel));
+  const [needsUsername, setNeedsUsername] = useState(false);
+  const [usernameInput, setUsernameInput] = useState("");
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [isSavingUsername, setIsSavingUsername] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!userLabel) return;
@@ -50,20 +61,32 @@ export function PokedexDashboardPageClient() {
 
     async function loadData() {
       try {
-        const pokemonResponse = await fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`);
-        const pokemonData = (await pokemonResponse.json()) as Pokemon[];
-        if (!isCancelled) {
-          setPokemon(Array.isArray(pokemonData) ? pokemonData : []);
-        }
-
         const token = await getValidSessionIdToken();
         const apiBaseUrl = getApiBaseUrl();
         if (!token || !apiBaseUrl) {
           if (!isCancelled) {
             setHasPokedexData(false);
             setIsLoading(false);
+            setSettingsLoading(false);
           }
           return;
+        }
+
+        const remoteSettings = await getRemoteSettings({ token, apiBaseUrl });
+        const remoteDisplayName = remoteSettings?.displayName.trim() ?? "";
+        if (!remoteDisplayName) {
+          if (!isCancelled) {
+            setNeedsUsername(true);
+            setSettingsLoading(false);
+            setIsLoading(false);
+          }
+          return;
+        }
+
+        const pokemonResponse = await fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`);
+        const pokemonData = (await pokemonResponse.json()) as Pokemon[];
+        if (!isCancelled) {
+          setPokemon(Array.isArray(pokemonData) ? pokemonData : []);
         }
 
         const remoteUserDex = await getRemoteUserDex({ token, apiBaseUrl, maxPrestigeLevelIndex: PRESTIGE_LEVELS.length - 1 });
@@ -89,6 +112,7 @@ export function PokedexDashboardPageClient() {
       }
 
       if (!isCancelled) {
+        setSettingsLoading(false);
         setIsLoading(false);
       }
     }
@@ -98,7 +122,53 @@ export function PokedexDashboardPageClient() {
     return () => {
       isCancelled = true;
     };
-  }, [userLabel]);
+  }, [reloadKey, userLabel]);
+
+  async function saveUsername() {
+    setUsernameError(null);
+    const token = await getValidSessionIdToken();
+    const apiBaseUrl = getApiBaseUrl();
+    const nextDisplayName = usernameInput.trim();
+
+    if (!nextDisplayName) {
+      setUsernameError("Please enter a username.");
+      return;
+    }
+    if (nextDisplayName.length > 40) {
+      setUsernameError("Username must be 40 characters or fewer.");
+      return;
+    }
+    if (!token || !apiBaseUrl) {
+      setUsernameError("Session expired. Please sign in again.");
+      return;
+    }
+
+    setIsSavingUsername(true);
+    const updated = await patchRemoteSettings({
+      token,
+      apiBaseUrl,
+      patch: {
+        displayName: nextDisplayName,
+      },
+    });
+    setIsSavingUsername(false);
+
+    if (!updated?.displayName.trim()) {
+      setUsernameError("Could not save username. Please try again.");
+      return;
+    }
+
+    window.dispatchEvent(
+      new CustomEvent("user-display-name-updated", {
+        detail: { displayName: updated.displayName },
+      })
+    );
+
+    setNeedsUsername(false);
+    setSettingsLoading(true);
+    setIsLoading(true);
+    setReloadKey((prev) => prev + 1);
+  }
 
   async function applyImportedPokedexJson(rawJsonText: string, source: "paste" | "file") {
     try {
@@ -233,11 +303,50 @@ export function PokedexDashboardPageClient() {
     );
   }
 
-  if (isLoading) {
+  if (settingsLoading || isLoading) {
     return (
       <main className="mx-auto mt-4 flex w-full max-w-4xl flex-col gap-4">
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="m-0 text-sm text-slate-600">Loading your dashboard...</p>
+        </section>
+      </main>
+    );
+  }
+
+  if (needsUsername) {
+    return (
+      <main className="mx-auto mt-4 flex w-full max-w-3xl flex-col gap-4">
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Finish setup</p>
+          <h2 className="m-0 mt-2 text-2xl font-semibold text-slate-900">Create your username</h2>
+          <p className="mb-0 mt-2 text-sm text-slate-600">Pick a display name to continue to your Pokedex dashboard.</p>
+          <label htmlFor="username" className="mt-4 block text-sm font-medium text-slate-700">
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            value={usernameInput}
+            maxLength={40}
+            onChange={(event) => {
+              setUsernameInput(event.target.value);
+              if (usernameError) setUsernameError(null);
+            }}
+            className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none"
+            placeholder="Enter a username"
+          />
+          <p className="m-0 mt-2 text-xs text-slate-500">Any visible character is allowed. Maximum 40 characters.</p>
+          {usernameError ? <p className="m-0 mt-2 text-sm text-red-600">{usernameError}</p> : null}
+          <button
+            type="button"
+            onClick={() => {
+              void saveUsername();
+            }}
+            disabled={isSavingUsername}
+            className="mt-4 inline-flex h-10 items-center rounded-[10px] bg-slate-900 px-4 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isSavingUsername ? "Saving..." : "Save username"}
+          </button>
         </section>
       </main>
     );

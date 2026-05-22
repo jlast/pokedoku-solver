@@ -67,23 +67,13 @@ type SessionTokenPayload = {
   [key: string]: unknown;
 };
 
-const UNKNOWN_TRAINER_LABEL = "Unknown Trainer";
+const UNKNOWN_TRAINER_LABEL = "Unnamed trainer";
 
-function getBestSessionLabel(payload: SessionTokenPayload): string {
-  const displayName = payload.name || payload.email;
-
-  if (displayName && displayName.trim().length > 0) {
-    return displayName;
-  }
-
+function getBestSessionLabel(_payload: SessionTokenPayload): string {
   return UNKNOWN_TRAINER_LABEL;
 }
 
-function getFallbackInitial(payload: SessionTokenPayload): string {
-  if (payload.email && payload.email.trim().length > 0) {
-    return payload.email.trim().charAt(0).toUpperCase();
-  }
-
+function getFallbackInitial(_payload: SessionTokenPayload): string {
   return "U";
 }
 
