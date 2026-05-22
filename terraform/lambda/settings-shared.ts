@@ -12,7 +12,7 @@ export type SettingsPayload = {
 
 const DEFAULT_SETTINGS: SettingsPayload = {
   preventSpoilerMode: false,
-  myPokedexFilter: false,
+  myPokedexFilter: true,
   displayName: '',
 };
 
