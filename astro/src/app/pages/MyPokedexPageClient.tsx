@@ -397,7 +397,12 @@ export function MyPokedexPageClient() {
           <div>
             <h2 className="m-0 text-xl font-semibold text-slate-900">My Pokedex</h2>
             <p className="mb-0 mt-1 text-sm text-slate-500">Track your collection and keep your progress synced.</p>
-            <div className={`mt-2 inline-flex items-center gap-3 rounded-xl border px-3 py-2 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-4">
+          <div className={`rounded-xl border p-3 sm:col-span-1 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
+            <div className="flex items-center gap-3">
               <PokeballIcon tone={selectedPrestigeLevel.tone} className="h-5 w-5" />
               <div>
                 <p className={`m-0 text-[11px] font-semibold uppercase tracking-wide ${prestigeUiTone.bannerLabelText}`}>Current Prestige</p>
@@ -406,40 +411,40 @@ export function MyPokedexPageClient() {
               </div>
             </div>
             {isViewingPastPrestige ? (
-              <p className="mb-0 mt-1 text-xs font-semibold text-amber-700">Previous prestiges are view-only and fully unlocked.</p>
+              <p className="mb-0 mt-2 text-xs font-semibold text-amber-700">Previous prestiges are view-only and fully unlocked.</p>
             ) : null}
           </div>
-        </div>
 
-        <div className={`mt-4 rounded-xl border p-4 ${prestigeUiTone.completionBg} ${prestigeUiTone.completionBorder}`}>
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className={`m-0 text-sm ${prestigeUiTone.completionLabelText}`}>Completion</p>
+          <div className={`rounded-xl border p-4 sm:col-span-3 ${prestigeUiTone.completionBg} ${prestigeUiTone.completionBorder}`}>
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <p className={`m-0 text-sm ${prestigeUiTone.completionLabelText}`}>Completion</p>
+                {isLoading ? (
+                  <>
+                    <span className="mt-1 block h-7 w-24 animate-pulse rounded bg-slate-200" aria-hidden="true" />
+                    <span className="mt-2 block h-3 w-16 animate-pulse rounded bg-slate-200" aria-hidden="true" />
+                  </>
+                ) : (
+                  <>
+                    <p className={`m-0 text-2xl font-bold ${prestigeUiTone.completionValueText}`}>
+                      {displayedCaughtCount} / {totalCount}
+                    </p>
+                    <p className={`m-0 mt-1 text-xs font-semibold ${prestigeUiTone.completionMetaText}`}>Shinies: {shinyCount}</p>
+                  </>
+                )}
+              </div>
               {isLoading ? (
-                <>
-                  <span className="mt-1 block h-7 w-24 animate-pulse rounded bg-slate-200" aria-hidden="true" />
-                  <span className="mt-2 block h-3 w-16 animate-pulse rounded bg-slate-200" aria-hidden="true" />
-                </>
+                <span className="block h-5 w-10 animate-pulse rounded bg-slate-200" aria-hidden="true" />
               ) : (
-                <>
-                  <p className={`m-0 text-2xl font-bold ${prestigeUiTone.completionValueText}`}>
-                    {displayedCaughtCount} / {totalCount}
-                  </p>
-                  <p className={`m-0 mt-1 text-xs font-semibold ${prestigeUiTone.completionMetaText}`}>Shinies: {shinyCount}</p>
-                </>
+                <p className={`m-0 text-sm font-semibold ${prestigeUiTone.completionPercentText}`}>{completionRate}%</p>
               )}
             </div>
             {isLoading ? (
-              <span className="block h-5 w-10 animate-pulse rounded bg-slate-200" aria-hidden="true" />
+              <span className="mt-3 block h-2 w-full animate-pulse rounded-full bg-slate-200" aria-hidden="true" />
             ) : (
-              <p className={`m-0 text-sm font-semibold ${prestigeUiTone.completionPercentText}`}>{completionRate}%</p>
+              <progress className={`mt-3 h-2 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-white/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`} max={Math.max(totalCount, 1)} value={displayedCaughtCount} />
             )}
           </div>
-          {isLoading ? (
-            <span className="mt-3 block h-2 w-full animate-pulse rounded-full bg-slate-200" aria-hidden="true" />
-          ) : (
-            <progress className={`mt-3 h-2 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-white/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`} max={Math.max(totalCount, 1)} value={displayedCaughtCount} />
-          )}
         </div>
 
         <div className="mt-4 flex flex-col gap-3 sm:flex-row">

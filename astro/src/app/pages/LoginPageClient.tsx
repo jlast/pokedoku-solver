@@ -46,19 +46,6 @@ export function LoginPageClient() {
         <h1 className="m-0 text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">Your Personal Pokedoku Companion</h1>
         <p className="mb-0 mt-3 max-w-xl text-slate-600">Import your Pokedoku dex, track your progress, and discover smarter picks for every puzzle.</p>
         <p className="mb-0 mt-2 text-sm font-medium text-slate-700">Built for daily Pokedoku players.</p>
-        <div className="mt-4 flex items-center gap-3" aria-hidden="true">
-          <span className="h-px flex-1 bg-slate-200" />
-          <PokeballIcon tone="pokeball" className="h-5 w-5" />
-          <span className="h-px flex-1 bg-slate-200" />
-        </div>
-        <ul className="mb-0 mt-4 space-y-1 text-sm text-slate-700">
-          <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Get personalized suggestions for today&apos;s grid</li>
-          <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Discover weak spots and missing categories</li>
-          <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Track completion progress</li>
-          <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Import your existing Pokedoku dex</li>
-          <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Share your progress with friends</li>
-        </ul>
-
         <div className="mt-6 grid gap-4">
           {PROVIDERS.map((provider) => (
             <button
@@ -113,6 +100,29 @@ export function LoginPageClient() {
           ))}
         </div>
         <p className="mb-0 mt-4 text-center text-xs text-slate-400">More sign-in options coming soon.</p>
+
+        <div className="mt-4 flex items-center gap-3" aria-hidden="true">
+          <span className="h-px flex-1 bg-slate-200" />
+          <PokeballIcon tone="pokeball" className="h-5 w-5" />
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        <div className="mt-5 grid items-center gap-4 md:grid-cols-5">
+          <ul className="mb-0 space-y-3 text-lg text-slate-700 md:col-span-2 md:self-center">
+            <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Personalized picks for today&apos;s grid</li>
+            <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Discover missing categories</li>
+            <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Track your Pokédex progress</li>
+          </ul>
+
+          <div className="md:col-span-3">
+            <img
+              src={`${import.meta.env.BASE_URL}images/content/my_pokedex_preview.png`}
+              alt="Preview of the My Pokedex page"
+              className="block w-full rounded-xl"
+              loading="lazy"
+            />
+          </div>
+        </div>
       </section>
     </main>
   );
