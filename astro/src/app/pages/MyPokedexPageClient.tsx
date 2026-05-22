@@ -511,7 +511,9 @@ export function MyPokedexPageClient() {
                   }}
                   disabled={isViewingPastPrestige}
                   className={`rounded-xl border p-3 text-left transition ${
-                    isCaught
+                    isShiny ? 
+                      "border-amber-300 bg-amber-50"
+                      : isCaught
                       ? isViewingPastPrestige
                         ? "border-amber-300 bg-amber-50"
                         : "border-emerald-300 bg-emerald-50 hover:bg-emerald-100"

@@ -512,6 +512,18 @@ export function Header({
                       }
                       className="flex items-center gap-2 border-b border-slate-100 px-3 py-2.5 text-sm text-slate-700 no-underline hover:bg-slate-50"
                     >
+                      Dashboard
+                    </a>
+                    <a
+                      href={`${import.meta.env.BASE_URL}user/pokedex`}
+                      onClick={() =>
+                        trackEvent("click_navigate", {
+                          url: "user/pokedex",
+                          from: currentPage,
+                        })
+                      }
+                      className="flex items-center gap-2 border-b border-slate-100 px-3 py-2.5 text-sm text-slate-700 no-underline hover:bg-slate-50"
+                    >
                       My Pokedex
                     </a>
                     <button
