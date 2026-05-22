@@ -1,0 +1,23 @@
+---
+import AppPageLayout from "../../../layouts/AppPageLayout.astro";
+import { Footer } from "../../../app/components/Footer";
+import { Header } from "../../../app/components/Header";
+import { SharedPokedexPageClient } from "../../../app/pages/SharedPokedexPageClient";
+---
+
+<AppPageLayout
+  title="Shared Pokedex | Pokedoku Helper"
+  description="View a shared trainer Pokedex in Pokedoku Helper."
+  path="/user/shared/"
+>
+  <div class="min-h-screen overflow-x-hidden p-5">
+    <Header
+      title="Shared Pokedex"
+      subtitle="View another trainer's shared dex progress."
+      currentPage="my-pokedex"
+      client:load
+    />
+    <SharedPokedexPageClient client:load />
+    <Footer client:load />
+  </div>
+</AppPageLayout>

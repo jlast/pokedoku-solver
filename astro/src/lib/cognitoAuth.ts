@@ -353,6 +353,21 @@ export function getSessionUserLabel(): string | null {
   }
 }
 
+export function getSessionUserId(): string | null {
+  const token = getSessionIdToken();
+  if (!token) return null;
+
+  try {
+    const payloadPart = token.split(".")[1];
+    if (!payloadPart) return null;
+    const payload = JSON.parse(decodeBase64Url(payloadPart)) as SessionTokenPayload;
+    const sub = payload.sub?.trim();
+    return sub ? sub : null;
+  } catch {
+    return null;
+  }
+}
+
 export interface SessionUserProfile {
   label: string;
   imageUrl: string | null;

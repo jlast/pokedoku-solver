@@ -8,8 +8,9 @@ import {
   patchRemoteSettings,
   patchRemoteUserDex,
 } from "@pokedoku-helper/user-api-client";
-import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
+import { getSessionUserId, getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
+import { getPrestigeUiTone } from "../lib/prestigeUi";
 import { FILTER_CATEGORIES } from "../../../../lib/shared/filters";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
@@ -53,6 +54,7 @@ export function PokedexDashboardPageClient() {
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [isSavingUsername, setIsSavingUsername] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
+  const [shareStatus, setShareStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userLabel) return;
@@ -252,6 +254,25 @@ export function PokedexDashboardPageClient() {
   const shinyOverallRate = totalCount > 0 ? Math.round((shinyCount / totalCount) * 100) : 0;
   const shinyCaughtRate = caughtCount > 0 ? Math.round((shinyCount / caughtCount) * 100) : 0;
   const currentPrestige = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex] ?? PRESTIGE_LEVELS[0];
+  const prestigeUiTone = getPrestigeUiTone(currentPrestige.tone);
+
+  async function copyShareLink() {
+    const userId = getSessionUserId();
+    if (!userId) {
+      setShareStatus("Could not build share link. Please sign in again.");
+      return;
+    }
+
+    const url = new URL(`${import.meta.env.BASE_URL}user/shared/`, window.location.origin);
+    url.searchParams.set("id", userId);
+
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      setShareStatus("Share link copied.");
+    } catch {
+      setShareStatus("Could not copy automatically. Use the open button and copy from your browser.");
+    }
+  }
   const categoryProgress = useMemo(() => {
     return FILTER_CATEGORIES.map((group) => {
       const options = group.options
@@ -388,12 +409,57 @@ export function PokedexDashboardPageClient() {
           >
             Edit current dex
           </a>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                void copyShareLink();
+              }}
+              className="inline-flex h-10 items-center rounded-[10px] border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50"
+            >
+              Copy share link
+            </button>
+            {(() => {
+              const userId = getSessionUserId();
+              const shareHref = userId
+                ? `${import.meta.env.BASE_URL}user/shared/?id=${encodeURIComponent(userId)}`
+                : `${import.meta.env.BASE_URL}user/shared/`;
+              return (
+                <a
+                  href={shareHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-10 items-center rounded-[10px] border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 no-underline transition-colors hover:bg-slate-50"
+                >
+                  Open shared profile
+                </a>
+              );
+            })()}
+          </div>
+          {shareStatus ? <p className="mb-0 mt-2 text-xs text-slate-600">{shareStatus}</p> : null}
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Current Prestige Progress</p>
-          <h3 className="m-0 mt-2 text-xl font-semibold text-slate-900">{currentPrestige.label}</h3>
-          <p className="m-0 mt-1 text-sm text-slate-600">{caughtCount} / {totalCount} caught ({completionRate}%)</p>
+          <div className={`mt-2 rounded-xl border p-3 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
+            <p className={`m-0 text-[11px] font-semibold uppercase tracking-wide ${prestigeUiTone.bannerLabelText}`}>Current Prestige</p>
+            <h3 className={`m-0 mt-1 text-xl font-bold ${prestigeUiTone.bannerTitleText}`}>{currentPrestige.label}</h3>
+            <p className={`m-0 mt-1 text-xs font-medium ${prestigeUiTone.bannerOddsText}`}>Shiny odds: {currentPrestige.oddsLabel}</p>
+          </div>
+          <div className={`mt-3 rounded-xl border p-3 ${prestigeUiTone.completionBg} ${prestigeUiTone.completionBorder}`}>
+            <div className="flex items-end justify-between gap-2">
+              <div>
+                <p className={`m-0 text-xs font-semibold uppercase tracking-wide ${prestigeUiTone.completionLabelText}`}>Completion</p>
+                <p className={`m-0 mt-1 text-lg font-bold ${prestigeUiTone.completionValueText}`}>{caughtCount} / {totalCount}</p>
+              </div>
+              <p className={`m-0 text-sm font-semibold ${prestigeUiTone.completionPercentText}`}>{completionRate}%</p>
+            </div>
+            <progress
+              value={Math.max(0, completionRate)}
+              max={100}
+              className={`mt-2 h-1.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-white/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`}
+            />
+          </div>
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

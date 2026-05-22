@@ -3,6 +3,7 @@ import type { ChangeEvent } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
+import { getPrestigeUiTone } from "../lib/prestigeUi";
 import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 import {
   getRemoteUserDex,
@@ -10,18 +11,8 @@ import {
 } from "@pokedoku-helper/user-api-client";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 
-function getPrestigeToneClass(tone: string): string {
-  if (tone === "greatball") return "text-blue-600";
-  if (tone === "ultraball") return "text-yellow-400";
-  if (tone === "masterball") return "text-purple-400";
-  if (tone === "premierball") return "text-slate-400";
-  if (tone === "beastball") return "text-slate-700";
-  if (tone === "cherishball") return "text-red-700";
-  return "text-red-500";
-}
-
 function PrestigeIcon({ tone, className }: { tone: string; className?: string }) {
-  const toneClass = getPrestigeToneClass(tone);
+  const toneClass = getPrestigeUiTone(tone).iconText;
 
   return (
     <svg className={`${toneClass} ${className ?? ""}`} viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -160,6 +151,7 @@ export function MyPokedexPageClient() {
   const completionRate = totalCount > 0 ? Math.round((displayedCaughtCount / totalCount) * 100) : 0;
   const nextPrestigeLevel = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex + 1] ?? null;
   const canUnlockNextPrestige = Boolean(nextPrestigeLevel) && totalCount > 0 && caughtCount === totalCount;
+  const prestigeUiTone = getPrestigeUiTone(selectedPrestigeLevel.tone);
 
   function unlockNextPrestigeLevel() {
     if (!nextPrestigeLevel || !canUnlockNextPrestige) return;
@@ -417,19 +409,24 @@ export function MyPokedexPageClient() {
           <div>
             <h2 className="m-0 text-xl font-semibold text-slate-900">My Pokedex</h2>
             <p className="mb-0 mt-1 text-sm text-slate-500">Track your collection and keep your progress synced.</p>
-            <p className="mb-0 mt-1 text-xs text-slate-500">
-              Prestige: <span className="font-semibold text-slate-700">{selectedPrestigeLevel.label}</span> (Shiny odds: {selectedPrestigeLevel.oddsLabel})
-            </p>
+            <div className={`mt-2 inline-flex items-center gap-3 rounded-xl border px-3 py-2 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
+              <PrestigeIcon tone={selectedPrestigeLevel.tone} className="h-5 w-5" />
+              <div>
+                <p className={`m-0 text-[11px] font-semibold uppercase tracking-wide ${prestigeUiTone.bannerLabelText}`}>Current Prestige</p>
+                <p className={`m-0 text-base font-bold ${prestigeUiTone.bannerTitleText}`}>{selectedPrestigeLevel.label}</p>
+                <p className={`m-0 text-xs font-medium ${prestigeUiTone.bannerOddsText}`}>Shiny odds: {selectedPrestigeLevel.oddsLabel}</p>
+              </div>
+            </div>
             {isViewingPastPrestige ? (
               <p className="mb-0 mt-1 text-xs font-semibold text-amber-700">Previous prestiges are view-only and fully unlocked.</p>
             ) : null}
           </div>
         </div>
 
-        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div className={`mt-4 rounded-xl border p-4 ${prestigeUiTone.completionBg} ${prestigeUiTone.completionBorder}`}>
           <div className="flex items-end justify-between gap-3">
             <div>
-              <p className="m-0 text-sm text-slate-500">Completion</p>
+              <p className={`m-0 text-sm ${prestigeUiTone.completionLabelText}`}>Completion</p>
               {isLoading ? (
                 <>
                   <span className="mt-1 block h-7 w-24 animate-pulse rounded bg-slate-200" aria-hidden="true" />
@@ -437,23 +434,23 @@ export function MyPokedexPageClient() {
                 </>
               ) : (
                 <>
-                  <p className="m-0 text-2xl font-bold text-slate-900">
+                  <p className={`m-0 text-2xl font-bold ${prestigeUiTone.completionValueText}`}>
                     {displayedCaughtCount} / {totalCount}
                   </p>
-                  <p className="m-0 mt-1 text-xs font-semibold text-amber-700">Shinies: {shinyCount}</p>
+                  <p className={`m-0 mt-1 text-xs font-semibold ${prestigeUiTone.completionMetaText}`}>Shinies: {shinyCount}</p>
                 </>
               )}
             </div>
             {isLoading ? (
               <span className="block h-5 w-10 animate-pulse rounded bg-slate-200" aria-hidden="true" />
             ) : (
-              <p className="m-0 text-sm font-semibold text-slate-700">{completionRate}%</p>
+              <p className={`m-0 text-sm font-semibold ${prestigeUiTone.completionPercentText}`}>{completionRate}%</p>
             )}
           </div>
           {isLoading ? (
             <span className="mt-3 block h-2 w-full animate-pulse rounded-full bg-slate-200" aria-hidden="true" />
           ) : (
-            <progress className="mt-3 h-2 w-full overflow-hidden rounded-full" max={Math.max(totalCount, 1)} value={displayedCaughtCount} />
+            <progress className={`mt-3 h-2 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-white/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`} max={Math.max(totalCount, 1)} value={displayedCaughtCount} />
           )}
         </div>
 
