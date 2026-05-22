@@ -9,6 +9,9 @@ on:
       user_dex_patch_lambda_changed:
         required: true
         type: string
+      user_dex_shared_get_lambda_changed:
+        required: true
+        type: string
       settings_get_lambda_changed:
         required: true
         type: string
@@ -81,6 +84,19 @@ jobs:
       - name: Validate user dex API CloudFormation template
         run: aws cloudformation validate-template --template-body file://terraform/user-dex-api-stack.yaml
 
+      - name: Package user dex shared get Lambda
+        if: inputs.user_dex_shared_get_lambda_changed == 'true'
+        run: pnpm package:user-dex-shared-get-lambda
+
+      - name: Upload user dex shared get Lambda artifact
+        if: inputs.user_dex_shared_get_lambda_changed == 'true'
+        env:
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          USER_DEX_SHARED_GET_LAMBDA_KEY=lambda/user-dex-shared-get-${{ github.sha }}.zip
+          aws s3 cp dist-lambda/user-dex-shared-get.zip s3://${S3_BUCKET_NAME}/${USER_DEX_SHARED_GET_LAMBDA_KEY}
+          echo "USER_DEX_SHARED_GET_LAMBDA_KEY=${USER_DEX_SHARED_GET_LAMBDA_KEY}" >> "$GITHUB_ENV"
+
       - name: Package settings get Lambda
         if: inputs.settings_get_lambda_changed == 'true'
         run: pnpm package:settings-get-lambda
@@ -108,16 +124,18 @@ jobs:
           echo "SETTINGS_PATCH_LAMBDA_KEY=${SETTINGS_PATCH_LAMBDA_KEY}" >> "$GITHUB_ENV"
 
       - name: Deploy public API CloudFormation stack
-        if: inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.settings_get_lambda_changed == 'true' || inputs.settings_patch_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true'
+        if: inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_shared_get_lambda_changed == 'true' || inputs.settings_get_lambda_changed == 'true' || inputs.settings_patch_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true'
         env:
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
           USER_DEX_GET_LAMBDA_CHANGED: ${{ inputs.user_dex_get_lambda_changed }}
           USER_DEX_PATCH_LAMBDA_CHANGED: ${{ inputs.user_dex_patch_lambda_changed }}
+          USER_DEX_SHARED_GET_LAMBDA_CHANGED: ${{ inputs.user_dex_shared_get_lambda_changed }}
           SETTINGS_GET_LAMBDA_CHANGED: ${{ inputs.settings_get_lambda_changed }}
           SETTINGS_PATCH_LAMBDA_CHANGED: ${{ inputs.settings_patch_lambda_changed }}
           USER_DEX_GET_LAMBDA_KEY: ${{ env.USER_DEX_GET_LAMBDA_KEY }}
           USER_DEX_PATCH_LAMBDA_KEY: ${{ env.USER_DEX_PATCH_LAMBDA_KEY }}
+          USER_DEX_SHARED_GET_LAMBDA_KEY: ${{ env.USER_DEX_SHARED_GET_LAMBDA_KEY }}
           SETTINGS_GET_LAMBDA_KEY: ${{ env.SETTINGS_GET_LAMBDA_KEY }}
           SETTINGS_PATCH_LAMBDA_KEY: ${{ env.SETTINGS_PATCH_LAMBDA_KEY }}
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
@@ -144,7 +162,7 @@ jobs:
           bash .github/scripts/deploy-public-api-stack.sh
 
       - name: Debug public API CloudFormation failure
-        if: failure() && (inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.settings_get_lambda_changed == 'true' || inputs.settings_patch_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true')
+        if: failure() && (inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_shared_get_lambda_changed == 'true' || inputs.settings_get_lambda_changed == 'true' || inputs.settings_patch_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true')
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
         run: |

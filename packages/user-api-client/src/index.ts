@@ -10,6 +10,11 @@ export type SettingsPayload = {
   displayName: string;
 };
 
+export type SharedUserDexPayload = UserDexPayload & {
+  userId: string;
+  displayName: string;
+};
+
 function normalizeApiBaseUrl(apiBaseUrl: string): string {
   return apiBaseUrl.replace(/\/+$/, '');
 }
@@ -144,4 +149,65 @@ export async function patchRemoteSettings({
   if (!response.ok) return null;
   const data = (await response.json()) as unknown;
   return parseSettingsFromApi(data);
+}
+
+export function parseSharedUserDexFromApi(
+  data: unknown,
+  maxPrestigeLevelIndex = Number.POSITIVE_INFINITY
+): SharedUserDexPayload | null {
+  if (!data || typeof data !== 'object') return null;
+  const payload = data as {
+    userId?: unknown;
+    displayName?: unknown;
+    caughtPokemonKeyIds?: unknown;
+    shinyPokemonKeyIds?: unknown;
+    unlockedPrestigeLevelIndex?: unknown;
+  };
+
+  if (typeof payload.userId !== 'string' || payload.userId.trim().length === 0) return null;
+  if (typeof payload.displayName !== 'string') return null;
+
+  const userDex = parseUserDexFromApi(
+    {
+      caughtPokemonKeyIds: payload.caughtPokemonKeyIds,
+      shinyPokemonKeyIds: payload.shinyPokemonKeyIds,
+      unlockedPrestigeLevelIndex: payload.unlockedPrestigeLevelIndex,
+    },
+    maxPrestigeLevelIndex
+  );
+  if (!userDex) return null;
+
+  return {
+    userId: payload.userId,
+    displayName: payload.displayName,
+    ...userDex,
+  };
+}
+
+export async function getSharedUserDex({
+  apiBaseUrl,
+  userId,
+  maxPrestigeLevelIndex,
+}: {
+  apiBaseUrl: string;
+  userId: string;
+  maxPrestigeLevelIndex?: number;
+}): Promise<{ data: SharedUserDexPayload | null; notFound: boolean }> {
+  const encodedUserId = encodeURIComponent(userId);
+  const response = await fetch(`${normalizeApiBaseUrl(apiBaseUrl)}/user-dex/${encodedUserId}`, {
+    method: 'GET',
+  });
+
+  if (response.status === 404) {
+    return { data: null, notFound: true };
+  }
+  if (!response.ok) {
+    return { data: null, notFound: false };
+  }
+
+  const data = (await response.json()) as unknown;
+  return {
+    data: parseSharedUserDexFromApi(data, maxPrestigeLevelIndex),
+    notFound: false,
+  };
 }

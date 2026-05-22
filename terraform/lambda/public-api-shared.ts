@@ -204,6 +204,10 @@ export function badRequest(event: APIGatewayProxyEventV2, error: string): APIGat
   return jsonResponse(400, { error }, getRequestOrigin(event));
 }
 
+export function notFound(event: APIGatewayProxyEventV2, error: string): APIGatewayProxyStructuredResultV2 {
+  return jsonResponse(404, { error }, getRequestOrigin(event));
+}
+
 export function internalError(event: APIGatewayProxyEventV2): APIGatewayProxyStructuredResultV2 {
   return jsonResponse(500, { error: 'Internal server error.' }, getRequestOrigin(event));
 }

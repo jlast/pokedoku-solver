@@ -27,6 +27,7 @@ for required_var in \
   COGNITO_CLIENT_ID \
   USER_DEX_GET_LAMBDA_CHANGED \
   USER_DEX_PATCH_LAMBDA_CHANGED \
+  USER_DEX_SHARED_GET_LAMBDA_CHANGED \
   SETTINGS_GET_LAMBDA_CHANGED \
   SETTINGS_PATCH_LAMBDA_CHANGED
 do
@@ -129,6 +130,14 @@ else
   CURRENT_USER_DEX_PATCH_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='UserDexPatchCodeS3Key'].ParameterValue" --output text)
 fi
 
+if [ "${USER_DEX_SHARED_GET_LAMBDA_CHANGED}" = "true" ]; then
+  CURRENT_USER_DEX_SHARED_GET_KEY="${USER_DEX_SHARED_GET_LAMBDA_KEY}"
+  require_var USER_DEX_SHARED_GET_LAMBDA_KEY
+  aws s3api head-object --bucket "${S3_BUCKET_NAME}" --key "${CURRENT_USER_DEX_SHARED_GET_KEY}" >/dev/null
+else
+  CURRENT_USER_DEX_SHARED_GET_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='UserDexSharedGetCodeS3Key'].ParameterValue" --output text)
+fi
+
 if [ "${SETTINGS_GET_LAMBDA_CHANGED}" = "true" ]; then
   CURRENT_SETTINGS_GET_KEY="${SETTINGS_GET_LAMBDA_KEY}"
   require_var SETTINGS_GET_LAMBDA_KEY
@@ -159,6 +168,8 @@ aws cloudformation deploy \
     UserDexGetCodeS3Key="${CURRENT_USER_DEX_GET_KEY}" \
     UserDexPatchCodeS3Bucket="${S3_BUCKET_NAME}" \
     UserDexPatchCodeS3Key="${CURRENT_USER_DEX_PATCH_KEY}" \
+    UserDexSharedGetCodeS3Bucket="${S3_BUCKET_NAME}" \
+    UserDexSharedGetCodeS3Key="${CURRENT_USER_DEX_SHARED_GET_KEY}" \
     SettingsGetCodeS3Bucket="${S3_BUCKET_NAME}" \
     SettingsGetCodeS3Key="${CURRENT_SETTINGS_GET_KEY}" \
     SettingsPatchCodeS3Bucket="${S3_BUCKET_NAME}" \

@@ -25,9 +25,9 @@ export function validateUserDexTableConfigured(): boolean {
   return TABLE_NAME.length > 0;
 }
 
-export async function readUserDex(
+export async function readUserDexByUserId(
   userId: string
-): Promise<{ caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[]; unlockedPrestigeLevelIndex: number }> {
+): Promise<{ caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[]; unlockedPrestigeLevelIndex: number } | null> {
   const result = await dynamo.send(
     new GetItemCommand({
       TableName: TABLE_NAME,
@@ -36,7 +36,7 @@ export async function readUserDex(
     })
   );
 
-  if (!result.Item) return { caughtPokemonKeyIds: [], shinyPokemonKeyIds: [], unlockedPrestigeLevelIndex: 0 };
+  if (!result.Item) return null;
   const item = unmarshall(result.Item) as {
     caughtPokemonKeyIds?: unknown;
     shinyPokemonKeyIds?: unknown;
@@ -49,6 +49,14 @@ export async function readUserDex(
 
   const unlockedPrestigeLevelIndex = sanitizePrestigeLevel(item.unlockedPrestigeLevelIndex);
   return { caughtPokemonKeyIds, shinyPokemonKeyIds, unlockedPrestigeLevelIndex };
+}
+
+export async function readUserDex(
+  userId: string
+): Promise<{ caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[]; unlockedPrestigeLevelIndex: number }> {
+  const userDex = await readUserDexByUserId(userId);
+  if (!userDex) return { caughtPokemonKeyIds: [], shinyPokemonKeyIds: [], unlockedPrestigeLevelIndex: 0 };
+  return userDex;
 }
 
 export async function writeUserDex(
