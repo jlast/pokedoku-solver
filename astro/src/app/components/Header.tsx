@@ -883,6 +883,16 @@ export function Header({
                                 }}
                                 className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 no-underline transition-colors hover:bg-slate-100"
                               >
+                                Dashboard
+                              </a>
+                              <a
+                                href={`${import.meta.env.BASE_URL}user/pokedex/`}
+                                onClick={() => {
+                                  trackEvent("click_navigate", { url: "user/pokedex/", from: currentPage });
+                                  closeMobileMenu("navigate");
+                                }}
+                                className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 no-underline transition-colors hover:bg-slate-100"
+                              >
                                 My Pokedex
                               </a>
                               <button
