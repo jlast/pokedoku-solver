@@ -252,7 +252,6 @@ export function PokedexDashboardPageClient() {
   const shinyCount = shinySet.size;
   const completionRate = totalCount > 0 ? Math.round((caughtCount / totalCount) * 100) : 0;
   const shinyOverallRate = totalCount > 0 ? Math.round((shinyCount / totalCount) * 100) : 0;
-  const shinyCaughtRate = caughtCount > 0 ? Math.round((shinyCount / caughtCount) * 100) : 0;
   const currentPrestige = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex] ?? PRESTIGE_LEVELS[0];
   const prestigeUiTone = getPrestigeUiTone(currentPrestige.tone);
 

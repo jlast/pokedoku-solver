@@ -13,7 +13,9 @@ import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { slugify } from "../../lib/slug";
 import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import {
+  getRemoteSettings,
   getRemoteUserDex,
+  patchRemoteSettings,
   patchRemoteUserDex,
   type UserDexPayload,
 } from "@pokedoku-helper/user-api-client";
@@ -142,6 +144,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     () => Array(gridSize).fill(null).map(() => Array(gridSize).fill(null)),
   );
   const [showMissingOnly, setShowMissingOnly] = useState<boolean>(() => isLoggedIn);
+  const [isSavingFilterPreference, setIsSavingFilterPreference] = useState(false);
   const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const [remoteUserDex, setRemoteUserDex] = useState<UserDexPayload | null>(null);
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
@@ -179,10 +182,18 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       if (!token || !apiBaseUrl) return;
 
       try {
-        const userDex = await getRemoteUserDex({ token, apiBaseUrl });
-        if (!userDex || isCancelled) return;
-        setCaughtSet(new Set(userDex.caughtPokemonKeyIds));
-        setRemoteUserDex(userDex);
+        const [userDex, settings] = await Promise.all([
+          getRemoteUserDex({ token, apiBaseUrl }),
+          getRemoteSettings({ token, apiBaseUrl }),
+        ]);
+        if (isCancelled) return;
+        if (userDex) {
+          setCaughtSet(new Set(userDex.caughtPokemonKeyIds));
+          setRemoteUserDex(userDex);
+        }
+        if (settings) {
+          setShowMissingOnly(settings.myPokedexFilter);
+        }
       } catch {}
     })();
 
@@ -299,6 +310,27 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   };
 
   const hasGridData = grid.cells.some((row) => row.some((cell) => cell !== null));
+
+  async function toggleMyPokedexFilter() {
+    const nextValue = !showMissingOnly;
+    setShowMissingOnly(nextValue);
+
+    const token = await getValidSessionIdToken();
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) return;
+
+    setIsSavingFilterPreference(true);
+    const updated = await patchRemoteSettings({
+      token,
+      apiBaseUrl,
+      patch: { myPokedexFilter: nextValue },
+    });
+    setIsSavingFilterPreference(false);
+
+    if (!updated) {
+      setShowMissingOnly(!nextValue);
+    }
+  }
   const selectedCellPossible = useMemo(() => {
     if (!grid.selectedCell) return [];
     const [row, col] = grid.selectedCell;
@@ -338,22 +370,24 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
               <p className="m-0 text-sm font-semibold text-slate-800">My Pokedex filter</p>
               <p className="m-0 text-xs text-slate-500">Show only entries you still need</p>
             </div>
-            <div className="inline-flex rounded-lg border border-slate-300 bg-white p-1">
-              <button
-                type="button"
-                onClick={() => setShowMissingOnly(false)}
-                className={`rounded-md px-3 py-1 text-sm ${!showMissingOnly ? "bg-slate-700 text-white" : "text-slate-700"}`}
-              >
-                Off
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowMissingOnly(true)}
-                className={`rounded-md px-3 py-1 text-sm ${showMissingOnly ? "bg-slate-700 text-white" : "text-slate-700"}`}
-              >
-                On
-              </button>
-            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={showMissingOnly}
+              onClick={() => {
+                void toggleMyPokedexFilter();
+              }}
+              disabled={isSavingFilterPreference}
+              className={`relative inline-flex h-7 w-12 items-center rounded-full border transition-colors ${
+                showMissingOnly ? "border-emerald-500 bg-emerald-500" : "border-slate-300 bg-slate-300"
+              } ${isSavingFilterPreference ? "opacity-70" : ""}`}
+            >
+              <span
+                className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                  showMissingOnly ? "translate-x-6" : "translate-x-1"
+                }`}
+              />
+            </button>
           </div>
           {showMissingOnly ? (
             <div className="mt-2">

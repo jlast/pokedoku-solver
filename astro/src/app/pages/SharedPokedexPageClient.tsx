@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
-import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 import { getSharedUserDex, type SharedUserDexPayload } from "@pokedoku-helper/user-api-client";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { getPrestigeUiTone } from "../lib/prestigeUi";
@@ -31,7 +30,13 @@ function PrestigeIcon({ tone, className }: { tone: string; className?: string })
 }
 
 export function SharedPokedexPageClient({ userId }: { userId?: string }) {
-  const [resolvedUserId, setResolvedUserId] = useState(userId?.trim() ?? "");
+  const [resolvedUserId] = useState(() => {
+    if (userId && userId.trim().length > 0) {
+      return userId.trim();
+    }
+    if (typeof window === "undefined") return "";
+    return new URLSearchParams(window.location.search).get("id")?.trim() ?? "";
+  });
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [sharedUserDex, setSharedUserDex] = useState<SharedUserDexPayload | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,17 +44,6 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showCaughtOnly, setShowCaughtOnly] = useState(false);
   const [showMissingOnly, setShowMissingOnly] = useState(true);
-
-  useEffect(() => {
-    if (userId && userId.trim().length > 0) {
-      setResolvedUserId(userId.trim());
-      return;
-    }
-
-    if (typeof window === "undefined") return;
-    const fromQuery = new URLSearchParams(window.location.search).get("id")?.trim() ?? "";
-    setResolvedUserId(fromQuery);
-  }, [userId]);
 
   useEffect(() => {
     let isCancelled = false;
