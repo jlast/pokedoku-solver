@@ -539,10 +539,10 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                         <div className="flex flex-wrap items-center gap-2">
                           {entry.pokemon.dexDifficulty && (
                             <span
-                              className="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold leading-none text-[var(--text-h)] shadow-sm"
+                              className="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold text-white shadow-sm"
                               style={{
                                 backgroundColor: DEX_DIFFICULTY_COLORS[entry.pokemon.dexDifficulty],
-                                border: "1px solid rgba(15,23,42,0.12)",
+                                border: "1px solid rgba(255,255,255,0.3)",
                               }}
                             >
                               {entry.pokemon.dexDifficulty}
