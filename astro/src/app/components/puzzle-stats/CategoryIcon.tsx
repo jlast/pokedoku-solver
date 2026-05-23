@@ -7,7 +7,7 @@ export function CategoryIcon({ parsed, layout = 'horizontal', className = '' }: 
 
   if (hidden) {
     return layout === 'vertical'
-      ? <span aria-hidden className="inline-block h-4 w-4 rounded-sm bg-white/90" />
+      ? <span aria-hidden className="inline-block h-4 w-4 rounded-sm bg-[var(--bg)]/90" />
       : <span aria-hidden className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor }} />;
   }
 

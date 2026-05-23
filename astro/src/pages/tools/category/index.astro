@@ -69,9 +69,9 @@ const groupedCategories = categoriesByType.reduce<
       />
 
       <main class="mx-auto w-full max-w-6xl px-2 pb-10">
-        <section class="mb-5 rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-sky-50/50 p-6 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <h1 class="m-0 text-4xl font-bold tracking-tight text-slate-900 max-md:text-3xl">Explore Categories</h1>
-          <p class="mt-2 mb-0 max-w-2xl text-lg leading-relaxed text-slate-600 max-md:text-base">
+        <section class="mb-5 rounded-3xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <h1 class="m-0 text-4xl font-bold tracking-tight text-[var(--text-h)] max-md:text-3xl">Explore Categories</h1>
+          <p class="mt-2 mb-0 max-w-2xl text-lg leading-relaxed text-[var(--text)] max-md:text-base">
             Pick a category to jump into detailed stats, examples, and combinations.
           </p>
           <div class="mt-5">
@@ -80,28 +80,28 @@ const groupedCategories = categoriesByType.reduce<
               id="category-landing-search"
               type="search"
               placeholder="Search categories..."
-              class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-800 outline-none ring-0 transition focus:border-sky-300 focus:shadow-[0_0_0_3px_rgba(56,189,248,0.15)]"
+              class="w-full rounded-2xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-base text-[var(--text-h)] outline-none ring-0 transition focus:border-sky-300 focus:shadow-[0_0_0_3px_rgba(56,189,248,0.15)]"
             />
           </div>
         </section>
 
         <section class="grid grid-cols-1 gap-4 lg:grid-cols-2" id="category-groups-grid">
           {groupedCategories.map((group) => (
-            <article class="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]" data-category-group>
-              <h2 class="m-0 px-1 pb-3 text-3xl font-semibold tracking-tight text-slate-900 max-md:text-2xl">{group.label}</h2>
+            <article class="rounded-3xl border border-[var(--border)] bg-[var(--bg)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]" data-category-group>
+              <h2 class="m-0 px-1 pb-3 text-3xl font-semibold tracking-tight text-[var(--text-h)] max-md:text-2xl">{group.label}</h2>
               <div class="grid grid-cols-2 gap-3 sm:grid-cols-3" data-category-tiles>
                 {group.items.map((entry) => (
                   <a
                     href={`/tools/category/${entry.slug}/`}
-                    class="group flex min-h-[150px] flex-col items-center rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-3 text-center no-underline shadow-sm transition-all duration-150 hover:-translate-y-px hover:border-sky-300 hover:shadow-[0_12px_24px_rgba(14,116,144,0.15)]"
+                    class="group flex min-h-[150px] flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-3 text-center no-underline shadow-sm transition-all duration-150 hover:-translate-y-px hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)] hover:shadow-[0_12px_24px_rgba(14,116,144,0.15)]"
                     data-category-tile
                     data-search-label={entry.label.toLowerCase()}
                   >
                     <span class="mb-3 inline-flex items-center justify-center">
                       <CategoryIconBadge parsed={parseCategoryId(entry.key)} size="lg" />
                     </span>
-                    <span class="min-h-[2.5rem] text-sm leading-tight font-semibold text-slate-800">{entry.label}</span>
-                    <span class="mt-2 block text-xs font-medium text-slate-500">{entry.count} Pokemon</span>
+                    <span class="min-h-[2.5rem] text-sm leading-tight font-semibold text-[var(--text-h)]">{entry.label}</span>
+                    <span class="mt-2 block text-xs font-medium text-[var(--text)]">{entry.count} Pokemon</span>
                   </a>
                 ))}
               </div>

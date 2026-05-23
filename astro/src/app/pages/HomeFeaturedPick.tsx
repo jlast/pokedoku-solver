@@ -28,16 +28,16 @@ const DIFFICULTY_TONE_CLASS: Record<string, string> = {
   Hard: "text-amber-700",
   Expert: "text-orange-700",
   Nightmare: "text-violet-700",
-  Impossible: "text-slate-700",
+  Impossible: "text-[var(--text)]",
 };
 
 const DIFFICULTY_ACCENT_CLASS: Record<string, string> = {
-  Easy: "border-emerald-200/90 from-emerald-50 via-white to-lime-50",
-  Normal: "border-sky-200/90 from-sky-50 via-white to-cyan-50",
-  Hard: "border-amber-200/90 from-amber-50 via-white to-orange-50",
-  Expert: "border-orange-200/90 from-orange-50 via-white to-rose-50",
-  Nightmare: "border-violet-200/90 from-violet-50 via-white to-fuchsia-50",
-  Impossible: "border-slate-300/90 from-slate-100 via-white to-zinc-100",
+  Easy: "border-emerald-400/50 bg-[var(--bg)]",
+  Normal: "border-sky-400/50 bg-[var(--bg)]",
+  Hard: "border-amber-400/50 bg-[var(--bg)]",
+  Expert: "border-orange-400/50 bg-[var(--bg)]",
+  Nightmare: "border-violet-400/50 bg-[var(--bg)]",
+  Impossible: "border-[var(--border)] bg-[var(--bg)]",
 };
 
 function rankPuzzleType(type: string): number {
@@ -85,20 +85,20 @@ export function HomeFeaturedPick() {
   const difficulty = featuredPick.featured.dexDifficulty;
   const difficultyPercentile = Math.max(1, Math.round(featuredPick.featured.dexDifficultyPercentile ?? 0));
   const topDifficultyPercent = Math.min(100, difficultyPercentile);
-  const accentClass = difficulty ? DIFFICULTY_ACCENT_CLASS[difficulty] || "border-slate-200 from-slate-50 via-white to-slate-100" : "border-slate-200 from-slate-50 via-white to-slate-100";
-  const toneClass = difficulty ? DIFFICULTY_TONE_CLASS[difficulty] || "text-slate-700" : "text-slate-700";
+  const accentClass = difficulty ? DIFFICULTY_ACCENT_CLASS[difficulty] || "border-[var(--border)] bg-[var(--bg)]" : "border-[var(--border)] bg-[var(--bg)]";
+  const toneClass = difficulty ? DIFFICULTY_TONE_CLASS[difficulty] || "text-[var(--text)]" : "text-[var(--text)]";
 
   return (
     <section className="mt-6">
-      <p className="m-0 text-lg font-bold text-slate-900">Today's featured pick</p>
+      <p className="m-0 text-lg font-bold text-[var(--text-h)]">Today's featured pick</p>
       <a
         href="/pokedoku-answers-today/"
         className={`group mt-1.5 block rounded-2xl border bg-gradient-to-br p-4 no-underline shadow-[0_10px_30px_rgba(15,23,42,0.08)] transition duration-200 hover:-translate-y-[1px] hover:shadow-[0_14px_34px_rgba(15,23,42,0.12)] active:translate-y-0 ${accentClass}`}
       >
         <div className="flex items-center gap-3">
           {featuredPick.featured.sprite ? (
-            <div className="relative flex h-[5.5rem] w-[5.5rem] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white via-violet-50/70 to-fuchsia-100/70 shadow-inner">
-              <div className="pointer-events-none absolute inset-3 rounded-full bg-white/80 blur-[8px]"></div>
+             <div className="relative flex h-[5.5rem] w-[5.5rem] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[var(--border)]/80 bg-[var(--code-bg)] shadow-inner">
+              <div className="pointer-events-none absolute inset-3 rounded-full bg-[var(--bg)]/80 blur-[8px]"></div>
               <img
                 src={featuredPick.featured.sprite}
                 alt={formatPokemonName(featuredPick.featured.name)}
@@ -108,17 +108,17 @@ export function HomeFeaturedPick() {
               />
             </div>
           ) : (
-            <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-slate-300 bg-white text-xs font-semibold text-slate-500">
+            <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--bg)] text-xs font-semibold text-[var(--text)]">
               No img
             </div>
           )}
 
           <div className="min-w-0">
-            <p className="m-0 text-xl font-extrabold leading-tight text-slate-900">{formatPokemonName(featuredPick.featured.name)}</p>
+            <p className="m-0 text-xl font-extrabold leading-tight text-[var(--text-h)]">{formatPokemonName(featuredPick.featured.name)}</p>
             <div className={`mt-1 flex flex-wrap items-center gap-1.5 text-sm font-semibold ${toneClass}`}>
               {difficulty && (
                 <span
-                  className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold text-white ${DIFFICULTY_BADGE_CLASS[difficulty] || "bg-slate-500"}`}
+                  className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold text-white ${DIFFICULTY_BADGE_CLASS[difficulty] || "bg-[var(--code-bg)]"}`}
                   title="Dex difficulty tier"
                 >
                   {difficulty}
@@ -126,7 +126,7 @@ export function HomeFeaturedPick() {
               )}
               <span>Top {topDifficultyPercent}% difficulty</span>
             </div>
-            <p className="mt-2 mb-0 max-w-[30ch] text-sm leading-5 text-slate-700">
+            <p className="mt-2 mb-0 max-w-[30ch] text-sm leading-5 text-[var(--text)]">
               Today’s hardest valid answer. Fits only {featuredPick.featured.globalCategoryCombinationCount} category combinations.
             </p>
           </div>

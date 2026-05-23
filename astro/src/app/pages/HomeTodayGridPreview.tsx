@@ -57,7 +57,7 @@ export function HomeTodayGridPreview() {
   );
 
   if (!puzzle) {
-    return <p className="m-0 text-center text-sm text-slate-600">Loading today&apos;s grid...</p>;
+    return <p className="m-0 text-center text-sm text-[var(--text)]">Loading today&apos;s grid...</p>;
   }
 
   const gridSize = puzzle.rowConstraints.length;

@@ -126,13 +126,13 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
     <>
       {variant === "summary" ? (
         <>
-          <article className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-            <span className="block text-sm text-slate-500">Last valid</span>
-            <strong className="text-slate-900">{stats ? `${stats.lastUsable.daysAgo} days ago` : "Unknown"}</strong>
+          <article className="rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] p-3">
+            <span className="block text-sm text-[var(--text)]">Last valid</span>
+            <strong className="text-[var(--text-h)]">{stats ? `${stats.lastUsable.daysAgo} days ago` : "Unknown"}</strong>
           </article>
-          <article className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-            <span className="block text-sm text-slate-500">Total appearances</span>
-            <strong className="text-slate-900">{stats ? `${stats.totalAppearances.percentage.toFixed(2)}% of puzzles` : "Unknown"}</strong>
+          <article className="rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] p-3">
+            <span className="block text-sm text-[var(--text)]">Total appearances</span>
+            <strong className="text-[var(--text-h)]">{stats ? `${stats.totalAppearances.percentage.toFixed(2)}% of puzzles` : "Unknown"}</strong>
           </article>
         </>
       ) : null}
@@ -154,7 +154,7 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
             {categoryRows.map((row) => (
               <li key={row.parsed.raw} className="grid items-center gap-2 text-sm md:grid-cols-[minmax(0,1fr)_64px]">
                 <div className="min-w-0">
-                  <span className="mb-1 flex items-center gap-2 font-semibold text-slate-800">
+                  <span className="mb-1 flex items-center gap-2 font-semibold text-[var(--text-h)]">
                     <CategoryBadgeLink parsed={row.parsed} href={getCategoryHref(row.parsed.label)} />
                   </span>
                   <div className="h-2 overflow-hidden rounded-full">
@@ -166,7 +166,7 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-slate-500">No category stats available.</p>
+          <p className="text-sm text-[var(--text)]">No category stats available.</p>
         )}
       </SectionCard> : null}
 
@@ -184,7 +184,7 @@ function PokemonRuntimeStatsPanelContent({ statsKeyId, variant }: PokemonRuntime
             }))}
           />
         ) : (
-          <p className="text-sm text-slate-500">No combination stats available.</p>
+          <p className="text-sm text-[var(--text)]">No combination stats available.</p>
         )}
       </SectionCard> : null}
     </>

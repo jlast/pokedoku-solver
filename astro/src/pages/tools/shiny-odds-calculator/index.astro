@@ -69,18 +69,18 @@ const faqStructuredData = {
       />
 
       <section
-        class="rounded-[18px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+        class="rounded-[18px] border border-[var(--border)] bg-[var(--bg)] p-4 shadow-sm sm:p-5"
         aria-live="polite"
       >
         <div class="flex items-start justify-between gap-4">
           <div class="min-w-0 flex-1">
-            <p class="m-0 text-sm font-semibold text-slate-800">
+            <p class="m-0 text-sm font-semibold text-[var(--text-h)]">
               <a
                 href="#shiny-hunt-setup"
-                class="inline-flex items-center gap-1.5 text-slate-800 decoration-slate-300 underline-offset-4 hover:decoration-slate-500"
+                class="inline-flex items-center gap-1.5 text-[var(--text-h)] decoration-slate-300 underline-offset-4 hover:decoration-slate-500"
               >
                 <span data-result-title>Chance of 2 or more shinies</span>
-                <svg class="h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <svg class="h-4 w-4 shrink-0 text-[var(--text)]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="m4 20 1.2-4.2L15.8 5.2a1.5 1.5 0 0 1 2.1 0l1 1a1.5 1.5 0 0 1 0 2.1L8.2 18.8 4 20Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
                   <path d="m13.8 7.2 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
                 </svg>
@@ -94,7 +94,7 @@ const faqStructuredData = {
                 2.66%
               </p>
               <p
-                class="m-0 text-sm font-semibold text-slate-700"
+                class="m-0 text-sm font-semibold text-[var(--text)]"
                 data-result-odds
               >
                 about 1 in 38
@@ -107,7 +107,7 @@ const faqStructuredData = {
               </p>
             </div>
             <p
-              class="mt-2 max-w-[38rem] text-xs leading-relaxed text-slate-500"
+              class="mt-2 max-w-[38rem] text-xs leading-relaxed text-[var(--text)]"
               data-result-subtitle
             >
               Across 1 grid with 9 squares at Poké Ball prestige.
@@ -123,60 +123,60 @@ const faqStructuredData = {
           aria-label="Live odds details"
         >
           <div
-            class="m-0 rounded-xl border border-indigo-100 bg-white/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+            class="m-0 rounded-xl border border-indigo-100 bg-[var(--bg)]/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
           >
             <dt
-              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-slate-600"
+              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-[var(--text)]"
             >
               Expected shinies
             </dt>
             <dd
-              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-slate-900"
+              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-[var(--text-h)]"
               data-result-expected
             >
               0.09
             </dd>
           </div>
           <div
-            class="m-0 rounded-xl border border-indigo-100 bg-white/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+            class="m-0 rounded-xl border border-indigo-100 bg-[var(--bg)]/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
           >
             <dt
-              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-slate-600"
+              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-[var(--text)]"
             >
               Exactly target
             </dt>
             <dd
-              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-slate-900"
+              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-[var(--text-h)]"
               data-result-exact
             >
               0.31%
             </dd>
           </div>
           <div
-            class="m-0 rounded-xl border border-indigo-100 bg-white/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+            class="m-0 rounded-xl border border-indigo-100 bg-[var(--bg)]/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
           >
             <dt
-              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-slate-600"
+              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-[var(--text)]"
             >
               At least 1
             </dt>
             <dd
-              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-slate-900"
+              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-[var(--text-h)]"
               data-result-at-least-one
             >
               8.65%
             </dd>
           </div>
           <div
-            class="m-0 rounded-xl border border-indigo-100 bg-white/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+            class="m-0 rounded-xl border border-indigo-100 bg-[var(--bg)]/90 px-3 py-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
           >
             <dt
-              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-slate-600"
+              class="text-[0.74rem] font-bold uppercase tracking-[0.02em] text-[var(--text)]"
             >
               Zero shinies
             </dt>
             <dd
-              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-slate-900"
+              class="mt-1.5 m-0 text-[1.2rem] font-black leading-none text-[var(--text-h)]"
               data-result-zero
             >
               91.35%
@@ -187,7 +187,7 @@ const faqStructuredData = {
 
       <section
         id="shiny-hunt-setup"
-        class="scroll-mt-20 rounded-[18px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+        class="scroll-mt-20 rounded-[18px] border border-[var(--border)] bg-[var(--bg)] p-4 shadow-sm sm:p-5"
         aria-labelledby="calculator-title"
       >
         <div class="mb-4 flex items-center gap-3">
@@ -222,7 +222,7 @@ const faqStructuredData = {
           <div>
             <h2
               id="calculator-title"
-              class="m-0 text-xl font-bold text-slate-900"
+              class="m-0 text-xl font-bold text-[var(--text-h)]"
             >
               Shiny Hunt Setup
             </h2>
@@ -231,11 +231,11 @@ const faqStructuredData = {
 
         <div class="grid gap-2.5">
           <SetupRow forId="shinies-wanted">
-            <span
-              slot="icon"
-              class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-700 shadow-[inset_0_0_0_1px_rgba(148,163,184,0.2)]"
-              aria-hidden="true"
-            >
+              <span
+                slot="icon"
+                class="flex h-11 w-11 items-center justify-center rounded-xl text-amber-400"
+                aria-hidden="true"
+              >
               <svg viewBox="0 0 24 24" fill="none">
                 <path
                   d="m12 4 1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4z"
@@ -243,27 +243,27 @@ const faqStructuredData = {
               </svg>
             </span>
             <span slot="content" class="min-w-0 flex-1">
-              <span class="block font-semibold text-slate-900"
+              <span class="block font-semibold text-[var(--text-h)]"
                 >Shinies wanted</span
               >
-              <span class="block text-sm text-slate-500"
+              <span class="block text-sm text-[var(--text)]"
                 >How many shiny Pokémon?</span
               >
             </span>
             <span
               slot="control"
-              class="col-span-full grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] overflow-hidden rounded-xl border border-slate-300 bg-white sm:col-auto sm:w-48"
+              class="col-span-full grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)] sm:col-auto sm:w-48"
               data-stepper="shinies-wanted"
             >
               <button
                 type="button"
-                class="min-h-11 text-xl font-extrabold text-slate-900"
+                class="min-h-11 text-xl font-extrabold text-[var(--text-h)]"
                 data-step="-1"
                 aria-label="Decrease shinies wanted">−</button
               >
               <input
                 id="shinies-wanted"
-                class="min-h-11 border-x border-slate-200 bg-transparent text-center font-extrabold text-slate-900 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                class="min-h-11 border-x border-[var(--border)] bg-transparent text-center font-extrabold text-[var(--text-h)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 data-calculator-input="shinies"
                 type="number"
                 min="0"
@@ -273,7 +273,7 @@ const faqStructuredData = {
               />
               <button
                 type="button"
-                class="min-h-11 text-xl font-extrabold text-slate-900"
+                class="min-h-11 text-xl font-extrabold text-[var(--text-h)]"
                 data-step="1"
                 aria-label="Increase shinies wanted">+</button
               >
@@ -281,19 +281,19 @@ const faqStructuredData = {
           </SetupRow>
 
           <SetupRow forId="prestige-level">
-            <span
-              slot="icon"
-              class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-500 shadow-[inset_0_0_0_1px_rgba(148,163,184,0.2)]"
-              data-prestige-badge
-              aria-hidden="true"
-            >
+              <span
+                slot="icon"
+                class="flex h-11 w-11 items-center justify-center rounded-xl text-red-500"
+                data-prestige-badge
+                aria-hidden="true"
+              >
               <PokeballIcon tone="pokeball" class="h-7 w-7" />
             </span>
             <span slot="content" class="min-w-0 flex-1">
-              <span class="block font-semibold text-slate-900"
+              <span class="block font-semibold text-[var(--text-h)]"
                 >Prestige level</span
               >
-              <span class="block text-sm text-slate-500"
+              <span class="block text-sm text-[var(--text)]"
                 >Shiny odds per eligible square</span
               >
             </span>
@@ -301,7 +301,7 @@ const faqStructuredData = {
               slot="control"
               id="prestige-level"
               data-calculator-input="prestige"
-              class="col-span-full min-h-[2.9rem] w-full rounded-xl border border-slate-300 bg-white px-3.5 font-extrabold text-slate-900 sm:col-auto sm:w-56"
+              class="col-span-full min-h-[2.9rem] w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3.5 font-extrabold text-[var(--text-h)] sm:col-auto sm:w-56"
             >
               {
                 PRESTIGE_LEVELS.map((level) => (
@@ -319,11 +319,11 @@ const faqStructuredData = {
 
           <Collapsible
             title="Advanced options"
-            detailsClass="rounded-[14px] border border-slate-200 bg-slate-50/70"
+            detailsClass="rounded-[14px] border border-[var(--border)] bg-[var(--code-bg)]/70"
             summaryClass="px-3 py-2.5 text-sm"
             contentClass="grid gap-2.5 px-2 pb-2"
           >
-            <SetupRow forId="squares-per-grid" rowClass="bg-white">
+            <SetupRow forId="squares-per-grid" rowClass="bg-[var(--bg)]">
               <span
                 slot="icon"
                 class="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sky-700 shadow-[inset_0_0_0_1px_rgba(148,163,184,0.2)]"
@@ -345,27 +345,27 @@ const faqStructuredData = {
                 </svg>
               </span>
               <span slot="content" class="min-w-0 flex-1">
-                <span class="block font-semibold text-slate-900"
+                <span class="block font-semibold text-[var(--text-h)]"
                   >Squares per grid</span
                 >
-                <span class="block text-sm text-slate-500"
+                <span class="block text-sm text-[var(--text)]"
                   >How many squares in each grid?</span
                 >
               </span>
               <span
                 slot="control"
-                class="col-span-full grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] overflow-hidden rounded-xl border border-slate-300 bg-white sm:col-auto sm:w-48"
+                class="col-span-full grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)] sm:col-auto sm:w-48"
                 data-stepper="squares-per-grid"
               >
                 <button
                   type="button"
-                  class="min-h-11 text-xl font-extrabold text-slate-900"
+                  class="min-h-11 text-xl font-extrabold text-[var(--text-h)]"
                   data-step="-1"
                   aria-label="Decrease squares per grid">−</button
                 >
                 <input
                   id="squares-per-grid"
-                  class="min-h-11 border-x border-slate-200 bg-transparent text-center font-extrabold text-slate-900 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  class="min-h-11 border-x border-[var(--border)] bg-transparent text-center font-extrabold text-[var(--text-h)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   data-calculator-input="squares"
                   type="number"
                   min="1"
@@ -375,14 +375,14 @@ const faqStructuredData = {
                 />
                 <button
                   type="button"
-                  class="min-h-11 text-xl font-extrabold text-slate-900"
+                  class="min-h-11 text-xl font-extrabold text-[var(--text-h)]"
                   data-step="1"
                   aria-label="Increase squares per grid">+</button
                 >
               </span>
             </SetupRow>
 
-            <SetupRow forId="grid-count" rowClass="bg-white">
+            <SetupRow forId="grid-count" rowClass="bg-[var(--bg)]">
               <span
                 slot="icon"
                 class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 shadow-[inset_0_0_0_1px_rgba(148,163,184,0.2)]"
@@ -408,27 +408,27 @@ const faqStructuredData = {
                 </svg>
               </span>
               <span slot="content" class="min-w-0 flex-1">
-                <span class="block font-semibold text-slate-900"
+                <span class="block font-semibold text-[var(--text-h)]"
                   >Number of grids</span
                 >
-                <span class="block text-sm text-slate-500"
+                <span class="block text-sm text-[var(--text)]"
                   >How many grids are you completing?</span
                 >
               </span>
               <span
                 slot="control"
-                class="col-span-full grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] overflow-hidden rounded-xl border border-slate-300 bg-white sm:col-auto sm:w-48"
+                class="col-span-full grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)] sm:col-auto sm:w-48"
                 data-stepper="grid-count"
               >
                 <button
                   type="button"
-                  class="min-h-11 text-xl font-extrabold text-slate-900"
+                  class="min-h-11 text-xl font-extrabold text-[var(--text-h)]"
                   data-step="-1"
                   aria-label="Decrease number of grids">−</button
                 >
                 <input
                   id="grid-count"
-                  class="min-h-11 border-x border-slate-200 bg-transparent text-center font-extrabold text-slate-900 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  class="min-h-11 border-x border-[var(--border)] bg-transparent text-center font-extrabold text-[var(--text-h)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   data-calculator-input="grids"
                   type="number"
                   min="1"
@@ -438,7 +438,7 @@ const faqStructuredData = {
                 />
                 <button
                   type="button"
-                  class="min-h-11 text-xl font-extrabold text-slate-900"
+                  class="min-h-11 text-xl font-extrabold text-[var(--text-h)]"
                   data-step="1"
                   aria-label="Increase number of grids">+</button
                 >
@@ -446,7 +446,7 @@ const faqStructuredData = {
             </SetupRow>
 
             <fieldset
-              class="rounded-xl border border-slate-200 bg-slate-50 p-2"
+              class="rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-2"
             >
               <legend class="sr-only">Result type</legend>
               <div class="grid grid-cols-2 gap-2">
@@ -460,7 +460,7 @@ const faqStructuredData = {
                     data-calculator-input="mode"
                   />
                   <span
-                    class="flex min-h-10 items-center justify-center rounded-lg bg-white font-extrabold text-slate-600 peer-checked:bg-indigo-50 peer-checked:text-indigo-600"
+                    class="flex min-h-10 items-center justify-center rounded-lg bg-[var(--bg)] font-extrabold text-[var(--text)] peer-checked:bg-[var(--accent-bg)] peer-checked:text-[var(--text-h)]"
                     >At least X</span
                   >
                 </label>
@@ -473,7 +473,7 @@ const faqStructuredData = {
                     data-calculator-input="mode"
                   />
                   <span
-                    class="flex min-h-10 items-center justify-center rounded-lg bg-white font-extrabold text-slate-600 peer-checked:bg-indigo-50 peer-checked:text-indigo-600"
+                    class="flex min-h-10 items-center justify-center rounded-lg bg-[var(--bg)] font-extrabold text-[var(--text)] peer-checked:bg-[var(--accent-bg)] peer-checked:text-[var(--text-h)]"
                     >Exactly X</span
                   >
                 </label>
@@ -484,7 +484,7 @@ const faqStructuredData = {
       </section>
 
       <aside
-        class="flex gap-3 rounded-[14px] border border-sky-100 bg-sky-50 p-4 text-slate-700"
+        class="flex gap-3 rounded-[14px] border border-[var(--border)] bg-[var(--code-bg)] p-4 text-[var(--text)]"
       >
         <span
           class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-500 font-bold text-white"
@@ -498,7 +498,7 @@ const faqStructuredData = {
       </aside>
 
       <section
-        class="rounded-[18px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+        class="rounded-[18px] border border-[var(--border)] bg-[var(--bg)] p-4 shadow-sm sm:p-5"
         aria-labelledby="prestige-title"
       >
         <div class="mb-3 flex items-center gap-3">
@@ -511,23 +511,23 @@ const faqStructuredData = {
           <div>
             <h2
               id="prestige-title"
-              class="m-0 text-xl font-bold text-slate-900"
+              class="m-0 text-xl font-bold text-[var(--text-h)]"
             >
               Prestige levels
             </h2>
-            <p class="m-0 text-sm text-slate-500">
+            <p class="m-0 text-sm text-[var(--text)]">
               Each prestige level has a different base shiny rate.
             </p>
           </div>
         </div>
 
-        <div class="overflow-hidden rounded-xl border border-slate-200">
+        <div class="overflow-hidden rounded-xl border border-[var(--border)]">
           {
             PRESTIGE_LEVELS.map((level) => (
               <button
                 type="button"
                 class:list={[
-                  "flex w-full items-center gap-3 border-0 border-b border-slate-200 bg-white px-4 py-3.5 last:border-b-0",
+                  "flex w-full items-center gap-3 border-0 border-b border-[var(--border)] bg-[var(--bg)] px-4 py-3.5 last:border-b-0",
                   level.id === "pokeball"
                     ? "shadow-[inset_3px_0_0_rgb(220,38,38)]"
                     : "",
@@ -548,9 +548,9 @@ const faqStructuredData = {
                           : level.tone === "masterball"
                             ? "text-purple-400"
                             : level.tone === "premierball"
-                              ? "text-slate-400"
+                              ? "text-[var(--text)]"
                               : level.tone === "beastball"
-                                ? "text-slate-700"
+                                ? "text-[var(--text)]"
                                 : "text-red-700",
                   ]}
                   aria-hidden="true"
@@ -558,10 +558,10 @@ const faqStructuredData = {
                   <PokeballIcon tone={level.tone} class="h-7 w-7" />
                 </span>
                 <span class="flex-1 text-left">
-                  <span class="block font-semibold text-slate-900">
+                  <span class="block font-semibold text-[var(--text-h)]">
                     {level.label}
                   </span>
-                  <span class="block text-xs text-slate-500">
+                  <span class="block text-xs text-[var(--text)]">
                     {level.description}
                   </span>
                 </span>
@@ -573,60 +573,60 @@ const faqStructuredData = {
       </section>
 
       <section
-        class="rounded-[18px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+        class="rounded-[18px] border border-[var(--border)] bg-[var(--bg)] p-4 shadow-sm sm:p-5"
         aria-labelledby="faq-title"
       >
         <div class="mb-3 flex items-center gap-3">
           <div
-            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-xl"
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--code-bg)] text-xl text-[var(--text-h)]"
           >
             ?
           </div>
-          <h2 id="faq-title" class="m-0 text-xl font-bold text-slate-900">
+          <h2 id="faq-title" class="m-0 text-xl font-bold text-[var(--text-h)]">
             FAQ
           </h2>
         </div>
 
         <div
-          class="overflow-hidden rounded-xl border border-slate-200 bg-white"
+          class="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)]"
         >
           <Collapsible
             title="What does this calculator show?"
             open
-            detailsClass="border-b border-slate-200 last:border-b-0"
+            detailsClass="border-b border-[var(--border)] last:border-b-0"
             contentClass="px-4 pb-4"
           >
-            <p class="m-0 text-sm leading-6 text-slate-600">
+            <p class="m-0 text-sm leading-6 text-[var(--text)]">
               It shows your odds of getting a chosen number of shiny Pokemon
               across one or more Pokedoku grids.
             </p>
           </Collapsible>
           <Collapsible
             title="Does it calculate exact or minimum shinies?"
-            detailsClass="border-b border-slate-200 last:border-b-0"
+            detailsClass="border-b border-[var(--border)] last:border-b-0"
             contentClass="px-4 pb-4"
           >
-            <p class="m-0 text-sm leading-6 text-slate-600">
+            <p class="m-0 text-sm leading-6 text-[var(--text)]">
               By default, it calculates at least X shinies. In Advanced options,
               you can switch to exactly X shinies.
             </p>
           </Collapsible>
           <Collapsible
             title="What is the default setup?"
-            detailsClass="border-b border-slate-200 last:border-b-0"
+            detailsClass="border-b border-[var(--border)] last:border-b-0"
             contentClass="px-4 pb-4"
           >
-            <p class="m-0 text-sm leading-6 text-slate-600">
+            <p class="m-0 text-sm leading-6 text-[var(--text)]">
               The default is 2 shinies across 1 grid of 9 squares at Poke Ball
               prestige, with a 1/100 shiny chance per square.
             </p>
           </Collapsible>
           <Collapsible
             title="Why are the odds so low?"
-            detailsClass="border-b border-slate-200 last:border-b-0"
+            detailsClass="border-b border-[var(--border)] last:border-b-0"
             contentClass="px-4 pb-4"
           >
-            <p class="m-0 text-sm leading-6 text-slate-600">
+            <p class="m-0 text-sm leading-6 text-[var(--text)]">
               Each square has an independent shiny roll, so even 9 squares at
               1/100 only gives a small chance of multiple shinies.
             </p>
@@ -666,8 +666,8 @@ const faqStructuredData = {
       greatball: "text-blue-600",
       ultraball: "text-yellow-400",
       masterball: "text-purple-400",
-      premierball: "text-slate-400",
-      beastball: "text-slate-700",
+      premierball: "text-[var(--text)]",
+      beastball: "text-[var(--text)]",
       cherishball: "text-red-700",
     };
 

@@ -17,7 +17,7 @@ import { Footer } from "../../app/components/Footer";
       client:load
     />
 
-    <div class="my-5 rounded-[15px] border-b border-slate-200 bg-slate-50 p-4">
+    <div class="my-5 rounded-[15px] border-b border-[var(--border)] bg-[var(--code-bg)] p-4">
       <div class="mb-6 flex flex-col gap-3 rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4">
         <input
           id="search-input"
@@ -28,14 +28,14 @@ import { Footer } from "../../app/components/Footer";
       </div>
 
       <div class="mb-3 flex justify-start gap-3">
-        <button class="inline-flex items-center gap-1.5 rounded-[10px] border-2 border-slate-500 bg-slate-500 px-[18px] py-2.5 text-[0.9rem] font-medium text-white transition-colors hover:border-slate-600 hover:bg-slate-600" id="open-filter-drawer" type="button">
+        <button class="inline-flex items-center gap-1.5 rounded-[10px] border-2 border-[var(--border)] bg-[var(--bg)] px-[18px] py-2.5 text-[0.9rem] font-medium text-[var(--text-h)] transition-colors hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]" id="open-filter-drawer" type="button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
           </svg>
           Filter
-          <span class="rounded-[10px] bg-white px-1.5 py-0.5 text-xs font-semibold text-slate-500" id="active-filter-count" hidden>0</span>
+          <span class="rounded-[10px] bg-[var(--bg)] px-1.5 py-0.5 text-xs font-semibold text-[var(--text)]" id="active-filter-count" hidden>0</span>
         </button>
-        <button class="inline-flex items-center gap-1.5 rounded-[10px] border-2 border-slate-200 bg-white px-[18px] py-2.5 text-[0.9rem] font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50" id="clear-filters" type="button" disabled>
+        <button class="inline-flex items-center gap-1.5 rounded-[10px] border-2 border-[var(--border)] bg-[var(--bg)] px-[18px] py-2.5 text-[0.9rem] font-medium text-[var(--text)] transition-colors hover:border-[var(--border)] hover:bg-[var(--code-bg)] disabled:cursor-not-allowed disabled:opacity-50" id="clear-filters" type="button" disabled>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
           </svg>
@@ -123,7 +123,7 @@ import { Footer } from "../../app/components/Footer";
         <div id="drawer-filters"></div>
       </div>
       <div class="sticky bottom-0 flex justify-center gap-3 border-t border-[var(--border)] bg-[var(--bg)] p-4">
-        <button id="clear-filters-drawer" class="w-fit rounded-lg border-2 border-red-300 bg-white px-4 py-2 text-sm text-red-700 transition-colors hover:border-red-400 hover:bg-rose-50 hover:text-red-800 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400" type="button">Clear All</button>
+        <button id="clear-filters-drawer" class="w-fit rounded-lg border-2 border-red-300 bg-[var(--bg)] px-4 py-2 text-sm text-red-700 transition-colors hover:border-red-400 hover:bg-rose-50 hover:text-red-800 disabled:cursor-not-allowed disabled:border-[var(--border)] disabled:bg-[var(--code-bg)] disabled:text-[var(--text)]" type="button">Clear All</button>
       </div>
     </div>
   </main>
@@ -513,7 +513,7 @@ import { Footer } from "../../app/components/Footer";
 
       const toggleStyles = {
         active: ["bg-slate-900", "text-white"],
-        inactive: ["text-[var(--text)]", "hover:bg-slate-100"],
+        inactive: ["text-[var(--text)]", "hover:bg-[var(--code-bg)]"],
       };
 
       [els.ownershipAll, els.ownershipUnowned, els.ownershipOwned].forEach((button) => {

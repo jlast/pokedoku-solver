@@ -30,13 +30,13 @@ const metadataJson = JSON.stringify(analyticsMetadata);
 >
   <summary
     class:list={[
-      "flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-extrabold text-slate-900 transition-colors hover:bg-slate-50 [&::-webkit-details-marker]:hidden",
+      "flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-extrabold text-[var(--text-h)] transition-colors hover:bg-[var(--accent-bg)] [&::-webkit-details-marker]:hidden",
       summaryClass,
     ]}
   >
     <span>{title}</span>
     <svg
-      class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
+      class="h-4 w-4 shrink-0 text-[var(--text)] transition-transform duration-200 group-open:rotate-180"
       viewBox="0 0 20 20"
       fill="none"
       aria-hidden="true"

@@ -20,9 +20,9 @@ const activeTypes = new Set(
 const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] ? [groups[0].type] : []);
 ---
 
-<aside class="rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-4 shadow-[0_16px_34px_rgba(15,23,42,0.08)] lg:sticky lg:top-4" data-category-sidebar data-active-slugs={activeSlugsJson}>
+<aside class="rounded-3xl border border-[var(--border)] bg-[var(--bg)] p-4 shadow-[0_16px_34px_rgba(15,23,42,0.08)] lg:sticky lg:top-4" data-category-sidebar data-active-slugs={activeSlugsJson}>
   <div class="mb-3 px-1 py-1 hidden lg:block">
-    <h2 class="m-0 text-xl font-semibold tracking-tight text-slate-900">Categories</h2>
+    <h2 class="m-0 text-xl font-semibold tracking-tight text-[var(--text-h)]">Categories</h2>
   </div>
 
   <div class="mb-3 lg:hidden">
@@ -31,15 +31,15 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
       type="button"
       aria-expanded="false"
       aria-controls="category-mobile-sheet"
-      class="flex w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-left shadow-sm"
+      class="flex w-full items-center justify-between gap-2 rounded-xl border border-[var(--border)] bg-[var(--code-bg)] px-3 py-2 text-left shadow-sm"
     >
-      <span class="inline-flex min-w-0 items-center gap-2 text-slate-900">
+      <span class="inline-flex min-w-0 items-center gap-2 text-[var(--text-h)]">
         { activeEntries.map((entry) => (
           <CategoryIconBadge parsed={parseCategoryId(entry.key)} />
           <span class="truncate text-sm font-medium mr-3">{entry?.label ?? "Select category"}</span>
         ))}
       </span>
-      <span class="text-slate-400">▾</span>
+      <span class="text-[var(--text)]">▾</span>
     </button>
   </div>
 
@@ -49,20 +49,20 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
       id="category-sidebar-search"
       type="search"
       placeholder="Search categories..."
-      class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none ring-0 transition focus:border-sky-300 focus:shadow-[0_0_0_3px_rgba(56,189,248,0.15)]"
+      class="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--text-h)] outline-none ring-0 transition focus:border-sky-300 focus:shadow-[0_0_0_3px_rgba(56,189,248,0.15)]"
     />
   </div>
 
   <div class="hidden gap-4 lg:grid" id="category-desktop-list">
       <section class="grid gap-2" data-category-group>
-        <h3 class="px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Selected</h3>
+        <h3 class="px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text)]">Selected</h3>
         <ul class="list gap-1.5">
         {
           activeEntries.map((activeEntry) => (
             <li class="mb-1 flex w-full min-w-0 items-stretch">
-              <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)] ${activeEntries.length === 2 ? "rounded-e-none" : ""}`}>
-                <a href={`/tools/category/${activeEntry.slug}/`} class="inline-flex w-full min-w-0 items-center gap-2 px-3 py-2 text-slate-800 no-underline">
-                  <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ring-sky-300 bg-sky-100">
+              <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border border-[var(--accent-border)] bg-[var(--accent-bg)] shadow-[0_10px_20px_rgba(14,116,144,0.16)] ${activeEntries.length === 2 ? "rounded-e-none" : ""}`}>
+                <a href={`/tools/category/${activeEntry.slug}/`} class="inline-flex w-full min-w-0 items-center gap-2 px-3 py-2 text-[var(--text-h)] no-underline">
+                  <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ring-[var(--accent-border)] bg-[var(--code-bg)]">
                     <CategoryIconBadge parsed={parseCategoryId(activeEntry.key)} />
                   </span>
                   <span class="truncate text-sm font-medium">{activeEntry.label}</span>
@@ -72,7 +72,7 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
                 <button
                   type="button"
                   data-remove-slug={activeEntry.slug}
-                  class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-slate-200 bg-white text-slate-700 hover:-translate-y-px hover:border-slate-300 hover:shadow-sm cursor-pointer"
+                  class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] hover:-translate-y-px hover:border-[var(--accent-border)] hover:shadow-sm cursor-pointer"
                   aria-label={`Remove ${activeEntry.label}`}
                 >
                   -
@@ -94,8 +94,8 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
           data-group-toggle
           aria-expanded={isInitiallyOpen ? "true" : "false"}
         >
-          <h3 class="m-0 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">{group.label}</h3>
-          <span class="text-xs text-slate-400" data-group-chevron>{isInitiallyOpen ? "▼" : "▶"}</span>
+          <h3 class="m-0 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text)]">{group.label}</h3>
+          <span class="text-xs text-[var(--text)]" data-group-chevron>{isInitiallyOpen ? "▼" : "▶"}</span>
         </button>
         <ul class={`list gap-1.5 ${isInitiallyOpen ? "" : "hidden"}`} data-group-content>
           {group.items.map((entry) => {
@@ -105,10 +105,10 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
             return (
               <li data-category-item data-search-label={entry.label.toLowerCase()} class="mb-1 flex w-full min-w-0 items-stretch">
                 <div
-                  class={`mr-[1px] min-w-0 flex-1 rounded-xl border transition-all duration-150 ${!isActive && activeSlugs.length === 1 ? "rounded-e-none" : ""} ${isActive ? "border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)]" : "border-slate-200 bg-white hover:-translate-y-px hover:border-slate-300 hover:shadow-sm"}`}
+                  class={`mr-[1px] min-w-0 flex-1 rounded-xl border transition-all duration-150 ${!isActive && activeSlugs.length === 1 ? "rounded-e-none" : ""} ${isActive ? "border-[var(--accent-border)] bg-[var(--accent-bg)] shadow-[0_10px_20px_rgba(14,116,144,0.16)]" : "border-[var(--border)] bg-[var(--bg)] hover:-translate-y-px hover:border-[var(--accent-border)] hover:shadow-sm"}`}
                 >
-                  <a href={`/tools/category/${entry.slug}/`} class="inline-flex w-full min-w-0 items-center gap-2 px-3 py-2 text-slate-800 no-underline">
-                    <span class={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ${isActive ? "ring-sky-300 bg-sky-100" : "ring-slate-200 bg-slate-50"}`}>
+                  <a href={`/tools/category/${entry.slug}/`} class="inline-flex w-full min-w-0 items-center gap-2 px-3 py-2 text-[var(--text-h)] no-underline">
+                    <span class={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ${isActive ? "ring-[var(--accent-border)] bg-[var(--code-bg)]" : "ring-[var(--border)] bg-[var(--code-bg)]"}`}>
                       <CategoryIconBadge parsed={parsed} />
                     </span>
                     <span class="truncate text-sm font-medium">{entry.label}</span>
@@ -116,7 +116,7 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
                 </div>
                 {!isActive && activeSlugs.length === 1 ? (
                   <a href={`/tools/category/${activeSlugs[0]}/${entry.slug}/`}
-                    class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-slate-200 bg-white text-slate-700 hover:-translate-y-px hover:border-slate-300 hover:shadow-sm"
+                    class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] hover:-translate-y-px hover:border-[var(--accent-border)] hover:shadow-sm"
                     aria-label={`Add ${entry.label}`}
                   >
                     +
@@ -130,24 +130,24 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
     )})}
   </div>
 
-  <div id="category-mobile-overlay" class="fixed inset-0 z-[1200] hidden bg-slate-900/45"></div>
-  <div id="category-mobile-sheet" role="dialog" aria-modal="true" aria-label="Category picker" class="fixed inset-x-0 bottom-0 z-[1210] hidden max-h-[82vh] translate-y-full rounded-t-3xl border border-slate-200 bg-white shadow-[0_-16px_40px_rgba(15,23,42,0.24)] transition-transform duration-200 ease-out">
-    <div class="mx-auto mt-2 h-1.5 w-16 rounded-full bg-slate-200"></div>
+  <div id="category-mobile-overlay" class="fixed inset-0 z-[1200] hidden bg-black/60"></div>
+  <div id="category-mobile-sheet" role="dialog" aria-modal="true" aria-label="Category picker" class="fixed inset-x-0 bottom-0 z-[1210] hidden max-h-[82vh] translate-y-full rounded-t-3xl border border-[var(--border)] bg-[var(--bg)] shadow-[0_-16px_40px_rgba(15,23,42,0.24)] transition-transform duration-200 ease-out">
+    <div class="mx-auto mt-2 h-1.5 w-16 rounded-full bg-[var(--code-bg)]"></div>
     <div class="flex items-center justify-between px-4 pb-2 pt-3">
-      <h2 class="m-0 text-2xl font-semibold tracking-tight text-slate-900">Categories</h2>
-      <button id="category-mobile-close" type="button" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-lg text-slate-500">×</button>
+      <h2 class="m-0 text-2xl font-semibold tracking-tight text-[var(--text-h)]">Categories</h2>
+      <button id="category-mobile-close" type="button" class="grid h-9 w-9 place-items-center rounded-full border border-[var(--border)] text-lg text-[var(--text)]">×</button>
     </div>
     <div class="px-4 pb-2">
       <label for="category-mobile-search" class="sr-only">Search categories</label>
-      <input id="category-mobile-search" type="search" placeholder="Search categories..." class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none ring-0 transition focus:border-sky-300 focus:shadow-[0_0_0_3px_rgba(56,189,248,0.15)]" />
+      <input id="category-mobile-search" type="search" placeholder="Search categories..." class="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--text-h)] outline-none ring-0 transition focus:border-sky-300 focus:shadow-[0_0_0_3px_rgba(56,189,248,0.15)]" />
     </div>
     <div class="max-h-[56vh] overflow-auto px-4 pb-3" id="category-mobile-list">
       <section class="mb-4 grid gap-2" data-mobile-category-group>
-        <h3 class="px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Selected</h3>
+        <h3 class="px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text)]">Selected</h3>
         <ul class="list gap-1.5">
           {activeEntries.map((activeEntry) => (
             <li class="mb-1 flex w-full min-w-0 items-stretch">
-              <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border border-sky-300 bg-sky-50/80 shadow-[0_10px_20px_rgba(14,116,144,0.16)] ${activeEntries.length === 2 ? "rounded-e-none" : ""}`}>
+              <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border border-[var(--accent-border)] bg-[var(--accent-bg)] shadow-[0_10px_20px_rgba(14,116,144,0.16)] ${activeEntries.length === 2 ? "rounded-e-none" : ""}`}>
                 <a
                   href={`/tools/category/${activeEntry.slug}/`}
                   data-mobile-category-item
@@ -155,17 +155,17 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
                   data-slug={activeEntry.slug}
                   class="flex w-full items-center justify-between gap-3 px-3 py-2 text-left no-underline"
                 >
-                  <span class="inline-flex min-w-0 items-center gap-2 text-slate-900">
-                    <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ring-sky-300 bg-sky-100">
+                  <span class="inline-flex min-w-0 items-center gap-2 text-[var(--text-h)]">
+                    <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ring-[var(--accent-border)] bg-[var(--code-bg)]">
                       <CategoryIconBadge parsed={parseCategoryId(activeEntry.key)} />
                     </span>
                     <span class="truncate text-base font-medium">{activeEntry.label}</span>
                   </span>
-                  <span class="text-blue-600">✓</span>
+                  <span class="text-[var(--text-h)]">✓</span>
                 </a>
               </div>
               {activeEntries.length === 2 ? (
-                <button type="button" data-mobile-remove-slug={activeEntry.slug} class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-slate-200 bg-white text-slate-700 cursor-pointer">-</button>
+                <button type="button" data-mobile-remove-slug={activeEntry.slug} class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] cursor-pointer">-</button>
               ) : null}
             </li>
           ))}
@@ -181,8 +181,8 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
             data-mobile-group-toggle
             aria-expanded={isInitiallyOpen ? "true" : "false"}
           >
-            <h3 class="m-0 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">{group.label}</h3>
-            <span class="text-xs text-slate-400" data-mobile-group-chevron>{isInitiallyOpen ? "▼" : "▶"}</span>
+            <h3 class="m-0 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text)]">{group.label}</h3>
+            <span class="text-xs text-[var(--text)]" data-mobile-group-chevron>{isInitiallyOpen ? "▼" : "▶"}</span>
           </button>
           <ul class={`list gap-1.5 ${isInitiallyOpen ? "" : "hidden"}`} data-mobile-group-content>
             {group.items.map((entry) => {
@@ -190,7 +190,7 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
               const isActive = activeSlugs.includes(entry.slug);
               return (
                 <li data-mobile-category-item-wrap data-search-label={entry.label.toLowerCase()} class="mb-1 flex w-full min-w-0 items-stretch">
-                  <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border transition-all duration-150 ${!isActive && activeSlugs.length === 1 ? "rounded-e-none" : ""} ${isActive ? "border-sky-300 bg-sky-50/80" : "border-slate-200 bg-white"}`}>
+                  <div class={`mr-[1px] min-w-0 flex-1 rounded-xl border transition-all duration-150 ${!isActive && activeSlugs.length === 1 ? "rounded-e-none" : ""} ${isActive ? "border-[var(--accent-border)] bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--bg)]"}`}>
                     <a
                       href={`/tools/category/${entry.slug}/`}
                       data-mobile-category-item
@@ -198,17 +198,17 @@ const initialOpenTypes = activeTypes.size > 0 ? activeTypes : new Set(groups[0] 
                       data-search-label={entry.label.toLowerCase()}
                       class="flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left no-underline"
                     >
-                      <span class="inline-flex min-w-0 items-center gap-2 text-slate-900">
-                        <span class={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ${isActive ? "ring-sky-300 bg-sky-100" : "ring-slate-200 bg-slate-50"}`}>
+                      <span class="inline-flex min-w-0 items-center gap-2 text-[var(--text-h)]">
+                        <span class={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ${isActive ? "ring-[var(--accent-border)] bg-[var(--code-bg)]" : "ring-[var(--border)] bg-[var(--code-bg)]"}`}>
                           <CategoryIconBadge parsed={parsed} />
                         </span>
                         <span class="truncate text-base font-medium">{entry.label}</span>
                       </span>
-                      <span class={`text-blue-600 ${isActive ? "" : "hidden"}`} data-mobile-check>✓</span>
+                      <span class={`text-[var(--text-h)] ${isActive ? "" : "hidden"}`} data-mobile-check>✓</span>
                     </a>
                   </div>
                   {!isActive && activeSlugs.length === 1 ? (
-                    <button type="button" data-mobile-add-slug={entry.slug} class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-slate-200 bg-white text-slate-700">+</button>
+                    <button type="button" data-mobile-add-slug={entry.slug} class="inline-flex w-8 shrink-0 items-center justify-center rounded-e-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--text)]">+</button>
                   ) : null}
                 </li>
               );

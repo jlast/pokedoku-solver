@@ -49,19 +49,19 @@ export function PairList({
           <li key={`${item.categories[0]}||${item.categories[1]}`}>
             <a
               href={pairHref ?? "#"}
-              className={`flex items-center gap-3 rounded-lg border border-slate-200 px-3 py-2 no-underline transition ${
-                pairHref ? "hover:border-slate-300" : "pointer-events-none"
+              className={`flex items-center gap-3 rounded-lg border border-[var(--border)] px-3 py-2 no-underline transition ${
+                pairHref ? "hover:border-[var(--border)]" : "pointer-events-none"
               }`}
               style={{ background: `linear-gradient(90deg, ${leftColor}18 0%, ${rightColor}18 100%), #ffffff` }}
               aria-label={`Open ${left.label} and ${right.label} combination page`}
             >
               <div className="min-w-0 flex-1">
-                <p className="min-w-0 text-slate-700">
-                  <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
+                <p className="min-w-0 text-[var(--text)]">
+                  <span className="inline-flex items-center gap-2 font-semibold text-[var(--text-h)]">
                     <CategoryBadgeLink parsed={left} href={null} />
                   </span>
                   <span className="mx-1 text-slate-400">+</span>
-                  <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
+                  <span className="inline-flex items-center gap-2 font-semibold text-[var(--text-h)]">
                     <CategoryBadgeLink parsed={right} href={null} />
                   </span>
                 </p>
@@ -81,8 +81,8 @@ export function PairList({
                 ) : null}
               </div>
               <div className="shrink-0 text-right">
-                <span className="text-lg font-semibold text-slate-800">{item.count}</span>
-                {showDistributionBar ? <p className="text-xs text-slate-500">{percent.toFixed(1)}%</p> : null}
+                <span className="text-lg font-semibold text-[var(--text-h)]">{item.count}</span>
+                {showDistributionBar ? <p className="text-xs text-[var(--text)]">{percent.toFixed(1)}%</p> : null}
               </div>
               <span className="shrink-0 text-slate-400">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">

@@ -309,12 +309,12 @@ export function PokedexDashboardPageClient() {
   if (!userLabel) {
     return (
       <main className="mx-auto mt-4 flex w-full max-w-4xl flex-col gap-4">
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="m-0 text-2xl font-semibold text-slate-900">Welcome to your dashboard</h2>
-          <p className="mb-0 mt-2 text-sm text-slate-600">Sign in to edit your Pokedex and import your progress.</p>
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+          <h2 className="m-0 text-2xl font-semibold text-[var(--text-h)]">Welcome to your dashboard</h2>
+          <p className="mb-0 mt-2 text-sm text-[var(--text)]">Sign in to edit your Pokedex and import your progress.</p>
           <a
             href={`${import.meta.env.BASE_URL}login/`}
-            className="mt-4 inline-flex h-10 items-center rounded-[10px] bg-slate-900 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-slate-800"
+            className="mt-4 inline-flex h-10 items-center rounded-[10px] bg-[var(--text-h)] px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-[var(--code-bg)]"
           >
             Go to Login
           </a>
@@ -326,8 +326,8 @@ export function PokedexDashboardPageClient() {
   if (settingsLoading || isLoading) {
     return (
       <main className="mx-auto mt-4 flex w-full max-w-4xl flex-col gap-4">
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="m-0 text-sm text-slate-600">Loading your dashboard...</p>
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+          <p className="m-0 text-sm text-[var(--text)]">Loading your dashboard...</p>
         </section>
       </main>
     );
@@ -336,11 +336,11 @@ export function PokedexDashboardPageClient() {
   if (needsUsername) {
     return (
       <main className="mx-auto mt-4 flex w-full max-w-3xl flex-col gap-4">
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Finish setup</p>
-          <h2 className="m-0 mt-2 text-2xl font-semibold text-slate-900">Create your username</h2>
-          <p className="mb-0 mt-2 text-sm text-slate-600">Pick a display name to continue to your Pokedex dashboard.</p>
-          <label htmlFor="username" className="mt-4 block text-sm font-medium text-slate-700">
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+          <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Finish setup</p>
+          <h2 className="m-0 mt-2 text-2xl font-semibold text-[var(--text-h)]">Create your username</h2>
+          <p className="mb-0 mt-2 text-sm text-[var(--text)]">Pick a display name to continue to your Pokedex dashboard.</p>
+          <label htmlFor="username" className="mt-4 block text-sm font-medium text-[var(--text)]">
             Username
           </label>
           <input
@@ -352,10 +352,10 @@ export function PokedexDashboardPageClient() {
               setUsernameInput(event.target.value);
               if (usernameError) setUsernameError(null);
             }}
-            className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none"
+            className="mt-2 w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text-h)] focus:border-[var(--accent)] focus:outline-none"
             placeholder="Enter a username"
           />
-          <p className="m-0 mt-2 text-xs text-slate-500">Any visible character is allowed. Maximum 40 characters.</p>
+          <p className="m-0 mt-2 text-xs text-[var(--text)]">Any visible character is allowed. Maximum 40 characters.</p>
           {usernameError ? <p className="m-0 mt-2 text-sm text-red-600">{usernameError}</p> : null}
           <button
             type="button"
@@ -363,7 +363,7 @@ export function PokedexDashboardPageClient() {
               void saveUsername();
             }}
             disabled={isSavingUsername}
-            className="mt-4 inline-flex h-10 items-center rounded-[10px] bg-slate-900 px-4 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-4 inline-flex h-10 items-center rounded-[10px] bg-[var(--text-h)] px-4 text-sm font-semibold text-white transition-colors hover:bg-[var(--code-bg)] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSavingUsername ? "Saving..." : "Save username"}
           </button>
@@ -375,10 +375,10 @@ export function PokedexDashboardPageClient() {
   if (!hasPokedexData) {
     return (
       <main className="mx-auto mt-4 flex w-full max-w-4xl flex-col gap-4">
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Get started</p>
-          <h2 className="m-0 mt-2 text-2xl font-semibold text-slate-900">Import your Pokedoku data</h2>
-          <p className="mb-0 mt-2 text-sm text-slate-600">No Pokedex progress found yet. Import your JSON to start.</p>
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+          <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Get started</p>
+          <h2 className="m-0 mt-2 text-2xl font-semibold text-[var(--text-h)]">Import your Pokedoku data</h2>
+          <p className="mb-0 mt-2 text-sm text-[var(--text)]">No Pokedex progress found yet. Import your JSON to start.</p>
           <div className="mt-4">
             <PokedexImportPanel
               importJsonText={importJsonText}
@@ -397,14 +397,14 @@ export function PokedexDashboardPageClient() {
 
   return (
     <main className="mx-auto mt-4 flex w-full max-w-5xl flex-col gap-4">
-      <section className="rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-6 shadow-sm">
-        <h2 className="m-0 text-2xl font-semibold text-emerald-950">Today&apos;s personalized board</h2>
-        <p className="mb-0 mt-2 text-sm text-emerald-900/80">
+      <section className="rounded-2xl border border-slate-200 bg-slate-100 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
+        <h2 className="m-0 text-2xl font-semibold text-slate-900 dark:text-slate-100">Today&apos;s personalized board</h2>
+        <p className="mb-0 mt-2 text-sm text-slate-700 dark:text-slate-300">
           Use your My Pokedex filter to get suggestions tailored to what you still need.
         </p>
         <a
           href={`${import.meta.env.BASE_URL}pokedoku-answers-today/`}
-          className="mt-4 inline-flex h-10 items-center gap-2 rounded-[10px] bg-emerald-800 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-emerald-900"
+          className="mt-4 inline-flex h-10 items-center gap-2 rounded-[10px] bg-emerald-700 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-emerald-600"
         >
           Open personalized Today&apos;s board
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
@@ -415,14 +415,14 @@ export function PokedexDashboardPageClient() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Edit current dex</p>
-          <h3 className="m-0 mt-2 text-xl font-semibold text-slate-900">Manage your live Pokedex</h3>
-          <p className="mb-0 mt-2 text-sm text-slate-600">Open the full editor page to update your current dex.</p>
-          <a
-            href={`${import.meta.env.BASE_URL}user/pokedex/`}
-            className="mt-4 inline-flex h-10 items-center gap-2 rounded-[10px] bg-slate-900 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-slate-800"
-          >
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm dark:border-emerald-800/60 dark:bg-emerald-900/30">
+          <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Edit current dex</p>
+          <h3 className="m-0 mt-2 text-xl font-semibold text-[var(--text-h)]">Manage your live Pokedex</h3>
+          <p className="mb-0 mt-2 text-sm text-[var(--text)]">Open the full editor page to update your current dex.</p>
+            <a
+              href={`${import.meta.env.BASE_URL}user/pokedex/`}
+              className="mt-4 inline-flex h-10 items-center gap-2 rounded-[10px] bg-emerald-700 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-emerald-600"
+            >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
               <path d="M4 16.5V20h3.5L18.9 8.6l-3.5-3.5L4 16.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               <path d="m13.9 6.1 3.5 3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -435,7 +435,7 @@ export function PokedexDashboardPageClient() {
               onClick={() => {
                 void copyShareLink();
               }}
-              className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50"
+                className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-[var(--border)] bg-[var(--bg)] px-4 text-sm font-semibold text-[var(--text-h)] transition-colors hover:bg-[var(--accent-bg)]"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
                 <rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.8" />
@@ -453,7 +453,7 @@ export function PokedexDashboardPageClient() {
                   href={shareHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 no-underline transition-colors hover:bg-slate-50"
+                  className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-[var(--border)] bg-[var(--bg)] px-4 text-sm font-semibold text-[var(--text-h)] no-underline transition-colors hover:bg-[var(--accent-bg)]"
                 >
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
                     <path d="M14 4h6v6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -465,11 +465,11 @@ export function PokedexDashboardPageClient() {
               );
             })()}
           </div>
-          {shareStatus ? <p className="mb-0 mt-2 text-xs text-slate-600">{shareStatus}</p> : null}
+          {shareStatus ? <p className="mb-0 mt-2 text-xs text-[var(--text)]">{shareStatus}</p> : null}
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Current Prestige Progress</p>
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] p-6 shadow-sm">
+          <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Current Prestige Progress</p>
           <div className={`mt-2 rounded-xl border p-3 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
             <p className={`m-0 text-[11px] font-semibold uppercase tracking-wide ${prestigeUiTone.bannerLabelText}`}>Current Prestige</p>
             <h3 className={`m-0 mt-1 text-xl font-bold ${prestigeUiTone.bannerTitleText}`}>{currentPrestige.label}</h3>
@@ -486,29 +486,29 @@ export function PokedexDashboardPageClient() {
             <progress
               value={Math.max(0, completionRate)}
               max={100}
-              className={`mt-2 h-1.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-white/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`}
+              className={`mt-2 h-1.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-[var(--bg)]/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`}
             />
           </div>
         </div>
 
-        <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50 p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-amber-700 uppercase">Shiny progress</p>
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm dark:border-amber-800/60 dark:bg-amber-900/40">
+          <p className="m-0 text-xs font-semibold tracking-wide text-amber-800 uppercase dark:text-amber-200">Shiny progress</p>
           <div className="mt-2 flex items-center justify-between gap-3">
-            <h3 className="m-0 text-xl font-bold text-amber-900">{shinyCount} shinies</h3>
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+            <h3 className="m-0 text-xl font-bold text-amber-950 dark:text-amber-100">{shinyCount} shinies</h3>
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700 dark:bg-amber-800/50 dark:text-amber-200">
               ✨
             </span>
           </div>
           <div className="mt-3 space-y-2">
             <div>
               <div className="flex items-center justify-between">
-                <p className="m-0 text-sm font-semibold text-amber-800">Full dex</p>
-                <p className="m-0 text-base font-bold text-amber-900">{shinyOverallRate}%</p>
+                <p className="m-0 text-sm font-semibold text-amber-800 dark:text-amber-200">Full dex</p>
+                <p className="m-0 text-base font-bold text-amber-950 dark:text-amber-100">{shinyOverallRate}%</p>
               </div>
               <progress
                 value={Math.max(0, shinyOverallRate)}
                 max={100}
-                className="mt-1.5 h-2.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-amber-100 [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-amber-500 [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-amber-500"
+                className="mt-1.5 h-2.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-amber-100 dark:[&::-webkit-progress-bar]:bg-amber-950/60 [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-amber-500 [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-amber-500"
               />
             </div>
           </div>
@@ -516,64 +516,64 @@ export function PokedexDashboardPageClient() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Categories with most Pokemon left</p>
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+          <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Categories with most Pokemon left</p>
           <div className="mt-3 space-y-2">
             {mostLeft.map((entry) => (
-              <div key={`${entry.groupKey}:${entry.name}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+              <div key={`${entry.groupKey}:${entry.name}`} className="flex items-center justify-between rounded-lg bg-[var(--code-bg)] px-3 py-2">
                 <CategoryBadgeLink
                   parsed={{ raw: `${entry.groupKey}:${entry.name}`, type: entry.groupKey, label: entry.name }}
                   href={getCategoryHref(entry.groupKey, entry.name)}
                 />
-                <p className="m-0 text-sm font-semibold text-slate-900">{entry.remaining} left</p>
+                <p className="m-0 text-sm font-semibold text-[var(--text-h)]">{entry.remaining} left</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Categories with least Pokemon left</p>
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+          <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Categories with least Pokemon left</p>
           <div className="mt-3 space-y-2">
             {leastLeft.map((entry) => (
-              <div key={`${entry.groupKey}:${entry.name}`} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+              <div key={`${entry.groupKey}:${entry.name}`} className="flex items-center justify-between rounded-lg bg-[var(--code-bg)] px-3 py-2">
                 <CategoryBadgeLink
                   parsed={{ raw: `${entry.groupKey}:${entry.name}`, type: entry.groupKey, label: entry.name }}
                   href={getCategoryHref(entry.groupKey, entry.name)}
                 />
-                <p className="m-0 text-sm font-semibold text-slate-900">{entry.remaining} left</p>
+                <p className="m-0 text-sm font-semibold text-[var(--text-h)]">{entry.remaining} left</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="m-0 text-xs font-semibold tracking-wide text-slate-500 uppercase">Category groups and remaining Pokemon</p>
+      <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+        <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Category groups and remaining Pokemon</p>
         <div className="mt-4 grid gap-4 lg:grid-cols-4">
           {categoryProgress.map((group) => (
             <div
               key={group.key}
-              className={`rounded-xl border border-slate-200 bg-slate-50 p-4 ${group.key === "move" || group.key === "types" ? "lg:col-span-2" : ""}`}
+              className={`rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-4 ${group.key === "move" || group.key === "types" ? "lg:col-span-2" : ""}`}
             >
-              <h3 className="m-0 text-base font-semibold text-slate-900">{group.label}</h3>
+              <h3 className="m-0 text-base font-semibold text-[var(--text-h)]">{group.label}</h3>
               <div className={group.key === "move" || group.key === "types" ? "mt-3 grid gap-2 sm:grid-cols-2" : "mt-3 space-y-2"}>
                 {group.options.map((option) => {
                   const completed = option.total - option.remaining;
                   const completionPercent = option.total > 0 ? Math.round((completed / option.total) * 100) : 0;
 
                   return (
-                    <div key={`${group.key}:${option.name}`} className="rounded-lg bg-white px-3 py-2">
+                    <div key={`${group.key}:${option.name}`} className="rounded-lg bg-[var(--bg)] px-3 py-2">
                       <div className="flex items-center justify-between gap-2">
                         <CategoryBadgeLink
                           parsed={{ raw: `${group.key}:${option.name}`, type: group.key, label: option.name }}
                           href={getCategoryHref(group.key, option.name)}
                         />
-                        <p className="m-0 text-xs font-semibold text-slate-600">{option.remaining} left / {option.total}</p>
+                        <p className="m-0 text-xs font-semibold text-[var(--text)]">{option.remaining} left / {option.total}</p>
                       </div>
                       <progress
                         value={completionPercent}
                         max={100}
-                        className={`mt-2 h-1.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-slate-200 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${getProgressColorClass(completionPercent)}`}
+                        className={`mt-2 h-1.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-[var(--code-bg)] [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${getProgressColorClass(completionPercent)}`}
                       />
                     </div>
                   );

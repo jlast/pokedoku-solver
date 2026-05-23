@@ -18,12 +18,12 @@ const resolvedSeeAllHref = seeAllHref ?? `/pokemon-list/?${categoryType}=${categ
 
 <SectionCard>
   <Fragment slot="title">
-    <h2 class="inline-flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-900">
+    <h2 class="inline-flex items-center gap-2 text-xl font-semibold tracking-tight text-[var(--text-h)]">
       Best picks
       <InfoTooltipIcon text="These Pokémon appear in the fewest categories, but when they do appear, they have a lot of competition. Strong picks if you want safe, widely valid answers." />
     </h2>
   </Fragment>
-  <a slot="headerRight" href={resolvedSeeAllHref} class="underline text-sm text-slate-600">
+  <a slot="headerRight" href={resolvedSeeAllHref} class="text-sm font-medium text-[var(--text-h)] underline decoration-[var(--accent-border)] underline-offset-2 hover:text-[var(--text)]">
     See all Pokemon
   </a>
   {pokemon.length > 0 ? (
@@ -33,7 +33,7 @@ const resolvedSeeAllHref = seeAllHref ?? `/pokemon-list/?${categoryType}=${categ
       ))}
     </div>
   ) : (
-    <div class="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
+    <div class="mt-3 rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] px-4 py-4 text-sm text-[var(--text)]">
       No Pokemon currently match this category combination. Try another category or browse all Pokemon.
     </div>
   )}

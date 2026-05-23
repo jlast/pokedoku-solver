@@ -162,14 +162,14 @@ export function Header({
     `inline-flex min-h-10 items-center gap-1.5 rounded-[10px] border px-2.5 text-[0.8rem] whitespace-nowrap transition-colors ${
       isActive
         ? "cursor-pointer border-transparent bg-transparent text-red-500"
-        : "cursor-pointer border-transparent bg-transparent text-slate-700 hover:border-indigo-200 hover:bg-indigo-50"
+        : "cursor-pointer border-transparent bg-transparent text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
     }`;
 
   const mobileNavButtonClass = (isActive: boolean) =>
     `inline-flex w-full items-center justify-start gap-2 rounded-lg border-none px-3 py-2.5 text-left text-sm transition-colors ${
       isActive
         ? "cursor-pointer text-red-500"
-        : "cursor-pointer bg-transparent text-slate-700 hover:bg-slate-50"
+        : "cursor-pointer bg-transparent text-[var(--text)] hover:bg-[var(--code-bg)]"
     }`;
 
   const closeMobileMenu = (
@@ -322,14 +322,14 @@ export function Header({
               </a>
               <span
                 data-header-title
-                className="hidden ml-0.5 text-base leading-tight font-bold text-slate-900 max-[1100px]:inline-block"
+                className="hidden ml-0.5 text-base leading-tight font-bold text-[var(--text-h)] max-[1100px]:inline-block"
               >
                 {title}
               </span>
             </div>
 
             <nav
-              className="inline-flex items-stretch gap-1 rounded-[14px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-1 shadow-[0_6px_18px_rgba(15,23,42,0.08)] max-[1100px]:hidden"
+              className="inline-flex items-stretch gap-1 rounded-[14px] border border-[var(--border)] bg-[var(--bg)] p-1 shadow-[0_6px_18px_rgba(15,23,42,0.08)] max-[1100px]:hidden"
               aria-label="Primary"
             >
               {NAV_BUTTONS.map((btn) => {
@@ -382,7 +382,7 @@ export function Header({
                           />
                         </svg>
                       </summary>
-                      <div className="absolute left-0 z-20 mt-2 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
+                      <div className="absolute left-0 z-20 mt-2 w-56 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)] shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
                         {btn.children.map((tool) => {
                           const isActiveTool = isToolMenuItemActive(tool, btn.children ?? []);
 
@@ -396,11 +396,11 @@ export function Header({
                                   from: currentPage,
                                 })
                               }
-                              className={`flex items-center gap-2 px-3 py-2.5 text-sm no-underline hover:bg-slate-50 ${
+                              className={`flex items-center gap-2 px-3 py-2.5 text-sm no-underline hover:bg-[var(--code-bg)] ${
                                 tool.isPrimary
-                                  ? "border-b border-slate-100 font-semibold"
+                                  ? "border-b border-[var(--border)] font-semibold"
                                   : ""
-                              } ${isActiveTool ? "text-red-500" : tool.isPrimary ? "text-slate-800" : "text-slate-700"}`}
+                              } ${isActiveTool ? "text-red-500" : tool.isPrimary ? "text-[var(--text-h)]" : "text-[var(--text)]"}`}
                               aria-current={isActiveTool ? "page" : undefined}
                             >
                               <svg
@@ -471,8 +471,8 @@ export function Header({
             <div className="flex shrink-0 items-center justify-self-end gap-2">
               {authEnabled ? isSignedIn ? (
                 <details ref={profileMenuRef} className="group relative hidden min-[1101px]:block">
-                  <summary className="inline-flex h-10 cursor-pointer list-none items-center gap-2 rounded-[10px] border border-slate-300 bg-white px-2.5 pr-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-slate-700">
+                  <summary className="inline-flex h-10 cursor-pointer list-none items-center gap-2 rounded-[10px] border border-[var(--border)] bg-[var(--bg)] px-2.5 pr-3 text-sm font-medium text-[var(--text)] transition-colors hover:bg-[var(--code-bg)]">
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[var(--code-bg)] text-[var(--text)]">
                       <img
                         src={`${import.meta.env.BASE_URL}images/content/trainer.png`}
                         alt="Trainer"
@@ -480,7 +480,7 @@ export function Header({
                       />
                     </span>
                     {isUserLabelLoading ? (
-                      <span className="h-3 w-24 animate-pulse rounded bg-slate-200" aria-hidden="true" />
+                      <span className="h-3 w-24 animate-pulse rounded bg-[var(--code-bg)]" aria-hidden="true" />
                     ) : (
                       <span className="max-w-[180px] truncate">{resolvedUserLabel}</span>
                     )}
@@ -501,7 +501,7 @@ export function Header({
                       />
                     </svg>
                   </summary>
-                  <div className="absolute right-0 z-20 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
+                  <div className="absolute right-0 z-20 mt-2 w-52 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)] shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
                     <a
                       href={`${import.meta.env.BASE_URL}user/`}
                       onClick={() =>
@@ -510,7 +510,7 @@ export function Header({
                           from: currentPage,
                         })
                       }
-                      className="flex items-center gap-2 border-b border-slate-100 px-3 py-2.5 text-sm text-slate-700 no-underline hover:bg-slate-50"
+                      className="flex items-center gap-2 border-b border-[var(--border)] px-3 py-2.5 text-sm text-[var(--text)] no-underline hover:bg-[var(--code-bg)]"
                     >
                       Dashboard
                     </a>
@@ -522,14 +522,14 @@ export function Header({
                           from: currentPage,
                         })
                       }
-                      className="flex items-center gap-2 border-b border-slate-100 px-3 py-2.5 text-sm text-slate-700 no-underline hover:bg-slate-50"
+                      className="flex items-center gap-2 border-b border-[var(--border)] px-3 py-2.5 text-sm text-[var(--text)] no-underline hover:bg-[var(--code-bg)]"
                     >
                       My Pokedex
                     </a>
                     <button
                       type="button"
                       onClick={signOut}
-                      className="w-full cursor-pointer px-3 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
+                      className="w-full cursor-pointer px-3 py-2.5 text-left text-sm text-[var(--text)] transition-colors hover:bg-[var(--code-bg)]"
                     >
                       Sign out
                     </button>
@@ -539,7 +539,7 @@ export function Header({
                 <a
                   href={`${import.meta.env.BASE_URL}login/`}
                   onClick={() => trackEvent("click_navigate", { url: "login/", from: currentPage })}
-                  className="inline-flex h-10 items-center rounded-[10px] bg-slate-900 px-3 text-sm font-semibold text-white no-underline transition-colors hover:bg-slate-800"
+                  className="inline-flex h-10 items-center rounded-[10px] border border-[var(--border)] bg-[var(--code-bg)] px-3 text-sm font-semibold text-[var(--text-h)] no-underline transition-colors hover:bg-[var(--accent-bg)]"
                 >
                   Login
                 </a>
@@ -561,16 +561,16 @@ export function Header({
               </a>
 
               <button
-                className="hidden h-10 w-10 cursor-pointer flex-col justify-center rounded-[10px] border border-slate-300 bg-white p-2 max-[1100px]:inline-flex"
+                className="hidden h-10 w-10 cursor-pointer flex-col justify-center rounded-[10px] border border-[var(--border)] bg-[var(--bg)] p-2 max-[1100px]:inline-flex"
                 type="button"
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
                 aria-label="Toggle navigation menu"
                 onClick={toggleMobileMenu}
               >
-                <span className="mb-[5px] block h-0.5 w-full rounded-sm bg-slate-700" />
-                <span className="mb-[5px] block h-0.5 w-full rounded-sm bg-slate-700" />
-                <span className="block h-0.5 w-full rounded-sm bg-slate-700" />
+                <span className="mb-[5px] block h-0.5 w-full rounded-sm bg-[var(--text-h)]" />
+                <span className="mb-[5px] block h-0.5 w-full rounded-sm bg-[var(--text-h)]" />
+                <span className="block h-0.5 w-full rounded-sm bg-[var(--text-h)]" />
               </button>
             </div>
           </div>
@@ -578,7 +578,7 @@ export function Header({
           <div className="mb-2 hidden shrink-0 items-center justify-center gap-2 pt-4 lg:!flex">
             <h1
               data-header-title
-              className="m-0 text-[1.55rem] leading-tight font-bold tracking-[0.01em] text-[#222]"
+                className="m-0 text-[1.55rem] leading-tight font-bold tracking-[0.01em] text-[var(--text-h)]"
             >
               {title}
             </h1>
@@ -587,7 +587,7 @@ export function Header({
           {showDate && (
             <div className="inline-flex flex-wrap items-center justify-center gap-2.5">
               <div
-                className="inline-flex items-center gap-2 text-[0.8rem] font-medium text-slate-500 max-[1100px]:gap-[7px] max-[1100px]:text-[0.76rem]"
+                className="inline-flex items-center gap-2 text-[0.8rem] font-medium text-[var(--text)] max-[1100px]:gap-[7px] max-[1100px]:text-[0.76rem]"
                 aria-label="Updates daily"
               >
                 <span
@@ -604,11 +604,11 @@ export function Header({
                     />
                   </svg>
                 </span>
-                <span className="text-[0.8rem] leading-tight font-medium tracking-[0.01em] text-slate-500 max-[1100px]:text-[0.76rem]">
+                <span className="text-[0.8rem] leading-tight font-medium tracking-[0.01em] text-[var(--text)] max-[1100px]:text-[0.76rem]">
                   Updated daily
                 </span>
               </div>
-              <div className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-[0.85rem] text-slate-500">
+              <div className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--code-bg)] px-3 py-1.5 text-[0.85rem] text-[var(--text)]">
                 <svg
                   width="14"
                   height="14"
@@ -630,13 +630,13 @@ export function Header({
                 aria-hidden="true"
               />
               <div
-                className="fixed top-0 bottom-0 left-0 z-[1100] block w-[85%] max-w-[320px] overflow-y-auto bg-white shadow-[10px_0_28px_rgba(15,23,42,0.2)] transition-transform duration-300 ease-out"
+                className="fixed top-0 bottom-0 left-0 z-[1100] block w-[85%] max-w-[320px] overflow-y-auto bg-[var(--bg)] shadow-[10px_0_28px_rgba(15,23,42,0.2)] transition-transform duration-300 ease-out"
                 role="dialog"
                 aria-modal="true"
                 aria-label="Navigation menu"
               >
-                <div className="sticky top-0 z-[2] flex items-center justify-between border-b border-slate-200 bg-white px-3.5 pt-3.5 pb-2.5">
-                  <span className="inline-flex items-center gap-2 text-base font-bold text-slate-900">
+                <div className="sticky top-0 z-[2] flex items-center justify-between border-b border-[var(--border)] bg-[var(--bg)] px-3.5 pt-3.5 pb-2.5">
+                  <span className="inline-flex items-center gap-2 text-base font-bold text-[var(--text-h)]">
                     <img
                       src={import.meta.env.BASE_URL + "logo.svg"}
                       alt="Pokedoku Helper"
@@ -645,7 +645,7 @@ export function Header({
                     Pokedoku Helper
                   </span>
                   <button
-                    className="h-[34px] w-[34px] cursor-pointer rounded-lg border-none bg-transparent text-slate-600"
+                    className="h-[34px] w-[34px] cursor-pointer rounded-lg border-none bg-transparent text-[var(--text)]"
                     type="button"
                     onClick={() => closeMobileMenu("close")}
                     aria-label="Close navigation menu"
@@ -675,7 +675,7 @@ export function Header({
                           <details
                             ref={mobileToolsMenuRef}
                             key={`mobile-${btn.label}`}
-                            className="group mt-1 overflow-hidden rounded-xl bg-white"
+                            className="group mt-1 overflow-hidden rounded-xl bg-[var(--bg)]"
                             open={mobileMenuOpen && isToolsSectionPage}
                           >
                             <summary className="flex list-none items-center justify-between [&::-webkit-details-marker]:hidden">
@@ -709,7 +709,7 @@ export function Header({
                                 viewBox="0 0 20 20"
                                 fill="none"
                                 aria-hidden="true"
-                                className="mr-3 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180"
+                                className="mr-3 shrink-0 text-[var(--text)] transition-transform duration-200 group-open:rotate-180"
                               >
                                 <path
                                   d="m5 7.5 5 5 5-5"
@@ -720,7 +720,7 @@ export function Header({
                                 />
                               </svg>
                             </summary>
-                            <div className="bg-red-50/80 px-2 py-2">
+                            <div className="bg-[var(--code-bg)] px-2 py-2">
                               {btn.children.map((tool) => {
                                 const isActiveTool = isToolMenuItemActive(
                                   tool,
@@ -741,7 +741,7 @@ export function Header({
                                     className={`mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm no-underline transition-colors ${
                                       isActiveTool
                                         ? "text-red-500"
-                                        : "text-slate-700 hover:bg-slate-100"
+                                        : "text-[var(--text)] hover:bg-[var(--code-bg)]"
                                     }`}
                                     aria-current={
                                       isActiveTool ? "page" : undefined
@@ -818,7 +818,7 @@ export function Header({
                     {authEnabled ? (
                       <details
                         ref={mobileUserMenuRef}
-                        className="group mt-1 overflow-hidden rounded-xl bg-white"
+                        className="group mt-1 overflow-hidden rounded-xl bg-[var(--bg)]"
                         open={mobileMenuOpen && isUserSectionPage}
                       >
                         <summary className="flex list-none items-center justify-between [&::-webkit-details-marker]:hidden">
@@ -843,7 +843,7 @@ export function Header({
                             viewBox="0 0 20 20"
                             fill="none"
                             aria-hidden="true"
-                            className="mr-3 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180"
+                            className="mr-3 shrink-0 text-[var(--text)] transition-transform duration-200 group-open:rotate-180"
                           >
                             <path
                               d="m5 7.5 5 5 5-5"
@@ -855,10 +855,10 @@ export function Header({
                           </svg>
                         </summary>
 
-                        <div className="bg-red-50/80 px-2 py-2">
+                        <div className="bg-[var(--code-bg)] px-2 py-2">
                           {isSignedIn ? (
-                            <div className="mb-1 mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700">
-                              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-200 text-slate-700">
+                            <div className="mb-1 mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--text)]">
+                              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--code-bg)] text-[var(--text)]">
                                 <img
                                   src={`${import.meta.env.BASE_URL}images/content/trainer.png`}
                                   alt="Trainer"
@@ -866,7 +866,7 @@ export function Header({
                                 />
                               </span>
                               {isUserLabelLoading ? (
-                                <span className="h-3 w-24 animate-pulse rounded bg-slate-200" aria-hidden="true" />
+                                <span className="h-3 w-24 animate-pulse rounded bg-[var(--code-bg)]" aria-hidden="true" />
                               ) : (
                                 <span className="truncate">{resolvedUserLabel}</span>
                               )}
@@ -881,7 +881,7 @@ export function Header({
                                   trackEvent("click_navigate", { url: "user/", from: currentPage });
                                   closeMobileMenu("navigate");
                                 }}
-                                className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 no-underline transition-colors hover:bg-slate-100"
+                                className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--text)] no-underline transition-colors hover:bg-[var(--code-bg)]"
                               >
                                 Dashboard
                               </a>
@@ -891,7 +891,7 @@ export function Header({
                                   trackEvent("click_navigate", { url: "user/pokedex/", from: currentPage });
                                   closeMobileMenu("navigate");
                                 }}
-                                className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 no-underline transition-colors hover:bg-slate-100"
+                                className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--text)] no-underline transition-colors hover:bg-[var(--code-bg)]"
                               >
                                 My Pokedex
                               </a>
@@ -901,7 +901,7 @@ export function Header({
                                   closeMobileMenu("navigate");
                                   signOut();
                                 }}
-                                className="mt-0.5 flex w-full cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                                className="mt-0.5 flex w-full cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-[var(--text)] transition-colors hover:bg-[var(--code-bg)]"
                               >
                                 Sign out
                               </button>
@@ -913,7 +913,7 @@ export function Header({
                                 trackEvent("click_navigate", { url: "login/", from: currentPage });
                                 closeMobileMenu("navigate");
                               }}
-                              className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-slate-700 no-underline transition-colors hover:bg-slate-100"
+                              className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--text)] no-underline transition-colors hover:bg-[var(--code-bg)]"
                             >
                               Login
                             </a>
@@ -926,7 +926,7 @@ export function Header({
                       href="https://buymeacoffee.com/jeroenvande"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-2 mb-1 ml-1 inline-flex items-center gap-2 text-[0.9rem] text-slate-700"
+                      className="mt-2 mb-1 ml-1 inline-flex items-center gap-2 text-[0.9rem] text-[var(--text)]"
                       aria-label="Support me on Buy Me a Coffee"
                       onClick={() => {
                         handleSupportClick("mobile");
@@ -949,20 +949,20 @@ export function Header({
             <p
               className={
                 (alwaysShowSubheader ? "" : "max-[600px]:hidden") +
-                " mx-auto mb-3 max-w-[700px] text-center text-[1.12rem] leading-[1.65] text-[#6a6477]"
+                " mx-auto mb-3 max-w-[700px] text-center text-[1.12rem] leading-[1.65] text-[var(--text)]"
               }
             >
               {subtitle}
             </p>
           )}
           {introText && (
-            <p className="mt-1 text-[0.95rem] leading-snug text-slate-600">
+            <p className="mt-1 text-[0.95rem] leading-snug text-[var(--text)]">
               {introText}
             </p>
           )}
         </div>
         <div
-          className="relative left-1/2 mt-4 w-screen -translate-x-1/2 border-t border-slate-200"
+          className="relative left-1/2 mt-4 w-screen -translate-x-1/2 border-t border-[var(--border)]"
           aria-hidden="true"
         />
       </header>

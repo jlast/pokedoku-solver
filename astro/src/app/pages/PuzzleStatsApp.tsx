@@ -187,39 +187,39 @@ export default function PuzzleStatsApp() {
   if (!stats || !derived) {
     return (
       <div className="grid gap-4 lg:grid-cols-2" aria-label="Loading puzzle stats sections">
-        <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <div className="mb-3 h-6 w-60 animate-pulse rounded bg-slate-200" />
-          <div className="mb-2 h-4 w-80 animate-pulse rounded bg-slate-100" />
+        <article className="rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <div className="mb-3 h-6 w-60 animate-pulse rounded bg-[var(--code-bg)]" />
+          <div className="mb-2 h-4 w-80 animate-pulse rounded bg-[var(--code-bg)]" />
           <div className="space-y-2">
             {[0, 1, 2, 3, 4].map((item) => (
-              <div key={item} className="h-14 animate-pulse rounded-lg border border-slate-200 bg-slate-50" />
+              <div key={item} className="h-14 animate-pulse rounded-lg border border-[var(--border)] bg-[var(--code-bg)]" />
             ))}
           </div>
         </article>
 
-        <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <div className="mb-3 h-6 w-44 animate-pulse rounded bg-slate-200" />
-          <div className="mb-3 h-10 w-48 animate-pulse rounded-lg bg-slate-100" />
+        <article className="rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <div className="mb-3 h-6 w-44 animate-pulse rounded bg-[var(--code-bg)]" />
+          <div className="mb-3 h-10 w-48 animate-pulse rounded-lg bg-[var(--code-bg)]" />
           <div className="space-y-2">
             {[0, 1, 2, 3, 4].map((item) => (
-              <div key={item} className="h-11 animate-pulse rounded-lg border border-slate-200 bg-slate-50" />
+              <div key={item} className="h-11 animate-pulse rounded-lg border border-[var(--border)] bg-[var(--code-bg)]" />
             ))}
           </div>
         </article>
 
-        <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <div className="mb-3 h-6 w-44 animate-pulse rounded bg-slate-200" />
-          <div className="mb-3 h-10 w-48 animate-pulse rounded-lg bg-slate-100" />
+        <article className="rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <div className="mb-3 h-6 w-44 animate-pulse rounded bg-[var(--code-bg)]" />
+          <div className="mb-3 h-10 w-48 animate-pulse rounded-lg bg-[var(--code-bg)]" />
           <div className="space-y-2">
             {[0, 1, 2, 3, 4].map((item) => (
-              <div key={item} className="h-11 animate-pulse rounded-lg border border-slate-200 bg-slate-50" />
+              <div key={item} className="h-11 animate-pulse rounded-lg border border-[var(--border)] bg-[var(--code-bg)]" />
             ))}
           </div>
         </article>
 
-        <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <div className="mb-3 h-6 w-56 animate-pulse rounded bg-slate-200" />
-          <div className="h-52 animate-pulse rounded-lg bg-slate-100" />
+        <article className="rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <div className="mb-3 h-6 w-56 animate-pulse rounded bg-[var(--code-bg)]" />
+          <div className="h-52 animate-pulse rounded-lg bg-[var(--code-bg)]" />
         </article>
       </div>
     );
@@ -227,20 +227,20 @@ export default function PuzzleStatsApp() {
 
   return (
     <>
-      <section className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3 text-left">
+      <section className="mb-4 rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-3 text-left">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <p className="m-0 text-sm font-semibold text-slate-800">Legacy filters</p>
-            <p className="m-0 text-xs text-slate-500">Moves and abilities</p>
+            <p className="m-0 text-sm font-semibold text-[var(--text-h)]">Legacy filters</p>
+            <p className="m-0 text-xs text-[var(--text)]">Moves and abilities</p>
           </div>
-          <div className="inline-flex rounded-lg border border-slate-300 bg-white p-1">
+          <div className="inline-flex rounded-lg border border-[var(--border)] bg-[var(--bg)] p-1">
             <button
               type="button"
               onClick={() => {
                 setShowLegacyFilters(false);
                 trackEvent("toggle_legacy_filters", { enabled: "off" });
               }}
-              className={`rounded-md px-3 py-1 text-sm ${!showLegacyFilters ? "bg-slate-700 text-white" : "text-slate-700"}`}
+              className={`rounded-md px-3 py-1 text-sm ${!showLegacyFilters ? "bg-slate-700 text-white" : "text-[var(--text)]"}`}
             >
               Off
             </button>
@@ -250,7 +250,7 @@ export default function PuzzleStatsApp() {
                 setShowLegacyFilters(true);
                 trackEvent("toggle_legacy_filters", { enabled: "on" });
               }}
-              className={`rounded-md px-3 py-1 text-sm ${showLegacyFilters ? "bg-slate-700 text-white" : "text-slate-700"}`}
+              className={`rounded-md px-3 py-1 text-sm ${showLegacyFilters ? "bg-slate-700 text-white" : "text-[var(--text)]"}`}
             >
               On
             </button>
@@ -259,13 +259,13 @@ export default function PuzzleStatsApp() {
       </section>
 
       <section className="mb-5 grid gap-3 sm:grid-cols-2">
-        <article className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <p className="text-sm text-slate-500">Puzzles analyzed</p>
-          <p className="text-3xl font-bold text-slate-900">{stats.puzzlesAnalyzed}</p>
+        <article className="rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <p className="text-sm text-[var(--text)]">Puzzles analyzed</p>
+          <p className="text-3xl font-bold text-[var(--text-h)]">{stats.puzzlesAnalyzed}</p>
         </article>
-        <article className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-          <p className="text-sm text-slate-500">Date range</p>
-          <p className="text-lg font-semibold text-slate-900">
+        <article className="rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-left shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+          <p className="text-sm text-[var(--text)]">Date range</p>
+          <p className="text-lg font-semibold text-[var(--text-h)]">
             {formatDate(stats.dateRange.from)} - {formatDate(stats.dateRange.to)}
           </p>
         </article>
@@ -274,21 +274,21 @@ export default function PuzzleStatsApp() {
       <section className="grid gap-4 lg:grid-cols-2">
 
         <SectionCard title="When Was This Pokemon Last Valid?" className="text-left">
-          <p className="mb-2 text-sm text-slate-600">Pokemon that have gone the longest without being usable in PokeDoku.</p>
+          <p className="mb-2 text-sm text-[var(--text)]">Pokemon that have gone the longest without being usable in PokeDoku.</p>
           {pokemonLoading ? (
             <ul className="m-0 mb-3 grid list-none gap-2 p-0" aria-label="Loading Pokemon recency list">
               {[0, 1, 2, 3, 4].map((item) => (
-                <li key={item} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+                <li key={item} className="flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 animate-pulse rounded-md bg-slate-200" />
+                    <div className="h-10 w-10 animate-pulse rounded-md bg-[var(--code-bg)]" />
                     <div className="space-y-1">
-                      <div className="h-3.5 w-28 animate-pulse rounded bg-slate-200" />
-                      <div className="h-3 w-20 animate-pulse rounded bg-slate-100" />
+                      <div className="h-3.5 w-28 animate-pulse rounded bg-[var(--code-bg)]" />
+                      <div className="h-3 w-20 animate-pulse rounded bg-[var(--code-bg)]" />
                     </div>
                   </div>
                   <div className="space-y-1 text-right">
-                    <div className="h-3.5 w-20 animate-pulse rounded bg-slate-200" />
-                    <div className="h-3 w-14 animate-pulse rounded bg-slate-100" />
+                    <div className="h-3.5 w-20 animate-pulse rounded bg-[var(--code-bg)]" />
+                    <div className="h-3 w-14 animate-pulse rounded bg-[var(--code-bg)]" />
                   </div>
                 </li>
               ))}
@@ -299,23 +299,23 @@ export default function PuzzleStatsApp() {
                 const pokemon = pokemonByFormId.get(item.formId);
                 const pokemonSlug = pokemon ? `${slugify(pokemon.name)}-${pokemon.formId ?? pokemon.id}` : null;
                 return (
-                  <li key={item.formId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+                  <li key={item.formId} className="flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2">
                     <div className="flex items-center gap-3">
                       {pokemonSlug ? (
                         <a href={`/pokemon/${pokemonSlug}/`} className="block">
                           {pokemon?.sprite ? (
                             <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md" loading="lazy" />
                           ) : (
-                            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-500">#{item.formId}</div>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[var(--code-bg)] text-xs text-[var(--text)]">#{item.formId}</div>
                           )}
                         </a>
                       ) : pokemon?.sprite ? (
                         <img src={pokemon.sprite} alt={pokemon.name} className="h-10 w-10 rounded-md" loading="lazy" />
                       ) : (
-                        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-500">#{item.formId}</div>
+                        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[var(--code-bg)] text-xs text-[var(--text)]">#{item.formId}</div>
                       )}
                       <div>
-                        <p className="m-0 font-semibold text-slate-900">
+                        <p className="m-0 font-semibold text-[var(--text-h)]">
                           {pokemonSlug ? <a href={`/pokemon/${pokemonSlug}/`}>{pokemon?.name ?? "Unknown Pokemon"}</a> : (pokemon?.name ?? "Unknown Pokemon")}
                         </p>
                         {pokemon?.types?.length ? (
@@ -329,15 +329,15 @@ export default function PuzzleStatsApp() {
                             ))}
                           </div>
                         ) : (
-                          <p className="m-0 text-xs text-slate-500">Types: Unknown</p>
+                          <p className="m-0 text-xs text-[var(--text)]">Types: Unknown</p>
                         )}
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="m-0 text-sm font-semibold text-slate-800">
+                      <p className="m-0 text-sm font-semibold text-[var(--text-h)]">
                         {item.lastUsableDate ? formatDate(item.lastUsableDate) : "Never"}
                       </p>
-                      <p className="m-0 text-xs text-slate-500">
+                      <p className="m-0 text-xs text-[var(--text)]">
                         {item.daysSinceLastUsable === null ? "No match yet" : `${item.daysSinceLastUsable}d ago`}
                       </p>
                     </div>
@@ -347,7 +347,7 @@ export default function PuzzleStatsApp() {
             </ul>
           )}
           <div className="w-full flex justify-end">
-            <a href="/pokemon-list/?sortBy=recent-appearance" className="underline text-sm text-slate-600">
+            <a href="/pokemon-list/?sortBy=recent-appearance" className="underline text-sm text-[var(--text)]">
                 See all Pokemon
             </a>
           </div>
@@ -357,18 +357,18 @@ export default function PuzzleStatsApp() {
           title={<span>Most used (top 5) <InfoTooltipIcon text="Shows how often this item appears in puzzles. Higher percentages mean you're more likely to encounter it." /></span>}
           className="text-left"
         >
-          <div className="mb-3 inline-flex rounded-lg border border-slate-300 bg-white p-1">
+          <div className="mb-3 inline-flex rounded-lg border border-[var(--border)] bg-[var(--bg)] p-1">
             <button
               type="button"
               onClick={() => setMostUsedMode("categories")}
-              className={`rounded-md px-3 py-1 text-sm ${mostUsedMode === "categories" ? "bg-slate-700 text-white" : "text-slate-700"}`}
+              className={`rounded-md px-3 py-1 text-sm ${mostUsedMode === "categories" ? "bg-slate-700 text-white" : "text-[var(--text)]"}`}
             >
               Categories
             </button>
             <button
               type="button"
               onClick={() => setMostUsedMode("pairs")}
-              className={`rounded-md px-3 py-1 text-sm ${mostUsedMode === "pairs" ? "bg-slate-700 text-white" : "text-slate-700"}`}
+              className={`rounded-md px-3 py-1 text-sm ${mostUsedMode === "pairs" ? "bg-slate-700 text-white" : "text-[var(--text)]"}`}
             >
               Pairs
             </button>
@@ -384,18 +384,18 @@ export default function PuzzleStatsApp() {
           title={<span>Least used (top 5) <InfoTooltipIcon text="Shows how often this item appears in puzzles. Lower percentages mean you're less likely to encounter it." /></span>}
           className="text-left"
         >
-          <div className="mb-3 inline-flex rounded-lg border border-slate-300 bg-white p-1">
+          <div className="mb-3 inline-flex rounded-lg border border-[var(--border)] bg-[var(--bg)] p-1">
             <button
               type="button"
               onClick={() => setLeastUsedMode("categories")}
-              className={`rounded-md px-3 py-1 text-sm ${leastUsedMode === "categories" ? "bg-slate-700 text-white" : "text-slate-700"}`}
+              className={`rounded-md px-3 py-1 text-sm ${leastUsedMode === "categories" ? "bg-slate-700 text-white" : "text-[var(--text)]"}`}
             >
               Categories
             </button>
             <button
               type="button"
               onClick={() => setLeastUsedMode("pairs")}
-              className={`rounded-md px-3 py-1 text-sm ${leastUsedMode === "pairs" ? "bg-slate-700 text-white" : "text-slate-700"}`}
+              className={`rounded-md px-3 py-1 text-sm ${leastUsedMode === "pairs" ? "bg-slate-700 text-white" : "text-[var(--text)]"}`}
             >
               Pairs
             </button>
@@ -408,7 +408,7 @@ export default function PuzzleStatsApp() {
         </SectionCard>
 
         <SectionCard title="Category type breakdown" className="text-left">
-          <p className="mb-2 text-sm text-slate-600">How often each category type appears.</p>
+          <p className="mb-2 text-sm text-[var(--text)]">How often each category type appears.</p>
           <div className="grid gap-4 md:grid-cols-[240px_1fr] md:items-center">
             <div className="mx-auto">
               <div className="h-52 w-52">
@@ -427,13 +427,13 @@ export default function PuzzleStatsApp() {
               {derived.categoryTypeBreakdown.map((item) => {
                 const color = CATEGORY_TYPE_COLORS[item.type] ?? CATEGORY_TYPE_COLORS.other;
                 return (
-                  <li key={item.type} className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2">
-                    <p className="flex items-center gap-2 font-semibold text-slate-800">
+                  <li key={item.type} className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2">
+                    <p className="flex items-center gap-2 font-semibold text-[var(--text-h)]">
                       <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
                       {item.label}
                     </p>
-                    <p className="text-right text-slate-700">
-                      {item.count} <span className="text-sm text-slate-500">({item.percent.toFixed(1)}%)</span>
+                    <p className="text-right text-[var(--text)]">
+                      {item.count} <span className="text-sm text-[var(--text)]">({item.percent.toFixed(1)}%)</span>
                     </p>
                   </li>
                 );
@@ -443,7 +443,7 @@ export default function PuzzleStatsApp() {
         </SectionCard>
 
         <SectionCard title="Combination frequency distribution" className="text-left">
-          <p className="mb-2 text-sm text-slate-600">How often each unique category pair appears.</p>
+          <p className="mb-2 text-sm text-[var(--text)]">How often each unique category pair appears.</p>
           <div className="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
             <div className="mx-auto">
               <div className="h-48 w-48">
@@ -460,13 +460,13 @@ export default function PuzzleStatsApp() {
 
             <ul className="m-0 flex list-none flex-col gap-2 p-0">
               {derived.pairFrequencyDistribution.map((bucket) => (
-                <li key={bucket.key} className="rounded-lg border border-slate-200 bg-white px-3 py-2">
+                <li key={bucket.key} className="rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="flex items-center gap-2 font-semibold text-slate-800">
+                    <p className="flex items-center gap-2 font-semibold text-[var(--text-h)]">
                       <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: bucket.color }} />
                       {bucket.label}
                     </p>
-                    <p className="text-sm text-slate-600">{bucket.comboPercent.toFixed(1)}%</p>
+                    <p className="text-sm text-[var(--text)]">{bucket.comboPercent.toFixed(1)}%</p>
                   </div>
                 </li>
               ))}

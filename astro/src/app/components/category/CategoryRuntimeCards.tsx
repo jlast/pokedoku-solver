@@ -80,7 +80,7 @@ export function CategoryRuntimeCards({ statsFileName, showCombinations = true, s
               <CombinationRows rows={rows} />
             </div>
           ) : (
-            <p className="mt-2 text-slate-500">No combination history available yet.</p>
+            <p className="mt-2 text-[var(--text)]">No combination history available yet.</p>
           )}
         </SectionCard>
       ) : null}

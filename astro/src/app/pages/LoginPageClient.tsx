@@ -26,9 +26,9 @@ export function LoginPageClient() {
   if (!authEnabled) {
     return (
       <main className="mx-auto max-w-3xl px-4 pb-10">
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-          <h1 className="m-0 text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">Sign in</h1>
-          <p className="mt-3 mb-0 text-slate-600">Login is not enabled yet for this environment.</p>
+        <section className="rounded-3xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm md:p-8">
+          <h1 className="m-0 text-3xl font-extrabold tracking-tight text-[var(--text-h)] md:text-4xl">Sign in</h1>
+          <p className="mt-3 mb-0 text-[var(--text)]">Login is not enabled yet for this environment.</p>
         </section>
       </main>
     );
@@ -42,10 +42,10 @@ export function LoginPageClient() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 pb-10">
-      <section className="rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6 shadow-sm md:p-8">
-        <h1 className="m-0 text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">Your Personal Pokedoku Companion</h1>
-        <p className="mb-0 mt-3 max-w-xl text-slate-600">Import your Pokedoku dex, track your progress, and discover smarter picks for every puzzle.</p>
-        <p className="mb-0 mt-2 text-sm font-medium text-slate-700">Built for daily Pokedoku players.</p>
+      <section className="rounded-3xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm md:p-8">
+        <h1 className="m-0 text-3xl font-extrabold tracking-tight text-[var(--text-h)] md:text-4xl">Your Personal Pokedoku Companion</h1>
+        <p className="mb-0 mt-3 max-w-xl text-[var(--text)]">Import your Pokedoku dex, track your progress, and discover smarter picks for every puzzle.</p>
+        <p className="mb-0 mt-2 text-sm font-medium text-[var(--text)]">Built for daily Pokedoku players.</p>
         <div className="mt-6 grid gap-4">
           {PROVIDERS.map((provider) => (
             <button
@@ -59,13 +59,13 @@ export function LoginPageClient() {
               }}
               className={`group flex items-center justify-between rounded-2xl border px-4 py-4 text-left transition-all ${
                 provider.enabled
-                  ? "cursor-pointer border-slate-400 bg-white hover:-translate-y-0.5 hover:border-slate-500 hover:bg-slate-50 hover:shadow-md"
-                  : "cursor-not-allowed border-slate-200 bg-slate-50 text-slate-500"
+                  ? "cursor-pointer border-slate-400 bg-[var(--bg)] hover:-translate-y-0.5 hover:border-slate-500 hover:bg-[var(--code-bg)] hover:shadow-md"
+                  : "cursor-not-allowed border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)]"
               }`}
               aria-label={provider.label}
             >
               <span>
-                <span className="block text-base font-semibold text-slate-900">
+                <span className="block text-base font-semibold text-[var(--text-h)]">
                   {provider.id === "Google" ? (
                     <span className="inline-flex items-center gap-2">
                       <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
@@ -80,14 +80,14 @@ export function LoginPageClient() {
                     provider.label
                   )}
                 </span>
-                <span className="mt-0.5 block text-sm text-slate-600">{provider.description}</span>
-                <span className="mt-1 block text-xs text-slate-500">We only use your account for authentication.</span>
+                <span className="mt-0.5 block text-sm text-[var(--text)]">{provider.description}</span>
+                <span className="mt-1 block text-xs text-[var(--text)]">We only use your account for authentication.</span>
               </span>
               <span
                 className={`ml-4 inline-flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${
                   provider.enabled
-                    ? "border-slate-300 bg-white text-slate-500 group-hover:border-slate-400 group-hover:text-slate-700"
-                    : "border-slate-200 bg-slate-100 text-slate-400"
+                    ? "border-[var(--border)] bg-[var(--bg)] text-[var(--text)] group-hover:border-slate-400 group-hover:text-[var(--text)]"
+                    : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)]"
                 }`}
                 aria-hidden="true"
               >
@@ -99,28 +99,34 @@ export function LoginPageClient() {
             </button>
           ))}
         </div>
-        <p className="mb-0 mt-4 text-center text-xs text-slate-400">More sign-in options coming soon.</p>
+        <p className="mb-0 mt-4 text-center text-xs text-[var(--text)]">More sign-in options coming soon.</p>
 
         <div className="mt-4 flex items-center gap-3" aria-hidden="true">
-          <span className="h-px flex-1 bg-slate-200" />
+          <span className="h-px flex-1 bg-[var(--code-bg)]" />
           <PokeballIcon tone="pokeball" className="h-5 w-5" />
-          <span className="h-px flex-1 bg-slate-200" />
+          <span className="h-px flex-1 bg-[var(--code-bg)]" />
         </div>
 
         <div className="mt-5 grid items-center gap-4 md:grid-cols-5">
-          <ul className="mb-0 space-y-3 text-lg text-slate-700 md:col-span-2 md:self-center">
+          <ul className="mb-0 space-y-3 text-lg text-[var(--text)] md:col-span-2 md:self-center">
             <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Personalized picks for today&apos;s grid</li>
             <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Discover missing categories</li>
             <li><span className="mr-2 font-semibold text-emerald-600">✓</span>Track your Pokédex progress</li>
           </ul>
 
           <div className="md:col-span-3">
-            <img
-              src={`${import.meta.env.BASE_URL}images/content/my_pokedex_preview.png`}
-              alt="Preview of the My Pokedex page"
-              className="block w-full rounded-xl"
-              loading="lazy"
-            />
+            <picture>
+              <source
+                srcSet={`${import.meta.env.BASE_URL}images/content/my_pokedex_preview_dark.png`}
+                media="(prefers-color-scheme: dark)"
+              />
+              <img
+                src={`${import.meta.env.BASE_URL}images/content/my_pokedex_preview.png`}
+                alt="Preview of the My Pokedex page"
+                className="block w-full rounded-xl"
+                loading="lazy"
+              />
+            </picture>
           </div>
         </div>
       </section>

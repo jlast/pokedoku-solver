@@ -132,8 +132,8 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
   if (isLoading) {
     return (
       <main className="mx-auto mt-4 flex w-full max-w-4xl flex-col gap-4">
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="m-0 text-sm text-slate-600">Loading shared Pokedex...</p>
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+          <p className="m-0 text-sm text-[var(--text)]">Loading shared Pokedex...</p>
         </section>
       </main>
     );
@@ -142,14 +142,14 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
   if (isNotFound) {
     return (
       <main className="mx-auto mt-4 flex w-full max-w-4xl flex-col gap-4">
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="m-0 text-xl font-semibold text-slate-900">Pokedex not found</h2>
-          <p className="mb-0 mt-2 text-sm text-slate-600">
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+          <h2 className="m-0 text-xl font-semibold text-[var(--text-h)]">Pokedex not found</h2>
+          <p className="mb-0 mt-2 text-sm text-[var(--text)]">
             This trainer has not shared a Pokedex yet, or the link is invalid.
           </p>
           <a
             href={`${import.meta.env.BASE_URL}`}
-            className="mt-4 inline-flex h-10 items-center rounded-[10px] bg-slate-900 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-slate-800"
+            className="mt-4 inline-flex h-10 items-center rounded-[10px] bg-[var(--text-h)] px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-[var(--code-bg)]"
           >
             Go to homepage
           </a>
@@ -160,8 +160,8 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
 
   return (
     <main className="mx-auto mt-4 flex w-full max-w-4xl flex-col gap-4">
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="m-0 mt-2 flex items-center gap-2 text-2xl font-semibold text-slate-900">
+      <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+        <h2 className="m-0 mt-2 flex items-center gap-2 text-2xl font-semibold text-[var(--text-h)]">
           <img
             src={`${import.meta.env.BASE_URL}images/content/trainer.png`}
             alt="Trainer"
@@ -179,7 +179,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
               </div>
               <p className={`m-0 text-sm font-semibold ${prestigeUiTone.completionPercentText}`}>{completionRate}%</p>
             </div>
-            <progress className={`mt-3 h-2 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-white/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`} max={Math.max(totalCount, 1)} value={caughtCount} />
+            <progress className={`mt-3 h-2 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-[var(--bg)]/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`} max={Math.max(totalCount, 1)} value={caughtCount} />
           </div>
 
           <div className={`flex items-center gap-3 rounded-xl border p-3 md:col-span-1 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
@@ -198,7 +198,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
             value={searchQuery}
             onChange={(event: ChangeEvent<HTMLInputElement>) => setSearchQuery(event.target.value)}
             placeholder="Search by name, number, type, or region"
-            className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none ring-slate-300 transition focus:ring"
+            className="h-10 w-full rounded-lg border border-[var(--border)] px-3 text-sm text-[var(--text-h)] outline-none ring-slate-300 transition focus:ring"
           />
           <button
             type="button"
@@ -209,8 +209,8 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
                 return next;
               });
             }}
-            className={`h-10 shrink-0 rounded-lg px-4 text-sm font-semibold transition ${
-              showCaughtOnly ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+            className={`h-10 shrink-0 rounded-lg border px-4 text-sm font-semibold transition ${
+              showCaughtOnly ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--text-h)] shadow-sm hover:bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
             }`}
           >
             {showCaughtOnly ? "Showing caught" : "Show caught only"}
@@ -224,8 +224,8 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
                 return next;
               });
             }}
-            className={`h-10 shrink-0 rounded-lg px-4 text-sm font-semibold transition ${
-              showMissingOnly ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+            className={`h-10 shrink-0 rounded-lg border px-4 text-sm font-semibold transition ${
+              showMissingOnly ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--text-h)] shadow-sm hover:bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
             }`}
           >
             {showMissingOnly ? "Showing missing" : "Show missing only"}
@@ -242,12 +242,12 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
               <article
                 key={pokemonKeyId}
                 className={`rounded-xl border p-3 ${
-                  isCaught ? "border-emerald-300 bg-emerald-50" : "border-slate-200 bg-white"
+                  isCaught ? "border-emerald-300 bg-emerald-50" : "border-[var(--border)] bg-[var(--bg)]"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs text-slate-500">#{entry.id}</span>
-                  <span className={`text-xs font-semibold ${isCaught ? "text-emerald-700" : "text-slate-500"}`}>
+                  <span className="text-xs text-[var(--text)]">#{entry.id}</span>
+                  <span className={`text-xs font-semibold ${isCaught ? "text-emerald-700" : "text-[var(--text)]"}`}>
                     {isCaught ? "Caught" : "Missing"}
                   </span>
                 </div>
@@ -255,13 +255,13 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
                   {entry.sprite ? (
                     <img src={entry.sprite} alt={entry.name} className="h-10 w-10 object-contain" loading="lazy" />
                   ) : (
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-slate-200 text-xs font-semibold text-slate-600">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-[var(--code-bg)] text-xs font-semibold text-[var(--text)]">
                       {entry.name.charAt(0)}
                     </span>
                   )}
                   <div>
-                    <p className="m-0 text-sm font-semibold text-slate-900">{entry.name}</p>
-                    <p className="m-0 text-xs text-slate-500">{entry.types.join(" / ")}</p>
+                    <p className="m-0 text-sm font-semibold text-[var(--text-h)]">{entry.name}</p>
+                    <p className="m-0 text-xs text-[var(--text)]">{entry.types.join(" / ")}</p>
                   </div>
                 </div>
                 {isShiny ? (

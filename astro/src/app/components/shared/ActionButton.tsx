@@ -4,9 +4,9 @@ const base = "inline-flex items-center justify-center gap-1.5 text-sm font-mediu
 
 const variants = {
   destructiveGhost:
-    "rounded-lg border-2 border-red-300 bg-white px-4 py-2 text-red-700 hover:border-red-400 hover:bg-rose-50 hover:text-red-800 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400",
+    "rounded-lg border-2 border-red-300 bg-[var(--bg)] px-4 py-2 text-red-700 hover:border-red-400 hover:bg-rose-50 hover:text-red-800 disabled:cursor-not-allowed disabled:border-[var(--border)] disabled:bg-[var(--code-bg)] disabled:text-slate-400",
   secondary:
-    "rounded-[10px] border-2 border-slate-200 bg-white px-[18px] py-2.5 text-[0.9rem] text-slate-600 hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50",
+    "rounded-[10px] border-2 border-[var(--border)] bg-[var(--bg)] px-[18px] py-2.5 text-[0.9rem] text-[var(--text)] hover:border-[var(--border)] hover:bg-[var(--code-bg)] disabled:cursor-not-allowed disabled:opacity-50",
 } as const;
 
 type Variant = keyof typeof variants;

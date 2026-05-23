@@ -41,21 +41,21 @@ export function HistoryTimelineCard({
   return (
     <SectionCard title={title} subtitle={subtitle}>
       {timeline.length > 0 ? (
-          <ul className="relative m-0 w-full list-none p-0 before:absolute before:bottom-0 before:left-[10px] before:top-0 before:w-px before:bg-slate-200">
+          <ul className="relative m-0 w-full list-none p-0 before:absolute before:bottom-0 before:left-[10px] before:top-0 before:w-px before:bg-[var(--code-bg)]">
             {timeline.map((entry, index) => (
             <li key={`${entry.date}-${index}`} className="relative grid w-full grid-cols-[20px_1fr] items-stretch gap-3 pb-4 last:pb-0">
               <div className="relative flex h-full items-center justify-center">
                 <span className="relative z-10 inline-block h-2.5 w-2.5 rounded-full bg-sky-500" />
               </div>
-              <div className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-                <p className="m-0 text-sm font-semibold text-slate-900">{entry.label}</p>
-                <p className="m-0 mt-0.5 text-xs text-slate-500">{entry.daysAgo === null ? "Unknown recency" : `${entry.daysAgo} days ago`}</p>
+              <div className="w-full rounded-xl border border-[var(--border)] bg-[var(--code-bg)] px-3 py-2">
+                <p className="m-0 text-sm font-semibold text-[var(--text-h)]">{entry.label}</p>
+                <p className="m-0 mt-0.5 text-xs text-[var(--text)]">{entry.daysAgo === null ? "Unknown recency" : `${entry.daysAgo} days ago`}</p>
               </div>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-slate-500">{emptyText}</p>
+        <p className="text-sm text-[var(--text)]">{emptyText}</p>
       )}
     </SectionCard>
   );

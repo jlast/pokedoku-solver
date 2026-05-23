@@ -43,9 +43,9 @@ export function CategoryList({
         const barWidth = item.count > 0 ? `max(${scaledBarWidthPercent}%, 8px)` : "0%";
 
         return (
-          <li key={item.categoryId} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+          <li key={item.categoryId} className="flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2">
             <div className="min-w-0 flex-1">
-              <p className="flex items-center gap-2 truncate font-semibold text-slate-800">
+              <p className="flex items-center gap-2 truncate font-semibold text-[var(--text-h)]">
                 <CategoryBadgeLink parsed={parsed} href={getCategoryHref(parsed.label)} />
               </p>
               {showDistributionBar ? (
@@ -57,8 +57,8 @@ export function CategoryList({
               ) : null}
             </div>
             <div className="shrink-0 text-right">
-              <span className="text-lg font-semibold text-slate-800">{item.count}</span>
-              {showDistributionBar ? <p className="text-xs text-slate-500">{percent.toFixed(1)}%</p> : null}
+              <span className="text-lg font-semibold text-[var(--text-h)]">{item.count}</span>
+              {showDistributionBar ? <p className="text-xs text-[var(--text)]">{percent.toFixed(1)}%</p> : null}
             </div>
           </li>
         );

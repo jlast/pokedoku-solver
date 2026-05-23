@@ -311,14 +311,14 @@ export function MyPokedexPageClient() {
 
   if (!profile) {
     return (
-      <main className="mx-auto mt-4 w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-        <h2 className="m-0 text-2xl font-semibold text-slate-900">Sign in required</h2>
-        <p className="mb-0 mt-3 text-slate-600">
+      <main className="mx-auto mt-4 w-full max-w-3xl rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 text-center shadow-sm">
+        <h2 className="m-0 text-2xl font-semibold text-[var(--text-h)]">Sign in required</h2>
+        <p className="mb-0 mt-3 text-[var(--text)]">
           Please sign in to view your personal Pokedex progress.
         </p>
         <a
           href={`${import.meta.env.BASE_URL}login/`}
-          className="mt-5 inline-flex h-10 items-center rounded-[10px] bg-slate-900 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-slate-800"
+          className="mt-5 inline-flex h-10 items-center rounded-[10px] bg-[var(--text-h)] px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-[var(--code-bg)]"
         >
           Go to Login
         </a>
@@ -328,7 +328,7 @@ export function MyPokedexPageClient() {
 
   return (
     <main className="mx-auto mt-4 flex w-full max-w-4xl flex-col gap-4">
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
         <PokedexImportPanel
           importJsonText={importJsonText}
           importStatus={importStatus}
@@ -339,11 +339,11 @@ export function MyPokedexPageClient() {
           onUploadChange={uploadPokedexJsonFile}
         />
 
-        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-800/60 dark:bg-amber-950/30">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="m-0 text-sm font-semibold text-amber-900">Prestige Unlock</p>
-              <p className="m-0 mt-1 text-xs text-amber-800">
+              <p className="m-0 text-sm font-semibold text-amber-900 dark:text-amber-100">Prestige Unlock</p>
+              <p className="m-0 mt-1 text-xs text-amber-800 dark:text-amber-200">
                 {nextPrestigeLevel
                   ? `Complete the full Pokedex to unlock ${nextPrestigeLevel.label}. Unlocking resets your progress.`
                   : "All prestige levels unlocked."}
@@ -356,7 +356,7 @@ export function MyPokedexPageClient() {
               className={`h-11 shrink-0 rounded-lg px-5 text-sm font-bold transition ${
                 canUnlockNextPrestige
                   ? "bg-amber-500 text-white shadow-sm hover:bg-amber-600"
-                  : "cursor-not-allowed bg-slate-200 text-slate-500"
+                  : "cursor-not-allowed bg-[var(--code-bg)] text-[var(--text)]"
               }`}
             >
               {nextPrestigeLevel ? `Unlock ${nextPrestigeLevel.label}` : "All unlocked"}
@@ -365,7 +365,7 @@ export function MyPokedexPageClient() {
         </div>
 
         <div className="mb-4 overflow-x-auto pb-1">
-          <div className="inline-flex min-w-full gap-2 rounded-xl bg-slate-100 p-1">
+          <div className="inline-flex min-w-full gap-2 rounded-xl bg-[var(--code-bg)] p-1">
             {PRESTIGE_LEVELS.map((level, levelIndex) => {
               const isLocked = levelIndex > unlockedPrestigeLevelIndex;
               const isSelected = selectedPrestigeLevel.id === level.id;
@@ -380,9 +380,9 @@ export function MyPokedexPageClient() {
                     isSelected
                       ? isViewingPastPrestige
                         ? "bg-amber-100 text-amber-900 shadow-sm"
-                        : "bg-white text-slate-900 shadow-sm"
-                      : "text-slate-600 hover:bg-slate-200 hover:text-slate-800"
-                  } ${isLocked ? "cursor-not-allowed opacity-50 hover:bg-transparent hover:text-slate-600" : ""}`}
+                        : "bg-[var(--bg)] text-[var(--text-h)] shadow-sm"
+                      : "text-[var(--text)] hover:bg-[var(--code-bg)] hover:text-[var(--text-h)]"
+                  } ${isLocked ? "cursor-not-allowed opacity-50 hover:bg-transparent hover:text-[var(--text)]" : ""}`}
                 >
                   <PokeballIcon tone={level.tone} className="h-4 w-4" />
                   <span>{level.label}</span>
@@ -395,8 +395,8 @@ export function MyPokedexPageClient() {
 
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="m-0 text-xl font-semibold text-slate-900">My Pokedex</h2>
-            <p className="mb-0 mt-1 text-sm text-slate-500">Track your collection and keep your progress synced.</p>
+            <h2 className="m-0 text-xl font-semibold text-[var(--text-h)]">My Pokedex</h2>
+            <p className="mb-0 mt-1 text-sm text-[var(--text)]">Track your collection and keep your progress synced.</p>
           </div>
         </div>
 
@@ -421,28 +421,28 @@ export function MyPokedexPageClient() {
                 <p className={`m-0 text-sm ${prestigeUiTone.completionLabelText}`}>Completion</p>
                 {isLoading ? (
                   <>
-                    <span className="mt-1 block h-7 w-24 animate-pulse rounded bg-slate-200" aria-hidden="true" />
-                    <span className="mt-2 block h-3 w-16 animate-pulse rounded bg-slate-200" aria-hidden="true" />
+                    <span className="mt-1 block h-7 w-24 animate-pulse rounded bg-[var(--code-bg)]" aria-hidden="true" />
+                    <span className="mt-2 block h-3 w-16 animate-pulse rounded bg-[var(--code-bg)]" aria-hidden="true" />
                   </>
                 ) : (
                   <>
                     <p className={`m-0 text-2xl font-bold ${prestigeUiTone.completionValueText}`}>
                       {displayedCaughtCount} / {totalCount}
                     </p>
-                    <p className={`m-0 mt-1 text-xs font-semibold ${prestigeUiTone.completionMetaText}`}>Shinies: {shinyCount}</p>
+                    <p className={`m-0 mt-1 text-xs font-semibold ${prestigeUiTone.completionValueText}`}>Shinies: {shinyCount}</p>
                   </>
                 )}
               </div>
               {isLoading ? (
-                <span className="block h-5 w-10 animate-pulse rounded bg-slate-200" aria-hidden="true" />
+                <span className="block h-5 w-10 animate-pulse rounded bg-[var(--code-bg)]" aria-hidden="true" />
               ) : (
                 <p className={`m-0 text-sm font-semibold ${prestigeUiTone.completionPercentText}`}>{completionRate}%</p>
               )}
             </div>
             {isLoading ? (
-              <span className="mt-3 block h-2 w-full animate-pulse rounded-full bg-slate-200" aria-hidden="true" />
+              <span className="mt-3 block h-2 w-full animate-pulse rounded-full bg-[var(--code-bg)]" aria-hidden="true" />
             ) : (
-              <progress className={`mt-3 h-2 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-white/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`} max={Math.max(totalCount, 1)} value={displayedCaughtCount} />
+              <progress className={`mt-3 h-2 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-[var(--bg)]/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`} max={Math.max(totalCount, 1)} value={displayedCaughtCount} />
             )}
           </div>
         </div>
@@ -453,7 +453,7 @@ export function MyPokedexPageClient() {
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search by name, number, type, or region"
-            className="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm text-slate-900 outline-none ring-slate-300 transition focus:ring"
+            className="h-10 w-full rounded-lg border border-[var(--border)] px-3 text-sm text-[var(--text-h)] outline-none ring-slate-300 transition focus:ring"
           />
           <button
             type="button"
@@ -467,8 +467,8 @@ export function MyPokedexPageClient() {
               });
             }}
             className={`h-10 shrink-0 rounded-lg px-4 text-sm font-semibold transition ${
-              showCaughtOnly ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            }`}
+               showCaughtOnly ? "bg-[var(--accent-bg)] text-[var(--text-h)] hover:bg-[var(--accent-bg)]" : "bg-[var(--code-bg)] text-[var(--text)] hover:bg-[var(--accent-bg)]"
+             }`}
           >
             {showCaughtOnly ? "Showing caught" : "Show caught only"}
           </button>
@@ -483,16 +483,16 @@ export function MyPokedexPageClient() {
                 return next;
               });
             }}
-            className={`h-10 shrink-0 rounded-lg px-4 text-sm font-semibold transition ${
-              showMissingOnly ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            }`}
-          >
+              className={`h-10 shrink-0 rounded-lg border px-4 text-sm font-semibold transition ${
+               showMissingOnly ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--text-h)] shadow-sm hover:bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
+             }`}
+           >
             {showMissingOnly ? "Showing missing" : "Show missing only"}
           </button>
         </div>
 
         {isLoading ? (
-          <p className="mb-0 mt-5 text-sm text-slate-600">Loading your Pokedex...</p>
+          <p className="mb-0 mt-5 text-sm text-[var(--text)]">Loading your Pokedex...</p>
         ) : (
           <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
             {filteredPokemon.map((entry) => {
@@ -512,19 +512,19 @@ export function MyPokedexPageClient() {
                   disabled={isViewingPastPrestige}
                   className={`rounded-xl border p-3 text-left transition cursor-pointer  ${
                     isShiny ? 
-                      "border-amber-300 bg-amber-50"
+                      "border-amber-300 bg-amber-50 dark:border-amber-700/60 dark:bg-amber-800/35"
                       : isCaught
                       ? isViewingPastPrestige
-                        ? "border-amber-300 bg-amber-50"
-                        : "border-emerald-300 bg-emerald-50 hover:bg-emerald-100"
+                        ? "border-amber-300 bg-amber-50 dark:border-amber-700/60 dark:bg-amber-800/35"
+                        : "border-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-900/40 dark:hover:bg-emerald-800/45"
                       : isViewingPastPrestige
-                        ? "border-slate-200 bg-white"
-                        : "border-slate-200 bg-white hover:bg-slate-50"
+                        ? "border-[var(--border)] bg-[var(--bg)]"
+                        : "border-[var(--border)] bg-[var(--bg)] hover:bg-[var(--code-bg)]"
                   } ${isViewingPastPrestige ? "cursor-not-allowed" : ""}`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs text-slate-500">#{entry.id}</span>
-                    <span className={`text-xs font-semibold ${isCaught ? (isViewingPastPrestige ? "text-amber-700" : "text-emerald-700") : "text-slate-500"}`}>
+                    <span className="text-xs text-[var(--text)]">#{entry.id}</span>
+                    <span className={`text-xs font-semibold ${isCaught ? (isViewingPastPrestige ? "text-amber-700 dark:text-amber-300" : "text-emerald-700 dark:text-emerald-300") : "text-[var(--text)]"}`}>
                       {isCaught ? "Caught" : "Missing"}
                     </span>
                   </div>
@@ -532,13 +532,13 @@ export function MyPokedexPageClient() {
                     {entry.sprite ? (
                       <img src={entry.sprite} alt={entry.name} className="h-10 w-10 object-contain" loading="lazy" />
                     ) : (
-                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-slate-200 text-xs font-semibold text-slate-600">
+                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-[var(--code-bg)] text-xs font-semibold text-[var(--text)]">
                         {entry.name.charAt(0)}
                       </span>
                     )}
                     <div>
-                      <p className="m-0 text-sm font-semibold text-slate-900">{entry.name}</p>
-                      <p className="m-0 text-xs text-slate-500">{entry.types.join(" / ")}</p>
+                      <p className="m-0 text-sm font-semibold text-[var(--text-h)]">{entry.name}</p>
+                      <p className="m-0 text-xs text-[var(--text)]">{entry.types.join(" / ")}</p>
                     </div>
                   </div>
                   {(!isViewingPastPrestige || isShiny) ? (
@@ -556,8 +556,8 @@ export function MyPokedexPageClient() {
                           isShiny
                             ? "bg-amber-400 text-amber-900"
                             : isCaught
-                              ? "cursor-pointer bg-slate-200 text-slate-700 hover:bg-slate-300"
-                              : "cursor-not-allowed bg-slate-100 text-slate-400"
+                              ? "cursor-pointer bg-[var(--code-bg)] text-[var(--text)] hover:bg-[var(--accent-bg)]"
+                              : "cursor-not-allowed bg-[var(--code-bg)] text-[var(--text)]"
                         }`}
                       >
                         {isShiny ? "Shiny unlocked" : "Mark shiny"}

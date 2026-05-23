@@ -27,7 +27,7 @@ export function PokemonCard({ pokemon, href = null, onClick }: PokemonCardProps)
       )}
       <div className="flex w-full flex-col items-center gap-1">
         <div className="text-center text-[0.9rem] font-semibold text-[var(--text-h)]">{pokemon.name}</div>
-        <div className="text-[0.8rem] text-[#666]">#{pokemon.id}</div>
+        <div className="text-[0.8rem] text-[var(--text)]">#{pokemon.id}</div>
         <div className="flex flex-wrap justify-center gap-1">
           {pokemon.types.map((type, i) => (
             <CategoryBadgeLink

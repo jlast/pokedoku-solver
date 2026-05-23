@@ -172,7 +172,7 @@ export function SuggestionsPanel({
                   <option value="recent-appearance">Recent appearance (oldest first)</option>
                   <option value="recent-appearance-newest">Recent appearance (newest first)</option>
                 </select>
-                <span className="pointer-events-none absolute right-2 inline-flex items-center text-[#666]" aria-hidden="true">
+                <span className="pointer-events-none absolute right-2 inline-flex items-center text-[var(--text)]" aria-hidden="true">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                     <path
                       d="m6 9 6 6 6-6"
@@ -209,8 +209,8 @@ export function SuggestionsPanel({
                 )}
                 <div className="flex flex-1 flex-col">
                   <div className="flex flex-1 items-center gap-2 px-2 pb-1 pt-2">
-                    <span className="shrink-0 text-[10px] font-semibold text-[#666]">#{p.id}</span>
-                    <span className="flex-1 text-[12px] font-medium text-[#2c3e50]">{p.name}</span>
+                    <span className="shrink-0 text-[10px] font-semibold text-[var(--text)]">#{p.id}</span>
+                    <span className="flex-1 text-[12px] font-medium text-[var(--text-h)]">{p.name}</span>
                     {p.dexDifficulty && (
                       <span
                         className="ml-auto shrink-0 rounded-[10px] px-2 py-[2px] text-[0.7rem] font-semibold uppercase text-white"
@@ -224,7 +224,7 @@ export function SuggestionsPanel({
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 px-2 pb-2 text-[0.85rem] text-[#666]">
+                  <div className="flex items-center gap-2 px-2 pb-2 text-[0.85rem] text-[var(--text)]">
                     <div className="flex shrink-0 flex-wrap gap-0.5">
                         {p.types.map((type, i) => (
                          <CategoryBadgeLink
@@ -239,12 +239,12 @@ export function SuggestionsPanel({
               </button>
             ))
           ) : (
-            <p className="p-5 text-center text-[#e74c3c]">No Pokémon matches the constraints.</p>
+            <p className="p-5 text-center text-red-500">No Pokémon matches the constraints.</p>
           )}
         </div>
       </div>
       {sortedPokemon && sortedPokemon.length >= 5 && (
-        <div className="sticky left-1/2 -mt-10 h-8 w-8 -translate-x-4 rounded-full border border-[var(--border)] bg-white/50">
+        <div className="sticky left-1/2 -mt-10 h-8 w-8 -translate-x-4 rounded-full border border-[var(--border)] bg-[var(--bg)]/50">
           <span className="flex h-full w-full items-center justify-center" title="Scroll for more">
             ▼
           </span>

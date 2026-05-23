@@ -26,8 +26,8 @@ export function AuthCallbackPage() {
 
   return (
     <main className="mx-auto flex min-h-[50vh] max-w-xl items-center justify-center px-4 text-center">
-      {status === "working" && <p className="text-slate-700">Completing sign in...</p>}
-      {status === "success" && <p className="text-slate-700">Signed in. Redirecting...</p>}
+      {status === "working" && <p className="text-[var(--text)]">Completing sign in...</p>}
+      {status === "success" && <p className="text-[var(--text)]">Signed in. Redirecting...</p>}
       {status === "error" && <p className="text-red-600">Sign in failed. Please try again.</p>}
     </main>
   );

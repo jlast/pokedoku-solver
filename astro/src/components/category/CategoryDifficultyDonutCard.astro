@@ -49,7 +49,7 @@ const segments: DonutSegment[] = legendRows.map((row) => ({
 ---
 
 <SectionCard title="Difficulty distribution">
-  <span slot="headerRight" class="text-xs font-medium text-slate-500">{total} Pokemon</span>
+  <span slot="headerRight" class="text-xs font-medium text-[var(--text)]">{total} Pokemon</span>
 
   {total > 0 ? (
     <div class={`grid items-center gap-4 ${legendBelow ? "" : "sm:grid-cols-[180px_1fr]"}`}>
@@ -61,19 +61,19 @@ const segments: DonutSegment[] = legendRows.map((row) => ({
         {legendRows.map((row) => {
           const percent = total > 0 ? (row.count / total) * 100 : 0;
           return (
-            <li class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-              <span class="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
+            <li class="flex items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--code-bg)] px-3 py-2">
+              <span class="inline-flex items-center gap-2 text-sm font-medium text-[var(--text)]">
                 <span class="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: row.color }}></span>
                 {row.label}
               </span>
-              <span class="text-sm font-semibold tabular-nums text-slate-900">{row.count} ({percent.toFixed(1)}%)</span>
+              <span class="text-sm font-semibold tabular-nums text-[var(--text-h)]">{row.count} ({percent.toFixed(1)}%)</span>
             </li>
           );
         })}
       </ul>
     </div>
   ) : (
-    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
+    <div class="rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] px-4 py-4 text-sm text-[var(--text)]">
       No Pokemon found for this category combination, so there is no difficulty distribution yet.
     </div>
   )}

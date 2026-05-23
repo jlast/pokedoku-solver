@@ -23,7 +23,7 @@ export function DonutChart({ segments, ariaLabel, size }: { segments: DonutSegme
   const radius = size / 2;
 
   if (total <= 0) {
-    return <div aria-label={ariaLabel} className="h-full w-full rounded-full bg-slate-200" role="img" />;
+    return <div aria-label={ariaLabel} className="h-full w-full rounded-full bg-[var(--code-bg)]" role="img" />;
   }
 
   const nonZeroSegments = segments.filter((segment) => segment.value > 0);
@@ -64,7 +64,7 @@ export function DonutChart({ segments, ariaLabel, size }: { segments: DonutSegme
           )}
         </svg>
       </div>
-      <div className="absolute inset-12 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
+      <div className="absolute inset-12 flex flex-col items-center justify-center rounded-full bg-[var(--bg)] text-center shadow-inner">
       </div>
     </div>
   );

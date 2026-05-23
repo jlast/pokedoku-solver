@@ -145,7 +145,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
           ))}
         </div>
 
-        <div className="flex flex-col gap-1 rounded border-[3px] border-[#2c3e50] bg-[#2c3e50]">
+        <div className="flex flex-col gap-1 rounded border-[3px] border-[var(--border)] bg-[var(--border)]">
           {cells.map((row, rowIndex) => (
             <div key={rowIndex} className="flex gap-1">
               {row.map((cell, colIndex) => {
@@ -170,11 +170,11 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                 const isFilled = Boolean(cell);
                 const cellStateClasses = isSelected
                   ? isFilled
-                    ? 'bg-[#dbeafe] text-[#1e3a8a] shadow-[0_0_0_4px_#1d4ed8,inset_0_0_0_2px_#ffffff]'
-                    : 'bg-[#bfdbfe] text-[#1e3a8a] shadow-[0_0_0_4px_#1d4ed8,inset_0_0_0_2px_#ffffff]'
+                    ? 'bg-[var(--accent-bg)] text-[var(--text-h)] shadow-[0_0_0_2px_var(--accent),inset_0_0_0_1px_var(--border)]'
+                    : 'bg-[var(--code-bg)] text-[var(--text-h)] shadow-[0_0_0_2px_var(--accent),inset_0_0_0_1px_var(--border)]'
                   : isFilled
-                    ? 'bg-white hover:bg-[#ffeeee]'
-                    : 'bg-[#f8fafc] hover:bg-[#e2e8f0]';
+                    ? 'bg-[var(--bg)] hover:bg-[var(--accent-bg)]'
+                    : 'bg-[var(--code-bg)] hover:bg-[var(--accent-bg)]';
 
                 return (
                     <div
@@ -207,7 +207,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                             )}
                             <button
                               type="button"
-                              className="absolute right-0.5 top-0.5 z-[2] inline-flex h-12 w-[42px] cursor-pointer flex-col items-center justify-center gap-px rounded-[14px] border border-[#cbd5e1] bg-[rgba(255,255,255,0.92)] text-[#4f46e5] shadow-[0_2px_6px_rgba(15,23,42,0.18)] hover:border-[#a5b4fc] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4f46e5] focus-visible:outline-offset-1 max-[768px]:right-[3px] max-[768px]:top-[14px] max-[768px]:h-[34px] max-[768px]:w-[30px] max-[768px]:rounded-xl"
+                              className="absolute right-0.5 top-0.5 z-[2] inline-flex h-12 w-[42px] cursor-pointer flex-col items-center justify-center gap-px rounded-[14px] border border-[var(--border)] bg-[var(--bg)] text-[var(--text-h)] shadow-[0_2px_6px_rgba(15,23,42,0.18)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-1 max-[768px]:right-[3px] max-[768px]:top-[14px] max-[768px]:h-[34px] max-[768px]:w-[30px] max-[768px]:rounded-xl"
                               aria-label={`Swap ${cell.name} (${optionCount} options)`}
                               onClick={(event) => {
                                 event.stopPropagation();
@@ -221,18 +221,18 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                         )}
                         {cell.sprite && <img src={cell.sprite} alt="" className="absolute left-[22px] top-5 z-0 h-[95px] w-[95px] object-contain max-[768px]:left-2 max-[768px]:top-[14px] max-[768px]:h-[68px] max-[768px]:w-[68px]" />}
                         <div className={`relative z-[1] m-1 inline-flex flex-col items-center gap-px rounded-md px-2 py-1 text-center ${isSuggested ? 'm-0.5 px-1.5 py-[3px]' : ''}`}>
-                          <span className={`text-[9px] font-semibold leading-[1.05] ${isSelected ? 'text-[#1e3a8a]' : 'text-[#2c3e50]'}`}>{cell.name}</span>
+                          <span className={`text-[9px] font-semibold leading-[1.05] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text-h)]'}`}>{cell.name}</span>
                         </div>
                       </>
                     ) : possible.length === 0 ? (
                       <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
-                        <span className={`text-[18px] font-bold max-[768px]:text-[14px] ${isSelected ? 'text-[#1e3a8a]' : 'text-[#475569]'}`}>No options yet</span>
-                        <span className={`text-[0.58rem] ${isSelected ? 'text-[#1e3a8a]' : 'text-[#64748b]'}`}>Tap to check other squares</span>
+                        <span className={`text-[18px] font-bold max-[768px]:text-[14px] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text)]'}`}>No options yet</span>
+                        <span className={`text-[0.58rem] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text)]'}`}>Tap to check other squares</span>
                       </div>
                     ) : (
                       <div className="flex h-full flex-col items-center justify-center gap-0.5">
-                        <span className={`text-[26px] font-bold max-[768px]:text-[20px] ${isSelected ? 'text-[#1e3a8a]' : 'text-[#334155]'}`}>{possible.length}</span>
-                        <span className={`text-[0.6rem] ${isSelected ? 'text-[#1e3a8a]' : ''} opacity-80`}>Tap to explore</span>
+                         <span className={`text-[26px] font-bold max-[768px]:text-[20px] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text-h)]'}`}>{possible.length}</span>
+                         <span className={`text-[0.6rem] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text)]'} opacity-80`}>Tap to explore</span>
                       </div>
                     )}
                   </div>

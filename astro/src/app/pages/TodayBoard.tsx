@@ -364,11 +364,11 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   return (
     <div className="flex flex-col items-center">
       {isLoggedIn ? (
-        <section className="mb-3 max-w-[700px] w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-left">
+        <section className="mb-3 max-w-[700px] w-full rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-3 text-left">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <p className="m-0 text-sm font-semibold text-slate-800">My Pokedex filter</p>
-              <p className="m-0 text-xs text-slate-500">Show only entries you still need</p>
+              <p className="m-0 text-sm font-semibold text-[var(--text-h)]">My Pokedex filter</p>
+              <p className="m-0 text-xs text-[var(--text)]">Show only entries you still need</p>
             </div>
             <button
               type="button"
@@ -379,11 +379,11 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
               }}
               disabled={isSavingFilterPreference}
               className={`relative inline-flex h-7 w-12 items-center rounded-full border transition-colors ${
-                showMissingOnly ? "border-emerald-500 bg-emerald-500" : "border-slate-300 bg-slate-300"
+                showMissingOnly ? "border-emerald-500 bg-emerald-500" : "border-[var(--border)] bg-slate-300"
               } ${isSavingFilterPreference ? "opacity-70" : ""}`}
             >
               <span
-                className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                className={`inline-block h-5 w-5 transform rounded-full bg-[var(--bg)] shadow transition-transform ${
                   showMissingOnly ? "translate-x-6" : "translate-x-1"
                 }`}
               />
@@ -450,7 +450,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         <SectionCard
           className="mt-2 w-full"
           title={(
-            <h2 id="today-text-suggestions-heading" className="text-xl font-semibold tracking-tight text-slate-900">
+            <h2 id="today-text-suggestions-heading" className="text-xl font-semibold tracking-tight text-[var(--text-h)]">
               <span className="hidden md:inline">Today&apos;s Recommended Pokedoku Answers</span>
               <span className="md:hidden">Recommended Answers</span>
             </h2>
@@ -458,9 +458,9 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           subtitle="9 optimized picks for today's board"
         >
           <div className="overflow-x-auto hidden md:block">
-            <table className="w-full min-w-[760px] text-left text-sm text-slate-700">
+            <table className="w-full min-w-[760px] text-left text-sm text-[var(--text)]">
               <thead>
-                <tr className="border-b border-slate-200 text-slate-900">
+                <tr className="border-b border-[var(--border)] text-[var(--text-h)]">
                   <th className="px-2 py-3 pr-6 font-semibold">Category</th>
                   <th className="px-2 py-3 pr-6 font-semibold">Pokemon</th>
                   <th className="px-2 py-3 font-semibold">Types &amp; Difficulty</th>
@@ -468,7 +468,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
               </thead>
               <tbody>
                 {textualSuggestions.map((entry) => (
-                  <tr key={entry.key} className="border-b border-slate-100 align-top">
+                  <tr key={entry.key} className="border-b border-[var(--border)] align-top">
                     <td className="px-2 py-3 pr-6">
                       {(() => {
                         const rowParsed = toParsedConstraint(entry.rowConstraint);
@@ -486,7 +486,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                             ) : (
                               <span>Any</span>
                             )}
-                            <span className="text-slate-400">+</span>
+                            <span className="text-[var(--text)]">+</span>
                             {colParsed ? (
                               <CategoryBadgeLink
                                 parsed={colParsed}
@@ -503,7 +503,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                       {entry.pokemon ? (
                         <a
                           href={`${import.meta.env.BASE_URL}pokemon/${slugify(entry.pokemon.name)}-${entry.pokemon.formId ?? entry.pokemon.id}/`}
-                          className="font-semibold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:text-slate-700"
+                          className="font-semibold text-[var(--text-h)] underline decoration-slate-300 underline-offset-2 hover:text-[var(--text)]"
                         >
                           {entry.pokemon.name}
                         </a>
@@ -516,7 +516,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                         <div className="flex flex-wrap items-center gap-2">
                           {entry.pokemon.dexDifficulty && (
                             <span
-                              className="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold leading-none text-white shadow-sm"
+                              className="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold leading-none text-[var(--text-h)] shadow-sm"
                               style={{
                                 backgroundColor: DEX_DIFFICULTY_COLORS[entry.pokemon.dexDifficulty],
                                 border: "1px solid rgba(15,23,42,0.12)",
@@ -545,20 +545,20 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
             </table>
           </div>
 
-          <div className="mt-2 w-full divide-y divide-slate-200 rounded-xl border border-slate-200 md:hidden">
+          <div className="mt-2 w-full divide-y divide-slate-200 rounded-xl border border-[var(--border)] md:hidden">
             {textualSuggestions.map((entry) => {
               const rowParsed = toParsedConstraint(entry.rowConstraint);
               const colParsed = toParsedConstraint(entry.colConstraint);
 
               return (
-                <article key={`mobile-${entry.key}`} className="w-full bg-white p-2.5">
+                <article key={`mobile-${entry.key}`} className="w-full bg-[var(--bg)] p-2.5">
                   <div className="text-sm">
                     <div className="flex items-start gap-2">
-                      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-slate-200">
+                      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--bg)] ring-1 ring-slate-200">
                         {entry.pokemon?.sprite ? (
                           <img src={entry.pokemon.sprite} alt="" className="h-7 w-7" loading="lazy" decoding="async" />
                         ) : (
-                          <span className="text-[10px] font-semibold text-slate-400">?</span>
+                          <span className="text-[10px] font-semibold text-[var(--text)]">?</span>
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -566,12 +566,12 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                           {entry.pokemon ? (
                             <a
                               href={`${import.meta.env.BASE_URL}pokemon/${slugify(entry.pokemon.name)}-${entry.pokemon.formId ?? entry.pokemon.id}/`}
-                              className="inline-flex items-center text-base font-extrabold tracking-tight text-slate-900 no-underline hover:text-slate-700"
+                              className="inline-flex items-center text-base font-extrabold tracking-tight text-[var(--text-h)] no-underline hover:text-[var(--text)]"
                             >
                               {entry.pokemon.name}
                             </a>
                           ) : (
-                            <span className="text-slate-700">No suggestion available</span>
+                            <span className="text-[var(--text)]">No suggestion available</span>
                           )}
                           <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-1.5 text-right">
                             {rowParsed ? (
@@ -584,7 +584,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                             ) : (
                               <span>Any</span>
                             )}
-                            <span className="text-slate-400">+</span>
+                            <span className="text-[var(--text)]">+</span>
                             {colParsed ? (
                               <span className="inline-flex max-w-full scale-90 origin-right">
                                 <CategoryBadgeLink

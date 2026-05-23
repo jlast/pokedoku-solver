@@ -202,10 +202,10 @@ const baseUrl = import.meta.env.BASE_URL;
         LEVELS.map((section) => {
           const items = TIPS.filter((tip) => tip.level === section.level);
           return (
-            <div class="rounded-[14px] border border-slate-200 bg-slate-50/40 p-4">
+            <div class="rounded-[14px] border border-[var(--border)] bg-[var(--code-bg)]/40 p-4">
               <div>
-                <h2 class="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">{section.title}</h2>
-                <p class="mb-2.5">{section.description}</p>
+                <h2 class="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[var(--text-h)]">{section.title}</h2>
+                <p class="mb-2.5 text-[var(--text)]">{section.description}</p>
               </div>
 
               <div class="flex flex-col gap-2.5">
@@ -213,19 +213,19 @@ const baseUrl = import.meta.env.BASE_URL;
                   const tipLink = item.link;
                   const isInitiallyOpen = item.id === TIPS[0].id && index === 0;
                   return (
-                    <article class="rounded-[10px] border border-slate-200 bg-white" id={item.id}>
+                    <article class="rounded-[10px] border border-[var(--border)] bg-[var(--bg)]" id={item.id}>
                       <Collapsible
                         title={item.question}
                         open={isInitiallyOpen}
                         detailsClass="rounded-[10px]"
-                        summaryClass="px-3.5 py-3 text-left text-[0.98rem] font-semibold text-slate-800"
-                        contentClass="border-t border-slate-200 px-3.5 pt-2.5 pb-3"
+                        summaryClass="px-3.5 py-3 text-left text-[0.98rem] font-semibold text-[var(--text-h)]"
+                        contentClass="border-t border-[var(--border)] px-3.5 pt-2.5 pb-3"
                         analyticsEventName="toggle_tip"
                         analyticsMetadata={{ id: item.id, level: item.level }}
                       >
-                        <p class="mb-2.5 leading-7 text-slate-600">{item.answer}</p>
+                        <p class="mb-2.5 leading-7 text-[var(--text)]">{item.answer}</p>
                         {item.examples && item.examples.length > 0 && (
-                          <ul class="m-0 list-disc pl-[18px] text-slate-600">
+                          <ul class="m-0 list-disc pl-[18px] text-[var(--text)]">
                             {item.examples.map((example) => (
                               <li class="mb-1.5">{example}</li>
                             ))}
@@ -234,7 +234,7 @@ const baseUrl = import.meta.env.BASE_URL;
                         {tipLink && (
                           <p class="mt-2.5">
                             <a
-                              class="text-indigo-600 underline-offset-2 hover:underline"
+                              class="text-[var(--text-h)] underline decoration-[var(--accent-border)] underline-offset-2 hover:text-[var(--text)]"
                               href={`${baseUrl}${tipLink.href.replace(/^\//, "")}`}
                               data-tip-link={item.id}
                               data-tip-level={item.level}

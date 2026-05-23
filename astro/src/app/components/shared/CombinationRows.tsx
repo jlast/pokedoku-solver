@@ -40,26 +40,26 @@ export function CombinationRows({ rows }: { rows: CombinationRow[] }) {
           <li key={`${row.leftRaw}-${row.rightRaw}-${index}`} className="mb-2">
             <a
               href={pairHref ?? "#"}
-              className={`grid items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm no-underline transition ${
-                pairHref ? "hover:border-slate-300" : "pointer-events-none"
+              className={`grid items-center gap-2 rounded-xl border border-[var(--border)] px-3 py-2 text-sm no-underline transition ${
+                pairHref ? "hover:border-[var(--border)]" : "pointer-events-none"
               } grid-cols-[minmax(0,1fr)_auto]`}
               style={{
-                background: `linear-gradient(90deg, ${leftColor}18 0%, ${rightColor}18 100%), #ffffff`,
+                background: `linear-gradient(90deg, ${leftColor}2e 0%, ${rightColor}2e 100%), var(--bg)`,
               }}
               aria-label={`Open ${left.label} and ${right.label} combination page`}
             >
               <div className="min-w-0">
-                <span className="mb-1 flex items-center gap-2 font-semibold text-slate-800">
+                <span className="mb-1 flex items-center gap-2 font-semibold text-[var(--text-h)]">
                   <CategoryBadgeLink parsed={left} href={null} />
-                  <span className="text-slate-400">+</span>
+                  <span className="text-[var(--text)]">+</span>
                   <CategoryBadgeLink parsed={right} href={null} />
                 </span>
                 <div className="h-2 overflow-hidden rounded-full">
                   <div className="h-full rounded-full" style={{ width: `${Math.max(0, Math.min(100, row.widthPercent)).toFixed(1)}%`, background: row.gradient }} />
                 </div>
               </div>
-              <span className="flex items-center gap-2 pl-2 text-slate-400">
-                <strong className="text-slate-700">{row.percent > 10 ? `${Math.round(row.percent)}%` : `${row.percent.toFixed(1)}%`}</strong>
+              <span className="flex items-center gap-2 pl-2 text-[var(--text)]">
+                <strong className="text-[var(--text)]">{row.percent > 10 ? `${Math.round(row.percent)}%` : `${row.percent.toFixed(1)}%`}</strong>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
