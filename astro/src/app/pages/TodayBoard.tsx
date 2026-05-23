@@ -145,6 +145,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   );
   const [showMissingOnly, setShowMissingOnly] = useState<boolean>(() => isLoggedIn);
   const [isSavingFilterPreference, setIsSavingFilterPreference] = useState(false);
+  const [isMarkingCompleted, setIsMarkingCompleted] = useState(false);
   const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const [remoteUserDex, setRemoteUserDex] = useState<UserDexPayload | null>(null);
   const suggestionsRef = useRef<HTMLDivElement | null>(null);
@@ -276,6 +277,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   };
 
   const markAllAsCompleted = async () => {
+    if (isMarkingCompleted) return;
+
     const completedIds = grid.cells
       .flat()
       .filter((cell): cell is Pokemon => Boolean(cell))
@@ -284,29 +287,34 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     if (completedIds.length === 0) return;
     if (!remoteUserDex) return;
 
-    const token = await getValidSessionIdToken();
-    const apiBaseUrl = getApiBaseUrl();
-    if (!token || !apiBaseUrl) return;
+    setIsMarkingCompleted(true);
+    try {
+      const token = await getValidSessionIdToken();
+      const apiBaseUrl = getApiBaseUrl();
+      if (!token || !apiBaseUrl) return;
 
-    const mergedSet = new Set(caughtSet);
-    for (const id of completedIds) mergedSet.add(id);
+      const mergedSet = new Set(caughtSet);
+      for (const id of completedIds) mergedSet.add(id);
 
-    const nextPayload: UserDexPayload = {
-      caughtPokemonKeyIds: Array.from(mergedSet).sort((a, b) => a - b),
-      shinyPokemonKeyIds: remoteUserDex.shinyPokemonKeyIds,
-      unlockedPrestigeLevelIndex: remoteUserDex.unlockedPrestigeLevelIndex,
-    };
+      const nextPayload: UserDexPayload = {
+        caughtPokemonKeyIds: Array.from(mergedSet).sort((a, b) => a - b),
+        shinyPokemonKeyIds: remoteUserDex.shinyPokemonKeyIds,
+        unlockedPrestigeLevelIndex: remoteUserDex.unlockedPrestigeLevelIndex,
+      };
 
-    const updated = await patchRemoteUserDex({
-      token,
-      apiBaseUrl,
-      payload: nextPayload,
-    });
-    if (!updated) return;
+      const updated = await patchRemoteUserDex({
+        token,
+        apiBaseUrl,
+        payload: nextPayload,
+      });
+      if (!updated) return;
 
-    setCaughtSet(mergedSet);
-    setRemoteUserDex(nextPayload);
-    trackEvent("click_mark_all_completed", { count: completedIds.length.toString() });
+      setCaughtSet(mergedSet);
+      setRemoteUserDex(nextPayload);
+      trackEvent("click_mark_all_completed", { count: completedIds.length.toString() });
+    } finally {
+      setIsMarkingCompleted(false);
+    }
   };
 
   const hasGridData = grid.cells.some((row) => row.some((cell) => cell !== null));
@@ -393,10 +401,25 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
             <div className="mt-2">
               <ActionButton
                 onClick={markAllAsCompleted}
-                variant="secondary"
-                disabled={!hasGridData || !remoteUserDex}
+                variant="success"
+                disabled={!hasGridData || !remoteUserDex || isMarkingCompleted}
               >
-                Mark all as completed in My Pokedex
+                {isMarkingCompleted ? (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="animate-spin">
+                      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" opacity="0.25" />
+                      <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                    Saving in My Pokedex...
+                  </>
+                ) : (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    Mark all as completed in My Pokedex
+                  </>
+                )}
               </ActionButton>
             </div>
           ) : null}
