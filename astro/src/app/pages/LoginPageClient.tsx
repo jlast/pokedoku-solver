@@ -115,18 +115,18 @@ export function LoginPageClient() {
           </ul>
 
           <div className="md:col-span-3">
-            <picture>
-              <source
-                srcSet={`${import.meta.env.BASE_URL}images/content/my_pokedex_preview_dark.png`}
-                media="(prefers-color-scheme: dark)"
-              />
-              <img
-                src={`${import.meta.env.BASE_URL}images/content/my_pokedex_preview.png`}
-                alt="Preview of the My Pokedex page"
-                className="block w-full rounded-xl"
-                loading="lazy"
-              />
-            </picture>
+            <img
+              src={`${import.meta.env.BASE_URL}images/content/my_pokedex_preview.png`}
+              alt="Preview of the My Pokedex page"
+              className="block w-full rounded-xl [html[data-theme='dark']_&]:hidden"
+              loading="lazy"
+            />
+            <img
+              src={`${import.meta.env.BASE_URL}images/content/my_pokedex_preview_dark.png`}
+              alt="Preview of the My Pokedex page"
+              className="hidden w-full rounded-xl [html[data-theme='dark']_&]:block"
+              loading="lazy"
+            />
           </div>
         </div>
       </section>
