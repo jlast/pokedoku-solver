@@ -27,6 +27,12 @@ Astro-based website for Pokedoku suggestions, statistics, tools, and tips.
 - Keep pages and components lightweight and composable.
 - Preserve existing visual and structural patterns when modifying existing pages.
 
+## Theme mode (light/dark)
+- The website supports both light mode and dark mode; do not ship UI changes that only work in one mode.
+- Prefer existing theme tokens (`--bg`, `--text`, `--text-h`, `--border`, `--code-bg`, `--accent-bg`, `--accent-border`) over hardcoded light/dark color classes.
+- If adding or changing interactive states (selected, hover, disabled, badges, pills), verify contrast in both light and dark mode.
+- Theme preference is persisted in `localStorage` under `theme-mode`; any theme-toggle behavior should remain compatible with that key.
+
 ## Common commands
 - Dev: `pnpm dev` (from repo root) or `pnpm --dir astro dev`
 - Build: `pnpm build` (runs data fetch + Astro build)
