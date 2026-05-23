@@ -121,7 +121,12 @@ export function Header({
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isUserLabelLoading, setIsUserLabelLoading] = useState(false);
   const [userLabel, setUserLabel] = useState<string | null>(null);
-  const [themeMode, setThemeMode] = useState<ThemeMode>("light");
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
+    if (typeof window === "undefined") return "light";
+    const rootTheme = document.documentElement.getAttribute("data-theme");
+    if (rootTheme === "light" || rootTheme === "dark") return rootTheme;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
   const toolsMenuRef = useRef<HTMLDetailsElement | null>(null);
   const profileMenuRef = useRef<HTMLDetailsElement | null>(null);
   const mobileToolsMenuRef = useRef<HTMLDetailsElement | null>(null);
@@ -218,18 +223,6 @@ export function Header({
       document.body.style.overflow = previousOverflow;
     };
   }, [mobileMenuOpen]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const rootTheme = document.documentElement.getAttribute("data-theme");
-    if (rootTheme === "light" || rootTheme === "dark") {
-      setThemeMode(rootTheme);
-      return;
-    }
-
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setThemeMode(prefersDark ? "dark" : "light");
-  }, []);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
@@ -589,6 +582,22 @@ export function Header({
                 </svg>
               </button>
 
+              <button
+                type="button"
+                onClick={() => toggleTheme("mobile")}
+                className="hidden h-10 w-10 items-center justify-center rounded-[10px] border border-[var(--border)] bg-[var(--bg)] text-[var(--text-h)] transition-colors hover:bg-[var(--accent-bg)] max-[1100px]:inline-flex"
+                aria-label={`Switch to ${themeMode === "dark" ? "light" : "dark"} mode`}
+                title={themeMode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  {themeMode === "dark" ? (
+                    <path d="M12 3v2M12 19v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M3 12h2M19 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  ) : (
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3c-.03.26-.04.52-.04.79a7 7 0 0 0 7 7c.27 0 .53-.01.79-.04Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  )}
+                </svg>
+              </button>
+
               <a
                 href="https://buymeacoffee.com/jeroenvande"
                 target="_blank"
@@ -858,21 +867,6 @@ export function Header({
                         </a>
                       );
                     })}
-
-                    <button
-                      type="button"
-                      onClick={() => toggleTheme("mobile")}
-                      className="mt-1 flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-[var(--text)] transition-colors hover:bg-[var(--code-bg)]"
-                      aria-label={`Switch to ${themeMode === "dark" ? "light" : "dark"} mode`}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        {themeMode === "dark" ? (
-                          <path d="M12 3v2M12 19v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M3 12h2M19 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                        ) : (
-                          <path d="M21 12.79A9 9 0 1 1 11.21 3c-.03.26-.04.52-.04.79a7 7 0 0 0 7 7c.27 0 .53-.01.79-.04Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                        )}
-                      </svg>
-                    </button>
 
                     {authEnabled ? (
                       <details

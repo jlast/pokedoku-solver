@@ -10,9 +10,9 @@ import {
 } from "@pokedoku-helper/user-api-client";
 import { getSessionUserId, getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
-import { getPrestigeUiTone } from "../lib/prestigeUi";
 import { FILTER_CATEGORIES } from "../../../../lib/shared/filters";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
+import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
 import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
 
 function getApiBaseUrl(): string | null {
@@ -250,10 +250,9 @@ export function PokedexDashboardPageClient() {
   const totalCount = pokemon.length;
   const caughtCount = caughtSet.size;
   const shinyCount = shinySet.size;
-  const completionRate = totalCount > 0 ? Math.round((caughtCount / totalCount) * 100) : 0;
-  const shinyOverallRate = totalCount > 0 ? Math.round((shinyCount / totalCount) * 100) : 0;
+  const completionRate = totalCount > 0 ? (caughtCount / totalCount) * 100 : 0;
+  const shinyOverallRate = totalCount > 0 ? (shinyCount / totalCount) * 100 : 0;
   const currentPrestige = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex] ?? PRESTIGE_LEVELS[0];
-  const prestigeUiTone = getPrestigeUiTone(currentPrestige.tone);
 
   async function copyShareLink() {
     const userId = getSessionUserId();
@@ -397,9 +396,9 @@ export function PokedexDashboardPageClient() {
 
   return (
     <main className="mx-auto mt-4 flex w-full max-w-5xl flex-col gap-4">
-      <section className="rounded-2xl border border-slate-200 bg-slate-100 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
-        <h2 className="m-0 text-2xl font-semibold text-slate-900 dark:text-slate-100">Today&apos;s personalized board</h2>
-        <p className="mb-0 mt-2 text-sm text-slate-700 dark:text-slate-300">
+      <section className="rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] p-6 shadow-sm">
+        <h2 className="m-0 text-2xl font-semibold text-[var(--text-h)]">Today&apos;s personalized board</h2>
+        <p className="mb-0 mt-2 text-sm text-[var(--text)]">
           Use your My Pokedex filter to get suggestions tailored to what you still need.
         </p>
         <a
@@ -415,7 +414,7 @@ export function PokedexDashboardPageClient() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm dark:border-emerald-800/60 dark:bg-emerald-900/30">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] p-6 shadow-sm">
           <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Edit current dex</p>
           <h3 className="m-0 mt-2 text-xl font-semibold text-[var(--text-h)]">Manage your live Pokedex</h3>
           <p className="mb-0 mt-2 text-sm text-[var(--text)]">Open the full editor page to update your current dex.</p>
@@ -470,45 +469,36 @@ export function PokedexDashboardPageClient() {
 
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] p-6 shadow-sm">
           <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Current Prestige Progress</p>
-          <div className={`mt-2 rounded-xl border p-3 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
-            <p className={`m-0 text-[11px] font-semibold uppercase tracking-wide ${prestigeUiTone.bannerLabelText}`}>Current Prestige</p>
-            <h3 className={`m-0 mt-1 text-xl font-bold ${prestigeUiTone.bannerTitleText}`}>{currentPrestige.label}</h3>
-            <p className={`m-0 mt-1 text-xs font-medium ${prestigeUiTone.bannerOddsText}`}>Shiny odds: {currentPrestige.oddsLabel}</p>
-          </div>
-          <div className={`mt-3 rounded-xl border p-3 ${prestigeUiTone.completionBg} ${prestigeUiTone.completionBorder}`}>
-            <div className="flex items-end justify-between gap-2">
-              <div>
-                <p className={`m-0 text-xs font-semibold uppercase tracking-wide ${prestigeUiTone.completionLabelText}`}>Completion</p>
-                <p className={`m-0 mt-1 text-lg font-bold ${prestigeUiTone.completionValueText}`}>{caughtCount} / {totalCount}</p>
-              </div>
-              <p className={`m-0 text-sm font-semibold ${prestigeUiTone.completionPercentText}`}>{completionRate}%</p>
-            </div>
-            <progress
-              value={Math.max(0, completionRate)}
-              max={100}
-              className={`mt-2 h-1.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-[var(--bg)]/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`}
+          <div className="mt-2">
+            <PrestigeProgressCards
+              prestigeLevel={currentPrestige}
+              caughtCount={caughtCount}
+              totalCount={totalCount}
+              shinyCount={shinyCount}
+              completionRate={completionRate}
+              stacked
             />
           </div>
         </div>
 
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm dark:border-amber-800/60 dark:bg-amber-900/40">
-          <p className="m-0 text-xs font-semibold tracking-wide text-amber-800 uppercase dark:text-amber-200">Shiny progress</p>
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/40">
+          <p className="m-0 text-xs font-semibold tracking-wide text-amber-800 uppercase [html[data-theme='dark']_&]:text-amber-200">Shiny progress</p>
           <div className="mt-2 flex items-center justify-between gap-3">
-            <h3 className="m-0 text-xl font-bold text-amber-950 dark:text-amber-100">{shinyCount} shinies</h3>
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700 dark:bg-amber-800/50 dark:text-amber-200">
+            <h3 className="m-0 text-xl font-bold text-amber-950 [html[data-theme='dark']_&]:text-amber-100">{shinyCount} shinies</h3>
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700 [html[data-theme='dark']_&]:bg-amber-800/50 [html[data-theme='dark']_&]:text-amber-200">
               ✨
             </span>
           </div>
           <div className="mt-3 space-y-2">
             <div>
               <div className="flex items-center justify-between">
-                <p className="m-0 text-sm font-semibold text-amber-800 dark:text-amber-200">Full dex</p>
-                <p className="m-0 text-base font-bold text-amber-950 dark:text-amber-100">{shinyOverallRate}%</p>
+                <p className="m-0 text-sm font-semibold text-amber-800 [html[data-theme='dark']_&]:text-amber-200">Full dex</p>
+                <p className="m-0 text-base font-bold text-amber-950 [html[data-theme='dark']_&]:text-amber-100">{shinyOverallRate.toFixed(1)}%</p>
               </div>
               <progress
                 value={Math.max(0, shinyOverallRate)}
                 max={100}
-                className="mt-1.5 h-2.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-amber-100 dark:[&::-webkit-progress-bar]:bg-amber-950/60 [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-amber-500 [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-amber-500"
+                className="mt-1.5 h-2.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-amber-100 [html[data-theme='dark']_&]:[&::-webkit-progress-bar]:bg-amber-950/60 [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-amber-500 [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-amber-500"
               />
             </div>
           </div>

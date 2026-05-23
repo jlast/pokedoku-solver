@@ -3,8 +3,7 @@ import type { ChangeEvent } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { getSharedUserDex, type SharedUserDexPayload } from "@pokedoku-helper/user-api-client";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
-import { getPrestigeUiTone } from "../lib/prestigeUi";
-import { PokeballIcon } from "../components/shared/PokeballIcon";
+import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
@@ -124,10 +123,9 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
   const caughtCount = caughtSet.size;
   const shinyCount = shinySet.size;
   const totalCount = pokemon.length;
-  const completionRate = totalCount > 0 ? Math.round((caughtCount / totalCount) * 100) : 0;
+  const completionRate = totalCount > 0 ? (caughtCount / totalCount) * 100 : 0;
   const selectedPrestigeLevel =
     PRESTIGE_LEVELS[unlockedPrestigeLevelIndex] ?? PRESTIGE_LEVELS[0];
-  const prestigeUiTone = getPrestigeUiTone(selectedPrestigeLevel.tone);
 
   if (isLoading) {
     return (
@@ -169,27 +167,14 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
           />
           <span>{displayName}</span>
         </h2>
-        <div className="mt-4 grid gap-4 md:grid-cols-4">
-          <div className={`rounded-xl border p-4 md:col-span-3 ${prestigeUiTone.completionBg} ${prestigeUiTone.completionBorder}`}>
-            <div className="flex items-end justify-between gap-3">
-              <div>
-                <p className={`m-0 text-sm ${prestigeUiTone.completionLabelText}`}>Completion</p>
-                <p className={`m-0 text-2xl font-bold ${prestigeUiTone.completionValueText}`}>{caughtCount} / {totalCount}</p>
-                <p className={`m-0 mt-1 text-xs font-semibold ${prestigeUiTone.completionMetaText}`}>Shinies: {shinyCount}</p>
-              </div>
-              <p className={`m-0 text-sm font-semibold ${prestigeUiTone.completionPercentText}`}>{completionRate}%</p>
-            </div>
-            <progress className={`mt-3 h-2 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-[var(--bg)]/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`} max={Math.max(totalCount, 1)} value={caughtCount} />
-          </div>
-
-          <div className={`flex items-center gap-3 rounded-xl border p-3 md:col-span-1 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
-            <PokeballIcon tone={selectedPrestigeLevel.tone} className="h-6 w-6" />
-            <div>
-              <p className={`m-0 text-[11px] font-semibold uppercase tracking-wide ${prestigeUiTone.bannerLabelText}`}>Current Prestige</p>
-              <p className={`m-0 text-base font-bold ${prestigeUiTone.bannerTitleText}`}>{selectedPrestigeLevel.label}</p>
-              <p className={`m-0 text-xs font-medium ${prestigeUiTone.bannerOddsText}`}>Shiny odds: {selectedPrestigeLevel.oddsLabel}</p>
-            </div>
-          </div>
+        <div className="mt-4">
+          <PrestigeProgressCards
+            prestigeLevel={selectedPrestigeLevel}
+            caughtCount={caughtCount}
+            totalCount={totalCount}
+            shinyCount={shinyCount}
+            completionRate={completionRate}
+          />
         </div>
 
         <div className="mt-4 flex flex-col gap-3 sm:flex-row">

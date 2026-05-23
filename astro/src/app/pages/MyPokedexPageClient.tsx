@@ -3,7 +3,6 @@ import type { ChangeEvent } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
-import { getPrestigeUiTone } from "../lib/prestigeUi";
 import { PokeballIcon } from "../components/shared/PokeballIcon";
 import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 import {
@@ -11,6 +10,7 @@ import {
   patchRemoteUserDex,
 } from "@pokedoku-helper/user-api-client";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
+import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
 
 
 function getPokemonKeyId(pokemon: Pokemon): number {
@@ -136,11 +136,9 @@ export function MyPokedexPageClient() {
   const selectedPrestigeLevelIndex = PRESTIGE_LEVELS.findIndex((level) => level.id === selectedPrestigeLevel.id);
   const isViewingPastPrestige = selectedPrestigeLevelIndex >= 0 && selectedPrestigeLevelIndex < unlockedPrestigeLevelIndex;
   const displayedCaughtCount = isViewingPastPrestige ? totalCount : caughtCount;
-  const completionRate = totalCount > 0 ? Math.round((displayedCaughtCount / totalCount) * 100) : 0;
+  const completionRate = totalCount > 0 ? (displayedCaughtCount / totalCount) * 100 : 0;
   const nextPrestigeLevel = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex + 1] ?? null;
   const canUnlockNextPrestige = Boolean(nextPrestigeLevel) && totalCount > 0 && caughtCount === totalCount;
-  const prestigeUiTone = getPrestigeUiTone(selectedPrestigeLevel.tone);
-
   function unlockNextPrestigeLevel() {
     if (!nextPrestigeLevel || !canUnlockNextPrestige) return;
 
@@ -339,11 +337,11 @@ export function MyPokedexPageClient() {
           onUploadChange={uploadPokedexJsonFile}
         />
 
-        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-800/60 dark:bg-amber-950/30">
+        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/40">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="m-0 text-sm font-semibold text-amber-900 dark:text-amber-100">Prestige Unlock</p>
-              <p className="m-0 mt-1 text-xs text-amber-800 dark:text-amber-200">
+              <p className="m-0 text-sm font-semibold text-amber-900 [html[data-theme='dark']_&]:text-amber-100">Prestige Unlock</p>
+              <p className="m-0 mt-1 text-xs text-amber-800 [html[data-theme='dark']_&]:text-amber-200">
                 {nextPrestigeLevel
                   ? `Complete the full Pokedex to unlock ${nextPrestigeLevel.label}. Unlocking resets your progress.`
                   : "All prestige levels unlocked."}
@@ -400,51 +398,17 @@ export function MyPokedexPageClient() {
           </div>
         </div>
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-4">
-          <div className={`rounded-xl border p-3 sm:col-span-1 ${prestigeUiTone.bannerBg} ${prestigeUiTone.bannerBorder}`}>
-            <div className="flex items-center gap-3">
-              <PokeballIcon tone={selectedPrestigeLevel.tone} className="h-5 w-5" />
-              <div>
-                <p className={`m-0 text-[11px] font-semibold uppercase tracking-wide ${prestigeUiTone.bannerLabelText}`}>Current Prestige</p>
-                <p className={`m-0 text-base font-bold ${prestigeUiTone.bannerTitleText}`}>{selectedPrestigeLevel.label}</p>
-                <p className={`m-0 text-xs font-medium ${prestigeUiTone.bannerOddsText}`}>Shiny odds: {selectedPrestigeLevel.oddsLabel}</p>
-              </div>
-            </div>
-            {isViewingPastPrestige ? (
-              <p className="mb-0 mt-2 text-xs font-semibold text-amber-700">Previous prestiges are view-only and fully unlocked.</p>
-            ) : null}
-          </div>
-
-          <div className={`rounded-xl border p-4 sm:col-span-3 ${prestigeUiTone.completionBg} ${prestigeUiTone.completionBorder}`}>
-            <div className="flex items-end justify-between gap-3">
-              <div>
-                <p className={`m-0 text-sm ${prestigeUiTone.completionLabelText}`}>Completion</p>
-                {isLoading ? (
-                  <>
-                    <span className="mt-1 block h-7 w-24 animate-pulse rounded bg-[var(--code-bg)]" aria-hidden="true" />
-                    <span className="mt-2 block h-3 w-16 animate-pulse rounded bg-[var(--code-bg)]" aria-hidden="true" />
-                  </>
-                ) : (
-                  <>
-                    <p className={`m-0 text-2xl font-bold ${prestigeUiTone.completionValueText}`}>
-                      {displayedCaughtCount} / {totalCount}
-                    </p>
-                    <p className={`m-0 mt-1 text-xs font-semibold ${prestigeUiTone.completionValueText}`}>Shinies: {shinyCount}</p>
-                  </>
-                )}
-              </div>
-              {isLoading ? (
-                <span className="block h-5 w-10 animate-pulse rounded bg-[var(--code-bg)]" aria-hidden="true" />
-              ) : (
-                <p className={`m-0 text-sm font-semibold ${prestigeUiTone.completionPercentText}`}>{completionRate}%</p>
-              )}
-            </div>
-            {isLoading ? (
-              <span className="mt-3 block h-2 w-full animate-pulse rounded-full bg-[var(--code-bg)]" aria-hidden="true" />
-            ) : (
-              <progress className={`mt-3 h-2 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-[var(--bg)]/70 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${prestigeUiTone.progressValueClass}`} max={Math.max(totalCount, 1)} value={displayedCaughtCount} />
-            )}
-          </div>
+        <div className="mt-4">
+          <PrestigeProgressCards
+            prestigeLevel={selectedPrestigeLevel}
+            caughtCount={displayedCaughtCount}
+            totalCount={totalCount}
+            shinyCount={shinyCount}
+            completionRate={completionRate}
+            progressValue={displayedCaughtCount}
+            isLoading={isLoading}
+            viewOnlyNote={isViewingPastPrestige ? "Previous prestiges are view-only and fully unlocked." : undefined}
+          />
         </div>
 
         <div className="mt-4 flex flex-col gap-3 sm:flex-row">
@@ -512,11 +476,11 @@ export function MyPokedexPageClient() {
                   disabled={isViewingPastPrestige}
                   className={`rounded-xl border p-3 text-left transition cursor-pointer  ${
                     isShiny ? 
-                      "border-amber-300 bg-amber-50 dark:border-amber-700/60 dark:bg-amber-800/35"
+                      "border-amber-300 bg-amber-50 [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/40"
                       : isCaught
                       ? isViewingPastPrestige
-                        ? "border-amber-300 bg-amber-50 dark:border-amber-700/60 dark:bg-amber-800/35"
-                        : "border-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-900/40 dark:hover:bg-emerald-800/45"
+                        ? "border-amber-300 bg-amber-50 [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/40"
+                        : "border-emerald-300 bg-emerald-50 hover:bg-emerald-100 [html[data-theme='dark']_&]:border-emerald-800/60 [html[data-theme='dark']_&]:bg-emerald-900/40 [html[data-theme='dark']_&]:hover:bg-emerald-800/45"
                       : isViewingPastPrestige
                         ? "border-[var(--border)] bg-[var(--bg)]"
                         : "border-[var(--border)] bg-[var(--bg)] hover:bg-[var(--code-bg)]"
@@ -524,7 +488,7 @@ export function MyPokedexPageClient() {
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-xs text-[var(--text)]">#{entry.id}</span>
-                    <span className={`text-xs font-semibold ${isCaught ? (isViewingPastPrestige ? "text-amber-700 dark:text-amber-300" : "text-emerald-700 dark:text-emerald-300") : "text-[var(--text)]"}`}>
+                    <span className={`text-xs font-semibold ${isCaught ? (isViewingPastPrestige ? "text-amber-700 [html[data-theme='dark']_&]:text-amber-300" : "text-emerald-700 [html[data-theme='dark']_&]:text-emerald-300") : "text-[var(--text)]"}`}>
                       {isCaught ? "Caught" : "Missing"}
                     </span>
                   </div>
