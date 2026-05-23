@@ -576,8 +576,9 @@ export function Header({
               <button
                 type="button"
                 onClick={() => toggleTheme("desktop")}
-                className="hidden h-10 items-center gap-1.5 rounded-[10px] border border-[var(--border)] bg-[var(--bg)] px-3 text-sm font-semibold text-[var(--text-h)] transition-colors hover:bg-[var(--accent-bg)] min-[1101px]:inline-flex"
+                className="hidden h-10 w-10 items-center justify-center rounded-[10px] border border-[var(--border)] bg-[var(--bg)] text-[var(--text-h)] transition-colors hover:bg-[var(--accent-bg)] min-[1101px]:inline-flex"
                 aria-label={`Switch to ${themeMode === "dark" ? "light" : "dark"} mode`}
+                title={themeMode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   {themeMode === "dark" ? (
@@ -586,7 +587,6 @@ export function Header({
                     <path d="M21 12.79A9 9 0 1 1 11.21 3c-.03.26-.04.52-.04.79a7 7 0 0 0 7 7c.27 0 .53-.01.79-.04Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                   )}
                 </svg>
-                {themeMode === "dark" ? "Light mode" : "Dark mode"}
               </button>
 
               <a
@@ -863,6 +863,7 @@ export function Header({
                       type="button"
                       onClick={() => toggleTheme("mobile")}
                       className="mt-1 flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-[var(--text)] transition-colors hover:bg-[var(--code-bg)]"
+                      aria-label={`Switch to ${themeMode === "dark" ? "light" : "dark"} mode`}
                     >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         {themeMode === "dark" ? (
@@ -871,7 +872,6 @@ export function Header({
                           <path d="M21 12.79A9 9 0 1 1 11.21 3c-.03.26-.04.52-.04.79a7 7 0 0 0 7 7c.27 0 .53-.01.79-.04Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                         )}
                       </svg>
-                      {themeMode === "dark" ? "Light mode" : "Dark mode"}
                     </button>
 
                     {authEnabled ? (
