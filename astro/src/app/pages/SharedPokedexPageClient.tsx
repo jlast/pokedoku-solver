@@ -4,6 +4,7 @@ import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { getSharedUserDex, type SharedUserDexPayload } from "@pokedoku-helper/user-api-client";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
+import { PokeballIcon } from "../components/shared/PokeballIcon";
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
@@ -29,8 +30,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isNotFound, setIsNotFound] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showCaughtOnly, setShowCaughtOnly] = useState(false);
-  const [showMissingOnly, setShowMissingOnly] = useState(true);
+  const [filterMode, setFilterMode] = useState<"all" | "caught" | "missing">("missing");
 
   useEffect(() => {
     let isCancelled = false;
@@ -102,10 +102,10 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
     return pokemon
       .filter((entry) => {
         const pokemonKeyId = getPokemonKeyId(entry);
-        if (showCaughtOnly && !caughtSet.has(pokemonKeyId)) {
+        if (filterMode === "caught" && !caughtSet.has(pokemonKeyId)) {
           return false;
         }
-        if (showMissingOnly && caughtSet.has(pokemonKeyId)) {
+        if (filterMode === "missing" && caughtSet.has(pokemonKeyId)) {
           return false;
         }
         if (!normalizedQuery) return true;
@@ -118,7 +118,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
         );
       })
       .sort((a, b) => a.id - b.id || getPokemonKeyId(a) - getPokemonKeyId(b));
-  }, [caughtSet, pokemon, searchQuery, showCaughtOnly, showMissingOnly]);
+  }, [caughtSet, filterMode, pokemon, searchQuery]);
 
   const caughtCount = caughtSet.size;
   const shinyCount = shinySet.size;
@@ -187,33 +187,21 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
           />
           <button
             type="button"
-            onClick={() => {
-              setShowCaughtOnly((prev) => {
-                const next = !prev;
-                if (next) setShowMissingOnly(false);
-                return next;
-              });
-            }}
+            onClick={() => setFilterMode((prev) => (prev === "caught" ? "all" : "caught"))}
             className={`h-10 shrink-0 rounded-lg border px-4 text-sm font-semibold transition ${
-              showCaughtOnly ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--text-h)] shadow-sm hover:bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
+              filterMode === "caught" ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--text-h)] shadow-sm hover:bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
             }`}
           >
-            {showCaughtOnly ? "Showing caught" : "Show caught only"}
+            {filterMode === "caught" ? "Showing caught" : "Show caught only"}
           </button>
           <button
             type="button"
-            onClick={() => {
-              setShowMissingOnly((prev) => {
-                const next = !prev;
-                if (next) setShowCaughtOnly(false);
-                return next;
-              });
-            }}
+            onClick={() => setFilterMode((prev) => (prev === "missing" ? "all" : "missing"))}
             className={`h-10 shrink-0 rounded-lg border px-4 text-sm font-semibold transition ${
-              showMissingOnly ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--text-h)] shadow-sm hover:bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
+              filterMode === "missing" ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--text-h)] shadow-sm hover:bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
             }`}
           >
-            {showMissingOnly ? "Showing missing" : "Show missing only"}
+            {filterMode === "missing" ? "Showing missing" : "Show missing only"}
           </button>
         </div>
 
@@ -224,15 +212,19 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
             const isShiny = shinySet.has(pokemonKeyId);
 
             return (
-              <article
-                key={pokemonKeyId}
-                className={`rounded-xl border p-3 ${
-                  isCaught ? "border-emerald-300 bg-emerald-50" : "border-[var(--border)] bg-[var(--bg)]"
+                <article
+                  key={pokemonKeyId}
+                  className={`rounded-xl border p-3 ${
+                  isShiny
+                    ? "border-amber-300 bg-yellow-50 [html[data-theme='dark']_&]:border-amber-700 [html[data-theme='dark']_&]:bg-amber-950/40"
+                    : isCaught
+                      ? "border-emerald-300 bg-emerald-50 [html[data-theme='dark']_&]:border-emerald-700 [html[data-theme='dark']_&]:bg-emerald-950/40"
+                      : "border-[var(--border)] bg-[var(--bg)]"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs text-[var(--text)]">#{entry.id}</span>
-                  <span className={`text-xs font-semibold ${isCaught ? "text-emerald-700" : "text-[var(--text)]"}`}>
+                  <span className={`text-xs font-semibold ${isCaught ? "text-emerald-700 [html[data-theme='dark']_&]:text-emerald-300" : "text-[var(--text)]"}`}>
                     {isCaught ? "Caught" : "Missing"}
                   </span>
                 </div>
@@ -250,7 +242,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
                   </div>
                 </div>
                 {isShiny ? (
-                  <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
+                  <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700 [html[data-theme='dark']_&]:bg-amber-900/40 [html[data-theme='dark']_&]:text-amber-300">
                     <PokeballIcon tone="ultraball" className="h-3.5 w-3.5" />
                     Shiny
                   </div>
