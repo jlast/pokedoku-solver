@@ -1,20 +1,20 @@
 import type { PokemonAbility } from '@pokedoku-helper/shared-types';
 
 const INTIMIDATE_OVERRIDE_FORM_IDS = new Set<number>([
-  10021, // Landorus therian
-  10055, // Manectric mega
+  10081, // Landorus therian
+  10155, // Manectric mega
 ]);
 
 const LEVITATE_OVERRIDE_FORM_IDS = new Set<number>([
-  10007, // Giratina origin
+  10063, // Giratina origin
 ]);
 
 const STURDY_OVERRIDE_FORM_IDS = new Set<number>([
-  10275, // Ogerpon cornerstone mask
+  10444, // Ogerpon cornerstone mask
 ]);
 
 const SWIFT_SWIM_OVERRIDE_FORM_IDS = new Set<number>([
-  10064, // Swampert mega
+  10166, // Swampert mega
 ]);
 
 export function getAbilityOverridesForFormId(formId: number): PokemonAbility[] {
@@ -29,37 +29,37 @@ export function getAbilityOverridesForFormId(formId: number): PokemonAbility[] {
 }
 
 const INTIMIDATE_REMOVAL_FORM_IDS = new Set<number>([
-  10041, // Gyarados mega
-  10052, // Mawile mega
-  10089, // Salamence mega
-  10289, // Scrafty mega
-  10308, // Staraptor mega
+  10141, // Gyarados mega
+  10152, // Mawile mega
+  10191, // Salamence mega
+  10514, // Scrafty mega
+  10533, // Staraptor mega
 ]);
 
 const KEEN_EYE_REMOVAL_FORM_IDS = new Set<number>([
-  10066, // Sableye mega
-  10073, // Pidgeot mega
-  10151, // Rockruff own tempo
-  10152, // Lycanroc dusk
-  10166, // Farfetchd galar
-  10284, // Skarmory mega
-  10314, // Meowstic mega
+  10168, // Sableye mega
+  10175, // Pidgeot mega
+  10310, // Rockruff own tempo
+  10311, // Lycanroc dusk
+  10325, // Farfetchd galar
+  10509, // Skarmory mega
+  10539, // Meowstic mega
 ]);
 
 const LEVITATE_REMOVAL_FORM_IDS = new Set<number>([
-  10290, // Eelektross mega
-  10293, // Delphox mega
-  10306, // Chimecho mega
+  10515, // Eelektross mega
+  10518, // Delphox mega
+  10531, // Chimecho mega
 ]);
 
 const STURDY_REMOVAL_FORM_IDS = new Set<number>([
-  10053, // Aggron mega
-  10072, // Steelix mega
-  10284, // Skarmory mega
+  10153, // Aggron mega
+  10174, // Steelix mega
+  10509, // Skarmory mega
 ]);
 
 const SWIFT_SWIM_REMOVAL_FORM_IDS = new Set<number>([
-  10214, // Drednaw gmax
+  10383, // Drednaw gmax
 ]);
 
 export function getAbilityRemovalsForFormId(formId: number): PokemonAbility[] {

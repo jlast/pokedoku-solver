@@ -289,9 +289,26 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   903: {
     // Sneasler
+    evolutionTrigger: ["Evolved by Item", "Evolved by Level"],
     evolution: {
       from: [10404],
     },
+  },
+  53: {
+    // Persian (kanto)
+    evolutionTrigger: ["Evolved by Level"],
+  },
+  113: {
+    // Chansey
+    evolutionTrigger: ["Evolved by Item", "Evolved by Level"],
+  },
+  461: {
+    // Weavile
+    evolutionTrigger: ["Evolved by Item","Evolved by Level"],
+  },
+  472: {
+    // Gliscor
+    evolutionTrigger: ["Evolved by Item", "Evolved by Level"],
   },
   562: {
     // Yamask, evolution line is not branched
