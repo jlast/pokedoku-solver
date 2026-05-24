@@ -319,7 +319,6 @@ const RAZOR_LEAF_OVERRIDE_FORM_IDS = new Set<number>([
   10504, // Victreebel mega
   10507, // Meganium mega
   10521, // Floette mega
-  10534, // Garchomp mega z
   10545, // Scovillain mega
   10038, // Cherrim sunshine
 ]);
