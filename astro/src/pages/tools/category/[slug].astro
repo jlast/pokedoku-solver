@@ -42,17 +42,6 @@ const categoryTypeOrder: Record<string, number> = {
   ability: 5,
 };
 
-const categoriesByType = [...categories].sort((a, b) => {
-  const parsedA = parseCategoryId(a.key);
-  const parsedB = parseCategoryId(b.key);
-  const typeRankA = categoryTypeOrder[parsedA.type] ?? 99;
-  const typeRankB = categoryTypeOrder[parsedB.type] ?? 99;
-
-  if (typeRankA !== typeRankB) return typeRankA - typeRankB;
-  if (b.count !== a.count) return b.count - a.count;
-  return a.label.localeCompare(b.label);
-});
-
 const categoryTypeLabel: Record<string, string> = {
   types: "Types",
   regions: "Regions",
@@ -62,7 +51,7 @@ const categoryTypeLabel: Record<string, string> = {
   ability: "Abilities",
 };
 
-const groupedCategories = categoriesByType.reduce<
+const groupedCategories = categories.reduce<
   Array<{ type: string; label: string; items: CategoryPageData[] }>
 >((groups, item) => {
   const parsed = parseCategoryId(item.key);
