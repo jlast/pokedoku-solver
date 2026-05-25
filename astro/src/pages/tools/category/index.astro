@@ -3,6 +3,7 @@ import AppPageLayout from "../../../layouts/AppPageLayout.astro";
 import { Header } from "../../../app/components/Header";
 import { Footer } from "../../../app/components/Footer";
 import CategoryIconBadge from "../../../components/CategoryIconBadge.astro";
+import { parseCategoryId } from "../../../app/components/puzzle-stats/categoryUtils";
 import { getCategories, type CategoryPageData } from "../../../lib/data";
 
 const categoryTypeOrder: Record<string, number> = {
