@@ -3,7 +3,6 @@ import AppPageLayout from "../../../layouts/AppPageLayout.astro";
 import { Header } from "../../../app/components/Header";
 import { Footer } from "../../../app/components/Footer";
 import CategoryIconBadge from "../../../components/CategoryIconBadge.astro";
-import { parseCategoryId } from "../../../app/components/puzzle-stats/categoryUtils";
 import { getCategories, type CategoryPageData } from "../../../lib/data";
 
 const categoryTypeOrder: Record<string, number> = {
@@ -24,18 +23,7 @@ const categoryTypeLabel: Record<string, string> = {
   ability: "Abilities",
 };
 
-const categoriesByType = [...getCategories()].sort((a, b) => {
-  const parsedA = parseCategoryId(a.key);
-  const parsedB = parseCategoryId(b.key);
-  const typeRankA = categoryTypeOrder[parsedA.type] ?? 99;
-  const typeRankB = categoryTypeOrder[parsedB.type] ?? 99;
-
-  if (typeRankA !== typeRankB) return typeRankA - typeRankB;
-  if (b.count !== a.count) return b.count - a.count;
-  return a.label.localeCompare(b.label);
-});
-
-const groupedCategories = categoriesByType.reduce<
+const groupedCategories = getCategories().reduce<
   Array<{ type: string; label: string; items: CategoryPageData[] }>
 >((groups, item) => {
   const parsed = parseCategoryId(item.key);
