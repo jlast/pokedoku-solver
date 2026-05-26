@@ -240,6 +240,33 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     return result;
   }, [grid, pokemonPool, gridSize]);
 
+  const fallbackOwnedCells = useMemo(() => {
+    const result: (Pokemon | null)[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null));
+    if (!isLoggedIn || !showMissingOnly || caughtSet.size === 0) return result;
+
+    const shinySet = new Set(remoteUserDex?.shinyPokemonKeyIds ?? []);
+
+    for (let row = 0; row < gridSize; row++) {
+      for (let col = 0; col < gridSize; col++) {
+        if (possiblePokemon[row][col].length > 0) continue;
+
+        const fallbackCandidates = pokemon
+          .filter((entry) => {
+            if (!matchesConstraint(entry, grid.rowConstraints[row])) return false;
+            if (!matchesConstraint(entry, grid.colConstraints[col])) return false;
+
+            const keyId = getPokemonKeyId(entry);
+            return caughtSet.has(keyId) && !shinySet.has(keyId);
+          })
+          .sort(compareByHardest);
+
+        result[row][col] = fallbackCandidates[0] ?? null;
+      }
+    }
+
+    return result;
+  }, [caughtSet, grid.colConstraints, grid.rowConstraints, gridSize, isLoggedIn, pokemon, possiblePokemon, remoteUserDex, showMissingOnly]);
+
   const swapOptionCounts = useMemo(() => {
     const result: number[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
     for (let row = 0; row < gridSize; row++) {
@@ -342,8 +369,14 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const selectedCellPossible = useMemo(() => {
     if (!grid.selectedCell) return [];
     const [row, col] = grid.selectedCell;
-    return pokemonPool.filter((p) => matchesConstraint(p, grid.rowConstraints[row]) && matchesConstraint(p, grid.colConstraints[col]));
-  }, [grid.selectedCell, grid.rowConstraints, grid.colConstraints, pokemonPool]);
+    return pokemon.filter((p) => matchesConstraint(p, grid.rowConstraints[row]) && matchesConstraint(p, grid.colConstraints[col]));
+  }, [grid.selectedCell, grid.rowConstraints, grid.colConstraints, pokemon]);
+
+  const selectedCellDisplayPokemon = useMemo(() => {
+    if (!grid.selectedCell) return null;
+    const [row, col] = grid.selectedCell;
+    return grid.cells[row][col] ?? fallbackOwnedCells[row][col] ?? null;
+  }, [fallbackOwnedCells, grid.cells, grid.selectedCell]);
 
   const textualSuggestions = useMemo(() => {
     const entries: {
@@ -351,6 +384,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       rowConstraint: Constraint | null;
       colConstraint: Constraint | null;
       pokemon: Pokemon | null;
+      ownedFallbackPokemon: Pokemon | null;
     }[] = [];
 
     for (let row = 0; row < gridSize; row++) {
@@ -360,12 +394,17 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           rowConstraint: grid.rowConstraints[row],
           colConstraint: grid.colConstraints[col],
           pokemon: grid.cells[row][col],
+          ownedFallbackPokemon: fallbackOwnedCells[row][col],
         });
       }
     }
 
-    return entries;
-  }, [grid.cells, grid.colConstraints, grid.rowConstraints, gridSize]);
+    return entries.sort((a, b) => {
+      const aRank = a.pokemon ? 0 : a.ownedFallbackPokemon ? 1 : 2;
+      const bRank = b.pokemon ? 0 : b.ownedFallbackPokemon ? 1 : 2;
+      return aRank - bRank;
+    });
+  }, [fallbackOwnedCells, grid.cells, grid.colConstraints, grid.rowConstraints, gridSize]);
 
   if (loading) return <div className="min-h-screen p-5 text-center"><p>Loading Pokemon data...</p></div>;
 
@@ -431,6 +470,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         rowConstraints={grid.rowConstraints}
         colConstraints={grid.colConstraints}
         possiblePokemon={possiblePokemon}
+        fallbackOwnedCells={fallbackOwnedCells}
         suggestedPokemonKeys={suggestedPokemonKeys}
         swapOptionCounts={swapOptionCounts}
         selectedCell={grid.selectedCell}
@@ -445,6 +485,9 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         <SuggestionsPanel
           selectedCell={grid.selectedCell}
           possiblePokemon={selectedCellPossible}
+          currentPokemon={selectedCellDisplayPokemon}
+          ownedPokemonKeyIds={caughtSet}
+          shinyPokemonKeyIds={new Set(remoteUserDex?.shinyPokemonKeyIds ?? [])}
           onSelect={handlePokemonSelect}
         />
       </div>
@@ -530,6 +573,19 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                         >
                           {entry.pokemon.name}
                         </a>
+                      ) : entry.ownedFallbackPokemon ? (
+                        <div className="flex flex-col items-start gap-1">
+                          <a
+                            href={`${import.meta.env.BASE_URL}pokemon/${slugify(entry.ownedFallbackPokemon.name)}-${entry.ownedFallbackPokemon.formId ?? entry.ownedFallbackPokemon.id}/`}
+                            className="font-semibold text-[var(--text-h)] underline decoration-slate-300 underline-offset-2 hover:text-[var(--text)]"
+                          >
+                            {entry.ownedFallbackPokemon.name}
+                          </a>
+                          <span className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--code-bg)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.02em] text-[var(--text-h)]">
+                            <span aria-hidden="true" className="text-[11px] leading-none">✓</span>
+                            <span>Owned</span>
+                          </span>
+                        </div>
                       ) : (
                         <span>No suggestion available</span>
                       )}
@@ -558,6 +614,29 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                             ))}
                           </div>
                         </div>
+                      ) : entry.ownedFallbackPokemon ? (
+                        <div className="flex flex-wrap items-center gap-2 opacity-80">
+                          {entry.ownedFallbackPokemon.dexDifficulty && (
+                            <span
+                              className="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold text-white shadow-sm"
+                              style={{
+                                backgroundColor: DEX_DIFFICULTY_COLORS[entry.ownedFallbackPokemon.dexDifficulty],
+                                border: "1px solid rgba(255,255,255,0.3)",
+                              }}
+                            >
+                              {entry.ownedFallbackPokemon.dexDifficulty}
+                            </span>
+                          )}
+                          <div className="flex flex-wrap items-center gap-1">
+                            {entry.ownedFallbackPokemon.types.map((type, i) => (
+                              <CategoryBadgeLink
+                                key={`${entry.key}-owned-${type}-${i}`}
+                                parsed={parseCategoryId(`types:${type}`)}
+                                href={`${import.meta.env.BASE_URL}tools/category/${slugify(type)}/`}
+                              />
+                            ))}
+                          </div>
+                        </div>
                       ) : (
                         <span>-</span>
                       )}
@@ -580,6 +659,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                       <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--bg)] ring-1 ring-slate-200">
                         {entry.pokemon?.sprite ? (
                           <img src={entry.pokemon.sprite} alt="" className="h-7 w-7" loading="lazy" decoding="async" />
+                        ) : entry.ownedFallbackPokemon?.sprite ? (
+                          <img src={entry.ownedFallbackPokemon.sprite} alt="" className="h-7 w-7 opacity-50" loading="lazy" decoding="async" />
                         ) : (
                           <span className="text-[10px] font-semibold text-[var(--text)]">?</span>
                         )}
@@ -593,6 +674,19 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                             >
                               {entry.pokemon.name}
                             </a>
+                          ) : entry.ownedFallbackPokemon ? (
+                            <div className="flex flex-col items-start gap-1">
+                              <a
+                                href={`${import.meta.env.BASE_URL}pokemon/${slugify(entry.ownedFallbackPokemon.name)}-${entry.ownedFallbackPokemon.formId ?? entry.ownedFallbackPokemon.id}/`}
+                                className="inline-flex items-center text-base font-extrabold tracking-tight text-[var(--text-h)] no-underline hover:text-[var(--text)]"
+                              >
+                                {entry.ownedFallbackPokemon.name}
+                              </a>
+                              <span className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--code-bg)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.02em] text-[var(--text-h)]">
+                                <span aria-hidden="true" className="text-[11px] leading-none">✓</span>
+                                <span>Owned</span>
+                              </span>
+                            </div>
                           ) : (
                             <span className="text-[var(--text)]">No suggestion available</span>
                           )}

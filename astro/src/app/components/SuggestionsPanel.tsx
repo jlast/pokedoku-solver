@@ -45,12 +45,22 @@ function toDaysSinceLastUsable(
 interface SuggestionsPanelProps {
   selectedCell: [number, number] | null;
   possiblePokemon: Pokemon[];
+  currentPokemon?: Pokemon | null;
+  ownedPokemonKeyIds?: Set<number>;
+  shinyPokemonKeyIds?: Set<number>;
   onSelect: (pokemon: Pokemon) => void;
+}
+
+function getPokemonKeyId(pokemon: Pokemon): number {
+  return pokemon.formId ?? pokemon.id;
 }
 
 export function SuggestionsPanel({
   selectedCell,
   possiblePokemon,
+  currentPokemon = null,
+  ownedPokemonKeyIds,
+  shinyPokemonKeyIds,
   onSelect,
 }: SuggestionsPanelProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -136,6 +146,41 @@ export function SuggestionsPanel({
     }
   }, [daysSinceLastUsableByKeyId, possiblePokemon, sortBy]);
 
+  const displayedPokemon = useMemo(() => {
+    if (!ownedPokemonKeyIds) return sortedPokemon;
+
+    const owned: Pokemon[] = [];
+    const unowned: Pokemon[] = [];
+
+    for (const pokemon of sortedPokemon) {
+      if (ownedPokemonKeyIds.has(getPokemonKeyId(pokemon))) {
+        owned.push(pokemon);
+      } else {
+        unowned.push(pokemon);
+      }
+    }
+
+    const isCurrentOwned = currentPokemon ? ownedPokemonKeyIds.has(getPokemonKeyId(currentPokemon)) : false;
+    return isCurrentOwned ? owned : [...unowned, ...owned];
+  }, [currentPokemon, ownedPokemonKeyIds, sortedPokemon]);
+
+  const counts = useMemo(() => {
+    if (!ownedPokemonKeyIds) {
+      return { total: displayedPokemon.length, owned: 0, unowned: displayedPokemon.length };
+    }
+
+    let owned = 0;
+    for (const pokemon of displayedPokemon) {
+      if (ownedPokemonKeyIds.has(getPokemonKeyId(pokemon))) owned += 1;
+    }
+
+    return {
+      total: displayedPokemon.length,
+      owned,
+      unowned: displayedPokemon.length - owned,
+    };
+  }, [displayedPokemon, ownedPokemonKeyIds]);
+
   if (!selectedCell) return null;
 
   return (
@@ -143,7 +188,14 @@ export function SuggestionsPanel({
       <div className="relative mt-5 flex max-h-[500px] w-[418px] flex-col overflow-y-auto rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 max-[768px]:h-full max-[768px]:max-h-[350px] max-[768px]:w-[332px]" ref={containerRef}>
         <div className="sticky top-0 z-[5] shrink-0 bg-[var(--bg)]">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-[var(--text-h)]">{possiblePokemon.length} Pokémon</span>
+            <span className="font-semibold text-[var(--text-h)]">
+              {counts.total} Pokemon
+              {ownedPokemonKeyIds ? (
+                <span className="ml-2 text-xs font-medium text-[var(--text)]">
+                  {counts.unowned} unowned, {counts.owned} owned
+                </span>
+              ) : null}
+            </span>
             <label className="flex items-center gap-1">
               <span className="text-[0.8rem] text-[#666]" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -188,11 +240,16 @@ export function SuggestionsPanel({
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          {sortedPokemon?.length && sortedPokemon?.length > 0 ? (
-            sortedPokemon?.map((p) => (
+          {displayedPokemon.length > 0 ? (
+            displayedPokemon.map((p) => {
+              const pokemonKeyId = getPokemonKeyId(p);
+              const isOwned = ownedPokemonKeyIds?.has(pokemonKeyId) ?? false;
+              const isShiny = shinyPokemonKeyIds?.has(pokemonKeyId) ?? false;
+
+              return (
               <button
                 key={`${p.id}-${p.name}`}
-                className="flex cursor-pointer flex-row gap-0 rounded-lg border border-[var(--border)] bg-[var(--bg)] p-0 text-left transition-all hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
+                className={`flex cursor-pointer flex-row gap-0 rounded-lg border p-0 text-left transition-all hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)] ${isShiny ? "border-amber-300 bg-amber-200 [html[data-theme='dark']_&]:border-amber-700 [html[data-theme='dark']_&]:bg-amber-900/35" : isOwned ? "border-[var(--border)] bg-[var(--code-bg)]" : "border-[var(--border)] bg-[var(--bg)]"}`}
                 onClick={() => {
                   trackEvent("select_pokemon", {
                     name: p.name,
@@ -203,7 +260,7 @@ export function SuggestionsPanel({
                 }}
               >
                 {p.sprite ? (
-                  <img src={p.sprite} alt="" className="m-3 mr-1 h-[50px] w-[50px] shrink-0 object-contain" />
+                  <img src={p.sprite} alt="" className={`m-3 mr-1 h-[50px] w-[50px] shrink-0 object-contain ${isOwned ? 'opacity-65' : ''}`} />
                 ) : (
                   <div className="m-3 mr-1 h-[50px] w-[50px] shrink-0 rounded-full bg-[var(--code-bg)]" />
                 )}
@@ -211,6 +268,12 @@ export function SuggestionsPanel({
                   <div className="flex flex-1 items-center gap-2 px-2 pb-1 pt-2">
                     <span className="shrink-0 text-[10px] font-semibold text-[var(--text)]">#{p.id}</span>
                     <span className="flex-1 text-[12px] font-medium text-[var(--text-h)]">{p.name}</span>
+                    {isOwned ? (
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-[2px] text-[0.65rem] font-bold uppercase ${isShiny ? "border border-amber-300 bg-amber-200 text-amber-950 [html[data-theme='dark']_&]:border-amber-700 [html[data-theme='dark']_&]:bg-amber-900/45 [html[data-theme='dark']_&]:text-amber-100" : "border border-[var(--border)] bg-[var(--code-bg)] text-[var(--text-h)]"}`}>
+                        <span aria-hidden="true" className="text-[10px] leading-none">✓</span>
+                        <span>{isShiny ? 'Shiny' : 'Owned'}</span>
+                      </span>
+                    ) : null}
                     {p.dexDifficulty && (
                       <span
                         className="ml-auto shrink-0 rounded-[10px] px-2 py-[2px] text-[0.7rem] font-semibold uppercase text-white"
@@ -232,18 +295,18 @@ export function SuggestionsPanel({
                            parsed={parseCategoryId(`types:${type}`)}
                            href={null}
                          />
-                       ))}
-                    </div>
-                  </div>
+                        ))}
+                     </div>
+                   </div>
                 </div>
               </button>
-            ))
+            );})
           ) : (
             <p className="p-5 text-center text-red-500">No Pokémon matches the constraints.</p>
           )}
         </div>
       </div>
-      {sortedPokemon && sortedPokemon.length >= 5 && (
+      {displayedPokemon.length >= 5 && (
         <div className="sticky left-1/2 -mt-10 h-8 w-8 -translate-x-4 rounded-full border border-[var(--border)] bg-[var(--bg)]/50">
           <span className="flex h-full w-full items-center justify-center" title="Scroll for more">
             ▼

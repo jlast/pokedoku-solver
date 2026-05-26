@@ -15,6 +15,7 @@ interface GridProps {
   rowConstraints: (Constraint | null)[];
   colConstraints: (Constraint | null)[];
   possiblePokemon: Pokemon[][][];
+  fallbackOwnedCells?: (Pokemon | null)[][];
   suggestedPokemonKeys?: (string | null)[][];
   swapOptionCounts?: number[][];
   selectedCell: [number, number] | null;
@@ -101,7 +102,7 @@ function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: 
   );
 }
 
-export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, suggestedPokemonKeys, swapOptionCounts, selectedCell, editable = true, showSuggestedMeta = false, onCellClick, onSwapClick, onConstraintChange }: GridProps) {
+export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, fallbackOwnedCells, suggestedPokemonKeys, swapOptionCounts, selectedCell, editable = true, showSuggestedMeta = false, onCellClick, onSwapClick, onConstraintChange }: GridProps) {
   const getPokemonKey = (pokemon: Pokemon): string => pokemon.sprite || pokemon.name;
   const renderConstraintDisplay = (constraint: Constraint | null, isRow = false) => {
     const parsed = getConstraintParsedCategory(constraint);
@@ -145,7 +146,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
           ))}
         </div>
 
-        <div className="flex flex-col gap-1 rounded border-[3px] border-[var(--border)] bg-[var(--border)]">
+        <div className="flex flex-col gap-1 rounded border-[3px] border-[var(--border)] bg-[var(--border)] [html[data-theme='dark']_&]:border-slate-500 [html[data-theme='dark']_&]:bg-slate-800">
           {cells.map((row, rowIndex) => (
             <div key={rowIndex} className="flex gap-1">
               {row.map((cell, colIndex) => {
@@ -154,6 +155,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                 const rowConstraint = rowConstraints[rowIndex];
                 const colConstraint = colConstraints[colIndex];
                 const hasConstraint = rowConstraint || colConstraint;
+                const fallbackOwned = fallbackOwnedCells?.[rowIndex]?.[colIndex] ?? null;
                 const optionCount = swapOptionCounts?.[rowIndex]?.[colIndex] ?? possible.length;
                 const isSuggested = Boolean(
                   showSuggestedMeta &&
@@ -172,6 +174,8 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                   ? isFilled
                     ? 'bg-[var(--accent-bg)] text-[var(--text-h)] shadow-[0_0_0_2px_var(--accent),inset_0_0_0_1px_var(--border)]'
                     : 'bg-[var(--code-bg)] text-[var(--text-h)] shadow-[0_0_0_2px_var(--accent),inset_0_0_0_1px_var(--border)]'
+                  : fallbackOwned
+                    ? 'bg-[var(--code-bg)] [html[data-theme=\'dark\']_&]:bg-[var(--code-bg-dark)]'
                   : isFilled
                     ? 'bg-[var(--bg)] hover:bg-[var(--accent-bg)]'
                     : 'bg-[var(--code-bg)] hover:bg-[var(--accent-bg)]';
@@ -225,13 +229,26 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, s
                         </div>
                       </>
                     ) : possible.length === 0 ? (
-                      <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
-                        <span className={`text-[18px] font-bold max-[768px]:text-[14px] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text)]'}`}>No options yet</span>
-                        <span className={`text-[0.58rem] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text)]'}`}>Tap to check other squares</span>
-                      </div>
+                      fallbackOwned ? (
+                        <>
+                          <span className="absolute left-0 top-0 z-[2] inline-flex items-center gap-1 rounded-br-lg rounded-tl-sm border border-amber-300 bg-amber-200 px-[6px] py-px text-[8px] font-bold uppercase leading-[14px] text-amber-950 shadow-[0_1px_3px_rgba(15,23,42,0.14)] [html[data-theme='dark']_&]:border-amber-600 [html[data-theme='dark']_&]:bg-amber-900/20 [html[data-theme='dark']_&]:text-amber-100">
+                            <span aria-hidden="true" className="text-[9px] leading-none">✓</span>
+                            <span>Owned</span>
+                          </span>
+                          {fallbackOwned.sprite ? <img src={fallbackOwned.sprite} alt="" className="absolute left-[22px] top-5 z-0 h-[95px] w-[95px] object-contain opacity-45 max-[768px]:left-2 max-[768px]:top-[14px] max-[768px]:h-[68px] max-[768px]:w-[68px]" /> : null}
+                          <div className="relative z-[1] m-1 inline-flex flex-col items-center gap-px rounded-md px-2 py-1 text-center">
+                            <span className={`text-[9px] font-semibold leading-[1.05] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text-h)]'}`}>{fallbackOwned.name}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
+                          <span className={`text-[18px] font-bold max-[768px]:text-[14px] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text)]'}`}>No options yet</span>
+                          <span className={`text-[0.58rem] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text)]'}`}>Tap to check other squares</span>
+                        </div>
+                      )
                     ) : (
                       <div className="flex h-full flex-col items-center justify-center gap-0.5">
-                         <span className={`text-[26px] font-bold max-[768px]:text-[20px] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text-h)]'}`}>{possible.length}</span>
+                          <span className={`text-[26px] font-bold max-[768px]:text-[20px] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text-h)]'}`}>{possible.length}</span>
                          <span className={`text-[0.6rem] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text)]'} opacity-80`}>Tap to explore</span>
                       </div>
                     )}
