@@ -48,6 +48,8 @@ interface SuggestionsPanelProps {
   currentPokemon?: Pokemon | null;
   ownedPokemonKeyIds?: Set<number>;
   shinyPokemonKeyIds?: Set<number>;
+  anchorElement?: HTMLElement | null;
+  onClose?: () => void;
   onSelect: (pokemon: Pokemon) => void;
 }
 
@@ -61,12 +63,15 @@ export function SuggestionsPanel({
   currentPokemon = null,
   ownedPokemonKeyIds,
   shinyPokemonKeyIds,
+  anchorElement,
+  onClose,
   onSelect,
 }: SuggestionsPanelProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [daysSinceLastUsableByKeyId, setDaysSinceLastUsableByKeyId] = useState<Map<number, number | null>>(
     new Map(),
   );
+  const [positionVersion, setPositionVersion] = useState(0);
   
   const [sortBy, setSortBy] = useState<SortBy>(() => {
     if (typeof window !== "undefined") {
@@ -181,22 +186,73 @@ export function SuggestionsPanel({
     };
   }, [displayedPokemon, ownedPokemonKeyIds]);
 
+  useEffect(() => {
+    if (!selectedCell || !anchorElement) return;
+
+    const updateAnchorRect = () => {
+      setPositionVersion((value) => value + 1);
+    };
+
+    window.addEventListener("resize", updateAnchorRect);
+    window.addEventListener("scroll", updateAnchorRect, true);
+
+    return () => {
+      window.removeEventListener("resize", updateAnchorRect);
+      window.removeEventListener("scroll", updateAnchorRect, true);
+    };
+  }, [anchorElement, selectedCell]);
+
+  const popoverStyle = (() => {
+    void positionVersion;
+    if (!anchorElement || typeof window === "undefined") return undefined;
+
+    const anchorRect = anchorElement.getBoundingClientRect();
+    const horizontalPadding = 12;
+    const panelWidth = window.innerWidth < 768 ? 332 : 418;
+    const estimatedPanelHeight = window.innerWidth < 768 ? 490 : 660;
+    const centeredLeft = anchorRect.left + (anchorRect.width / 2) - (panelWidth / 2);
+    const left = Math.max(horizontalPadding, Math.min(centeredLeft, window.innerWidth - panelWidth - horizontalPadding));
+    const spaceBelow = window.innerHeight - anchorRect.bottom;
+    const top = spaceBelow > estimatedPanelHeight + 20
+      ? anchorRect.bottom + 10
+      : Math.max(12, anchorRect.top - estimatedPanelHeight - 10);
+
+    return {
+      left,
+      top,
+      width: panelWidth,
+    };
+  })();
+
   if (!selectedCell) return null;
 
   return (
-    <div className="relative mb-4">
-      <div className="relative mt-5 flex max-h-[500px] w-[418px] flex-col overflow-y-auto rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 max-[768px]:h-full max-[768px]:max-h-[350px] max-[768px]:w-[332px]" ref={containerRef}>
-        <div className="sticky top-0 z-[5] shrink-0 bg-[var(--bg)]">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-[var(--text-h)]">
-              {counts.total} Pokemon
-              {ownedPokemonKeyIds ? (
-                <span className="ml-2 text-xs font-medium text-[var(--text)]">
-                  {counts.unowned} unowned, {counts.owned} owned
-                </span>
-              ) : null}
-            </span>
-            <label className="flex items-center gap-1">
+    <div
+      className="fixed z-30 max-w-[calc(100vw-24px)]"
+      style={popoverStyle}
+    >
+      <div className="relative flex max-h-[720px] w-[418px] max-w-full flex-col overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 shadow-[0_18px_40px_rgba(15,23,42,0.28)] max-[768px]:h-full max-[768px]:max-h-[490px] max-[768px]:w-[332px]" ref={containerRef}>
+        <div className="-mx-4 -mt-4 shrink-0 border-b border-[var(--border)] bg-[var(--bg)] px-4 pt-4 pb-3">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-start justify-between gap-3">
+              <span className="inline-flex flex-col text-left">
+                <span className="font-semibold text-[var(--text-h)]">{counts.total} Pokemon</span>
+                {ownedPokemonKeyIds ? (
+                  <span className="text-xs font-medium text-[var(--text)]">
+                    {counts.unowned} unowned, {counts.owned} owned
+                  </span>
+                ) : null}
+              </span>
+              <button
+                type="button"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] transition-colors hover:bg-[var(--code-bg)]"
+                aria-label="Close suggestions"
+                onClick={onClose}
+              >
+                <span aria-hidden="true" className="text-base leading-none">×</span>
+              </button>
+            </div>
+            <label className="flex max-w-full items-center gap-1 self-start">
               <span className="text-[0.8rem] text-[#666]" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                   <path
@@ -208,9 +264,9 @@ export function SuggestionsPanel({
                   />
                 </svg>
               </span>
-              <span className="relative inline-flex items-center">
+              <span className="relative inline-flex max-w-full items-center">
                 <select
-                  className="cursor-pointer appearance-none rounded-md border border-[var(--border)] bg-[var(--bg)] py-1 pl-2 pr-7 text-xs text-[var(--text)]"
+                  className="max-w-[250px] cursor-pointer appearance-none rounded-md border border-[var(--border)] bg-[var(--bg)] py-1 pl-2 pr-7 text-xs text-[var(--text)] max-[768px]:max-w-[220px]"
                   aria-label="Sort Pokémon suggestions"
                   value={sortBy}
                   onChange={(event) => handleSortChange(event.target.value as SortBy)}
@@ -239,7 +295,8 @@ export function SuggestionsPanel({
             </label>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="min-h-0 flex-1 overflow-y-auto pt-3">
+          <div className="flex flex-col gap-2">
           {displayedPokemon.length > 0 ? (
             displayedPokemon.map((p) => {
               const pokemonKeyId = getPokemonKeyId(p);
@@ -269,14 +326,14 @@ export function SuggestionsPanel({
                     <span className="shrink-0 text-[10px] font-semibold text-[var(--text)]">#{p.id}</span>
                     <span className="flex-1 text-[12px] font-medium text-[var(--text-h)]">{p.name}</span>
                     {isOwned ? (
-                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-[2px] text-[0.65rem] font-bold uppercase ${isShiny ? "border border-amber-300 bg-amber-200 text-amber-950 [html[data-theme='dark']_&]:border-amber-700 [html[data-theme='dark']_&]:bg-amber-900/45 [html[data-theme='dark']_&]:text-amber-100" : "border border-[var(--border)] bg-[var(--code-bg)] text-[var(--text-h)]"}`}>
+                      <span className={`hidden items-center gap-1 rounded-full px-2 py-[2px] text-[0.65rem] font-bold uppercase md:inline-flex ${isShiny ? "border border-amber-300 bg-amber-200 text-amber-950 [html[data-theme='dark']_&]:border-amber-700 [html[data-theme='dark']_&]:bg-amber-900/45 [html[data-theme='dark']_&]:text-amber-100" : "border border-[var(--border)] bg-[var(--code-bg)] text-[var(--text-h)]"}`}>
                         <span aria-hidden="true" className="text-[10px] leading-none">✓</span>
                         <span>{isShiny ? 'Shiny' : 'Owned'}</span>
                       </span>
                     ) : null}
                     {p.dexDifficulty && (
                       <span
-                        className="ml-auto shrink-0 rounded-[10px] px-2 py-[2px] text-[0.7rem] font-semibold uppercase text-white"
+                        className="ml-auto hidden shrink-0 rounded-[10px] px-2 py-[2px] text-[0.7rem] font-semibold uppercase text-white md:inline-flex"
                         style={{
                           backgroundColor:
                             DEX_DIFFICULTY_COLORS[p.dexDifficulty],
@@ -288,15 +345,34 @@ export function SuggestionsPanel({
                     )}
                   </div>
                   <div className="flex items-center gap-2 px-2 pb-2 text-[0.85rem] text-[var(--text)]">
-                    <div className="flex shrink-0 flex-wrap gap-0.5">
+                    <div className="hidden shrink-0 flex-wrap gap-0.5 md:flex">
                         {p.types.map((type, i) => (
                          <CategoryBadgeLink
-                           key={`${p.id}-${type}-${i}`}
-                           parsed={parseCategoryId(`types:${type}`)}
-                           href={null}
-                         />
+                            key={`${p.id}-${type}-${i}`}
+                            parsed={parseCategoryId(`types:${type}`)}
+                            href={null}
+                          />
                         ))}
                      </div>
+                    <div className="flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase text-[var(--text)] md:hidden">
+                      {isOwned ? (
+                        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-[2px] ${isShiny ? "border border-amber-300 bg-amber-200 text-amber-950 [html[data-theme='dark']_&]:border-amber-700 [html[data-theme='dark']_&]:bg-amber-900/45 [html[data-theme='dark']_&]:text-amber-100" : "border border-[var(--border)] bg-[var(--code-bg)] text-[var(--text-h)]"}`}>
+                          <span aria-hidden="true" className="text-[10px] leading-none">✓</span>
+                          <span>{isShiny ? 'Shiny' : 'Owned'}</span>
+                        </span>
+                      ) : null}
+                      {p.dexDifficulty ? (
+                        <span
+                          className="inline-flex items-center rounded-full px-2 py-[2px] text-white"
+                          style={{
+                            backgroundColor: DEX_DIFFICULTY_COLORS[p.dexDifficulty],
+                          }}
+                          title="Easy = many choices • Nightmare = few choices"
+                        >
+                          {p.dexDifficulty}
+                        </span>
+                      ) : null}
+                    </div>
                    </div>
                 </div>
               </button>
@@ -304,6 +380,7 @@ export function SuggestionsPanel({
           ) : (
             <p className="p-5 text-center text-red-500">No Pokémon matches the constraints.</p>
           )}
+          </div>
         </div>
       </div>
       {displayedPokemon.length >= 5 && (

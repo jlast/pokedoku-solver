@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { GRID_SIZE } from "../../../../lib/shared/constants";
 import { matchesConstraint, findConstraintOption, type Constraint } from "../../../../lib/shared/filters";
@@ -65,25 +65,7 @@ function App() {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [grid, setGrid] = useState<GridState>(createInitialGridState);
-
-  const suggestionsRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    if (!grid.selectedCell || !suggestionsRef.current) return;
-
-    const el = suggestionsRef.current;
-    const rect = el.getBoundingClientRect();
-
-    const isPartiallyInView = rect.bottom > 0 && rect.top < window.innerHeight;
-
-    if (!isPartiallyInView) {
-      setTimeout(() => {
-        el.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 50);
-    }
-  }, [grid.selectedCell]);
+  const [selectedCellAnchorElement, setSelectedCellAnchorElement] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`)
@@ -157,9 +139,10 @@ function App() {
     return result;
   }, [grid, pokemon]);
 
-  const handleCellClick = (row: number, col: number) => {
+  const handleCellClick = (row: number, col: number, anchorElement?: HTMLDivElement | null) => {
     const cell = grid.cells[row][col];
     if (cell) {
+      setSelectedCellAnchorElement(null);
       setGrid((prev) => ({
         ...prev,
         cells: prev.cells.map((r, ri) =>
@@ -172,12 +155,14 @@ function App() {
         selectedCell: null,
       }));
     } else {
+      setSelectedCellAnchorElement(anchorElement ?? null);
       setGrid((prev) => ({ ...prev, selectedCell: [row, col] }));
     }
   };
 
   const handlePokemonSelect = (selectedPokemon: Pokemon) => {
     if (!grid.selectedCell) return;
+    setSelectedCellAnchorElement(null);
     const [row, col] = grid.selectedCell;
     setGrid((prev) => ({
       ...prev,
@@ -241,15 +226,38 @@ function App() {
         <p className="text-[0.9rem] opacity-70">
           Select a category to begin
         </p>
-        <Grid
-          cells={grid.cells}
-          rowConstraints={grid.rowConstraints}
-          colConstraints={grid.colConstraints}
-          possiblePokemon={possiblePokemon}
-          selectedCell={grid.selectedCell}
-          onCellClick={handleCellClick}
-          onConstraintChange={handleConstraintChange}
-        />
+        <div className="relative">
+          <Grid
+            cells={grid.cells}
+            rowConstraints={grid.rowConstraints}
+            colConstraints={grid.colConstraints}
+            possiblePokemon={possiblePokemon}
+            selectedCell={grid.selectedCell}
+            onCellClick={handleCellClick}
+            onConstraintChange={handleConstraintChange}
+          />
+          {grid.selectedCell ? (
+            <button
+              type="button"
+              aria-label="Close suggestions"
+              className="fixed inset-0 z-20 cursor-default border-0 bg-black/10 p-0 backdrop-blur-[2px]"
+              onClick={() => {
+                setGrid((prev) => ({ ...prev, selectedCell: null }));
+                setSelectedCellAnchorElement(null);
+              }}
+            />
+          ) : null}
+          <SuggestionsPanel
+            selectedCell={grid.selectedCell}
+            possiblePokemon={selectedCellPossible}
+            anchorElement={selectedCellAnchorElement}
+            onClose={() => {
+              setGrid((prev) => ({ ...prev, selectedCell: null }));
+              setSelectedCellAnchorElement(null);
+            }}
+            onSelect={handlePokemonSelect}
+          />
+        </div>
         <InfoBox>Numbers show how many Pokémon match each combination.</InfoBox>
         <ActionButton
           onClick={clearGrid}
@@ -258,13 +266,6 @@ function App() {
         >
           Clear All
         </ActionButton>
-        <div ref={suggestionsRef}>
-          <SuggestionsPanel
-            selectedCell={grid.selectedCell}
-            possiblePokemon={selectedCellPossible}
-            onSelect={handlePokemonSelect}
-          />
-        </div>
       </div>
 
       <ContentSection>

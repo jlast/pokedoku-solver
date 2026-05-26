@@ -21,8 +21,8 @@ interface GridProps {
   selectedCell: [number, number] | null;
   editable?: boolean;
   showSuggestedMeta?: boolean;
-  onCellClick: (row: number, col: number) => void;
-  onSwapClick?: (row: number, col: number) => void;
+  onCellClick: (row: number, col: number, anchorElement?: HTMLDivElement | null) => void;
+  onSwapClick?: (row: number, col: number, anchorElement?: HTMLDivElement | null) => void;
   onConstraintChange: (index: number, isRow: boolean, option: { value: string; category: string } | null) => void;
 }
 
@@ -184,14 +184,14 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, f
                     <div
                       key={colIndex}
                       className={`relative flex h-[154px] w-[140px] cursor-pointer flex-col items-center justify-end overflow-hidden rounded border-2 border-transparent transition-all max-[768px]:h-[110px] max-[768px]:w-[90px] ${cellStateClasses}`}
-                      onClick={() => {
-                      trackEvent('click_cell', {
-                        position: `${rowIndex}_${colIndex}`,
-                        has_constraint: hasConstraint ? 'true' : 'false',
-                        has_pokemon: cell ? 'true' : 'false',
-                      });
-                      onCellClick(rowIndex, colIndex);
-                    }}
+                      onClick={(event) => {
+                       trackEvent('click_cell', {
+                         position: `${rowIndex}_${colIndex}`,
+                         has_constraint: hasConstraint ? 'true' : 'false',
+                         has_pokemon: cell ? 'true' : 'false',
+                       });
+                      onCellClick(rowIndex, colIndex, event.currentTarget);
+                     }}
                     style={{
                       borderColor: hasConstraint ? getConstraintColor(rowConstraint || colConstraint) : undefined,
                     } as React.CSSProperties}
@@ -215,7 +215,8 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, f
                               aria-label={`Swap ${cell.name} (${optionCount} options)`}
                               onClick={(event) => {
                                 event.stopPropagation();
-                                (onSwapClick ?? onCellClick)(rowIndex, colIndex);
+                                const anchorElement = event.currentTarget.parentElement as HTMLDivElement | null;
+                                (onSwapClick ?? onCellClick)(rowIndex, colIndex, anchorElement);
                               }}
                             >
                               <span className="text-[18px] leading-none max-[768px]:text-[13px]">⇄</span>

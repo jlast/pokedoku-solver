@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { trackEvent } from "../../../../lib/browser/analytics";
 import { DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
@@ -148,17 +148,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const [isMarkingCompleted, setIsMarkingCompleted] = useState(false);
   const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const [remoteUserDex, setRemoteUserDex] = useState<UserDexPayload | null>(null);
-  const suggestionsRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!grid.selectedCell || !suggestionsRef.current) return;
-    const el = suggestionsRef.current;
-    const rect = el.getBoundingClientRect();
-    const isPartiallyInView = rect.bottom > 0 && rect.top < window.innerHeight;
-    if (!isPartiallyInView) {
-      setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-    }
-  }, [grid.selectedCell]);
+  const [selectedCellAnchorElement, setSelectedCellAnchorElement] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/pokemon.json`)
@@ -277,9 +267,10 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     return result;
   }, [grid.rowConstraints, grid.colConstraints, pokemonPool, gridSize]);
 
-  const handleCellClick = (row: number, col: number) => {
+  const handleCellClick = (row: number, col: number, anchorElement?: HTMLDivElement | null) => {
     setGrid((prev) => {
       const isSameCell = prev.selectedCell?.[0] === row && prev.selectedCell?.[1] === col;
+      setSelectedCellAnchorElement(isSameCell ? null : (anchorElement ?? null));
       return { ...prev, selectedCell: isSameCell ? null : [row, col] };
     });
   };
@@ -465,32 +456,48 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         </section>
       ) : null}
 
-      <Grid
-        cells={grid.cells}
-        rowConstraints={grid.rowConstraints}
-        colConstraints={grid.colConstraints}
-        possiblePokemon={possiblePokemon}
-        fallbackOwnedCells={fallbackOwnedCells}
-        suggestedPokemonKeys={suggestedPokemonKeys}
-        swapOptionCounts={swapOptionCounts}
-        selectedCell={grid.selectedCell}
-        editable={false}
-        showSuggestedMeta
-        onCellClick={handleCellClick}
-        onSwapClick={handleCellClick}
-        onConstraintChange={() => {}}
-      />
-      <InfoBox>These are strategic Pokedoku answers that prioritize harder-to-place Pokemon for Pokedex completion. Tap a square for all options.</InfoBox>
-      <div ref={suggestionsRef}>
+      <div className="relative">
+        <Grid
+          cells={grid.cells}
+          rowConstraints={grid.rowConstraints}
+          colConstraints={grid.colConstraints}
+          possiblePokemon={possiblePokemon}
+          fallbackOwnedCells={fallbackOwnedCells}
+          suggestedPokemonKeys={suggestedPokemonKeys}
+          swapOptionCounts={swapOptionCounts}
+          selectedCell={grid.selectedCell}
+          editable={false}
+          showSuggestedMeta
+          onCellClick={handleCellClick}
+          onSwapClick={handleCellClick}
+          onConstraintChange={() => {}}
+        />
+        {grid.selectedCell ? (
+          <button
+            type="button"
+            aria-label="Close suggestions"
+            className="fixed inset-0 z-20 cursor-default border-0 bg-black/10 p-0 backdrop-blur-[2px]"
+            onClick={() => {
+              setGrid((prev) => ({ ...prev, selectedCell: null }));
+              setSelectedCellAnchorElement(null);
+            }}
+          />
+        ) : null}
         <SuggestionsPanel
           selectedCell={grid.selectedCell}
           possiblePokemon={selectedCellPossible}
           currentPokemon={selectedCellDisplayPokemon}
           ownedPokemonKeyIds={caughtSet}
           shinyPokemonKeyIds={new Set(remoteUserDex?.shinyPokemonKeyIds ?? [])}
+          anchorElement={selectedCellAnchorElement}
+          onClose={() => {
+            setGrid((prev) => ({ ...prev, selectedCell: null }));
+            setSelectedCellAnchorElement(null);
+          }}
           onSelect={handlePokemonSelect}
         />
       </div>
+      <InfoBox>These are strategic Pokedoku answers that prioritize harder-to-place Pokemon for Pokedex completion. Tap a square for all options.</InfoBox>
 
       <div className="mt-2 flex flex-wrap justify-center gap-2.5">
         <ActionButton
