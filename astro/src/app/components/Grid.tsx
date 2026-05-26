@@ -236,7 +236,7 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, f
                             <span aria-hidden="true" className="text-[9px] leading-none">✓</span>
                             <span>Owned</span>
                           </span>
-                          {fallbackOwned.sprite ? <img src={fallbackOwned.sprite} alt="" className="absolute left-[22px] top-5 z-0 h-[95px] w-[95px] object-contain opacity-45 max-[768px]:left-2 max-[768px]:top-[14px] max-[768px]:h-[68px] max-[768px]:w-[68px]" /> : null}
+                          {fallbackOwned.sprite ? <img src={fallbackOwned.sprite} alt="" className="absolute left-[22px] top-5 z-0 h-[95px] w-[95px] object-contain opacity-35 max-[768px]:left-2 max-[768px]:top-[14px] max-[768px]:h-[68px] max-[768px]:w-[68px]" /> : null}
                           <div className="relative z-[1] m-1 inline-flex flex-col items-center gap-px rounded-md px-2 py-1 text-center">
                             <span className={`text-[9px] font-semibold leading-[1.05] ${isSelected ? 'text-[var(--text-h)]' : 'text-[var(--text-h)]'}`}>{fallbackOwned.name}</span>
                           </div>
