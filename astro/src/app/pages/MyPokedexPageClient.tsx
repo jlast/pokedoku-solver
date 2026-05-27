@@ -13,6 +13,11 @@ import { PokedexFilterToggle, type FilterMode } from "../components/pokedex/Poke
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
 import { getPokemonKeyId } from "../lib/pokemonGrid";
+import {
+  INITIAL_RENDER_COUNT,
+  RENDER_BATCH_SIZE,
+  useIncrementalPokemonGrid,
+} from "../lib/useIncrementalPokemonGrid";
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
@@ -34,6 +39,7 @@ export function MyPokedexPageClient() {
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [showImportPanel, setShowImportPanel] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_RENDER_COUNT);
 
   useEffect(() => {
     if (!isSignedIn) return;
@@ -137,11 +143,20 @@ export function MyPokedexPageClient() {
       })
       .sort((a, b) => a.id - b.id || getPokemonKeyId(a) - getPokemonKeyId(b));
   }, [caughtSet, filterMode, isViewingPastPrestige, pokemon, searchQuery]);
+  const loadMoreRef = useIncrementalPokemonGrid(visibleCount < filteredPokemon.length, () => {
+    setVisibleCount((currentCount) => Math.min(currentCount + RENDER_BATCH_SIZE, filteredPokemon.length));
+  });
+  const visiblePokemon = useMemo(() => filteredPokemon.slice(0, visibleCount), [filteredPokemon, visibleCount]);
+
+  function resetVisiblePokemon() {
+    setVisibleCount(INITIAL_RENDER_COUNT);
+  }
 
   function unlockNextPrestigeLevel() {
     if (!nextPrestigeLevel || !canUnlockNextPrestige) return;
 
     const nextIndex = unlockedPrestigeLevelIndex + 1;
+    resetVisiblePokemon();
     setUnlockedPrestigeLevelIndex(nextIndex);
 
     const resetCaughtSet = new Set<number>();
@@ -205,6 +220,7 @@ export function MyPokedexPageClient() {
 
       setCaughtSet(importedCaught);
       setShinySet(importedShiny);
+      resetVisiblePokemon();
       setImportStatus(
         `${source === "file" ? "Uploaded" : "Imported"} ${importedCaught.size} unlocked Pokemon and ${importedShiny.size} shinies.`,
       );
@@ -260,6 +276,9 @@ export function MyPokedexPageClient() {
 
     setCaughtSet(nextSet);
     setShinySet(nextShinySet);
+    if (filterMode !== "all") {
+      resetVisiblePokemon();
+    }
 
     const token = await getValidSessionIdToken();
     const apiBaseUrl = getApiBaseUrl();
@@ -414,20 +433,30 @@ export function MyPokedexPageClient() {
           <input
             type="search"
             value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
+            onChange={(event) => {
+              resetVisiblePokemon();
+              setSearchQuery(event.target.value);
+            }}
             placeholder="Search by name, number, type, or region"
             className="h-10 w-full rounded-lg border border-[var(--border)] px-3 text-sm text-[var(--text-h)] outline-none ring-slate-300 transition focus:ring"
           />
           {!isViewingPastPrestige ? (
-            <PokedexFilterToggle filterMode={filterMode} onChange={setFilterMode} />
+            <PokedexFilterToggle
+              filterMode={filterMode}
+              onChange={(nextFilterMode) => {
+                resetVisiblePokemon();
+                setFilterMode(nextFilterMode);
+              }}
+            />
           ) : null}
         </div>
 
         {isLoading ? (
           <p className="mb-0 mt-5 text-sm text-[var(--text)]">Loading your Pokedex...</p>
         ) : (
+          <>
           <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
-            {filteredPokemon.map((entry) => {
+            {visiblePokemon.map((entry) => {
               const pokemonKeyId = getPokemonKeyId(entry);
               const isCaught = isViewingPastPrestige ? true : caughtSet.has(pokemonKeyId);
               const isShiny = shinySet.has(pokemonKeyId);
@@ -500,6 +529,8 @@ export function MyPokedexPageClient() {
               );
             })}
           </div>
+          {visibleCount < filteredPokemon.length ? <div ref={loadMoreRef} className="h-1 w-full" aria-hidden="true" /> : null}
+          </>
         )}
       </section>
     </main>

@@ -6,6 +6,11 @@ import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
 import { PokeballIcon } from "../components/shared/PokeballIcon";
 import { getPokemonKeyId } from "../lib/pokemonGrid";
+import {
+  INITIAL_RENDER_COUNT,
+  RENDER_BATCH_SIZE,
+  useIncrementalPokemonGrid,
+} from "../lib/useIncrementalPokemonGrid";
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
@@ -27,6 +32,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
   const [isNotFound, setIsNotFound] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterMode, setFilterMode] = useState<"all" | "caught" | "missing">("missing");
+  const [visibleCount, setVisibleCount] = useState(INITIAL_RENDER_COUNT);
 
   useEffect(() => {
     let isCancelled = false;
@@ -115,6 +121,14 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
       })
       .sort((a, b) => a.id - b.id || getPokemonKeyId(a) - getPokemonKeyId(b));
   }, [caughtSet, filterMode, pokemon, searchQuery]);
+  const loadMoreRef = useIncrementalPokemonGrid(visibleCount < filteredPokemon.length, () => {
+    setVisibleCount((currentCount) => Math.min(currentCount + RENDER_BATCH_SIZE, filteredPokemon.length));
+  });
+  const visiblePokemon = useMemo(() => filteredPokemon.slice(0, visibleCount), [filteredPokemon, visibleCount]);
+
+  function resetVisiblePokemon() {
+    setVisibleCount(INITIAL_RENDER_COUNT);
+  }
 
   const caughtCount = caughtSet.size;
   const shinyCount = shinySet.size;
@@ -177,13 +191,19 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
           <input
             type="search"
             value={searchQuery}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setSearchQuery(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              resetVisiblePokemon();
+              setSearchQuery(event.target.value);
+            }}
             placeholder="Search by name, number, type, or region"
             className="h-10 w-full rounded-lg border border-[var(--border)] px-3 text-sm text-[var(--text-h)] outline-none ring-slate-300 transition focus:ring"
           />
           <button
             type="button"
-            onClick={() => setFilterMode((prev) => (prev === "caught" ? "all" : "caught"))}
+            onClick={() => {
+              resetVisiblePokemon();
+              setFilterMode((prev) => (prev === "caught" ? "all" : "caught"));
+            }}
             className={`h-10 shrink-0 rounded-lg border px-4 text-sm font-semibold transition ${
               filterMode === "caught" ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--text-h)] shadow-sm hover:bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
             }`}
@@ -192,7 +212,10 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
           </button>
           <button
             type="button"
-            onClick={() => setFilterMode((prev) => (prev === "missing" ? "all" : "missing"))}
+            onClick={() => {
+              resetVisiblePokemon();
+              setFilterMode((prev) => (prev === "missing" ? "all" : "missing"));
+            }}
             className={`h-10 shrink-0 rounded-lg border px-4 text-sm font-semibold transition ${
               filterMode === "missing" ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--text-h)] shadow-sm hover:bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
             }`}
@@ -202,7 +225,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
         </div>
 
         <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
-          {filteredPokemon.map((entry) => {
+          {visiblePokemon.map((entry) => {
             const pokemonKeyId = getPokemonKeyId(entry);
             const isCaught = caughtSet.has(pokemonKeyId);
             const isShiny = shinySet.has(pokemonKeyId);
@@ -247,6 +270,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
             );
           })}
         </div>
+        {visibleCount < filteredPokemon.length ? <div ref={loadMoreRef} className="h-1 w-full" aria-hidden="true" /> : null}
       </section>
     </main>
   );

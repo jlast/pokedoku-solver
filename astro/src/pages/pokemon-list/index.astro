@@ -134,10 +134,9 @@ import { Footer } from "../../app/components/Footer";
     import { DEX_DIFFICULTY_COLORS, TYPE_COLORS } from "../../../../lib/shared/constants";
     import { slugify } from "../../lib/slug";
     import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
+    import { INITIAL_RENDER_COUNT, RENDER_BATCH_SIZE } from "../../lib/incrementalPokemonGrid";
     import { getRemoteUserDex } from "@pokedoku-helper/user-api-client";
 
-    const INITIAL_RENDER_COUNT = 120;
-    const RENDER_BATCH_SIZE = 80;
     const SEARCH_TRACK_DEBOUNCE_MS = 400;
     const SORT_OPTIONS = new Set(["number-asc", "number-desc", "name-asc", "name-desc", "difficulty-asc", "difficulty-desc", "recent-appearance", "recent-appearance-newest"]);
 
