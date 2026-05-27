@@ -28,6 +28,11 @@ interface GridState {
   selectedCell: [number, number] | null;
 }
 
+interface UndoMarkOwnedState {
+  previousUserDex: UserDexPayload;
+  addedCount: number;
+}
+
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
   if (!baseUrl || typeof baseUrl !== 'string') return null;
@@ -57,8 +62,10 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const [showMissingOnly, setShowMissingOnly] = useState<boolean>(() => isLoggedIn);
   const [isSavingFilterPreference, setIsSavingFilterPreference] = useState(false);
   const [isMarkingCompleted, setIsMarkingCompleted] = useState(false);
+  const [isUndoingMarkOwned, setIsUndoingMarkOwned] = useState(false);
   const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const [remoteUserDex, setRemoteUserDex] = useState<UserDexPayload | null>(null);
+  const [undoMarkOwnedState, setUndoMarkOwnedState] = useState<UndoMarkOwnedState | null>(null);
   const [selectedCellAnchorElement, setSelectedCellAnchorElement] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -93,6 +100,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         if (userDex) {
           setCaughtSet(new Set(userDex.caughtPokemonKeyIds));
           setRemoteUserDex(userDex);
+          setUndoMarkOwnedState(null);
         }
         if (settings) {
           setShowMissingOnly(settings.myPokedexFilter);
@@ -208,7 +216,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   }
 
   async function markAllAsCompleted() {
-    if (isMarkingCompleted) return;
+    if (isMarkingCompleted || isUndoingMarkOwned) return;
 
     const completedIds = grid.cells
       .flat()
@@ -241,9 +249,38 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
 
       setCaughtSet(mergedSet);
       setRemoteUserDex(nextPayload);
+      setUndoMarkOwnedState({
+        previousUserDex: remoteUserDex,
+        addedCount: completedIds.filter((id) => !caughtSet.has(id)).length,
+      });
       trackEvent('click_mark_all_completed', { count: completedIds.length.toString() });
     } finally {
       setIsMarkingCompleted(false);
+    }
+  }
+
+  async function undoMarkOwned() {
+    if (!undoMarkOwnedState || !remoteUserDex || isUndoingMarkOwned || isMarkingCompleted) return;
+
+    setIsUndoingMarkOwned(true);
+    try {
+      const token = await getValidSessionIdToken();
+      const apiBaseUrl = getApiBaseUrl();
+      if (!token || !apiBaseUrl) return;
+
+      const updated = await patchRemoteUserDex({
+        token,
+        apiBaseUrl,
+        payload: undoMarkOwnedState.previousUserDex,
+      });
+      if (!updated) return;
+
+      setCaughtSet(new Set(undoMarkOwnedState.previousUserDex.caughtPokemonKeyIds));
+      setRemoteUserDex(undoMarkOwnedState.previousUserDex);
+      setUndoMarkOwnedState(null);
+      trackEvent('click_undo_mark_owned', { count: undoMarkOwnedState.addedCount.toString() });
+    } finally {
+      setIsUndoingMarkOwned(false);
     }
   }
 
@@ -326,11 +363,11 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
             </button>
           </div>
           {showMissingOnly ? (
-            <div className="mt-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               <ActionButton
                 onClick={markAllAsCompleted}
                 variant="success"
-                disabled={!hasGridData || !remoteUserDex || isMarkingCompleted}
+                disabled={!hasGridData || !remoteUserDex || isMarkingCompleted || isUndoingMarkOwned}
               >
                 {isMarkingCompleted ? (
                   <>
@@ -345,9 +382,18 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                    Mark all as completed in My Pokedex
+                    Mark owned in My Pokedex
                   </>
                 )}
+              </ActionButton>
+              <ActionButton
+                onClick={() => {
+                  void undoMarkOwned();
+                }}
+                variant="secondary"
+                disabled={!undoMarkOwnedState || isUndoingMarkOwned || isMarkingCompleted}
+              >
+                {isUndoingMarkOwned ? 'Undoing...' : 'Undo'}
               </ActionButton>
             </div>
           ) : null}
