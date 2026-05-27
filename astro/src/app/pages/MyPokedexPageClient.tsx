@@ -9,6 +9,7 @@ import {
   getRemoteUserDex,
   patchRemoteUserDex,
 } from "@pokedoku-helper/user-api-client";
+import { PokedexFilterToggle, type FilterMode } from "../components/pokedex/PokedexFilterToggle";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
 import { getPokemonKeyId } from "../lib/pokemonGrid";
@@ -26,8 +27,7 @@ export function MyPokedexPageClient() {
   const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const [shinySet, setShinySet] = useState<Set<number>>(new Set<number>());
   const [searchQuery, setSearchQuery] = useState("");
-  const [showCaughtOnly, setShowCaughtOnly] = useState(false);
-  const [showMissingOnly, setShowMissingOnly] = useState(true);
+  const [filterMode, setFilterMode] = useState<FilterMode>("missing");
   const [selectedPrestigeLevelId, setSelectedPrestigeLevelId] = useState(PRESTIGE_LEVELS[0]?.id ?? "pokeball");
   const [unlockedPrestigeLevelIndex, setUnlockedPrestigeLevelIndex] = useState(0);
   const [importJsonText, setImportJsonText] = useState("");
@@ -96,31 +96,6 @@ export function MyPokedexPageClient() {
     };
   }, [isSignedIn]);
 
-  const filteredPokemon = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
-
-    return pokemon
-      .filter((entry) => {
-        if (showCaughtOnly && !caughtSet.has(getPokemonKeyId(entry))) {
-          return false;
-        }
-
-        if (showMissingOnly && caughtSet.has(getPokemonKeyId(entry))) {
-          return false;
-        }
-
-        if (!normalizedQuery) return true;
-
-        return (
-          entry.name.toLowerCase().includes(normalizedQuery) ||
-          String(entry.id).includes(normalizedQuery) ||
-          (entry.region ?? "").toLowerCase().includes(normalizedQuery) ||
-          entry.types.some((type) => type.toLowerCase().includes(normalizedQuery))
-        );
-      })
-      .sort((a, b) => a.id - b.id || getPokemonKeyId(a) - getPokemonKeyId(b));
-  }, [caughtSet, pokemon, searchQuery, showCaughtOnly, showMissingOnly]);
-
   const caughtCount = caughtSet.size;
   const shinyCount = shinySet.size;
   const totalCount = pokemon.length;
@@ -134,6 +109,35 @@ export function MyPokedexPageClient() {
   const completionRate = totalCount > 0 ? (displayedCaughtCount / totalCount) * 100 : 0;
   const nextPrestigeLevel = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex + 1] ?? null;
   const canUnlockNextPrestige = Boolean(nextPrestigeLevel) && totalCount > 0 && caughtCount === totalCount;
+
+  const filteredPokemon = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+    const effectiveFilterMode = isViewingPastPrestige ? "all" : filterMode;
+
+    return pokemon
+      .filter((entry) => {
+        const isCaught = caughtSet.has(getPokemonKeyId(entry));
+
+        if (effectiveFilterMode === "caught" && !isCaught) {
+          return false;
+        }
+
+        if (effectiveFilterMode === "missing" && isCaught) {
+          return false;
+        }
+
+        if (!normalizedQuery) return true;
+
+        return (
+          entry.name.toLowerCase().includes(normalizedQuery) ||
+          String(entry.id).includes(normalizedQuery) ||
+          (entry.region ?? "").toLowerCase().includes(normalizedQuery) ||
+          entry.types.some((type) => type.toLowerCase().includes(normalizedQuery))
+        );
+      })
+      .sort((a, b) => a.id - b.id || getPokemonKeyId(a) - getPokemonKeyId(b));
+  }, [caughtSet, filterMode, isViewingPastPrestige, pokemon, searchQuery]);
+
   function unlockNextPrestigeLevel() {
     if (!nextPrestigeLevel || !canUnlockNextPrestige) return;
 
@@ -414,40 +418,9 @@ export function MyPokedexPageClient() {
             placeholder="Search by name, number, type, or region"
             className="h-10 w-full rounded-lg border border-[var(--border)] px-3 text-sm text-[var(--text-h)] outline-none ring-slate-300 transition focus:ring"
           />
-          <button
-            type="button"
-            onClick={() => {
-              setShowCaughtOnly((prev) => {
-                const next = !prev;
-                if (next) {
-                  setShowMissingOnly(false);
-                }
-                return next;
-              });
-            }}
-            className={`h-10 shrink-0 rounded-lg px-4 text-sm font-semibold transition ${
-               showCaughtOnly ? "bg-[var(--accent-bg)] text-[var(--text-h)] hover:bg-[var(--accent-bg)]" : "bg-[var(--code-bg)] text-[var(--text)] hover:bg-[var(--accent-bg)]"
-             }`}
-          >
-            {showCaughtOnly ? "Showing caught" : "Show caught only"}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setShowMissingOnly((prev) => {
-                const next = !prev;
-                if (next) {
-                  setShowCaughtOnly(false);
-                }
-                return next;
-              });
-            }}
-              className={`h-10 shrink-0 rounded-lg border px-4 text-sm font-semibold transition ${
-               showMissingOnly ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--text-h)] shadow-sm hover:bg-[var(--accent-bg)]" : "border-[var(--border)] bg-[var(--code-bg)] text-[var(--text)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
-             }`}
-           >
-            {showMissingOnly ? "Showing missing" : "Show missing only"}
-          </button>
+          {!isViewingPastPrestige ? (
+            <PokedexFilterToggle filterMode={filterMode} onChange={setFilterMode} />
+          ) : null}
         </div>
 
         {isLoading ? (
