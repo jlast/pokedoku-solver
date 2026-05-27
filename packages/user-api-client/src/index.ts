@@ -2,6 +2,7 @@ export type UserDexPayload = {
   caughtPokemonKeyIds: number[];
   shinyPokemonKeyIds: number[];
   unlockedPrestigeLevelIndex: number;
+  updatedAt: string | null;
 };
 
 export type SettingsPayload = {
@@ -28,6 +29,7 @@ export function parseUserDexFromApi(
     caughtPokemonKeyIds?: unknown;
     shinyPokemonKeyIds?: unknown;
     unlockedPrestigeLevelIndex?: unknown;
+    updatedAt?: unknown;
   };
   if (!Array.isArray(payload.caughtPokemonKeyIds)) return null;
 
@@ -45,7 +47,12 @@ export function parseUserDexFromApi(
     ? Math.min(rawPrestigeIndex, maxPrestigeLevelIndex)
     : 0;
 
-  return { caughtPokemonKeyIds, shinyPokemonKeyIds, unlockedPrestigeLevelIndex };
+  const updatedAt = typeof payload.updatedAt === 'string' && payload.updatedAt.trim().length > 0
+    && !Number.isNaN(Date.parse(payload.updatedAt))
+    ? payload.updatedAt
+    : null;
+
+  return { caughtPokemonKeyIds, shinyPokemonKeyIds, unlockedPrestigeLevelIndex, updatedAt };
 }
 
 export async function getRemoteUserDex({

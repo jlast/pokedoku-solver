@@ -25,9 +25,20 @@ export function validateUserDexTableConfigured(): boolean {
   return TABLE_NAME.length > 0;
 }
 
+function sanitizeUpdatedAt(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  if (value.trim().length === 0 || Number.isNaN(Date.parse(value))) return null;
+  return value;
+}
+
 export async function readUserDexByUserId(
   userId: string
-): Promise<{ caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[]; unlockedPrestigeLevelIndex: number } | null> {
+): Promise<{
+  caughtPokemonKeyIds: number[];
+  shinyPokemonKeyIds: number[];
+  unlockedPrestigeLevelIndex: number;
+  updatedAt: string | null;
+} | null> {
   const result = await dynamo.send(
     new GetItemCommand({
       TableName: TABLE_NAME,
@@ -41,6 +52,7 @@ export async function readUserDexByUserId(
     caughtPokemonKeyIds?: unknown;
     shinyPokemonKeyIds?: unknown;
     unlockedPrestigeLevelIndex?: unknown;
+    updatedAt?: unknown;
   };
 
   const caughtPokemonKeyIds = sanitizeIdArray(item.caughtPokemonKeyIds);
@@ -48,14 +60,27 @@ export async function readUserDexByUserId(
   const shinyPokemonKeyIds = sanitizeIdArray(item.shinyPokemonKeyIds).filter((entry) => caughtSet.has(entry));
 
   const unlockedPrestigeLevelIndex = sanitizePrestigeLevel(item.unlockedPrestigeLevelIndex);
-  return { caughtPokemonKeyIds, shinyPokemonKeyIds, unlockedPrestigeLevelIndex };
+  const updatedAt = sanitizeUpdatedAt(item.updatedAt);
+  return { caughtPokemonKeyIds, shinyPokemonKeyIds, unlockedPrestigeLevelIndex, updatedAt };
 }
 
 export async function readUserDex(
   userId: string
-): Promise<{ caughtPokemonKeyIds: number[]; shinyPokemonKeyIds: number[]; unlockedPrestigeLevelIndex: number }> {
+): Promise<{
+  caughtPokemonKeyIds: number[];
+  shinyPokemonKeyIds: number[];
+  unlockedPrestigeLevelIndex: number;
+  updatedAt: string | null;
+}> {
   const userDex = await readUserDexByUserId(userId);
-  if (!userDex) return { caughtPokemonKeyIds: [], shinyPokemonKeyIds: [], unlockedPrestigeLevelIndex: 0 };
+  if (!userDex) {
+    return {
+      caughtPokemonKeyIds: [],
+      shinyPokemonKeyIds: [],
+      unlockedPrestigeLevelIndex: 0,
+      updatedAt: null,
+    };
+  }
   return userDex;
 }
 

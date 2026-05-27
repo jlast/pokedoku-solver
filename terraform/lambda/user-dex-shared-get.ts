@@ -47,6 +47,7 @@ export async function handler(
       caughtPokemonKeyIds: userDex.caughtPokemonKeyIds,
       shinyPokemonKeyIds: userDex.shinyPokemonKeyIds,
       unlockedPrestigeLevelIndex: userDex.unlockedPrestigeLevelIndex,
+      updatedAt: userDex.updatedAt,
     };
 
     logInfo('user_dex_shared_get_success', {
