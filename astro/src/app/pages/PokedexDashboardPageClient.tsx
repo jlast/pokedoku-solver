@@ -14,6 +14,7 @@ import { FILTER_CATEGORIES } from "../../../../lib/shared/filters";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
 import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
+import { SectionCard } from "../components/shared/SectionCard";
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
@@ -414,8 +415,10 @@ export function PokedexDashboardPageClient() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Edit current dex</p>
+        <SectionCard
+          title="Edit current dex"
+          className="rounded-2xl bg-[var(--code-bg)] p-6 shadow-sm"
+        >
           <h3 className="m-0 mt-2 text-xl font-semibold text-[var(--text-h)]">Manage your live Pokedex</h3>
           <p className="mb-0 mt-2 text-sm text-[var(--text)]">Open the full editor page to update your current dex.</p>
             <a
@@ -465,7 +468,7 @@ export function PokedexDashboardPageClient() {
             })()}
           </div>
           {shareStatus ? <p className="mb-0 mt-2 text-xs text-[var(--text)]">{shareStatus}</p> : null}
-        </div>
+        </SectionCard>
 
         <div className="h-full">
           <PrestigeProgressCards
@@ -479,8 +482,10 @@ export function PokedexDashboardPageClient() {
           />
         </div>
 
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/40">
-          <p className="m-0 text-xs font-semibold tracking-wide text-amber-800 uppercase [html[data-theme='dark']_&]:text-amber-200">Shiny progress</p>
+        <SectionCard
+          title="Shiny progress"
+          className="rounded-2xl border-amber-200 bg-amber-50 p-6 shadow-sm [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/40"
+        >
           <div className="mt-2 flex items-center justify-between gap-3">
             <h3 className="m-0 text-xl font-bold text-amber-950 [html[data-theme='dark']_&]:text-amber-100">{shinyCount} shinies</h3>
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700 [html[data-theme='dark']_&]:bg-amber-800/50 [html[data-theme='dark']_&]:text-amber-200">
@@ -500,12 +505,14 @@ export function PokedexDashboardPageClient() {
               />
             </div>
           </div>
-        </div>
+        </SectionCard>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Categories with most Pokemon left</p>
+        <SectionCard
+          title="Categories with most Pokemon left"
+          className="rounded-2xl p-6 shadow-sm"
+        >
           <div className="mt-3 space-y-2">
             {mostLeft.map((entry) => (
               <div key={`${entry.groupKey}:${entry.name}`} className="flex items-center justify-between rounded-lg bg-[var(--code-bg)] px-3 py-2">
@@ -517,10 +524,12 @@ export function PokedexDashboardPageClient() {
               </div>
             ))}
           </div>
-        </div>
+        </SectionCard>
 
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Categories with least Pokemon left</p>
+        <SectionCard
+          title="Categories with least Pokemon left"
+          className="rounded-2xl p-6 shadow-sm"
+        >
           <div className="mt-3 space-y-2">
             {leastLeft.map((entry) => (
               <div key={`${entry.groupKey}:${entry.name}`} className="flex items-center justify-between rounded-lg bg-[var(--code-bg)] px-3 py-2">
@@ -532,10 +541,10 @@ export function PokedexDashboardPageClient() {
               </div>
             ))}
           </div>
-        </div>
+        </SectionCard>
       </section>
 
-      <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+      <section>
         <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Category groups and remaining Pokemon</p>
         <div className="mt-4 grid gap-4 lg:grid-cols-4">
           {categoryProgress.map((group) => (
