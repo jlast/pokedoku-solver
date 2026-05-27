@@ -132,6 +132,10 @@ export function MyPokedexPageClient() {
           return false;
         }
 
+        if (effectiveFilterMode === "shiny" && !shinySet.has(getPokemonKeyId(entry))) {
+          return false;
+        }
+
         if (!normalizedQuery) return true;
 
         return (
@@ -142,7 +146,7 @@ export function MyPokedexPageClient() {
         );
       })
       .sort((a, b) => a.id - b.id || getPokemonKeyId(a) - getPokemonKeyId(b));
-  }, [caughtSet, filterMode, isViewingPastPrestige, pokemon, searchQuery]);
+  }, [caughtSet, filterMode, isViewingPastPrestige, pokemon, searchQuery, shinySet]);
   const loadMoreRef = useIncrementalPokemonGrid(visibleCount < filteredPokemon.length, () => {
     setVisibleCount((currentCount) => Math.min(currentCount + RENDER_BATCH_SIZE, filteredPokemon.length));
   });

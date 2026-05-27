@@ -1,9 +1,10 @@
-export type FilterMode = 'all' | 'caught' | 'missing';
+export type FilterMode = 'all' | 'caught' | 'missing' | 'shiny';
 
 const FILTER_MODE_OPTIONS: Array<{ value: FilterMode; label: string }> = [
   { value: 'all', label: 'All' },
   { value: 'caught', label: 'Caught' },
   { value: 'missing', label: 'Missing' },
+  { value: 'shiny', label: 'Shiny' },
 ];
 
 interface PokedexFilterToggleProps {
