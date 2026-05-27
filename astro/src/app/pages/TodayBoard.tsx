@@ -235,27 +235,53 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     if (!isLoggedIn || !showMissingOnly || caughtSet.size === 0) return result;
 
     const shinySet = new Set(remoteUserDex?.shinyPokemonKeyIds ?? []);
+    const selectedKeyIds = new Set(
+      grid.cells
+        .flat()
+        .filter((cell): cell is Pokemon => Boolean(cell))
+        .map((cell) => getPokemonKeyId(cell)),
+    );
+    const reservedKeyIds = new Set(selectedKeyIds);
+    const emptyCells = Array.from({ length: gridSize * gridSize }, (_, index) => ({
+      row: Math.floor(index / gridSize),
+      col: index % gridSize,
+    })).filter(({ row, col }) => possiblePokemon[row][col].length === 0);
 
-    for (let row = 0; row < gridSize; row++) {
-      for (let col = 0; col < gridSize; col++) {
-        if (possiblePokemon[row][col].length > 0) continue;
+    emptyCells.sort((a, b) => {
+      const aCount = pokemon.filter((entry) => {
+        if (!matchesConstraint(entry, grid.rowConstraints[a.row])) return false;
+        if (!matchesConstraint(entry, grid.colConstraints[a.col])) return false;
+        const keyId = getPokemonKeyId(entry);
+        return caughtSet.has(keyId) && !shinySet.has(keyId);
+      }).length;
+      const bCount = pokemon.filter((entry) => {
+        if (!matchesConstraint(entry, grid.rowConstraints[b.row])) return false;
+        if (!matchesConstraint(entry, grid.colConstraints[b.col])) return false;
+        const keyId = getPokemonKeyId(entry);
+        return caughtSet.has(keyId) && !shinySet.has(keyId);
+      }).length;
+      return aCount - bCount;
+    });
 
-        const fallbackCandidates = pokemon
-          .filter((entry) => {
-            if (!matchesConstraint(entry, grid.rowConstraints[row])) return false;
-            if (!matchesConstraint(entry, grid.colConstraints[col])) return false;
+    for (const { row, col } of emptyCells) {
+      const fallbackCandidates = pokemon
+        .filter((entry) => {
+          if (!matchesConstraint(entry, grid.rowConstraints[row])) return false;
+          if (!matchesConstraint(entry, grid.colConstraints[col])) return false;
 
-            const keyId = getPokemonKeyId(entry);
-            return caughtSet.has(keyId) && !shinySet.has(keyId);
-          })
-          .sort(compareByHardest);
+          const keyId = getPokemonKeyId(entry);
+          return caughtSet.has(keyId) && !shinySet.has(keyId);
+        })
+        .sort(compareByHardest);
 
-        result[row][col] = fallbackCandidates[0] ?? null;
-      }
+      const uniqueCandidate = fallbackCandidates.find((entry) => !reservedKeyIds.has(getPokemonKeyId(entry)));
+      const pick = uniqueCandidate ?? fallbackCandidates[0] ?? null;
+      result[row][col] = pick;
+      if (pick) reservedKeyIds.add(getPokemonKeyId(pick));
     }
 
     return result;
-  }, [caughtSet, grid.colConstraints, grid.rowConstraints, gridSize, isLoggedIn, pokemon, possiblePokemon, remoteUserDex, showMissingOnly]);
+  }, [caughtSet, grid.cells, grid.colConstraints, grid.rowConstraints, gridSize, isLoggedIn, pokemon, possiblePokemon, remoteUserDex, showMissingOnly]);
 
   const swapOptionCounts = useMemo(() => {
     const result: number[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));

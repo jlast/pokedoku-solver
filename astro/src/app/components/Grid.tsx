@@ -107,6 +107,16 @@ function ConstraintSelect({ constraint, index, isRow, onChange }: { constraint: 
 export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, fallbackOwnedCells, ownedPokemonKeyIds, shinyPokemonKeyIds, suggestedPokemonKeys, swapOptionCounts, selectedCell, editable = true, showSuggestedMeta = false, onCellClick, onSwapClick, onConstraintChange }: GridProps) {
   const getPokemonKey = (pokemon: Pokemon): string => pokemon.sprite || pokemon.name;
   const getPokemonKeyId = (pokemon: Pokemon): number => pokemon.formId ?? pokemon.id;
+  const isUsedElsewhere = (pokemon: Pokemon, rowIndex: number, colIndex: number): boolean => {
+    const keyId = getPokemonKeyId(pokemon);
+    return cells.some((row, currentRowIndex) =>
+      row.some((currentCell, currentColIndex) =>
+        currentCell &&
+        (currentRowIndex !== rowIndex || currentColIndex !== colIndex) &&
+        getPokemonKeyId(currentCell) === keyId,
+      ),
+    );
+  };
   const renderOwnedDisplay = (pokemon: Pokemon, isShiny: boolean, opacityClass = 'opacity-35') => (
     <>
       <span className={`absolute left-0 top-0 z-[2] inline-flex items-center gap-1 rounded-br-lg rounded-tl-sm px-[6px] py-px text-[8px] font-bold uppercase leading-[14px] shadow-[0_1px_3px_rgba(15,23,42,0.14)] ${isShiny ? "border border-amber-300 bg-amber-200 text-amber-950 [html[data-theme='dark']_&]:border-amber-600 [html[data-theme='dark']_&]:bg-amber-900/20 [html[data-theme='dark']_&]:text-amber-100" : "border border-amber-300 bg-amber-200 text-amber-950 [html[data-theme='dark']_&]:border-amber-600 [html[data-theme='dark']_&]:bg-amber-900/20 [html[data-theme='dark']_&]:text-amber-100"}`}>
@@ -170,8 +180,9 @@ export function Grid({ cells, rowConstraints, colConstraints, possiblePokemon, f
                 const rowConstraint = rowConstraints[rowIndex];
                 const colConstraint = colConstraints[colIndex];
                 const hasConstraint = rowConstraint || colConstraint;
-                const fallbackOwned = fallbackOwnedCells?.[rowIndex]?.[colIndex] ?? null;
-                const isOwnedCell = cell ? (ownedPokemonKeyIds?.has(getPokemonKeyId(cell)) ?? false) : false;
+                const rawFallbackOwned = fallbackOwnedCells?.[rowIndex]?.[colIndex] ?? null;
+                const fallbackOwned = rawFallbackOwned && !isUsedElsewhere(rawFallbackOwned, rowIndex, colIndex) ? rawFallbackOwned : null;
+                const isOwnedCell = cell ? (ownedPokemonKeyIds?.has(getPokemonKeyId(cell)) ?? false) && !isUsedElsewhere(cell, rowIndex, colIndex) : false;
                 const isShinyCell = cell ? (shinyPokemonKeyIds?.has(getPokemonKeyId(cell)) ?? false) : false;
                 const optionCount = swapOptionCounts?.[rowIndex]?.[colIndex] ?? possible.length;
                 const isSuggested = Boolean(
