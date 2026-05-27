@@ -59,7 +59,6 @@ export const POKEMON_REGIONS = [
   'Galar',
   'Hisui',
   'Paldea',
-  'Unknown',
 ] as const;
 
 export type PokemonRegion = (typeof POKEMON_REGIONS)[number];
@@ -162,7 +161,7 @@ export interface InternalPokemon {
   id: number;
   name: string;
   types: [PokemonType, PokemonType] | [PokemonType];
-  region: PokemonRegion;
+  region?: PokemonRegion;
   evolution?: {
     from?: number[];
     to?: number[];

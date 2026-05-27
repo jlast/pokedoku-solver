@@ -169,8 +169,7 @@ function getAllCategories(pokemon: InternalPokemon): string[] {
   if (typeCount === 1) categories.push("Monotype");
   else if (typeCount === 2) categories.push("Dualtype");
 
-  if (pokemon.region && pokemon.region !== "Unknown")
-    categories.push(pokemon.region);
+  if (pokemon.region) categories.push(pokemon.region);
   if (pokemon.evolutionStage) categories.push(pokemon.evolutionStage);
   if (
     pokemon.evolutionStage === "First Stage" ||
@@ -401,7 +400,7 @@ function getEntry(
     id: species.id,
     name,
     types,
-    region: REGION_BY_ID[speciesId] || "Unknown",
+    ...(REGION_BY_ID[speciesId] ? { region: REGION_BY_ID[speciesId] } : {}),
     sprite: `/images/sprites/${form.id}.png`,
     formId,
   };

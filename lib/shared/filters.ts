@@ -58,7 +58,6 @@ const REGION_OPTIONS = [
   'Galar',
   'Hisui',
   'Paldea',
-  'Unknown',
 ] as const;
 
 const EVOLUTION_TRIGGER_OPTIONS = [

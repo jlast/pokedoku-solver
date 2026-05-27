@@ -40,11 +40,13 @@ const appendTypeRegionLine = (p: ParagraphContext, pokemon: Pokemon): void => {
     });
   });
 
-  p.text({ text: ' • ' });
-  p.link({
-    text: pokemon.region,
-    url: `${BASE_URL}/tools/category/${slug(pokemon.region)}`,
-  });
+  if (pokemon.region) {
+    p.text({ text: ' • ' });
+    p.link({
+      text: pokemon.region,
+      url: `${BASE_URL}/tools/category/${slug(pokemon.region)}`,
+    });
+  }
 };
 
 const appendCategoryLinks = (p: ParagraphContext, pokemon: Pokemon): void => {
@@ -143,5 +145,7 @@ export function appendPokemonCompactLine(
     p.text({ text: typeWithEmoji(type) });
   });
 
-  p.text({ text: ` • ${pokemon.region}` });
+  if (pokemon.region) {
+    p.text({ text: ` • ${pokemon.region}` });
+  }
 }
