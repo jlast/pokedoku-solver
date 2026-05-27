@@ -8,6 +8,7 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
       "Bug"
     ],
     region: "Kanto",
+    sprite: "/images/sprites/99901.png",
     evolutionStage: "First Stage",
     formId: 99901,
     evolution: {
@@ -21,7 +22,7 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
       "Ground"
     ],
     region: "Sinnoh",
-    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/female/449.png",
+    sprite: "/images/sprites/90449.png",
     evolutionStage: "First Stage",
     formId: 90449,
     evolution: {
@@ -35,7 +36,7 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
       "Ground"
     ],
     region: "Sinnoh",
-    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/female/450.png",
+    sprite: "/images/sprites/90450.png",
     evolutionStage: "Final Stage",
     evolutionTrigger: [
       "Evolved by Level"
@@ -53,7 +54,7 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
       "Flying"
     ],
     region: "Unova",
-    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/female/521.png",
+    sprite: "/images/sprites/90521.png",
     evolutionStage: "Final Stage",
     evolutionTrigger: [
       "Evolved by Level"
