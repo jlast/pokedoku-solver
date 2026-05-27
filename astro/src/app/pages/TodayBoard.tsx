@@ -461,10 +461,12 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           cells={grid.cells}
           rowConstraints={grid.rowConstraints}
           colConstraints={grid.colConstraints}
-          possiblePokemon={possiblePokemon}
-          fallbackOwnedCells={fallbackOwnedCells}
-          suggestedPokemonKeys={suggestedPokemonKeys}
-          swapOptionCounts={swapOptionCounts}
+        possiblePokemon={possiblePokemon}
+        fallbackOwnedCells={fallbackOwnedCells}
+        ownedPokemonKeyIds={caughtSet}
+        shinyPokemonKeyIds={new Set(remoteUserDex?.shinyPokemonKeyIds ?? [])}
+        suggestedPokemonKeys={suggestedPokemonKeys}
+        swapOptionCounts={swapOptionCounts}
           selectedCell={grid.selectedCell}
           editable={false}
           showSuggestedMeta
