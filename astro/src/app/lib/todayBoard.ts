@@ -10,6 +10,14 @@ export interface TextualSuggestionEntry {
   ownedFallbackPokemon: Pokemon | null;
 }
 
+export function createEmptyPokemonGrid(size: number): (Pokemon | null)[][] {
+  return Array.from({ length: size }, () => Array.from({ length: size }, () => null));
+}
+
+export function createEmptyKeyGrid(size: number): (string | null)[][] {
+  return Array.from({ length: size }, () => Array.from({ length: size }, () => null));
+}
+
 export function buildSuggestedCells(
   pokemon: Pokemon[],
   rowConstraints: (Constraint | null)[],
@@ -30,9 +38,7 @@ export function buildSuggestedCells(
 
   const rowUsed = Array.from({ length: gridSize }, () => new Set<number>());
   const colUsed = Array.from({ length: gridSize }, () => new Set<number>());
-  const suggestedCells: (Pokemon | null)[][] = Array.from({ length: gridSize }, () =>
-    Array.from({ length: gridSize }, () => null),
-  );
+  const suggestedCells = createEmptyPokemonGrid(gridSize);
 
   const cellOrder = Array.from({ length: gridSize * gridSize }, (_, index) => ({
     row: Math.floor(index / gridSize),
@@ -76,9 +82,7 @@ export function buildFallbackOwnedCells({
   shinyPokemonKeyIds: Set<number>;
 }): (Pokemon | null)[][] {
   const gridSize = rowConstraints.length;
-  const result: (Pokemon | null)[][] = Array.from({ length: gridSize }, () =>
-    Array.from({ length: gridSize }, () => null),
-  );
+  const result = createEmptyPokemonGrid(gridSize);
 
   const selectedKeyIds = new Set(
     gridCells

@@ -1,79 +1,12 @@
-import { DEX_DIFFICULTY_COLORS } from '../../../../lib/shared/constants';
-import { constraintToParsedCategory } from '../lib/pokemonGrid';
-import { slugify } from '../../lib/slug';
 import type { TextualSuggestionEntry } from '../lib/todayBoard';
+import { ConstraintPair } from './today-board-suggestions/ConstraintPair';
+import { DifficultyBadge } from './today-board-suggestions/DifficultyBadge';
+import { OwnedBadge } from './today-board-suggestions/OwnedBadge';
+import { PokemonLink } from './today-board-suggestions/PokemonLink';
+import { PokemonTypeBadges } from './today-board-suggestions/PokemonTypeBadges';
 import { SectionCard } from './shared/SectionCard';
-import { CategoryBadgeLink } from './shared/CategoryBadgeLink';
-import { parseCategoryId } from './puzzle-stats/categoryUtils';
 
-function DifficultyBadge({ difficulty }: { difficulty: string }) {
-  return (
-    <span
-      className="inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold text-white shadow-sm"
-      style={{
-        backgroundColor: DEX_DIFFICULTY_COLORS[difficulty],
-        border: '1px solid rgba(255,255,255,0.3)',
-      }}
-    >
-      {difficulty}
-    </span>
-  );
-}
-
-function ConstraintPair({ entry, baseUrl, mobile = false }: { entry: TextualSuggestionEntry; baseUrl: string; mobile?: boolean }) {
-  const rowParsed = constraintToParsedCategory(entry.rowConstraint);
-  const colParsed = constraintToParsedCategory(entry.colConstraint);
-
-  if (!rowParsed && !colParsed) return <span>Any + Any</span>;
-
-  return (
-    <div className={`flex flex-wrap items-center gap-1.5 ${mobile ? 'justify-end text-right' : ''}`}>
-      {rowParsed ? (
-        mobile ? (
-          <span className="inline-flex max-w-full scale-90 origin-right">
-            <CategoryBadgeLink parsed={rowParsed} href={`${baseUrl}tools/category/${slugify(rowParsed.label)}/`} />
-          </span>
-        ) : (
-          <CategoryBadgeLink parsed={rowParsed} href={`${baseUrl}tools/category/${slugify(rowParsed.label)}/`} />
-        )
-      ) : (
-        <span>Any</span>
-      )}
-      <span className="text-[var(--text)]">+</span>
-      {colParsed ? (
-        mobile ? (
-          <span className="inline-flex max-w-full scale-90 origin-right">
-            <CategoryBadgeLink parsed={colParsed} href={`${baseUrl}tools/category/${slugify(colParsed.label)}/`} />
-          </span>
-        ) : (
-          <CategoryBadgeLink parsed={colParsed} href={`${baseUrl}tools/category/${slugify(colParsed.label)}/`} />
-        )
-      ) : (
-        <span>Any</span>
-      )}
-    </div>
-  );
-}
-
-function PokemonTypeBadges({ types, entryKey, baseUrl, owned = false }: { types: string[]; entryKey: string; baseUrl: string; owned?: boolean }) {
-  return (
-    <div className="flex flex-wrap items-center gap-1">
-      {types.map((type, index) => (
-        <CategoryBadgeLink
-          key={`${entryKey}-${owned ? 'owned-' : ''}${type}-${index}`}
-          parsed={parseCategoryId(`types:${type}`)}
-          href={`${baseUrl}tools/category/${slugify(type)}/`}
-        />
-      ))}
-    </div>
-  );
-}
-
-export function TodayBoardSuggestions({
-  textualSuggestions,
-}: {
-  textualSuggestions: TextualSuggestionEntry[];
-}) {
+export function TodayBoardSuggestions({ textualSuggestions }: { textualSuggestions: TextualSuggestionEntry[] }) {
   const baseUrl = import.meta.env.BASE_URL;
 
   return (
@@ -105,24 +38,11 @@ export function TodayBoardSuggestions({
                   </td>
                   <td className="px-2 py-3">
                     {entry.pokemon ? (
-                      <a
-                        href={`${baseUrl}pokemon/${slugify(entry.pokemon.name)}-${entry.pokemon.formId ?? entry.pokemon.id}/`}
-                        className="font-semibold text-[var(--text-h)] underline decoration-slate-300 underline-offset-2 hover:text-[var(--text)]"
-                      >
-                        {entry.pokemon.name}
-                      </a>
+                      <PokemonLink pokemon={entry.pokemon} baseUrl={baseUrl} />
                     ) : entry.ownedFallbackPokemon ? (
                       <div className="flex flex-col items-start gap-1">
-                        <a
-                          href={`${baseUrl}pokemon/${slugify(entry.ownedFallbackPokemon.name)}-${entry.ownedFallbackPokemon.formId ?? entry.ownedFallbackPokemon.id}/`}
-                          className="font-semibold text-[var(--text-h)] underline decoration-slate-300 underline-offset-2 hover:text-[var(--text)]"
-                        >
-                          {entry.ownedFallbackPokemon.name}
-                        </a>
-                        <span className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--code-bg)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.02em] text-[var(--text-h)]">
-                          <span aria-hidden="true" className="text-[11px] leading-none">✓</span>
-                          <span>Owned</span>
-                        </span>
+                        <PokemonLink pokemon={entry.ownedFallbackPokemon} baseUrl={baseUrl} />
+                        <OwnedBadge />
                       </div>
                     ) : (
                       <span>No suggestion available</span>
@@ -166,24 +86,11 @@ export function TodayBoardSuggestions({
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       {entry.pokemon ? (
-                        <a
-                          href={`${baseUrl}pokemon/${slugify(entry.pokemon.name)}-${entry.pokemon.formId ?? entry.pokemon.id}/`}
-                          className="inline-flex items-center text-base font-extrabold tracking-tight text-[var(--text-h)] no-underline hover:text-[var(--text)]"
-                        >
-                          {entry.pokemon.name}
-                        </a>
+                        <PokemonLink pokemon={entry.pokemon} baseUrl={baseUrl} mobile />
                       ) : entry.ownedFallbackPokemon ? (
                         <div className="flex flex-col items-start gap-1">
-                          <a
-                            href={`${baseUrl}pokemon/${slugify(entry.ownedFallbackPokemon.name)}-${entry.ownedFallbackPokemon.formId ?? entry.ownedFallbackPokemon.id}/`}
-                            className="inline-flex items-center text-base font-extrabold tracking-tight text-[var(--text-h)] no-underline hover:text-[var(--text)]"
-                          >
-                            {entry.ownedFallbackPokemon.name}
-                          </a>
-                          <span className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--code-bg)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.02em] text-[var(--text-h)]">
-                            <span aria-hidden="true" className="text-[11px] leading-none">✓</span>
-                            <span>Owned</span>
-                          </span>
+                          <PokemonLink pokemon={entry.ownedFallbackPokemon} baseUrl={baseUrl} mobile />
+                          <OwnedBadge />
                         </div>
                       ) : (
                         <span className="text-[var(--text)]">No suggestion available</span>

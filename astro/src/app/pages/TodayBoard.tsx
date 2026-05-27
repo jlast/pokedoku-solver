@@ -7,10 +7,17 @@ import { Grid } from '../components/Grid';
 import { InfoBox } from '../components/InfoBox';
 import { SuggestionsPanel } from '../components/SuggestionsPanel';
 import { TodayBoardSuggestions } from '../components/TodayBoardSuggestions';
-import { ActionButton, ActionLink } from '../components/shared/ActionButton';
+import { ActionButton } from '../components/shared/ActionButton';
+import { ActionLink } from '../components/shared/ActionLink';
 import { getSessionUserProfile, getValidSessionIdToken } from '../../lib/cognitoAuth';
 import { getPokemonKeyId } from '../lib/pokemonGrid';
-import { buildFallbackOwnedCells, buildSuggestedCells, buildTextualSuggestionEntries } from '../lib/todayBoard';
+import {
+  buildFallbackOwnedCells,
+  buildSuggestedCells,
+  buildTextualSuggestionEntries,
+  createEmptyKeyGrid,
+  createEmptyPokemonGrid,
+} from '../lib/todayBoard';
 
 export interface TodayPuzzle {
   date: string;
@@ -33,18 +40,47 @@ interface UndoMarkOwnedState {
   addedCount: number;
 }
 
+interface LoadedTodayBoardUserState {
+  userDex: UserDexPayload | null;
+  myPokedexFilter: boolean | null;
+}
+
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
   if (!baseUrl || typeof baseUrl !== 'string') return null;
   return baseUrl;
 }
 
-function createEmptyCells(size: number): (Pokemon | null)[][] {
-  return Array.from({ length: size }, () => Array.from({ length: size }, () => null));
+async function loadTodayBoardUserState(token: string, apiBaseUrl: string): Promise<LoadedTodayBoardUserState> {
+  const [userDex, settings] = await Promise.all([
+    getRemoteUserDex({ token, apiBaseUrl }),
+    getRemoteSettings({ token, apiBaseUrl }),
+  ]);
+
+  return {
+    userDex,
+    myPokedexFilter: settings?.myPokedexFilter ?? null,
+  };
 }
 
-function createEmptyKeyGrid(size: number): (string | null)[][] {
-  return Array.from({ length: size }, () => Array.from({ length: size }, () => null));
+async function saveCaughtPokemon(token: string, apiBaseUrl: string, payload: UserDexPayload): Promise<boolean> {
+  return Boolean(
+    await patchRemoteUserDex({
+      token,
+      apiBaseUrl,
+      payload,
+    }),
+  );
+}
+
+async function saveMyPokedexFilter(token: string, apiBaseUrl: string, myPokedexFilter: boolean): Promise<boolean> {
+  return Boolean(
+    await patchRemoteSettings({
+      token,
+      apiBaseUrl,
+      patch: { myPokedexFilter },
+    }),
+  );
 }
 
 export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
@@ -53,7 +89,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [grid, setGrid] = useState<GridState>(() => ({
-    cells: createEmptyCells(gridSize),
+    cells: createEmptyPokemonGrid(gridSize),
     rowConstraints: [...puzzle.rowConstraints],
     colConstraints: [...puzzle.colConstraints],
     selectedCell: null,
@@ -61,7 +97,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const [suggestedPokemonKeys, setSuggestedPokemonKeys] = useState<(string | null)[][]>(() => createEmptyKeyGrid(gridSize));
   const [showMissingOnly, setShowMissingOnly] = useState<boolean>(() => isLoggedIn);
   const [isSavingFilterPreference, setIsSavingFilterPreference] = useState(false);
-  const [isMarkingCompleted, setIsMarkingCompleted] = useState(false);
+  const [isMarkingOwned, setIsMarkingOwned] = useState(false);
   const [isUndoingMarkOwned, setIsUndoingMarkOwned] = useState(false);
   const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const [remoteUserDex, setRemoteUserDex] = useState<UserDexPayload | null>(null);
@@ -91,10 +127,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       if (!token || !apiBaseUrl) return;
 
       try {
-        const [userDex, settings] = await Promise.all([
-          getRemoteUserDex({ token, apiBaseUrl }),
-          getRemoteSettings({ token, apiBaseUrl }),
-        ]);
+        const { userDex, myPokedexFilter } = await loadTodayBoardUserState(token, apiBaseUrl);
         if (isCancelled) return;
 
         if (userDex) {
@@ -102,8 +135,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           setRemoteUserDex(userDex);
           setUndoMarkOwnedState(null);
         }
-        if (settings) {
-          setShowMissingOnly(settings.myPokedexFilter);
+        if (myPokedexFilter !== null) {
+          setShowMissingOnly(myPokedexFilter);
         }
       } catch {}
     })();
@@ -156,7 +189,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   }, [grid, gridSize, pokemonPool]);
 
   const fallbackOwnedCells = useMemo(() => {
-    if (!isLoggedIn || !showMissingOnly || caughtSet.size === 0) return createEmptyCells(gridSize);
+    if (!isLoggedIn || !showMissingOnly || caughtSet.size === 0) return createEmptyPokemonGrid(gridSize);
 
     return buildFallbackOwnedCells({
       pokemon,
@@ -210,29 +243,29 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     trackEvent('click_clear_all');
     setGrid((prev) => ({
       ...prev,
-      cells: createEmptyCells(gridSize),
+      cells: createEmptyPokemonGrid(gridSize),
       selectedCell: null,
     }));
   }
 
-  async function markAllAsCompleted() {
-    if (isMarkingCompleted || isUndoingMarkOwned) return;
+  async function markOwned() {
+    if (isMarkingOwned || isUndoingMarkOwned) return;
 
-    const completedIds = grid.cells
+    const ownedIds = grid.cells
       .flat()
       .filter((cell): cell is Pokemon => Boolean(cell))
       .map((cell) => getPokemonKeyId(cell));
 
-    if (completedIds.length === 0 || !remoteUserDex) return;
+    if (ownedIds.length === 0 || !remoteUserDex) return;
 
-    setIsMarkingCompleted(true);
+    setIsMarkingOwned(true);
     try {
       const token = await getValidSessionIdToken();
       const apiBaseUrl = getApiBaseUrl();
       if (!token || !apiBaseUrl) return;
 
       const mergedSet = new Set(caughtSet);
-      for (const id of completedIds) mergedSet.add(id);
+      for (const id of ownedIds) mergedSet.add(id);
 
       const nextPayload: UserDexPayload = {
         caughtPokemonKeyIds: Array.from(mergedSet).sort((a, b) => a - b),
@@ -240,27 +273,23 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         unlockedPrestigeLevelIndex: remoteUserDex.unlockedPrestigeLevelIndex,
       };
 
-      const updated = await patchRemoteUserDex({
-        token,
-        apiBaseUrl,
-        payload: nextPayload,
-      });
-      if (!updated) return;
+      const didSave = await saveCaughtPokemon(token, apiBaseUrl, nextPayload);
+      if (!didSave) return;
 
       setCaughtSet(mergedSet);
       setRemoteUserDex(nextPayload);
       setUndoMarkOwnedState({
         previousUserDex: remoteUserDex,
-        addedCount: completedIds.filter((id) => !caughtSet.has(id)).length,
+        addedCount: ownedIds.filter((id) => !caughtSet.has(id)).length,
       });
-      trackEvent('click_mark_all_completed', { count: completedIds.length.toString() });
+      trackEvent('click_mark_all_completed', { count: ownedIds.length.toString() });
     } finally {
-      setIsMarkingCompleted(false);
+      setIsMarkingOwned(false);
     }
   }
 
   async function undoMarkOwned() {
-    if (!undoMarkOwnedState || !remoteUserDex || isUndoingMarkOwned || isMarkingCompleted) return;
+    if (!undoMarkOwnedState || !remoteUserDex || isUndoingMarkOwned || isMarkingOwned) return;
 
     setIsUndoingMarkOwned(true);
     try {
@@ -268,12 +297,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       const apiBaseUrl = getApiBaseUrl();
       if (!token || !apiBaseUrl) return;
 
-      const updated = await patchRemoteUserDex({
-        token,
-        apiBaseUrl,
-        payload: undoMarkOwnedState.previousUserDex,
-      });
-      if (!updated) return;
+      const didSave = await saveCaughtPokemon(token, apiBaseUrl, undoMarkOwnedState.previousUserDex);
+      if (!didSave) return;
 
       setCaughtSet(new Set(undoMarkOwnedState.previousUserDex.caughtPokemonKeyIds));
       setRemoteUserDex(undoMarkOwnedState.previousUserDex);
@@ -295,14 +320,10 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     if (!token || !apiBaseUrl) return;
 
     setIsSavingFilterPreference(true);
-    const updated = await patchRemoteSettings({
-      token,
-      apiBaseUrl,
-      patch: { myPokedexFilter: nextValue },
-    });
+    const didSave = await saveMyPokedexFilter(token, apiBaseUrl, nextValue);
     setIsSavingFilterPreference(false);
 
-    if (!updated) {
+    if (!didSave) {
       setShowMissingOnly(!nextValue);
     }
   }
@@ -365,11 +386,11 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           {showMissingOnly ? (
             <div className="mt-2 flex flex-wrap gap-2">
               <ActionButton
-                onClick={markAllAsCompleted}
+                onClick={markOwned}
                 variant="success"
-                disabled={!hasGridData || !remoteUserDex || isMarkingCompleted || isUndoingMarkOwned}
+                disabled={!hasGridData || !remoteUserDex || isMarkingOwned || isUndoingMarkOwned}
               >
-                {isMarkingCompleted ? (
+                {isMarkingOwned ? (
                   <>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="animate-spin">
                       <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" opacity="0.25" />
@@ -391,7 +412,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                   void undoMarkOwned();
                 }}
                 variant="secondary"
-                disabled={!undoMarkOwnedState || isUndoingMarkOwned || isMarkingCompleted}
+                disabled={!undoMarkOwnedState || isUndoingMarkOwned || isMarkingOwned}
               >
                 {isUndoingMarkOwned ? 'Undoing...' : 'Undo'}
               </ActionButton>

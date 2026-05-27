@@ -25,6 +25,9 @@ Astro-based website for Pokedoku suggestions, statistics, tools, and tips.
 - Use React components for dynamic/interactive frontend behavior; do not implement dynamic UI with plain JavaScript scripts.
 - Put reusable UI patterns in `astro/src/components`.
 - Keep pages and components lightweight and composable.
+- Do not define multiple React components in a single file.
+- Treat any JSX-returning helper that is effectively a component as a component and put it in its own file.
+- Use plain helper functions for local extraction only when they are not acting as hidden components.
 - Preserve existing visual and structural patterns when modifying existing pages.
 
 ## Theme mode (light/dark)
