@@ -25,6 +25,11 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
     sprite: "/images/sprites/90449.png",
     evolutionStage: "First Stage",
     formId: 90449,
+    learnedMoves: [
+      "Crunch",
+      "Earthquake",
+      "Protect"
+    ],
     evolution: {
       to: [90450],
     }
@@ -40,6 +45,11 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
     evolutionStage: "Final Stage",
     evolutionTrigger: [
       "Evolved by Level"
+    ],
+    learnedMoves: [
+      "Crunch",
+      "Earthquake",
+      "Protect"
     ],
     formId: 90450,
     evolution: {
@@ -58,6 +68,10 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
     evolutionStage: "Final Stage",
     evolutionTrigger: [
       "Evolved by Level"
+    ],
+    learnedMoves: [
+      "Fly",
+      "Protect"
     ],
     formId: 90521,
     evolution: {
