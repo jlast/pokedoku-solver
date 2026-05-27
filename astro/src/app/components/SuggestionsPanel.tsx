@@ -4,6 +4,7 @@ import { DEX_DIFFICULTY_COLORS } from "../../../../lib/shared/constants";
 import { trackEvent } from "../../../../lib/browser/analytics";
 import { CategoryBadgeLink } from "./shared/CategoryBadgeLink";
 import { parseCategoryId } from "./puzzle-stats/categoryUtils";
+import { getPokemonKeyId } from "../lib/pokemonGrid";
 
 type SortBy =
   | "number-asc"
@@ -51,10 +52,6 @@ interface SuggestionsPanelProps {
   anchorElement?: HTMLElement | null;
   onClose?: () => void;
   onSelect: (pokemon: Pokemon) => void;
-}
-
-function getPokemonKeyId(pokemon: Pokemon): number {
-  return pokemon.formId ?? pokemon.id;
 }
 
 export function SuggestionsPanel({

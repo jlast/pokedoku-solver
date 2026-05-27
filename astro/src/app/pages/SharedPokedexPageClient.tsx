@@ -5,17 +5,13 @@ import { getSharedUserDex, type SharedUserDexPayload } from "@pokedoku-helper/us
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
 import { PokeballIcon } from "../components/shared/PokeballIcon";
+import { getPokemonKeyId } from "../lib/pokemonGrid";
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
   if (!baseUrl || typeof baseUrl !== "string") return null;
   return baseUrl;
 }
-
-function getPokemonKeyId(pokemon: Pokemon): number {
-  return pokemon.formId ?? pokemon.id;
-}
-
 
 export function SharedPokedexPageClient({ userId }: { userId?: string }) {
   const [resolvedUserId] = useState(() => {

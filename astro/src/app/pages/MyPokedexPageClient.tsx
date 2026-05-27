@@ -11,12 +11,7 @@ import {
 } from "@pokedoku-helper/user-api-client";
 import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
-
-
-function getPokemonKeyId(pokemon: Pokemon): number {
-  return pokemon.formId ?? pokemon.id;
-}
-
+import { getPokemonKeyId } from "../lib/pokemonGrid";
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;

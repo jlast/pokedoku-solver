@@ -1,11 +1,5 @@
 import { CategoryIcon } from "../puzzle-stats/CategoryIcon";
-import { getCategoryBarColor } from "../puzzle-stats/categoryUtils";
-
-interface ParsedCategory {
-  raw: string;
-  type: string;
-  label: string;
-}
+import { getCategoryBarColor, type ParsedCategory } from "../puzzle-stats/categoryUtils";
 
 export function CategoryBadgeLink({ parsed, href, stacked = false }: { parsed: ParsedCategory; href: string | null; stacked?: boolean }) {
   const badge = (
