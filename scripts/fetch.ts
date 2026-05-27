@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 import {
   REGION_BY_ID,
   STARTER_IDS,
@@ -33,13 +33,14 @@ import {
   saveChain,
 } from "./lib/cache";
 import { getEvolutionStage } from "./lib/evolution";
+import { calculateDexDifficulties } from "./lib/dex-difficulty";
 import type {
   PokeAPIPokemon,
   PokeAPIForm,
   PokeAPISpecies,
   EvolutionNode,
 } from "./lib/types";
-import { type Pokemon, type PokemonType, type DexDifficulty, type PokemonCategory, type InternalPokemon, type PokemonLearnedMove, type PokemonAbility, POKEMON_LEARNED_MOVES, POKEMON_ABILITIES } from "@pokedoku-helper/shared-types";
+import { type PokemonType, type PokemonCategory, type InternalPokemon, type PokemonLearnedMove, type PokemonAbility, POKEMON_LEARNED_MOVES, POKEMON_ABILITIES } from "@pokedoku-helper/shared-types";
 import { CUSTOM_POKEMON } from "./custom_pokemon";
 import { getMoveOverridesForFormId, getMoveRemovalsForFormId } from './move_overrides';
 import { getAbilityOverridesForFormId, getAbilityRemovalsForFormId } from './ability_overrides';
@@ -158,100 +159,9 @@ function isMoveExcludedEntry(entry: InternalPokemon): boolean {
   return entry.categories?.includes('Gigantamax') === true;
 }
 
-function getAllCategories(pokemon: InternalPokemon): string[] {
-  const categories: string[] = [];
-
-  for (const type of pokemon.types) {
-    if (type) categories.push(type);
-  }
-
-  const typeCount = pokemon.types.filter((t) => t).length;
-  if (typeCount === 1) categories.push("Monotype");
-  else if (typeCount === 2) categories.push("Dualtype");
-
-  if (pokemon.region) categories.push(pokemon.region);
-  if (pokemon.evolutionStage) categories.push(pokemon.evolutionStage);
-  if (
-    pokemon.evolutionStage === "First Stage" ||
-    pokemon.evolutionStage === "Middle Stage"
-  )
-    categories.push("not fully evolved");
-  if (pokemon.evolutionTrigger) categories.push(...pokemon.evolutionTrigger);
-  if (pokemon.isBranched) categories.push("branched");
-  if (pokemon.categories?.length) categories.push(...pokemon.categories);
-
-  return categories;
-}
-
 function addPokemonCategory(entry: InternalPokemon, category: PokemonCategory): void {
   if (!entry.categories) entry.categories = [];
   if (!entry.categories.includes(category)) entry.categories.push(category);
-}
-
-function calculateDexDifficulties(pokemonList: InternalPokemon[]): Pokemon[] {
-  const combinationCounts: Record<string, number> = {};
-
-  for (const pokemon of pokemonList) {
-    const categories = getAllCategories(pokemon);
-    const pairs = getCategoryPairs(categories);
-    for (const pair of pairs) {
-      combinationCounts[pair] = (combinationCounts[pair] || 0) + 1;
-    }
-  }
-
-  for (const key of Object.keys(combinationCounts)) {
-    if (combinationCounts[key] <= 1) {
-      delete combinationCounts[key];
-    }
-  }
-
-  const scores: { pokemon: InternalPokemon; score: number }[] = [];
-
-  for (const pokemon of pokemonList) {
-    const categories = getAllCategories(pokemon);
-    const pairs = getCategoryPairs(categories);
-
-    let totalCompetition = 0;
-    for (const pair of pairs) {
-      const count = combinationCounts[pair] || 1;
-      totalCompetition += count;
-    }
-
-    const rawScore = totalCompetition;
-
-    scores.push({ pokemon, score: rawScore });
-  }
-
-  scores.sort((a, b) => b.score - a.score);
-
-  const total = scores.length;
-  const pokemon: Pokemon[] = [];
-  for (let i = 0; i < total; i++) {
-    const percentile = i / total;
-    let grade: DexDifficulty;
-    if (percentile < 0.4) grade = "Easy";
-    else if (percentile < 0.7) grade = "Normal";
-    else if (percentile < 0.9) grade = "Hard";
-    else if (percentile < 0.98) grade = "Expert";
-    else grade = "Nightmare";
-
-    pokemon.push({
-      ...scores[i].pokemon,
-      dexDifficultyPercentile: Math.round(percentile * 1000)/1000,
-      dexDifficulty: grade,
-    })
-  }
-  return pokemon.sort((a, b) => a.id - b.id);
-}
-
-function getCategoryPairs(categories: string[]): string[] {
-  const pairs: string[] = [];
-  for (let i = 0; i < categories.length; i++) {
-    for (let j = i + 1; j < categories.length; j++) {
-      pairs.push(`${categories[i]}+${categories[j]}`);
-    }
-  }
-  return pairs;
 }
 
 async function fetchPokemons() {
@@ -584,4 +494,6 @@ async function main() {
   console.log(`Written to ${OUTPUT_FILE}`);
 }
 
-main().catch(console.error);
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch(console.error);
+}

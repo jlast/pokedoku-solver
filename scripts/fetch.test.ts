@@ -1,59 +1,112 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-interface Pokemon {
-  id: number;
-  name: string;
-  types: string[];
-  region?: string;
-  category?: string;
-  evolutionStage?: string;
-}
+import type { InternalPokemon } from '@pokedoku-helper/shared-types';
 
-const TYPES = ['Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'];
-const REGIONS = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Alola', 'Galar', 'Hisui', 'Paldea'];
-const EVOLUTION_STAGES = ['First Stage', 'Middle Stage', 'Final Stage', 'No Evolution Line'];
+import { getValidDexDifficultyCombinationCounts } from './lib/dex-difficulty';
 
-const SAMPLE_DATA: Pokemon[] = [
-  { id: 1, name: 'Bulbasaur', types: ['Grass', 'Poison'], region: 'Kanto', category: 'Starter', evolutionStage: 'First Stage' },
-  { id: 2, name: 'Ivysaur', types: ['Grass', 'Poison'], region: 'Kanto', category: 'Starter', evolutionStage: 'Middle Stage' },
-  { id: 3, name: 'Venusaur', types: ['Grass', 'Poison'], region: 'Kanto', category: 'Starter', evolutionStage: 'Final Stage' },
-  { id: 151, name: 'Mew', types: ['Psychic'], region: 'Kanto', category: 'Mythical', evolutionStage: 'No Evolution Line' },
-  { id: 10095, name: 'Gholdengo', types: ['Steel', 'Ghost'], region: 'Paldea', evolutionStage: 'No Evolution Line' },
-];
+describe('dex difficulty combination counting', () => {
+  it('ignores category pairs that only exist within one evolution line', () => {
+    const pokemonList: InternalPokemon[] = [
+      {
+        id: 1,
+        name: 'Mon A',
+        types: ['Fire'],
+        region: 'Kanto',
+        evolutionStage: 'First Stage',
+        categories: ['Legendary'],
+        evolution: { to: [2] },
+      },
+      {
+        id: 2,
+        name: 'Mon B',
+        types: ['Fire'],
+        region: 'Kanto',
+        evolutionStage: 'Final Stage',
+        categories: ['Legendary'],
+        evolution: { from: [1] },
+      },
+      {
+        id: 3,
+        name: 'Mon C',
+        types: ['Water'],
+        region: 'Johto',
+        evolutionStage: 'No Evolution Line',
+        categories: ['Mythical'],
+      },
+    ];
 
-describe('pokemon fetch output shape', () => {
-  it('has valid type definitions', () => {
-    for (const p of SAMPLE_DATA) {
-      for (const t of p.types) {
-        expect(TYPES).toContain(t);
-      }
-    }
+    const counts = getValidDexDifficultyCombinationCounts(pokemonList);
+
+    expect(counts['Fire+Legendary']).toBeUndefined();
   });
 
-  it('has valid regions', () => {
-    for (const p of SAMPLE_DATA) {
-      if (p.region) {
-        expect(REGIONS).toContain(p.region);
-      }
-    }
+  it('counts category pairs once per distinct evolution line', () => {
+    const pokemonList: InternalPokemon[] = [
+      {
+        id: 10,
+        name: 'Line One A',
+        types: ['Fire'],
+        region: 'Kanto',
+        evolutionStage: 'First Stage',
+        categories: ['Legendary'],
+        evolution: { to: [11] },
+      },
+      {
+        id: 11,
+        name: 'Line One B',
+        types: ['Fire'],
+        region: 'Kanto',
+        evolutionStage: 'Final Stage',
+        categories: ['Legendary'],
+        evolution: { from: [10] },
+      },
+      {
+        id: 20,
+        name: 'Line Two A',
+        types: ['Fire'],
+        region: 'Johto',
+        evolutionStage: 'First Stage',
+        categories: ['Legendary'],
+        evolution: { to: [21] },
+      },
+      {
+        id: 21,
+        name: 'Line Two B',
+        types: ['Fire'],
+        region: 'Johto',
+        evolutionStage: 'Final Stage',
+        categories: ['Legendary'],
+        evolution: { from: [20] },
+      },
+    ];
+
+    const counts = getValidDexDifficultyCombinationCounts(pokemonList);
+
+    expect(counts['Fire+Legendary']).toBe(2);
   });
 
-  it('has valid evolution stages when provided', () => {
-    for (const p of SAMPLE_DATA) {
-      if (p.evolutionStage) {
-        expect(EVOLUTION_STAGES).toContain(p.evolutionStage);
-      }
-    }
-  });
+  it('treats unconnected no-evolution pokemon as separate lines', () => {
+    const pokemonList: InternalPokemon[] = [
+      {
+        id: 100,
+        name: 'Solo One',
+        types: ['Psychic'],
+        region: 'Kanto',
+        evolutionStage: 'No Evolution Line',
+        categories: ['Mythical'],
+      },
+      {
+        id: 200,
+        name: 'Solo Two',
+        types: ['Psychic'],
+        region: 'Johto',
+        evolutionStage: 'No Evolution Line',
+        categories: ['Mythical'],
+      },
+    ];
 
-  it('has unique entries by name', () => {
-    const byName: Record<string, Pokemon> = {};
+    const counts = getValidDexDifficultyCombinationCounts(pokemonList);
 
-    for (const p of SAMPLE_DATA) {
-      if (byName[p.name]) {
-        expect(p.id).toBe(byName[p.name].id);
-      }
-      byName[p.name] = p;
-    }
+    expect(counts['Psychic+Mythical']).toBe(2);
   });
 });
