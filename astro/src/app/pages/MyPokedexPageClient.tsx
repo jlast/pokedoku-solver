@@ -334,7 +334,7 @@ export function MyPokedexPageClient() {
         </p>
         <a
           href={`${import.meta.env.BASE_URL}login/`}
-          className="mt-5 inline-flex h-10 items-center rounded-[10px] bg-[var(--text-h)] px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-[var(--code-bg)]"
+          className="mt-5 inline-flex h-10 items-center rounded-[10px] border border-[var(--border)] bg-[var(--bg)] px-4 text-sm font-semibold text-[var(--text)] no-underline transition-colors hover:bg-[var(--code-bg)]"
         >
           Go to Login
         </a>

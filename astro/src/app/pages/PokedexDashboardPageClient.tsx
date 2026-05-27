@@ -467,18 +467,16 @@ export function PokedexDashboardPageClient() {
           {shareStatus ? <p className="mb-0 mt-2 text-xs text-[var(--text)]">{shareStatus}</p> : null}
         </div>
 
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] p-6 shadow-sm">
-          <p className="m-0 text-xs font-semibold tracking-wide text-[var(--text)] uppercase">Current Prestige Progress</p>
-          <div className="mt-2">
-            <PrestigeProgressCards
-              prestigeLevel={currentPrestige}
-              caughtCount={caughtCount}
-              totalCount={totalCount}
-              shinyCount={shinyCount}
-              completionRate={completionRate}
-              stacked
-            />
-          </div>
+        <div className="h-full">
+          <PrestigeProgressCards
+            prestigeLevel={currentPrestige}
+            caughtCount={caughtCount}
+            totalCount={totalCount}
+            shinyCount={shinyCount}
+            completionRate={completionRate}
+            stacked
+            mergedStacked
+          />
         </div>
 
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/40">
