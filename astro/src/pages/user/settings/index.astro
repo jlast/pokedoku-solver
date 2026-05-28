@@ -1,0 +1,23 @@
+---
+import AppPageLayout from "../../../layouts/AppPageLayout.astro";
+import { Footer } from "../../../app/components/Footer";
+import { Header } from "../../../app/components/Header";
+import { ProfileSettingsPageClient } from "../../../app/pages/ProfileSettingsPageClient";
+---
+
+<AppPageLayout
+  title="Profile Settings | Pokedoku Helper"
+  description="Manage your nickname and Pokedoku import settings in Pokedoku Helper."
+  path="/user/settings/"
+>
+  <div class="min-h-screen overflow-x-hidden p-5">
+    <Header
+      title="Profile Settings"
+      subtitle="Manage your nickname and imported Pokedex progress."
+      currentPage="settings"
+      client:load
+    />
+    <ProfileSettingsPageClient client:load />
+    <Footer client:load />
+  </div>
+</AppPageLayout>

@@ -1,17 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
-import type { ChangeEvent } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { PRESTIGE_LEVELS } from "../../lib/prestigeLevels";
 import { PokeballIcon } from "../components/shared/PokeballIcon";
-import { POKEDOKU_FORM_ID_MAPPING } from "@pokedoku-helper/shared-types";
 import {
   getRemoteUserDex,
   patchRemoteUserDex,
 } from "@pokedoku-helper/user-api-client";
 import { PokedexFilterToggle, type FilterMode } from "../components/pokedex/PokedexFilterToggle";
-import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
+import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
+import { parseCategoryId } from "../components/puzzle-stats/categoryUtils";
 import { getPokemonKeyId } from "../lib/pokemonGrid";
 import {
   INITIAL_RENDER_COUNT,
@@ -25,7 +24,28 @@ function getApiBaseUrl(): string | null {
   return baseUrl;
 }
 
+function getPrestigeSectionAuroraClass(tone: string): string {
+  switch (tone) {
+    case "greatball":
+      return "prestige-aurora--greatball";
+    case "ultraball":
+      return "prestige-aurora--ultraball";
+    case "masterball":
+      return "prestige-aurora--masterball";
+    case "premierball":
+      return "prestige-aurora--premierball";
+    case "beastball":
+      return "prestige-aurora--beastball";
+    case "cherishball":
+      return "prestige-aurora--cherishball";
+    case "pokeball":
+    default:
+      return "prestige-aurora--pokeball";
+  }
+}
+
 export function MyPokedexPageClient() {
+  const temporaryVisibleTimeoutsRef = useRef<Map<number, number>>(new Map());
   const profile = typeof window === "undefined" ? null : getSessionUserProfile();
   const isSignedIn = Boolean(profile);
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
@@ -33,11 +53,9 @@ export function MyPokedexPageClient() {
   const [shinySet, setShinySet] = useState<Set<number>>(new Set<number>());
   const [searchQuery, setSearchQuery] = useState("");
   const [filterMode, setFilterMode] = useState<FilterMode>("missing");
+  const [temporarilyVisiblePokemonKeyIds, setTemporarilyVisiblePokemonKeyIds] = useState<Set<number>>(new Set<number>());
   const [selectedPrestigeLevelId, setSelectedPrestigeLevelId] = useState(PRESTIGE_LEVELS[0]?.id ?? "pokeball");
   const [unlockedPrestigeLevelIndex, setUnlockedPrestigeLevelIndex] = useState(0);
-  const [importJsonText, setImportJsonText] = useState("");
-  const [importStatus, setImportStatus] = useState<string | null>(null);
-  const [showImportPanel, setShowImportPanel] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(INITIAL_RENDER_COUNT);
 
@@ -102,19 +120,32 @@ export function MyPokedexPageClient() {
     };
   }, [isSignedIn]);
 
+  useEffect(() => {
+    const temporaryVisibleTimeouts = temporaryVisibleTimeoutsRef.current;
+
+    return () => {
+      temporaryVisibleTimeouts.forEach((timeoutId) => {
+        window.clearTimeout(timeoutId);
+      });
+      temporaryVisibleTimeouts.clear();
+    };
+  }, []);
+
   const caughtCount = caughtSet.size;
-  const shinyCount = shinySet.size;
   const totalCount = pokemon.length;
   const selectedPrestigeLevel =
     PRESTIGE_LEVELS.find((level, index) => level.id === selectedPrestigeLevelId && index <= unlockedPrestigeLevelIndex) ??
     PRESTIGE_LEVELS[unlockedPrestigeLevelIndex] ??
     PRESTIGE_LEVELS[0];
+  const sectionAuroraClass = getPrestigeSectionAuroraClass(selectedPrestigeLevel.tone);
   const selectedPrestigeLevelIndex = PRESTIGE_LEVELS.findIndex((level) => level.id === selectedPrestigeLevel.id);
   const isViewingPastPrestige = selectedPrestigeLevelIndex >= 0 && selectedPrestigeLevelIndex < unlockedPrestigeLevelIndex;
   const displayedCaughtCount = isViewingPastPrestige ? totalCount : caughtCount;
+  const remainingCount = Math.max(0, totalCount - displayedCaughtCount);
   const completionRate = totalCount > 0 ? (displayedCaughtCount / totalCount) * 100 : 0;
   const nextPrestigeLevel = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex + 1] ?? null;
   const canUnlockNextPrestige = Boolean(nextPrestigeLevel) && totalCount > 0 && caughtCount === totalCount;
+  const unlockProgressPercent = totalCount > 0 ? Math.max(0, Math.min(100, (caughtCount / totalCount) * 100)) : 0;
 
   const filteredPokemon = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -122,7 +153,20 @@ export function MyPokedexPageClient() {
 
     return pokemon
       .filter((entry) => {
-        const isCaught = caughtSet.has(getPokemonKeyId(entry));
+        const pokemonKeyId = getPokemonKeyId(entry);
+        const isCaught = caughtSet.has(pokemonKeyId);
+
+        const matchesSearch = !normalizedQuery ||
+          entry.name.toLowerCase().includes(normalizedQuery) ||
+          String(entry.id).includes(normalizedQuery) ||
+          (entry.region ?? "").toLowerCase().includes(normalizedQuery) ||
+          entry.types.some((type) => type.toLowerCase().includes(normalizedQuery));
+
+        if (!matchesSearch) return false;
+
+        if (temporarilyVisiblePokemonKeyIds.has(pokemonKeyId)) {
+          return true;
+        }
 
         if (effectiveFilterMode === "caught" && !isCaught) {
           return false;
@@ -136,17 +180,10 @@ export function MyPokedexPageClient() {
           return false;
         }
 
-        if (!normalizedQuery) return true;
-
-        return (
-          entry.name.toLowerCase().includes(normalizedQuery) ||
-          String(entry.id).includes(normalizedQuery) ||
-          (entry.region ?? "").toLowerCase().includes(normalizedQuery) ||
-          entry.types.some((type) => type.toLowerCase().includes(normalizedQuery))
-        );
+        return true;
       })
       .sort((a, b) => a.id - b.id || getPokemonKeyId(a) - getPokemonKeyId(b));
-  }, [caughtSet, filterMode, isViewingPastPrestige, pokemon, searchQuery, shinySet]);
+  }, [caughtSet, filterMode, isViewingPastPrestige, pokemon, searchQuery, shinySet, temporarilyVisiblePokemonKeyIds]);
   const loadMoreRef = useIncrementalPokemonGrid(visibleCount < filteredPokemon.length, () => {
     setVisibleCount((currentCount) => Math.min(currentCount + RENDER_BATCH_SIZE, filteredPokemon.length));
   });
@@ -154,6 +191,26 @@ export function MyPokedexPageClient() {
 
   function resetVisiblePokemon() {
     setVisibleCount(INITIAL_RENDER_COUNT);
+  }
+
+  function markPokemonTemporarilyVisible(pokemonKeyId: number) {
+    const existingTimeoutId = temporaryVisibleTimeoutsRef.current.get(pokemonKeyId);
+    if (existingTimeoutId) {
+      window.clearTimeout(existingTimeoutId);
+    }
+
+    setTemporarilyVisiblePokemonKeyIds((currentSet) => new Set(currentSet).add(pokemonKeyId));
+
+    const timeoutId = window.setTimeout(() => {
+      setTemporarilyVisiblePokemonKeyIds((currentSet) => {
+        const nextSet = new Set(currentSet);
+        nextSet.delete(pokemonKeyId);
+        return nextSet;
+      });
+      temporaryVisibleTimeoutsRef.current.delete(pokemonKeyId);
+    }, 1800);
+
+    temporaryVisibleTimeoutsRef.current.set(pokemonKeyId, timeoutId);
   }
 
   function unlockNextPrestigeLevel() {
@@ -188,89 +245,9 @@ export function MyPokedexPageClient() {
     })();
   }
 
-  async function applyImportedPokedexJson(rawJsonText: string, source: "paste" | "file") {
-    try {
-      const parsed = JSON.parse(rawJsonText) as {
-        prestige?: unknown;
-        entries?: Array<{ "@t"?: unknown; pokemonId?: unknown; shiny?: unknown }>;
-      };
-
-      const validIds = new Set(pokemon.map((entry) => getPokemonKeyId(entry)));
-      const importedCaught = new Set<number>();
-      const importedShiny = new Set<number>();
-      let targetPrestigeLevelIndex = unlockedPrestigeLevelIndex;
-
-      if (Array.isArray(parsed.entries)) {
-        for (const entry of parsed.entries) {
-          if (entry?.["@t"] !== "upd") continue;
-          let pokemonId = Number(entry.pokemonId);
-          if(POKEDOKU_FORM_ID_MAPPING[pokemonId]) {
-            pokemonId = POKEDOKU_FORM_ID_MAPPING[pokemonId];
-          }
-          if (!Number.isFinite(pokemonId) || !validIds.has(pokemonId)) continue;
-          importedCaught.add(pokemonId);
-          if (entry.shiny === true) {
-            importedShiny.add(pokemonId);
-          }
-        }
-      }
-
-      const importedPrestige = Number(parsed.prestige);
-      if (Number.isFinite(importedPrestige)) {
-        const levelIndex = Math.max(0, Math.min(PRESTIGE_LEVELS.length - 1, Math.floor(importedPrestige)));
-        targetPrestigeLevelIndex = levelIndex;
-        setUnlockedPrestigeLevelIndex(levelIndex);
-        setSelectedPrestigeLevelId(PRESTIGE_LEVELS[levelIndex]?.id ?? PRESTIGE_LEVELS[0].id);
-      }
-
-      setCaughtSet(importedCaught);
-      setShinySet(importedShiny);
-      resetVisiblePokemon();
-      setImportStatus(
-        `${source === "file" ? "Uploaded" : "Imported"} ${importedCaught.size} unlocked Pokemon and ${importedShiny.size} shinies.`,
-      );
-
-      const token = await getValidSessionIdToken();
-      const apiBaseUrl = getApiBaseUrl();
-      if (!token || !apiBaseUrl) return;
-
-      await patchRemoteUserDex({
-        token,
-        apiBaseUrl,
-        payload: {
-          caughtPokemonKeyIds: Array.from(importedCaught).sort((a, b) => a - b),
-          shinyPokemonKeyIds: Array.from(importedShiny).sort((a, b) => a - b),
-          unlockedPrestigeLevelIndex: targetPrestigeLevelIndex,
-          updatedAt: new Date().toISOString(),
-        },
-      });
-    } catch {
-      setImportStatus(source === "file" ? "Upload failed. Please select valid JSON." : "Import failed. Please paste valid JSON.");
-    }
-  }
-
-  function importPokedexJson() {
-    void applyImportedPokedexJson(importJsonText, "paste");
-  }
-
-  function uploadPokedexJsonFile(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    void file
-      .text()
-      .then((text) => {
-        return applyImportedPokedexJson(text, "file");
-      })
-      .catch(() => {
-        setImportStatus("Upload failed. Please select valid JSON.");
-      })
-      .finally(() => {
-        event.target.value = "";
-      });
-  }
-
   async function toggleCaught(pokemonKeyId: number) {
+    markPokemonTemporarilyVisible(pokemonKeyId);
+
     const nextSet = new Set(caughtSet);
     const nextShinySet = new Set(shinySet);
     if (nextSet.has(pokemonKeyId)) {
@@ -305,6 +282,8 @@ export function MyPokedexPageClient() {
 
   function toggleShiny(pokemonKeyId: number) {
     if (!caughtSet.has(pokemonKeyId)) return;
+
+    markPokemonTemporarilyVisible(pokemonKeyId);
 
     const nextSet = new Set(shinySet);
     if (nextSet.has(pokemonKeyId)) {
@@ -352,43 +331,38 @@ export function MyPokedexPageClient() {
 
   return (
     <main className="mx-auto mt-4 flex w-full max-w-4xl flex-col gap-4">
-      <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
-        <PokedexImportPanel
-          importJsonText={importJsonText}
-          importStatus={importStatus}
-          showImportPanel={showImportPanel}
-          onTogglePanel={() => setShowImportPanel((prev) => !prev)}
-          onImportTextChange={setImportJsonText}
-          onImportClick={importPokedexJson}
-          onUploadChange={uploadPokedexJsonFile}
+      <section className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+        <span
+          aria-hidden="true"
+          className={`prestige-aurora prestige-aurora-left ${sectionAuroraClass}`}
         />
-
-        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/40">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="m-0 text-sm font-semibold text-amber-900 [html[data-theme='dark']_&]:text-amber-100">Prestige Unlock</p>
-              <p className="m-0 mt-1 text-xs text-amber-800 [html[data-theme='dark']_&]:text-amber-200">
-                {nextPrestigeLevel
-                  ? `Complete the full Pokedex to unlock ${nextPrestigeLevel.label}. Unlocking resets your progress.`
-                  : "All prestige levels unlocked."}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={unlockNextPrestigeLevel}
-              disabled={!canUnlockNextPrestige}
-              className={`h-11 shrink-0 rounded-lg px-5 text-sm font-bold transition ${
-                canUnlockNextPrestige
-                  ? "bg-amber-500 text-white shadow-sm hover:bg-amber-600"
-                  : "cursor-not-allowed bg-[var(--code-bg)] text-[var(--text)]"
-              }`}
-            >
-              {nextPrestigeLevel ? `Unlock ${nextPrestigeLevel.label}` : "All unlocked"}
-            </button>
-          </div>
+        <span
+          aria-hidden="true"
+          className={`prestige-aurora prestige-aurora-right ${sectionAuroraClass}`}
+        />
+        <span
+          aria-hidden="true"
+          className={`prestige-aurora prestige-aurora-bottom ${sectionAuroraClass}`}
+        />
+        <span
+          aria-hidden="true"
+          className={`prestige-aurora prestige-aurora-sweep ${sectionAuroraClass}`}
+        />
+        <div className="relative z-10">
+          <PrestigeProgressCards
+            prestigeLevel={selectedPrestigeLevel}
+            nextPrestigeLevel={nextPrestigeLevel}
+            caughtCount={displayedCaughtCount}
+            totalCount={totalCount}
+            completionRate={completionRate}
+            motivatingStat={isLoading ? undefined : `${remainingCount} Pokemon remaining`}
+            progressValue={displayedCaughtCount}
+            isLoading={isLoading}
+            viewOnlyNote={isViewingPastPrestige ? "Previous prestiges are view-only and fully unlocked." : undefined}
+          />
         </div>
 
-        <div className="mb-4 overflow-x-auto pb-1">
+        <div className="relative z-10 mt-4 overflow-x-auto pb-1">
           <div className="inline-flex min-w-full gap-2 rounded-xl bg-[var(--code-bg)] p-1">
             {PRESTIGE_LEVELS.map((level, levelIndex) => {
               const isLocked = levelIndex > unlockedPrestigeLevelIndex;
@@ -410,44 +384,74 @@ export function MyPokedexPageClient() {
                 >
                   <PokeballIcon tone={level.tone} className="h-4 w-4" />
                   <span>{level.label}</span>
-                  {isLocked ? <span className="text-[10px]">Locked</span> : null}
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 className="m-0 text-xl font-semibold text-[var(--text-h)]">My Pokedex</h2>
-            <p className="mb-0 mt-1 text-sm text-[var(--text)]">Track your collection and keep your progress synced.</p>
+        <div className="relative z-10 mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/40">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="m-0 text-sm font-semibold text-amber-900 [html[data-theme='dark']_&]:text-amber-100">Prestige Unlock</p>
+              <p className="m-0 mt-1 text-xs text-amber-800 [html[data-theme='dark']_&]:text-amber-200">
+                {nextPrestigeLevel
+                  ? `${remainingCount} Pokemon remaining to unlock ${nextPrestigeLevel.label}. Unlocking resets your progress.`
+                  : "All prestige levels unlocked."}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={unlockNextPrestigeLevel}
+              disabled={!canUnlockNextPrestige}
+              className={`relative h-11 shrink-0 overflow-hidden rounded-lg px-5 text-sm font-bold transition ${
+                canUnlockNextPrestige
+                  ? "bg-amber-500 text-white shadow-sm hover:bg-amber-600"
+                  : "cursor-not-allowed bg-[var(--code-bg)] text-[var(--text)]"
+              }`}
+            >
+              {!canUnlockNextPrestige && nextPrestigeLevel ? (
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-y-0 left-0 bg-amber-400/60 [html[data-theme='dark']_&]:bg-amber-500/35"
+                  style={{ width: `${unlockProgressPercent}%` }}
+                />
+              ) : null}
+              <span className="relative z-10 inline-flex items-center gap-2">
+                {nextPrestigeLevel ? (
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+                    <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.8" />
+                    <path d="M8 11V8a4 4 0 1 1 8 0v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                ) : null}
+                <span>{nextPrestigeLevel ? `Unlock ${nextPrestigeLevel.label}` : "All unlocked"}</span>
+              </span>
+            </button>
           </div>
         </div>
 
-        <div className="mt-4">
-          <PrestigeProgressCards
-            prestigeLevel={selectedPrestigeLevel}
-            caughtCount={displayedCaughtCount}
-            totalCount={totalCount}
-            shinyCount={shinyCount}
-            completionRate={completionRate}
-            progressValue={displayedCaughtCount}
-            isLoading={isLoading}
-            viewOnlyNote={isViewingPastPrestige ? "Previous prestiges are view-only and fully unlocked." : undefined}
-          />
-        </div>
-
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(event) => {
-              resetVisiblePokemon();
-              setSearchQuery(event.target.value);
-            }}
-            placeholder="Search by name, number, type, or region"
-            className="h-10 w-full rounded-lg border border-[var(--border)] px-3 text-sm text-[var(--text-h)] outline-none ring-slate-300 transition focus:ring"
-          />
+        <div className="relative z-10 mt-4 flex flex-col gap-3 sm:flex-row">
+          <div className="relative w-full">
+            <svg
+              viewBox="0 0 24 24"
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text)]"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
+              <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => {
+                resetVisiblePokemon();
+                setSearchQuery(event.target.value);
+              }}
+              placeholder="Search by name, number, type, or region"
+              className="h-10 w-full rounded-lg border border-[var(--border)] pl-9 pr-3 text-sm text-[var(--text-h)] outline-none ring-slate-300 transition focus:ring"
+            />
+          </div>
           {!isViewingPastPrestige ? (
             <PokedexFilterToggle
               filterMode={filterMode}
@@ -463,7 +467,7 @@ export function MyPokedexPageClient() {
           <p className="mb-0 mt-5 text-sm text-[var(--text)]">Loading your Pokedex...</p>
         ) : (
           <>
-          <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
+          <div className="relative z-10 mt-5 grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
             {visiblePokemon.map((entry) => {
               const pokemonKeyId = getPokemonKeyId(entry);
               const isCaught = isViewingPastPrestige ? true : caughtSet.has(pokemonKeyId);
@@ -479,7 +483,7 @@ export function MyPokedexPageClient() {
                     }
                   }}
                   disabled={isViewingPastPrestige}
-                  className={`rounded-xl border p-3 text-left transition cursor-pointer  ${
+                  className={`flex h-full flex-col justify-start cursor-pointer rounded-xl border px-3 py-2.5 text-left transition ${
                     isShiny ? 
                       "border-amber-300 bg-amber-50 [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/40"
                       : isCaught
@@ -491,27 +495,36 @@ export function MyPokedexPageClient() {
                         : "border-[var(--border)] bg-[var(--bg)] hover:bg-[var(--code-bg)]"
                   } ${isViewingPastPrestige ? "cursor-not-allowed" : ""}`}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs text-[var(--text)]">#{entry.id}</span>
-                    <span className={`text-xs font-semibold ${isCaught ? (isViewingPastPrestige ? "text-amber-700 [html[data-theme='dark']_&]:text-amber-300" : "text-emerald-700 [html[data-theme='dark']_&]:text-emerald-300") : "text-[var(--text)]"}`}>
-                      {isCaught ? "Caught" : "Missing"}
-                    </span>
+                  <div>
+                    <p className="m-0 text-sm font-bold leading-tight text-[var(--text-h)]">
+                      <span className="text-xs font-semibold text-[var(--text)]">#{entry.id}</span>
+                      {" "}
+                      {entry.name}
+                    </p>
                   </div>
-                  <div className="mt-2 flex items-center gap-2">
+
+                  <div className="mt-2 flex justify-center">
                     {entry.sprite ? (
-                      <img src={entry.sprite} alt={entry.name} className="h-10 w-10 object-contain" loading="lazy" />
+                      <img src={entry.sprite} alt={entry.name} className="h-12 w-12 shrink-0 object-contain" loading="lazy" />
                     ) : (
-                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-[var(--code-bg)] text-xs font-semibold text-[var(--text)]">
+                      <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[var(--code-bg)] text-sm font-semibold text-[var(--text)]">
                         {entry.name.charAt(0)}
                       </span>
                     )}
-                    <div>
-                      <p className="m-0 text-sm font-semibold text-[var(--text-h)]">{entry.name}</p>
-                      <p className="m-0 text-xs text-[var(--text)]">{entry.types.join(" / ")}</p>
-                    </div>
                   </div>
-                  {(!isViewingPastPrestige || isShiny) ? (
-                    <div className="mt-2">
+
+                  <div className="mt-2 flex flex-wrap justify-center gap-1">
+                    {entry.types.map((type) => (
+                      <CategoryBadgeLink
+                        key={`${pokemonKeyId}-${type}`}
+                        parsed={parseCategoryId(`types:${type}`)}
+                        href={null}
+                      />
+                    ))}
+                  </div>
+
+                  {isCaught && (!isViewingPastPrestige || isShiny) ? (
+                    <div className="mt-2 flex justify-center">
                       <button
                         type="button"
                         onClick={(event) => {
@@ -521,15 +534,16 @@ export function MyPokedexPageClient() {
                           }
                         }}
                         disabled={!isCaught || isViewingPastPrestige}
-                        className={`rounded-md px-2 py-1 text-[11px] font-semibold transition ${
+                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold transition ${
                           isShiny
                             ? "bg-amber-400 text-amber-900"
                             : isCaught
-                              ? "cursor-pointer bg-[var(--code-bg)] text-[var(--text)] hover:bg-[var(--accent-bg)]"
-                              : "cursor-not-allowed bg-[var(--code-bg)] text-[var(--text)]"
+                              ? "cursor-pointer border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-900/30 [html[data-theme='dark']_&]:text-amber-200 [html[data-theme='dark']_&]:hover:bg-amber-900/45"
+                              : "cursor-not-allowed bg-[var(--code-bg)] text-[var(--text)] opacity-60"
                         }`}
                       >
-                        {isShiny ? "Shiny unlocked" : "Mark shiny"}
+                        <span aria-hidden="true">✨</span>
+                        <span>{isShiny ? "Shiny" : "Mark shiny"}</span>
                       </button>
                     </div>
                   ) : null}

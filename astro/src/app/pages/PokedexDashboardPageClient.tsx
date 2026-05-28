@@ -516,8 +516,8 @@ export function PokedexDashboardPageClient() {
           className="rounded-2xl bg-[var(--code-bg)] p-6 shadow-sm"
         >
           <h3 className="m-0 mt-2 text-xl font-semibold text-[var(--text-h)]">Manage your live Pokedex</h3>
-          <p className="mb-0 mt-2 text-sm text-[var(--text)]">Open the full editor page to update your current dex.</p>
-            <a
+          <p className="mb-0 mt-2 text-sm text-[var(--text)]">Open the full editor page to update your current dex, or visit settings to change your nickname and import progress.</p>
+          <a
               href={`${import.meta.env.BASE_URL}user/pokedex/`}
               className="mt-4 inline-flex h-10 items-center gap-2 rounded-[10px] bg-emerald-700 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-emerald-600"
             >

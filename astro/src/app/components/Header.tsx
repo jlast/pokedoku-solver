@@ -547,6 +547,18 @@ export function Header({
                     >
                       My Pokedex
                     </a>
+                    <a
+                      href={`${import.meta.env.BASE_URL}user/settings/`}
+                      onClick={() =>
+                        trackEvent("click_navigate", {
+                          url: "user/settings/",
+                          from: currentPage,
+                        })
+                      }
+                      className="flex items-center gap-2 border-b border-[var(--border)] px-3 py-2.5 text-sm text-[var(--text)] no-underline hover:bg-[var(--code-bg)]"
+                    >
+                      Settings
+                    </a>
                     <button
                       type="button"
                       onClick={signOut}
@@ -947,6 +959,16 @@ export function Header({
                                 className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--text)] no-underline transition-colors hover:bg-[var(--code-bg)]"
                               >
                                 My Pokedex
+                              </a>
+                              <a
+                                href={`${import.meta.env.BASE_URL}user/settings/`}
+                                onClick={() => {
+                                  trackEvent("click_navigate", { url: "user/settings/", from: currentPage });
+                                  closeMobileMenu("navigate");
+                                }}
+                                className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--text)] no-underline transition-colors hover:bg-[var(--code-bg)]"
+                              >
+                                Settings
                               </a>
                               <button
                                 type="button"

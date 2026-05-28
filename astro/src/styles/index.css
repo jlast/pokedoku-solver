@@ -95,3 +95,134 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+@keyframes aurora-wave {
+  0% {
+    transform: translate3d(-30%, 0, 0) scaleX(1.05);
+    opacity: 0.35;
+  }
+
+  25% {
+    transform: translate3d(-8%, -1%, 0) scaleX(1.12);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: translate3d(12%, 1%, 0) scaleX(1.18);
+    opacity: 0.42;
+  }
+
+  75% {
+    transform: translate3d(28%, 0, 0) scaleX(1.1);
+    opacity: 0.52;
+  }
+
+  100% {
+    transform: translate3d(40%, 0, 0) scaleX(1.05);
+    opacity: 0.35;
+  }
+}
+
+.prestige-aurora {
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+  border-radius: 9999px;
+  filter: blur(30px);
+  opacity: 0.9;
+  will-change: transform, opacity;
+  mix-blend-mode: normal;
+}
+
+.prestige-aurora-left {
+  top: 0.5rem;
+  left: -35%;
+  width: 150%;
+  height: 9rem;
+  animation: aurora-wave 12s ease-in-out infinite;
+}
+
+.prestige-aurora-right {
+  top: 35%;
+  left: -28%;
+  width: 155%;
+  height: 10rem;
+  animation: aurora-wave 16s ease-in-out infinite reverse;
+}
+
+.prestige-aurora-bottom {
+  bottom: -1.5rem;
+  left: -32%;
+  width: 145%;
+  height: 8rem;
+  animation: aurora-wave 14s ease-in-out infinite;
+}
+
+.prestige-aurora-sweep {
+  top: 15%;
+  left: -40%;
+  width: 170%;
+  height: 12rem;
+  animation: aurora-wave 18s ease-in-out infinite;
+}
+
+.prestige-aurora--pokeball {
+  background: linear-gradient(90deg, transparent 0%, rgba(244, 63, 94, 0.2) 18%, rgba(244, 63, 94, 0.42) 38%, rgba(244, 63, 94, 0.24) 58%, transparent 82%);
+}
+
+.prestige-aurora--greatball {
+  background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.2) 18%, rgba(59, 130, 246, 0.42) 38%, rgba(59, 130, 246, 0.24) 58%, transparent 82%);
+}
+
+.prestige-aurora--ultraball {
+  background: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.2) 18%, rgba(245, 158, 11, 0.42) 38%, rgba(245, 158, 11, 0.24) 58%, transparent 82%);
+}
+
+.prestige-aurora--masterball {
+  background: linear-gradient(90deg, transparent 0%, rgba(217, 70, 239, 0.2) 18%, rgba(217, 70, 239, 0.42) 38%, rgba(217, 70, 239, 0.24) 58%, transparent 82%);
+}
+
+.prestige-aurora--premierball {
+  background: linear-gradient(90deg, transparent 0%, rgba(100, 116, 139, 0.18) 18%, rgba(100, 116, 139, 0.36) 38%, rgba(100, 116, 139, 0.22) 58%, transparent 82%);
+}
+
+.prestige-aurora--beastball {
+  background: linear-gradient(90deg, transparent 0%, rgba(51, 65, 85, 0.22) 18%, rgba(51, 65, 85, 0.46) 38%, rgba(51, 65, 85, 0.28) 58%, transparent 82%);
+}
+
+.prestige-aurora--cherishball {
+  background: linear-gradient(90deg, transparent 0%, rgba(185, 28, 28, 0.2) 18%, rgba(185, 28, 28, 0.42) 38%, rgba(185, 28, 28, 0.24) 58%, transparent 82%);
+}
+
+:root[data-theme="dark"] .prestige-aurora {
+  opacity: 0.82;
+  filter: blur(34px);
+}
+
+:root[data-theme="dark"] .prestige-aurora--pokeball {
+  background: linear-gradient(90deg, transparent 0%, rgba(244, 63, 94, 0.16) 18%, rgba(244, 63, 94, 0.34) 38%, rgba(244, 63, 94, 0.2) 58%, transparent 82%);
+}
+
+:root[data-theme="dark"] .prestige-aurora--greatball {
+  background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.16) 18%, rgba(59, 130, 246, 0.34) 38%, rgba(59, 130, 246, 0.2) 58%, transparent 82%);
+}
+
+:root[data-theme="dark"] .prestige-aurora--ultraball {
+  background: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.16) 18%, rgba(245, 158, 11, 0.34) 38%, rgba(245, 158, 11, 0.2) 58%, transparent 82%);
+}
+
+:root[data-theme="dark"] .prestige-aurora--masterball {
+  background: linear-gradient(90deg, transparent 0%, rgba(217, 70, 239, 0.16) 18%, rgba(217, 70, 239, 0.34) 38%, rgba(217, 70, 239, 0.2) 58%, transparent 82%);
+}
+
+:root[data-theme="dark"] .prestige-aurora--premierball {
+  background: linear-gradient(90deg, transparent 0%, rgba(100, 116, 139, 0.14) 18%, rgba(100, 116, 139, 0.28) 38%, rgba(100, 116, 139, 0.18) 58%, transparent 82%);
+}
+
+:root[data-theme="dark"] .prestige-aurora--beastball {
+  background: linear-gradient(90deg, transparent 0%, rgba(51, 65, 85, 0.18) 18%, rgba(51, 65, 85, 0.38) 38%, rgba(51, 65, 85, 0.22) 58%, transparent 82%);
+}
+
+:root[data-theme="dark"] .prestige-aurora--cherishball {
+  background: linear-gradient(90deg, transparent 0%, rgba(185, 28, 28, 0.16) 18%, rgba(185, 28, 28, 0.34) 38%, rgba(185, 28, 28, 0.2) 58%, transparent 82%);
+}
