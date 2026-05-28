@@ -71,6 +71,8 @@ jobs:
         if: inputs.website_stack_changed == 'true'
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
           DAILY_PUZZLE_ALERT_EMAIL: ${{ secrets.DAILY_PUZZLE_ALERT_EMAIL }}
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
         run: bash .github/scripts/deploy-website-stack.sh
