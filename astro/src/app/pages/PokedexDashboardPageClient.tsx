@@ -15,6 +15,7 @@ import { PokedexImportPanel } from "../components/pokedex/PokedexImportPanel";
 import { PrestigeProgressCards } from "../components/pokedex/PrestigeProgressCards";
 import { CategoryBadgeLink } from "../components/shared/CategoryBadgeLink";
 import { SectionCard } from "../components/shared/SectionCard";
+import { isUserDexStaleForLatestPuzzle } from "../lib/userDexSync";
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
@@ -49,6 +50,9 @@ export function PokedexDashboardPageClient() {
   const [importJsonText, setImportJsonText] = useState("");
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [showImportPanel, setShowImportPanel] = useState(true);
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null);
+  const [dismissedStaleImportReminderUpdatedAt, setDismissedStaleImportReminderUpdatedAt] = useState<string | null>(null);
+  const [expandedStaleImportReminderUpdatedAt, setExpandedStaleImportReminderUpdatedAt] = useState<string | null>(null);
   const [settingsLoading, setSettingsLoading] = useState(Boolean(userLabel));
   const [needsUsername, setNeedsUsername] = useState(false);
   const [usernameInput, setUsernameInput] = useState("");
@@ -69,6 +73,7 @@ export function PokedexDashboardPageClient() {
         if (!token || !apiBaseUrl) {
           if (!isCancelled) {
             setHasPokedexData(false);
+            setLastUpdatedAt(null);
             setIsLoading(false);
             setSettingsLoading(false);
           }
@@ -103,6 +108,7 @@ export function PokedexDashboardPageClient() {
           setShinySet(remoteShinySet);
           setUnlockedPrestigeLevelIndex(remotePrestigeIndex);
           setHasPokedexData(hasData);
+          setLastUpdatedAt(remoteUserDex?.updatedAt ?? null);
         }
       } catch {
         if (!isCancelled) {
@@ -111,6 +117,7 @@ export function PokedexDashboardPageClient() {
           setShinySet(new Set<number>());
           setUnlockedPrestigeLevelIndex(0);
           setHasPokedexData(false);
+          setLastUpdatedAt(null);
         }
       }
 
@@ -215,15 +222,22 @@ export function PokedexDashboardPageClient() {
       const apiBaseUrl = getApiBaseUrl();
       if (!token || !apiBaseUrl) return;
 
-      await patchRemoteUserDex({
+      const updatedAt = new Date().toISOString();
+
+      const didSave = await patchRemoteUserDex({
         token,
         apiBaseUrl,
         payload: {
           caughtPokemonKeyIds: Array.from(importedCaught).sort((a, b) => a - b),
           shinyPokemonKeyIds: Array.from(importedShiny).sort((a, b) => a - b),
           unlockedPrestigeLevelIndex: targetPrestigeLevelIndex,
+          updatedAt,
         },
       });
+
+      if (didSave) {
+        setLastUpdatedAt(updatedAt);
+      }
     } catch {
       setImportStatus(source === "file" ? "Upload failed. Please select valid JSON." : "Import failed. Please paste valid JSON.");
     }
@@ -254,6 +268,9 @@ export function PokedexDashboardPageClient() {
   const completionRate = totalCount > 0 ? (caughtCount / totalCount) * 100 : 0;
   const shinyOverallRate = totalCount > 0 ? (shinyCount / totalCount) * 100 : 0;
   const currentPrestige = PRESTIGE_LEVELS[unlockedPrestigeLevelIndex] ?? PRESTIGE_LEVELS[0];
+  const showStaleImportReminder = hasPokedexData && isUserDexStaleForLatestPuzzle(lastUpdatedAt);
+  const isStaleImportReminderDismissed = dismissedStaleImportReminderUpdatedAt === lastUpdatedAt;
+  const isStaleImportReminderExpanded = expandedStaleImportReminderUpdatedAt === lastUpdatedAt;
 
   async function copyShareLink() {
     const userId = getSessionUserId();
@@ -397,6 +414,85 @@ export function PokedexDashboardPageClient() {
 
   return (
     <main className="mx-auto mt-4 flex w-full max-w-5xl flex-col gap-4">
+      {showStaleImportReminder && !isStaleImportReminderDismissed ? (
+        <section className="rounded-2xl border border-amber-300 bg-amber-50 p-4 shadow-sm [html[data-theme='dark']_&]:border-amber-800/60 [html[data-theme='dark']_&]:bg-amber-950/40">
+          {isStaleImportReminderExpanded ? (
+            <>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="m-0 text-xs font-semibold tracking-wide text-amber-800 uppercase [html[data-theme='dark']_&]:text-amber-200">
+                    Import reminder
+                  </p>
+                  <h2 className="m-0 mt-1 text-lg font-semibold text-amber-950 [html[data-theme='dark']_&]:text-amber-100">
+                    Your Pokedex may be out of date
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDismissedStaleImportReminderUpdatedAt(lastUpdatedAt)}
+                  className="inline-flex h-8 items-center rounded-lg px-2.5 text-sm font-semibold text-amber-800 transition hover:bg-amber-100 [html[data-theme='dark']_&]:text-amber-200 [html[data-theme='dark']_&]:hover:bg-amber-900/60"
+                >
+                  Dismiss
+                </button>
+              </div>
+              <p className="mb-0 mt-1.5 text-sm text-amber-900 [html[data-theme='dark']_&]:text-amber-100/90">
+                Import your latest Pokedoku progress to keep suggestions accurate.
+              </p>
+              <PokedexImportPanel
+                importJsonText={importJsonText}
+                importStatus={importStatus}
+                showImportPanel={true}
+                onTogglePanel={() => undefined}
+                onImportTextChange={setImportJsonText}
+                onImportClick={importPokedexJson}
+                onUploadChange={uploadPokedexJsonFile}
+                embedded={true}
+                compact={true}
+              />
+            </>
+          ) : (
+            <>
+              <p className="m-0 text-xs font-semibold tracking-wide text-amber-800 uppercase [html[data-theme='dark']_&]:text-amber-200">
+                Import reminder
+              </p>
+              <div className="mt-1.5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="m-0 text-lg font-semibold text-amber-950 [html[data-theme='dark']_&]:text-amber-100">
+                    Your Pokedex may be out of date
+                  </h2>
+                  <p className="mb-0 mt-1 text-sm text-amber-900 [html[data-theme='dark']_&]:text-amber-100/90">
+                    Import your latest Pokedoku progress to keep suggestions accurate.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setExpandedStaleImportReminderUpdatedAt(lastUpdatedAt)}
+                    className="inline-flex h-10 items-center rounded-[10px] bg-amber-600 px-4 text-sm font-semibold text-white transition hover:bg-amber-700"
+                  >
+                    Import progress
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDismissedStaleImportReminderUpdatedAt(lastUpdatedAt)}
+                    className="inline-flex h-10 items-center rounded-[10px] px-3 text-sm font-semibold text-amber-800 transition hover:bg-amber-100 [html[data-theme='dark']_&]:text-amber-200 [html[data-theme='dark']_&]:hover:bg-amber-900/60"
+                  >
+                    Dismiss
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedStaleImportReminderUpdatedAt(lastUpdatedAt)}
+                    className="text-xs font-semibold text-amber-800 underline decoration-amber-400 underline-offset-2 transition hover:text-amber-900 [html[data-theme='dark']_&]:text-amber-200 [html[data-theme='dark']_&]:hover:text-amber-100"
+                  >
+                    Need help?
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </section>
+      ) : null}
+
       <section className="rounded-2xl border border-[var(--border)] bg-[var(--code-bg)] p-6 shadow-sm">
         <h2 className="m-0 text-2xl font-semibold text-[var(--text-h)]">Today&apos;s personalized board</h2>
         <p className="mb-0 mt-2 text-sm text-[var(--text)]">

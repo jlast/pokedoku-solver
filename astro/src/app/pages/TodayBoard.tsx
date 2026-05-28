@@ -271,6 +271,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         caughtPokemonKeyIds: Array.from(mergedSet).sort((a, b) => a - b),
         shinyPokemonKeyIds: remoteUserDex.shinyPokemonKeyIds,
         unlockedPrestigeLevelIndex: remoteUserDex.unlockedPrestigeLevelIndex,
+        updatedAt: new Date().toISOString(),
       };
 
       const didSave = await saveCaughtPokemon(token, apiBaseUrl, nextPayload);

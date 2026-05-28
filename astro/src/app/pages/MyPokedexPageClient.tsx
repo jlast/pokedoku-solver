@@ -181,6 +181,7 @@ export function MyPokedexPageClient() {
             caughtPokemonKeyIds: [],
             shinyPokemonKeyIds: [],
             unlockedPrestigeLevelIndex: nextIndex,
+            updatedAt: new Date().toISOString(),
           },
         });
       }
@@ -237,9 +238,10 @@ export function MyPokedexPageClient() {
         token,
         apiBaseUrl,
         payload: {
-        caughtPokemonKeyIds: Array.from(importedCaught).sort((a, b) => a - b),
-        shinyPokemonKeyIds: Array.from(importedShiny).sort((a, b) => a - b),
-        unlockedPrestigeLevelIndex: targetPrestigeLevelIndex,
+          caughtPokemonKeyIds: Array.from(importedCaught).sort((a, b) => a - b),
+          shinyPokemonKeyIds: Array.from(importedShiny).sort((a, b) => a - b),
+          unlockedPrestigeLevelIndex: targetPrestigeLevelIndex,
+          updatedAt: new Date().toISOString(),
         },
       });
     } catch {
@@ -292,9 +294,10 @@ export function MyPokedexPageClient() {
       token,
       apiBaseUrl,
       payload: {
-      caughtPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
-      shinyPokemonKeyIds: Array.from(nextShinySet).sort((a, b) => a - b),
-      unlockedPrestigeLevelIndex,
+        caughtPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
+        shinyPokemonKeyIds: Array.from(nextShinySet).sort((a, b) => a - b),
+        unlockedPrestigeLevelIndex,
+        updatedAt: new Date().toISOString(),
       },
     });
   }
@@ -324,6 +327,7 @@ export function MyPokedexPageClient() {
           caughtPokemonKeyIds: Array.from(caughtSet).sort((a, b) => a - b),
           shinyPokemonKeyIds: Array.from(nextSet).sort((a, b) => a - b),
           unlockedPrestigeLevelIndex,
+          updatedAt: new Date().toISOString(),
         },
       });
     })();
