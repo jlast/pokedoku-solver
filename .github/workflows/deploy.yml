@@ -44,6 +44,7 @@ jobs:
       stats_lambda_changed: ${{ steps.changes.outputs.stats_lambda_changed }}
       daily_stack_changed: ${{ steps.changes.outputs.daily_stack_changed }}
       stats_stack_changed: ${{ steps.changes.outputs.stats_stack_changed }}
+      website_stack_changed: ${{ steps.changes.outputs.website_stack_changed }}
       user_dex_get_lambda_changed: ${{ steps.changes.outputs.user_dex_get_lambda_changed }}
       user_dex_patch_lambda_changed: ${{ steps.changes.outputs.user_dex_patch_lambda_changed }}
       user_dex_shared_get_lambda_changed: ${{ steps.changes.outputs.user_dex_shared_get_lambda_changed }}
@@ -96,6 +97,7 @@ jobs:
       site_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_site_deploy) || needs.detect-changes.outputs.site_changed == 'true') && 'true' || 'false' }}
       data_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_site_deploy) || needs.detect-changes.outputs.data_changed == 'true') && 'true' || 'false' }}
       images_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_site_deploy) || needs.detect-changes.outputs.images_changed == 'true') && 'true' || 'false' }}
+      website_stack_changed: ${{ needs.detect-changes.outputs.website_stack_changed }}
 
   infra-deploy:
     needs:

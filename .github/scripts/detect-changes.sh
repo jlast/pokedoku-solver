@@ -47,6 +47,7 @@ daily_lambda_changed=false
 stats_lambda_changed=false
 daily_stack_changed=false
 stats_stack_changed=false
+website_stack_changed=false
 user_dex_get_lambda_changed=false
 user_dex_patch_lambda_changed=false
 user_dex_shared_get_lambda_changed=false
@@ -218,6 +219,10 @@ if changed_in_paths '^terraform/puzzle-statistics-stack.yaml$'; then
   stats_stack_changed=true
 fi
 
+if changed_in_paths '^terraform/cloudformation.yaml$'; then
+  website_stack_changed=true
+fi
+
 if changed_in_paths '^terraform/user-dex-api-stack.yaml$'; then
   user_dex_stack_changed=true
 fi
@@ -234,6 +239,7 @@ echo "daily_lambda_changed=${daily_lambda_changed}" >> "${GITHUB_OUTPUT}"
 echo "stats_lambda_changed=${stats_lambda_changed}" >> "${GITHUB_OUTPUT}"
 echo "daily_stack_changed=${daily_stack_changed}" >> "${GITHUB_OUTPUT}"
 echo "stats_stack_changed=${stats_stack_changed}" >> "${GITHUB_OUTPUT}"
+echo "website_stack_changed=${website_stack_changed}" >> "${GITHUB_OUTPUT}"
 echo "user_dex_get_lambda_changed=${user_dex_get_lambda_changed}" >> "${GITHUB_OUTPUT}"
 echo "user_dex_patch_lambda_changed=${user_dex_patch_lambda_changed}" >> "${GITHUB_OUTPUT}"
 echo "user_dex_shared_get_lambda_changed=${user_dex_shared_get_lambda_changed}" >> "${GITHUB_OUTPUT}"

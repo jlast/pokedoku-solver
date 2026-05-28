@@ -112,9 +112,11 @@ It uses Redis caching and realtime data from `www.pokedoku-helper.com`.
 
 ## CI/CD wiring
 - Infra deploy workflow: `.github/workflows/reusable-infra-deploy.yml`
+- Site deploy workflow: `.github/workflows/reusable-site-deploy.yml`
 - Deploy entry workflow: `.github/workflows/deploy.yml`
 - Stack deploy script: `.github/scripts/deploy-public-api-stack.sh`
-- Change detection script includes user dex stack/lambdas: `.github/scripts/detect-changes.sh`
+- Website stack deploy script: `.github/scripts/deploy-website-stack.sh`
+- Change detection script includes website, user dex, and lambda stack changes: `.github/scripts/detect-changes.sh`
 - Required GitHub environment values for infra deploy:
   - Secrets: `S3_BUCKET_NAME`, `CLOUDFORMATION_STACK_NAME`, `HOSTED_ZONE_ID`, `API_CERTIFICATE_ARN`, `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`
   - Vars (with defaults in workflow): `DOMAIN_NAME`, `API_SUBDOMAIN`, `ALLOWED_ORIGIN`, `COGNITO_REGION`

@@ -161,6 +161,81 @@ Resources:
       AlarmActions:
         - !Ref DailyPuzzleAlertsTopic
 
+  CategoryRedirectFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub "${AWS::StackName}-category-redirect"
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Redirect legacy /category URLs to /tools/category
+        Runtime: cloudfront-js-2.0
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          var uri = request.uri || "/";
+
+          function getQuerystring(querystring) {
+            var parts = [];
+            var keys = Object.keys(querystring || {}).sort();
+
+            for (var i = 0; i < keys.length; i++) {
+              var key = keys[i];
+              var entry = querystring[key];
+              if (!entry) {
+                continue;
+              }
+
+              if (entry.multiValue) {
+                for (var j = 0; j < entry.multiValue.length; j++) {
+                  var value = entry.multiValue[j] && entry.multiValue[j].value ? entry.multiValue[j].value : "";
+                  parts.push(key + "=" + value);
+                }
+                continue;
+              }
+
+              parts.push(key + "=" + (entry.value || ""));
+            }
+
+            return parts.join("&");
+          }
+
+          if (uri === "/category" || uri === "/category/") {
+            var rootLocation = "/tools/category/";
+            var rootQuerystring = getQuerystring(request.querystring);
+            if (rootQuerystring) {
+              rootLocation += "?" + rootQuerystring;
+            }
+
+            return {
+              statusCode: 301,
+              statusDescription: "Moved Permanently",
+              headers: {
+                location: { value: rootLocation }
+              }
+            };
+          }
+
+          if (!uri.startsWith("/category/")) {
+            return request;
+          }
+
+          var suffix = uri.slice("/category".length);
+          var location = "/tools/category" + suffix;
+
+          var querystring = getQuerystring(request.querystring);
+          if (querystring) {
+            location += "?" + querystring;
+          }
+
+          return {
+            statusCode: 301,
+            statusDescription: "Moved Permanently",
+            headers: {
+              location: { value: location }
+            }
+          };
+        }
+
   # ACM Certificate (must be us-east-1 for CloudFront)
   SSLCertificate:
     Type: AWS::CertificateManager::Certificate
@@ -196,6 +271,9 @@ Resources:
         DefaultCacheBehavior:
           TargetOriginId: S3Origin
           ViewerProtocolPolicy: redirect-to-https
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt CategoryRedirectFunction.FunctionARN
           Compress: true
           AllowedMethods:
             - GET
