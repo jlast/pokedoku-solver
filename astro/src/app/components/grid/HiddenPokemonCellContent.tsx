@@ -44,7 +44,7 @@ export function HiddenPokemonCellContent({
             {hintBadges.length > 0 ? (
               <div className="flex flex-wrap max-w-full items-center justify-center gap-0.5 overflow-hidden">
                 {hintBadges.map((badge) => (
-                  <CategoryBadgeLink key={badge.raw} parsed={badge} href={null} compact />
+                  <span>{badge.label} </span>
                 ))}
               </div>
             ) : (
