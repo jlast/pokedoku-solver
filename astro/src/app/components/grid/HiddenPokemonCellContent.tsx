@@ -37,14 +37,14 @@ export function HiddenPokemonCellContent({
             event.stopPropagation();
             onAdvanceReveal();
           }}
-        className="relative z-[1] flex h-full w-full flex-col items-center justify-center gap-1.5 px-2 py-2.5 text-center"
+        className="relative z-[1] flex h-full w-full flex-col items-center justify-center gap-1.5 px-2 py-1 text-center"
       >
         {revealState === 'hint' ? (
           <>
             {hintBadges.length > 0 ? (
               <div className="flex flex-col max-w-full items-center justify-center gap-0.5 overflow-hidden">
                 {hintBadges.map((badge) => (
-                  <span className="leading-1 text-[0.7rem]">
+                  <span className="leading-2 text-[0.7rem]">
                     {badge.label}
                   </span>
                 ))}
