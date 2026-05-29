@@ -30,6 +30,7 @@ export interface PokeAPIForm {
   };
   sprites: {
     front_default: string | null;
+    front_shiny: string | null;
   };
   id: number;
   name: string;

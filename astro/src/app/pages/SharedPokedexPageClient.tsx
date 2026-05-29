@@ -216,6 +216,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
             const pokemonKeyId = getPokemonKeyId(entry);
             const isCaught = caughtSet.has(pokemonKeyId);
             const isShiny = shinySet.has(pokemonKeyId);
+            const displaySprite = isShiny ? entry.shinySprite ?? entry.sprite : entry.sprite;
 
             return (
                 <article
@@ -235,8 +236,8 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
                   </span>
                 </div>
                 <div className="mt-2 flex items-center gap-2">
-                  {entry.sprite ? (
-                    <img src={entry.sprite} alt={entry.name} className="h-10 w-10 object-contain" loading="lazy" />
+                  {displaySprite ? (
+                    <img src={displaySprite} alt={entry.name} className="h-10 w-10 object-contain" loading="lazy" />
                   ) : (
                     <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-[var(--code-bg)] text-xs font-semibold text-[var(--text)]">
                       {entry.name.charAt(0)}

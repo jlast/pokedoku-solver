@@ -472,6 +472,7 @@ export function MyPokedexPageClient() {
               const pokemonKeyId = getPokemonKeyId(entry);
               const isCaught = isViewingPastPrestige ? true : caughtSet.has(pokemonKeyId);
               const isShiny = shinySet.has(pokemonKeyId);
+              const displaySprite = isShiny ? entry.shinySprite ?? entry.sprite : entry.sprite;
 
               return (
                 <button
@@ -504,8 +505,8 @@ export function MyPokedexPageClient() {
                   </div>
 
                   <div className="mt-2 flex justify-center">
-                    {entry.sprite ? (
-                      <img src={entry.sprite} alt={entry.name} className="h-12 w-12 shrink-0 object-contain" loading="lazy" />
+                    {displaySprite ? (
+                      <img src={displaySprite} alt={entry.name} className="h-12 w-12 shrink-0 object-contain" loading="lazy" />
                     ) : (
                       <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[var(--code-bg)] text-sm font-semibold text-[var(--text)]">
                         {entry.name.charAt(0)}

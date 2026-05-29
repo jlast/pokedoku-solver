@@ -2,7 +2,37 @@ import { describe, expect, it } from 'vitest';
 
 import type { InternalPokemon } from '@pokedoku-helper/shared-types';
 
+import { getShinySpritePath, getSpriteImagePath } from './fetch';
 import { getValidDexDifficultyCombinationCounts } from './lib/dex-difficulty';
+
+describe('sprite helpers', () => {
+  it('builds default and shiny sprite asset paths', () => {
+    expect(getSpriteImagePath(25)).toBe('/images/sprites/25.png');
+    expect(getSpriteImagePath(25, 'shiny')).toBe('/images/sprites/25-shiny.png');
+  });
+
+  it('only exposes a shiny sprite path when pokeapi provides one', () => {
+    expect(
+      getShinySpritePath({
+        id: 25,
+        sprites: {
+          front_default: 'https://example.com/25.png',
+          front_shiny: 'https://example.com/25-shiny.png',
+        },
+      }),
+    ).toBe('/images/sprites/25-shiny.png');
+
+    expect(
+      getShinySpritePath({
+        id: 25,
+        sprites: {
+          front_default: 'https://example.com/25.png',
+          front_shiny: null,
+        },
+      }),
+    ).toBeUndefined();
+  });
+});
 
 describe('dex difficulty combination counting', () => {
   it('ignores category pairs that only exist within one evolution line', () => {

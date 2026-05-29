@@ -164,6 +164,15 @@ function addPokemonCategory(entry: InternalPokemon, category: PokemonCategory): 
   if (!entry.categories.includes(category)) entry.categories.push(category);
 }
 
+export function getSpriteImagePath(formId: number, variant: "default" | "shiny" = "default"): string {
+  return `/images/sprites/${formId}${variant === "shiny" ? "-shiny" : ""}.png`;
+}
+
+export function getShinySpritePath(form: Pick<PokeAPIForm, "id" | "sprites">): string | undefined {
+  if (!form.sprites.front_shiny) return undefined;
+  return getSpriteImagePath(form.id, "shiny");
+}
+
 async function fetchPokemons() {
   console.log("Fetching Pokemon list...");
   let list = loadPokemonList();
@@ -311,9 +320,12 @@ function getEntry(
     name,
     types,
     ...(REGION_BY_ID[speciesId] ? { region: REGION_BY_ID[speciesId] } : {}),
-    sprite: `/images/sprites/${form.id}.png`,
+    sprite: getSpriteImagePath(form.id),
     formId,
   };
+
+  const shinySprite = getShinySpritePath(form);
+  if (shinySprite) entry.shinySprite = shinySprite;
 
   const learnedMoves = extractTrackedMoves(pokemon);
   if (learnedMoves.length > 0) entry.learnedMoves = learnedMoves;
@@ -447,8 +459,9 @@ function getEntry(
     delete entry.abilities;
   }
   if(!formOverride?.sprite) {
-    ensureFileExists('public/images/sprites', `${form.id}.png`, form?.sprites?.front_default);
+    void ensureFileExists("public/images/sprites", `${form.id}.png`, form?.sprites?.front_default);
   }
+  void ensureFileExists("public/images/sprites", `${form.id}-shiny.png`, form?.sprites?.front_shiny);
 
   if (isMoveExcludedEntry(entry)) {
     delete entry.learnedMoves;

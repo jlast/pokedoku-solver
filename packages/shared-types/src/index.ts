@@ -173,6 +173,7 @@ export interface InternalPokemon {
   learnedMoves?: PokemonLearnedMove[];
   abilities?: PokemonAbility[];
   sprite?: string;
+  shinySprite?: string;
   formId?: number;
 }
 

@@ -1,16 +1,19 @@
-import { useEffect, useEffectEvent, useRef } from "react";
+import { useCallback, useEffect, useEffectEvent, useState } from "react";
 export { INITIAL_RENDER_COUNT, RENDER_BATCH_SIZE } from "../../lib/incrementalPokemonGrid";
 
 export function useIncrementalPokemonGrid(hasMore: boolean, onLoadMore: () => void) {
-  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const [sentinel, setSentinel] = useState<HTMLDivElement | null>(null);
   const handleLoadMore = useEffectEvent(() => {
     if (hasMore) {
       onLoadMore();
     }
   });
 
+  const loadMoreRef = useCallback((node: HTMLDivElement | null) => {
+    setSentinel(node);
+  }, []);
+
   useEffect(() => {
-    const sentinel = loadMoreRef.current;
     if (!sentinel || !hasMore) return;
 
     const observer = new IntersectionObserver(
@@ -27,7 +30,7 @@ export function useIncrementalPokemonGrid(hasMore: boolean, onLoadMore: () => vo
     return () => {
       observer.disconnect();
     };
-  }, [hasMore]);
+  }, [hasMore, sentinel]);
 
   return loadMoreRef;
 }
