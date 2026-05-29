@@ -54,7 +54,7 @@ export function HiddenPokemonCellContent({
           <>
             <span className="text-[28px] font-bold leading-none text-[var(--text-h)] max-[768px]:text-[22px]">?</span>
             <span className="text-[0.78rem] font-semibold leading-tight text-[var(--text-h)] max-[768px]:text-[0.68rem]">Hidden answer</span>
-            <span className="text-[0.58rem] leading-none text-[var(--text)] max-[768px]:text-[0.53rem]">Tap for a hint first</span>
+            <span className="text-[0.58rem] leading-1 text-[var(--text)] max-[768px]:text-[0.53rem]">Tap for a hint first</span>
           </>
         )}
         <button
