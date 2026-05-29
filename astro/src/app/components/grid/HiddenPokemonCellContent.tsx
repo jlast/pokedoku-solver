@@ -44,11 +44,11 @@ export function HiddenPokemonCellContent({
             {hintBadges.length > 0 ? (
               <div className="flex flex-wrap max-w-full items-center justify-center gap-0.5 overflow-hidden">
                 {hintBadges.map((badge) => (
-                  <span className="text-[0.52rem]">{badge.label} </span>
+                  <span className="text-[0.82rem]">{badge.label} </span>
                 ))}
               </div>
             ) : (
-              <span className="text-[0.52rem] font-semibold leading-tight text-[var(--text-h)] max-[768px]:text-[0.64rem]">
+              <span className="text-[0.82rem] font-semibold leading-tight text-[var(--text-h)] max-[768px]:text-[0.64rem]">
                 No extra hint available
               </span>
             )}
