@@ -1,13 +1,31 @@
 import { CategoryIcon } from "../puzzle-stats/CategoryIcon";
 import { getCategoryBarColor, type ParsedCategory } from "../puzzle-stats/categoryUtils";
 
-export function CategoryBadgeLink({ parsed, href, stacked = false }: { parsed: ParsedCategory; href: string | null; stacked?: boolean }) {
+export function CategoryBadgeLink({
+  parsed,
+  href,
+  stacked = false,
+  compact = false,
+}: {
+  parsed: ParsedCategory;
+  href: string | null;
+  stacked?: boolean;
+  compact?: boolean;
+}) {
   const badge = (
     <span
-      className={`inline-flex px-2 py-1 font-semibold text-white ${stacked ? 'min-w-[64px] rounded-md flex-col items-center gap-1 pt-2 text-[10px] leading-tight' : 'rounded-full items-center gap-1.5 text-xs'}`}
+      className={`inline-flex font-semibold text-white ${stacked
+        ? 'min-w-[64px] rounded-md flex-col items-center gap-1 px-2 py-1 pt-2 text-[10px] leading-tight'
+        : compact
+          ? 'items-center gap-1 rounded-full px-1.5 py-0.5 text-[0.45rem]'
+          : 'items-center gap-1.5 rounded-full px-2 py-1 text-xs'}`}
       style={{ backgroundColor: getCategoryBarColor(parsed) }}
     >
-      <CategoryIcon parsed={parsed} layout={stacked ? 'vertical' : 'horizontal'} className={stacked ? 'h-[22.5px] w-[22.5px]' : ''} />
+        <CategoryIcon
+          parsed={parsed}
+          layout={stacked ? 'vertical' : 'horizontal'}
+          className={stacked ? 'h-[22.5px] w-[22.5px]' : compact ? 'h-3 w-3' : ''}
+        />
       <span>{parsed.label}</span>
     </span>
   );

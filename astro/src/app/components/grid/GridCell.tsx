@@ -5,6 +5,7 @@ import { trackEvent } from '../../../../../lib/browser/analytics';
 import { getConstraintColor, getPokemonKey } from '../../lib/pokemonGrid';
 import { EmptyGridCellContent } from './EmptyGridCellContent';
 import { FilledPokemonCellContent } from './FilledPokemonCellContent';
+import { HiddenPokemonCellContent } from './HiddenPokemonCellContent';
 
 interface GridCellProps {
   rowIndex: number;
@@ -20,8 +21,13 @@ interface GridCellProps {
   showSuggestedMeta: boolean;
   suggestedPokemonKey?: string | null;
   swapOptionCount: number;
+  singularHintCountLabel?: string;
+  pluralHintCountLabel?: string;
+  spoilerModeEnabled?: boolean;
+  revealState?: 'hidden' | 'hint' | 'revealed';
   onCellClick: (row: number, col: number, anchorElement?: HTMLDivElement | null) => void;
   onSwapClick?: (row: number, col: number, anchorElement?: HTMLDivElement | null) => void;
+  onAdvanceReveal?: (row: number, col: number) => void;
 }
 
 function getCellStateClasses({
@@ -29,12 +35,19 @@ function getCellStateClasses({
   isFilled,
   isOwnedCell,
   fallbackOwned,
+  isSpoilerHidden,
 }: {
   isSelected: boolean;
   isFilled: boolean;
   isOwnedCell: boolean;
   fallbackOwned: Pokemon | null;
+  isSpoilerHidden: boolean;
 }): string {
+  if (isSpoilerHidden) {
+    return isSelected
+      ? 'bg-[var(--code-bg)] text-[var(--text-h)] shadow-[0_0_0_2px_var(--accent),inset_0_0_0_1px_var(--border)]'
+      : 'bg-[var(--code-bg)] hover:bg-[var(--accent-bg)]';
+  }
   if (isSelected) {
     return isFilled
       ? 'bg-[var(--accent-bg)] text-[var(--text-h)] shadow-[0_0_0_2px_var(--accent),inset_0_0_0_1px_var(--border)]'
@@ -60,8 +73,13 @@ export function GridCell({
   showSuggestedMeta,
   suggestedPokemonKey,
   swapOptionCount,
+  singularHintCountLabel = 'valid answer',
+  pluralHintCountLabel = 'valid answers',
+  spoilerModeEnabled = false,
+  revealState = 'revealed',
   onCellClick,
   onSwapClick,
+  onAdvanceReveal,
 }: GridCellProps) {
   const hasConstraint = Boolean(rowConstraint || colConstraint);
   const isSuggested = Boolean(showSuggestedMeta && cell && suggestedPokemonKey === getPokemonKey(cell));
@@ -73,7 +91,9 @@ export function GridCell({
         : ''
     : '';
   const isFilled = Boolean(cell);
-  const cellStateClasses = getCellStateClasses({ isSelected, isFilled, isOwnedCell, fallbackOwned });
+  const displayPokemon = cell ?? fallbackOwned;
+  const isSpoilerHidden = spoilerModeEnabled && revealState !== 'revealed' && Boolean(displayPokemon);
+  const cellStateClasses = getCellStateClasses({ isSelected, isFilled, isOwnedCell, fallbackOwned, isSpoilerHidden });
 
   return (
     <div
@@ -90,7 +110,18 @@ export function GridCell({
         borderColor: hasConstraint ? getConstraintColor(rowConstraint || colConstraint) : undefined,
       } as CSSProperties}
     >
-      {cell ? (
+      {isSpoilerHidden ? (
+        <HiddenPokemonCellContent
+          revealState={revealState === 'revealed' ? 'hint' : revealState}
+          displayPokemon={displayPokemon}
+          validAnswerCount={swapOptionCount}
+          singularCountLabel={singularHintCountLabel}
+          pluralCountLabel={pluralHintCountLabel}
+          rowConstraint={rowConstraint}
+          colConstraint={colConstraint}
+          onAdvanceReveal={() => onAdvanceReveal?.(rowIndex, colIndex)}
+        />
+      ) : cell ? (
         <FilledPokemonCellContent
           cell={cell}
           isOwnedCell={isOwnedCell}

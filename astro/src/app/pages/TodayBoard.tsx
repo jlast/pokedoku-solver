@@ -19,6 +19,24 @@ import {
   createEmptyPokemonGrid,
 } from '../lib/todayBoard';
 
+type RevealState = 'hidden' | 'hint' | 'revealed';
+
+function getCellKey(row: number, col: number): string {
+  return `${row}-${col}`;
+}
+
+function createInitialRevealStates(size: number): Record<string, RevealState> {
+  const states: Record<string, RevealState> = {};
+
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      states[getCellKey(row, col)] = 'hidden';
+    }
+  }
+
+  return states;
+}
+
 export interface TodayPuzzle {
   date: string;
   type: string;
@@ -43,6 +61,7 @@ interface UndoMarkOwnedState {
 interface LoadedTodayBoardUserState {
   userDex: UserDexPayload | null;
   myPokedexFilter: boolean | null;
+  spoilerModeEnabled: boolean | null;
 }
 
 function getApiBaseUrl(): string | null {
@@ -60,6 +79,7 @@ async function loadTodayBoardUserState(token: string, apiBaseUrl: string): Promi
   return {
     userDex,
     myPokedexFilter: settings?.myPokedexFilter ?? null,
+    spoilerModeEnabled: settings ? !settings.preventSpoilerMode : null,
   };
 }
 
@@ -83,6 +103,16 @@ async function saveMyPokedexFilter(token: string, apiBaseUrl: string, myPokedexF
   );
 }
 
+async function saveSpoilerModePreference(token: string, apiBaseUrl: string, spoilerModeEnabled: boolean): Promise<boolean> {
+  return Boolean(
+    await patchRemoteSettings({
+      token,
+      apiBaseUrl,
+      patch: { preventSpoilerMode: !spoilerModeEnabled },
+    }),
+  );
+}
+
 export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const isLoggedIn = typeof window !== 'undefined' && Boolean(getSessionUserProfile());
   const gridSize = puzzle.rowConstraints.length;
@@ -97,12 +127,15 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const [suggestedPokemonKeys, setSuggestedPokemonKeys] = useState<(string | null)[][]>(() => createEmptyKeyGrid(gridSize));
   const [showMissingOnly, setShowMissingOnly] = useState<boolean>(() => isLoggedIn);
   const [isSavingFilterPreference, setIsSavingFilterPreference] = useState(false);
+  const [isSavingSpoilerPreference, setIsSavingSpoilerPreference] = useState(false);
   const [isMarkingOwned, setIsMarkingOwned] = useState(false);
   const [isUndoingMarkOwned, setIsUndoingMarkOwned] = useState(false);
   const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const [remoteUserDex, setRemoteUserDex] = useState<UserDexPayload | null>(null);
   const [undoMarkOwnedState, setUndoMarkOwnedState] = useState<UndoMarkOwnedState | null>(null);
   const [selectedCellAnchorElement, setSelectedCellAnchorElement] = useState<HTMLDivElement | null>(null);
+  const [spoilerModeEnabled, setSpoilerModeEnabled] = useState(true);
+  const [revealStates, setRevealStates] = useState<Record<string, RevealState>>(() => createInitialRevealStates(gridSize));
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/pokemon.json`)
@@ -127,7 +160,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       if (!token || !apiBaseUrl) return;
 
       try {
-        const { userDex, myPokedexFilter } = await loadTodayBoardUserState(token, apiBaseUrl);
+        const { userDex, myPokedexFilter, spoilerModeEnabled } = await loadTodayBoardUserState(token, apiBaseUrl);
         if (isCancelled) return;
 
         if (userDex) {
@@ -137,6 +170,9 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         }
         if (myPokedexFilter !== null) {
           setShowMissingOnly(myPokedexFilter);
+        }
+        if (spoilerModeEnabled !== null) {
+          setSpoilerModeEnabled(spoilerModeEnabled);
         }
       } catch {}
     })();
@@ -216,11 +252,27 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   }, [grid.colConstraints, grid.rowConstraints, gridSize, pokemonPool]);
 
   function handleCellClick(row: number, col: number, anchorElement?: HTMLDivElement | null) {
-    setGrid((prev) => {
-      const isSameCell = prev.selectedCell?.[0] === row && prev.selectedCell?.[1] === col;
-      setSelectedCellAnchorElement(isSameCell ? null : (anchorElement ?? null));
-      return { ...prev, selectedCell: isSameCell ? null : [row, col] };
-    });
+    const cellKey = getCellKey(row, col);
+    const revealState = revealStates[cellKey] ?? 'revealed';
+    const hasHiddenAnswer = spoilerModeEnabled && revealState !== 'revealed' && Boolean(grid.cells[row][col] ?? fallbackOwnedCells[row][col]);
+
+    setGrid((prev) => ({ ...prev, selectedCell: [row, col] }));
+    setSelectedCellAnchorElement(anchorElement ?? null);
+
+    if (hasHiddenAnswer) {
+      setRevealStates((prev) => ({
+        ...prev,
+        [cellKey]: prev[cellKey] === 'hidden' ? 'hint' : 'revealed',
+      }));
+    }
+  }
+
+  function advanceReveal(row: number, col: number) {
+    const cellKey = getCellKey(row, col);
+    setRevealStates((prev) => ({
+      ...prev,
+      [cellKey]: prev[cellKey] === 'hidden' ? 'hint' : 'revealed',
+    }));
   }
 
   function handlePokemonSelect(selectedPokemon: Pokemon) {
@@ -328,6 +380,28 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     }
   }
 
+  async function toggleSpoilerMode() {
+    const nextValue = !spoilerModeEnabled;
+    setSpoilerModeEnabled(nextValue);
+    trackEvent('toggle_spoiler_mode', { enabled: nextValue ? 'true' : 'false' });
+
+    if (!isLoggedIn) return;
+
+    const token = await getValidSessionIdToken();
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) return;
+
+    setIsSavingSpoilerPreference(true);
+    try {
+      const didSave = await saveSpoilerModePreference(token, apiBaseUrl, nextValue);
+      if (!didSave) {
+        setSpoilerModeEnabled(!nextValue);
+      }
+    } finally {
+      setIsSavingSpoilerPreference(false);
+    }
+  }
+
   const selectedCellPossible = useMemo(() => {
     if (!grid.selectedCell) return [];
     const [row, col] = grid.selectedCell;
@@ -351,6 +425,13 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     });
   }, [fallbackOwnedCells, grid.cells, grid.colConstraints, grid.rowConstraints]);
 
+  const canShowSuggestionsPanel = useMemo(() => {
+    if (!grid.selectedCell) return false;
+    if (!spoilerModeEnabled) return true;
+    const [row, col] = grid.selectedCell;
+    return (revealStates[getCellKey(row, col)] ?? 'revealed') === 'revealed';
+  }, [grid.selectedCell, revealStates, spoilerModeEnabled]);
+
   if (loading) {
     return <div className="min-h-screen p-5 text-center"><p>Loading Pokemon data...</p></div>;
   }
@@ -358,33 +439,64 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   return (
     <div className="flex flex-col items-center">
       {isLoggedIn ? (
-        <section className="mb-3 w-full max-w-[700px] rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-3 text-left">
-          <div className="flex flex-wrap items-center justify-between gap-2">
+        <section className="mb-3 w-full max-w-[500px] rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-3 text-left">
+          <div className="flex flex-col items-center gap-3 text-center">
             <div>
-              <p className="m-0 text-sm font-semibold text-[var(--text-h)]">My Pokedex filter</p>
-              <p className="m-0 text-xs text-[var(--text)]">Show only entries you still need</p>
+              <p className="m-0 text-sm font-semibold text-[var(--text-h)]">My Pokedex &amp; Answer Filters</p>
+              <p className="m-0 text-xs text-[var(--text)]">Control which answers you see and when you see them.</p>
             </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={showMissingOnly}
-              onClick={() => {
-                void toggleMyPokedexFilter();
-              }}
-              disabled={isSavingFilterPreference}
-              className={`relative inline-flex h-7 w-12 items-center rounded-full border transition-colors ${
-                showMissingOnly ? 'border-emerald-500 bg-emerald-500' : 'border-[var(--border)] bg-slate-300'
-              } ${isSavingFilterPreference ? 'opacity-70' : ''}`}
-            >
-              <span
-                className={`inline-block h-5 w-5 transform rounded-full bg-[var(--bg)] shadow transition-transform ${
-                  showMissingOnly ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="w-[170px] shrink-0">
+                  <p className="m-0 text-sm font-medium text-[var(--text-h)]">Hide owned Pokémon</p>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={showMissingOnly}
+                  onClick={() => {
+                    void toggleMyPokedexFilter();
+                  }}
+                  disabled={isSavingFilterPreference}
+                  className={`relative inline-flex h-7 w-12 items-center rounded-full border transition-colors ${
+                    showMissingOnly ? 'border-emerald-500 bg-emerald-500' : 'border-[var(--border)] bg-slate-300'
+                  } ${isSavingFilterPreference ? 'opacity-70' : ''}`}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-[var(--bg)] shadow transition-transform ${
+                      showMissingOnly ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="w-[170px] shrink-0">
+                  <p className="m-0 text-sm font-medium text-[var(--text-h)]">Avoid spoilers</p>
+
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={spoilerModeEnabled}
+                  onClick={() => {
+                    void toggleSpoilerMode();
+                  }}
+                  disabled={isSavingSpoilerPreference}
+                  className={`relative inline-flex h-7 w-12 items-center rounded-full border transition-colors ${
+                    spoilerModeEnabled ? 'border-emerald-500 bg-emerald-500' : 'border-[var(--border)] bg-slate-300'
+                  } ${isSavingSpoilerPreference ? 'opacity-70' : ''}`}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-[var(--bg)] shadow transition-transform ${
+                      spoilerModeEnabled ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
           </div>
           {showMissingOnly ? (
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
               <ActionButton
                 onClick={markOwned}
                 variant="success"
@@ -403,7 +515,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                    Mark owned in My Pokedex
+                    Save picks in My Pokedex
                   </>
                 )}
               </ActionButton>
@@ -420,63 +532,97 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           ) : null}
         </section>
       ) : (
-        <section className="mb-2.5 w-full max-w-[700px] rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3 text-left shadow-sm">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div className="min-w-0 flex-1">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-rose-200 bg-rose-50 shadow-sm [html[data-theme='dark']_&]:border-rose-900/60 [html[data-theme='dark']_&]:bg-rose-950/30">
-                  <img
-                    src={`${import.meta.env.BASE_URL}images/content/trainer.png`}
-                    alt=""
-                    className="h-8 w-8 object-contain"
-                  />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="m-0 text-sm font-semibold text-[var(--text-h)]">Complete your Pokedex faster</p>
-                  <p className="m-0 mt-1 text-sm leading-5 text-[var(--text)]">
-                    Hide Pokemon you already own and focus on answers that help complete your collection.
-                    <span className="hidden md:inline"> Save today&apos;s picks and track your progress across future puzzles.</span>
-                  </p>
-                  <div className="mt-2.5 flex flex-col gap-1.5 text-xs text-[var(--text)]">
-                    <div className="flex items-center gap-2">
-                      <span className="text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400">✓</span>
-                      <span>Hide owned Pokemon</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400">✓</span>
-                      <span>Highlight missing entries</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400">✓</span>
-                      <span>Save progress across puzzles</span>
-                    </div>
+        <>
+          <section className="mb-3 w-full max-w-[700px] rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3 text-left shadow-sm">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-rose-200 bg-rose-50 shadow-sm [html[data-theme='dark']_&]:border-rose-900/60 [html[data-theme='dark']_&]:bg-rose-950/30">
+                    <img
+                      src={`${import.meta.env.BASE_URL}images/content/trainer.png`}
+                      alt=""
+                      className="h-8 w-8 object-contain"
+                    />
                   </div>
-                  <div className="mt-3 md:hidden">
-                    <ActionLink
-                      href={`${import.meta.env.BASE_URL}login/`}
-                      variant="secondary"
-                      className="border-rose-600 bg-rose-600 text-white hover:border-rose-500 hover:bg-rose-500 [html[data-theme='dark']_&]:border-rose-500 [html[data-theme='dark']_&]:bg-rose-500 [html[data-theme='dark']_&]:text-white [html[data-theme='dark']_&]:hover:border-rose-400 [html[data-theme='dark']_&]:hover:bg-rose-400"
-                      onClick={() => trackEvent('click_navigate', { url: 'login/', from: 'today_suggestions' })}
-                    >
-                      Connect My Pokedex
-                    </ActionLink>
+                  <div className="min-w-0 flex-1">
+                    <p className="m-0 text-sm font-semibold text-[var(--text-h)]">Complete your Pokedex faster</p>
+                    <p className="m-0 mt-1 text-sm leading-5 text-[var(--text)]">
+                      Hide Pokemon you already own and focus on answers that help complete your collection.
+                      <span className="hidden md:inline"> Save today&apos;s picks and track your progress across future puzzles.</span>
+                    </p>
+                    <div className="mt-2.5 flex flex-col gap-1.5 text-xs text-[var(--text)]">
+                      <div className="flex items-center gap-2">
+                        <span className="text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400">✓</span>
+                        <span>Hide owned Pokemon</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400">✓</span>
+                        <span>Highlight missing entries</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400">✓</span>
+                        <span>Save progress across puzzles</span>
+                      </div>
+                    </div>
+                    <div className="mt-3 md:hidden">
+                      <ActionLink
+                        href={`${import.meta.env.BASE_URL}login/`}
+                        variant="secondary"
+                        className="border-rose-600 bg-rose-600 text-white hover:border-rose-500 hover:bg-rose-500 [html[data-theme='dark']_&]:border-rose-500 [html[data-theme='dark']_&]:bg-rose-500 [html[data-theme='dark']_&]:text-white [html[data-theme='dark']_&]:hover:border-rose-400 [html[data-theme='dark']_&]:hover:bg-rose-400"
+                        onClick={() => trackEvent('click_navigate', { url: 'login/', from: 'today_suggestions' })}
+                      >
+                        Connect My Pokedex
+                      </ActionLink>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="hidden shrink-0 flex-col items-start md:flex md:self-center md:items-end">
-              <ActionLink
-                href={`${import.meta.env.BASE_URL}login/`}
-                variant="secondary"
-                className="border-rose-600 bg-rose-600 text-white hover:border-rose-500 hover:bg-rose-500 [html[data-theme='dark']_&]:border-rose-500 [html[data-theme='dark']_&]:bg-rose-500 [html[data-theme='dark']_&]:text-white [html[data-theme='dark']_&]:hover:border-rose-400 [html[data-theme='dark']_&]:hover:bg-rose-400"
-                onClick={() => trackEvent('click_navigate', { url: 'login/', from: 'today_suggestions' })}
-              >
-                Connect My Pokedex
-              </ActionLink>
+              <div className="hidden shrink-0 flex-col items-start md:flex md:self-center md:items-end">
+                <ActionLink
+                  href={`${import.meta.env.BASE_URL}login/`}
+                  variant="secondary"
+                  className="border-rose-600 bg-rose-600 text-white hover:border-rose-500 hover:bg-rose-500 [html[data-theme='dark']_&]:border-rose-500 [html[data-theme='dark']_&]:bg-rose-500 [html[data-theme='dark']_&]:text-white [html[data-theme='dark']_&]:hover:border-rose-400 [html[data-theme='dark']_&]:hover:bg-rose-400"
+                  onClick={() => trackEvent('click_navigate', { url: 'login/', from: 'today_suggestions' })}
+                >
+                  Connect My Pokedex
+                </ActionLink>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <section className="mb-2.5 w-full max-w-[600px] rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-3 text-left">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div>
+                <p className="m-0 text-sm font-semibold text-[var(--text-h)]">Answer Visibility</p>
+                <p className="m-0 text-xs text-[var(--text)]">Choose whether answers stay hidden until you reveal them.</p>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="w-[170px] shrink-0">
+                  <p className="m-0 text-sm font-medium text-[var(--text-h)]">Avoid spoilers</p>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={spoilerModeEnabled}
+                  onClick={() => {
+                    void toggleSpoilerMode();
+                  }}
+                  disabled={isSavingSpoilerPreference}
+                  className={`relative inline-flex h-7 w-12 items-center rounded-full border transition-colors ${
+                    spoilerModeEnabled ? 'border-emerald-500 bg-emerald-500' : 'border-[var(--border)] bg-slate-300'
+                  } ${isSavingSpoilerPreference ? 'opacity-70' : ''}`}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-[var(--bg)] shadow transition-transform ${
+                      spoilerModeEnabled ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+          </section>
+        </>
       )}
 
       <div className="relative">
@@ -493,11 +639,16 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           selectedCell={grid.selectedCell}
           editable={false}
           showSuggestedMeta
+          singularHintCountLabel={showMissingOnly ? 'new entry' : 'valid answer'}
+          pluralHintCountLabel={showMissingOnly ? 'new entries' : 'valid answers'}
+          spoilerModeEnabled={spoilerModeEnabled}
+          revealStates={revealStates}
           onCellClick={handleCellClick}
           onSwapClick={handleCellClick}
+          onAdvanceReveal={advanceReveal}
           onConstraintChange={() => {}}
         />
-        {grid.selectedCell ? (
+        {canShowSuggestionsPanel ? (
           <button
             type="button"
             aria-label="Close suggestions"
@@ -509,7 +660,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           />
         ) : null}
         <SuggestionsPanel
-          selectedCell={grid.selectedCell}
+          selectedCell={canShowSuggestionsPanel ? grid.selectedCell : null}
           possiblePokemon={selectedCellPossible}
           currentPokemon={selectedCellDisplayPokemon}
           ownedPokemonKeyIds={caughtSet}
@@ -540,7 +691,12 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         </ActionLink>
       </div>
 
-      <TodayBoardSuggestions textualSuggestions={textualSuggestions} />
+      <TodayBoardSuggestions
+        textualSuggestions={textualSuggestions}
+        spoilerModeEnabled={spoilerModeEnabled}
+        revealStates={revealStates}
+        onAdvanceReveal={advanceReveal}
+      />
     </div>
   );
 }

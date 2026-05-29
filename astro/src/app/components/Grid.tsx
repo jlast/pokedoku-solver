@@ -18,8 +18,13 @@ interface GridProps {
   selectedCell: [number, number] | null;
   editable?: boolean;
   showSuggestedMeta?: boolean;
+  singularHintCountLabel?: string;
+  pluralHintCountLabel?: string;
+  spoilerModeEnabled?: boolean;
+  revealStates?: Record<string, 'hidden' | 'hint' | 'revealed'>;
   onCellClick: (row: number, col: number, anchorElement?: HTMLDivElement | null) => void;
   onSwapClick?: (row: number, col: number, anchorElement?: HTMLDivElement | null) => void;
+  onAdvanceReveal?: (row: number, col: number) => void;
   onConstraintChange: (index: number, isRow: boolean, option: { value: string; category: string } | null) => void;
 }
 
@@ -36,8 +41,13 @@ export function Grid({
   selectedCell,
   editable = true,
   showSuggestedMeta = false,
+  singularHintCountLabel = 'valid answer',
+  pluralHintCountLabel = 'valid answers',
+  spoilerModeEnabled = false,
+  revealStates,
   onCellClick,
   onSwapClick,
+  onAdvanceReveal,
   onConstraintChange,
 }: GridProps) {
   function isUsedElsewhere(pokemon: Pokemon, rowIndex: number, colIndex: number): boolean {
@@ -108,15 +118,20 @@ export function Grid({
                     fallbackOwned={fallbackOwned}
                     isOwnedCell={isOwnedCell}
                     isShinyCell={isShinyCell}
-                    isSelected={isSelected}
-                    showSuggestedMeta={showSuggestedMeta}
-                    suggestedPokemonKey={suggestedPokemonKeys?.[rowIndex]?.[colIndex]}
-                    swapOptionCount={swapOptionCount}
-                    onCellClick={onCellClick}
-                    onSwapClick={onSwapClick}
-                  />
-                );
-              })}
+                     isSelected={isSelected}
+                     showSuggestedMeta={showSuggestedMeta}
+                     suggestedPokemonKey={suggestedPokemonKeys?.[rowIndex]?.[colIndex]}
+                     swapOptionCount={swapOptionCount}
+                     singularHintCountLabel={singularHintCountLabel}
+                     pluralHintCountLabel={pluralHintCountLabel}
+                     spoilerModeEnabled={spoilerModeEnabled}
+                     revealState={revealStates?.[`${rowIndex}-${colIndex}`] ?? 'revealed'}
+                     onCellClick={onCellClick}
+                     onSwapClick={onSwapClick}
+                     onAdvanceReveal={onAdvanceReveal}
+                   />
+                 );
+               })}
             </div>
           ))}
         </div>
