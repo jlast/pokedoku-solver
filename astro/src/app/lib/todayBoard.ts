@@ -18,6 +18,66 @@ export function createEmptyKeyGrid(size: number): (string | null)[][] {
   return Array.from({ length: size }, () => Array.from({ length: size }, () => null));
 }
 
+export function assignSuggestedCellsFromCandidates(
+  candidatesByCell: Pokemon[][][],
+  initiallyReservedKeyIds: Iterable<number> = [],
+  allowDuplicateFallback = true,
+): (Pokemon | null)[][] {
+  const gridSize = candidatesByCell.length;
+  const suggestedCells = createEmptyPokemonGrid(gridSize);
+
+  const cellOrder = Array.from({ length: gridSize * gridSize }, (_, index) => ({
+    row: Math.floor(index / gridSize),
+    col: index % gridSize,
+  })).sort((a, b) => candidatesByCell[a.row][a.col].length - candidatesByCell[b.row][b.col].length);
+
+  const cellKeyToPosition = new Map(cellOrder.map((cell) => [`${cell.row}-${cell.col}`, cell]));
+  const matchedCellKeyByPokemonKeyId = new Map<number, string>(
+    Array.from(initiallyReservedKeyIds, (keyId) => [keyId, '__reserved__']),
+  );
+  const matchedPokemonByCellKey = new Map<string, Pokemon>();
+
+  const tryMatchCell = (row: number, col: number, visitedPokemonKeyIds: Set<number>): boolean => {
+    for (const candidate of candidatesByCell[row][col]) {
+      const keyId = getPokemonKeyId(candidate);
+      if (visitedPokemonKeyIds.has(keyId)) continue;
+
+      visitedPokemonKeyIds.add(keyId);
+      const matchedCellKey = matchedCellKeyByPokemonKeyId.get(keyId);
+      if (!matchedCellKey) {
+        matchedCellKeyByPokemonKeyId.set(keyId, `${row}-${col}`);
+        matchedPokemonByCellKey.set(`${row}-${col}`, candidate);
+        return true;
+      }
+
+      const matchedCell = cellKeyToPosition.get(matchedCellKey);
+      if (!matchedCell) continue;
+
+      if (tryMatchCell(matchedCell.row, matchedCell.col, visitedPokemonKeyIds)) {
+        matchedCellKeyByPokemonKeyId.set(keyId, `${row}-${col}`);
+        matchedPokemonByCellKey.set(`${row}-${col}`, candidate);
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  for (const { row, col } of cellOrder) {
+    if (candidatesByCell[row][col].length === 0) continue;
+    tryMatchCell(row, col, new Set<number>());
+  }
+
+  for (const { row, col } of cellOrder) {
+    const candidates = candidatesByCell[row][col];
+    if (candidates.length === 0) continue;
+
+    suggestedCells[row][col] = matchedPokemonByCellKey.get(`${row}-${col}`) ?? (allowDuplicateFallback ? candidates[0] : null);
+  }
+
+  return suggestedCells;
+}
+
 export function buildSuggestedCells(
   pokemon: Pokemon[],
   rowConstraints: (Constraint | null)[],
@@ -36,27 +96,7 @@ export function buildSuggestedCells(
     }
   }
 
-  const rowUsed = Array.from({ length: gridSize }, () => new Set<number>());
-  const colUsed = Array.from({ length: gridSize }, () => new Set<number>());
-  const suggestedCells = createEmptyPokemonGrid(gridSize);
-
-  const cellOrder = Array.from({ length: gridSize * gridSize }, (_, index) => ({
-    row: Math.floor(index / gridSize),
-    col: index % gridSize,
-  })).sort((a, b) => candidatesByCell[a.row][a.col].length - candidatesByCell[b.row][b.col].length);
-
-  for (const { row, col } of cellOrder) {
-    const candidates = candidatesByCell[row][col];
-    if (candidates.length === 0) continue;
-
-    const uniqueCandidate = candidates.find(
-      (candidate) => !rowUsed[row].has(candidate.id) && !colUsed[col].has(candidate.id),
-    );
-    const pick = uniqueCandidate ?? candidates[0];
-    suggestedCells[row][col] = pick;
-    rowUsed[row].add(pick.id);
-    colUsed[col].add(pick.id);
-  }
+  const suggestedCells = assignSuggestedCellsFromCandidates(candidatesByCell, [], false);
 
   return {
     cells: suggestedCells,
@@ -90,43 +130,35 @@ export function buildFallbackOwnedCells({
       .filter((cell): cell is Pokemon => Boolean(cell))
       .map((cell) => getPokemonKeyId(cell)),
   );
-  const reservedKeyIds = new Set(selectedKeyIds);
-  const emptyCells = Array.from({ length: gridSize * gridSize }, (_, index) => ({
-    row: Math.floor(index / gridSize),
-    col: index % gridSize,
-  })).filter(({ row, col }) => possiblePokemon[row][col].length === 0);
+  const fallbackCandidatesByCell: Pokemon[][][] = Array.from({ length: gridSize }, () =>
+    Array.from({ length: gridSize }, () => [] as Pokemon[]),
+  );
 
-  emptyCells.sort((a, b) => {
-    const aCount = pokemon.filter((entry) => {
-      if (!matchesConstraint(entry, rowConstraints[a.row])) return false;
-      if (!matchesConstraint(entry, colConstraints[a.col])) return false;
-      const keyId = getPokemonKeyId(entry);
-      return caughtSet.has(keyId) && !shinyPokemonKeyIds.has(keyId);
-    }).length;
-    const bCount = pokemon.filter((entry) => {
-      if (!matchesConstraint(entry, rowConstraints[b.row])) return false;
-      if (!matchesConstraint(entry, colConstraints[b.col])) return false;
-      const keyId = getPokemonKeyId(entry);
-      return caughtSet.has(keyId) && !shinyPokemonKeyIds.has(keyId);
-    }).length;
-    return aCount - bCount;
-  });
+  for (let row = 0; row < gridSize; row++) {
+    for (let col = 0; col < gridSize; col++) {
+      if (gridCells[row][col] !== null) continue;
 
-  for (const { row, col } of emptyCells) {
-    const fallbackCandidates = pokemon
-      .filter((entry) => {
-        if (!matchesConstraint(entry, rowConstraints[row])) return false;
-        if (!matchesConstraint(entry, colConstraints[col])) return false;
+      fallbackCandidatesByCell[row][col] = pokemon
+        .filter((entry) => {
+          if (!matchesConstraint(entry, rowConstraints[row])) return false;
+          if (!matchesConstraint(entry, colConstraints[col])) return false;
 
-        const keyId = getPokemonKeyId(entry);
-        return caughtSet.has(keyId) && !shinyPokemonKeyIds.has(keyId);
-      })
-      .sort(compareByHardest);
+          const keyId = getPokemonKeyId(entry);
+          return caughtSet.has(keyId) && !shinyPokemonKeyIds.has(keyId);
+        })
+        .sort(compareByHardest);
+    }
+  }
 
-    const uniqueCandidate = fallbackCandidates.find((entry) => !reservedKeyIds.has(getPokemonKeyId(entry)));
-    const pick = uniqueCandidate ?? fallbackCandidates[0] ?? null;
-    result[row][col] = pick;
-    if (pick) reservedKeyIds.add(getPokemonKeyId(pick));
+  const uniqueFallbackCells = assignSuggestedCellsFromCandidates(fallbackCandidatesByCell, selectedKeyIds, false);
+
+  for (let row = 0; row < gridSize; row++) {
+    for (let col = 0; col < gridSize; col++) {
+      if (gridCells[row][col] !== null) continue;
+
+      const uniquePick = uniqueFallbackCells[row][col];
+      result[row][col] = uniquePick;
+    }
   }
 
   return result;
