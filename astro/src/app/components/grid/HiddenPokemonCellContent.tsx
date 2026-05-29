@@ -65,7 +65,7 @@ export function HiddenPokemonCellContent({
             onAdvanceReveal();
           }}
         >
-          {revealState === 'hint' ? 'Reveal' : 'Show hint'}
+          {revealState === 'hint' ? 'Reveal' : 'Hint'}
         </button>
       </div>
     </>
