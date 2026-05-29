@@ -32,7 +32,13 @@ export function HiddenPokemonCellContent({
 
   return (
     <>
-      <div className="relative z-[1] flex h-full w-full flex-col items-center justify-center gap-1.5 px-2 py-2.5 text-center">
+      <div 
+        onClick={(event) => {
+            event.stopPropagation();
+            onAdvanceReveal();
+          }}
+        className="relative z-[1] flex h-full w-full flex-col items-center justify-center gap-1.5 px-2 py-2.5 text-center"
+      >
         {revealState === 'hint' ? (
           <>
             {hintBadges.length > 0 ? (
