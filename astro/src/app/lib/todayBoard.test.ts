@@ -82,22 +82,19 @@ describe('buildFallbackOwnedCells', () => {
       { category: 'category', value: 'Mega Evolution' },
       { category: 'category', value: 'Mega Evolution' },
     ];
-    const possiblePokemon = [
-      [[manectricMega], []],
-      [[], []],
-    ];
-
     const fallbackCells = buildFallbackOwnedCells({
       pokemon,
       gridCells,
       rowConstraints,
       colConstraints,
-      possiblePokemon,
       caughtSet: new Set([1001310, 1001181]),
       shinyPokemonKeyIds: new Set(),
     });
 
-    expect(fallbackCells[1][0]?.name).toBe('Ampharos mega');
+    const fallbackNames = fallbackCells.flat().map((cell) => cell?.name).filter(Boolean);
+
+    expect(fallbackNames).toContain('Ampharos mega');
+    expect(fallbackNames).not.toContain('Manectric mega');
   });
 
   it('reassigns fallback picks to keep owned cells unique when possible', () => {
@@ -140,10 +137,6 @@ describe('buildFallbackOwnedCells', () => {
       ],
       rowConstraints,
       colConstraints,
-      possiblePokemon: [
-        [[], []],
-        [[], []],
-      ],
       caughtSet: new Set([1, 2, 3, 4]),
       shinyPokemonKeyIds: new Set(),
     });

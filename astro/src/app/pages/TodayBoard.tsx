@@ -196,11 +196,10 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
       gridCells: grid.cells,
       rowConstraints: grid.rowConstraints,
       colConstraints: grid.colConstraints,
-      possiblePokemon,
       caughtSet,
       shinyPokemonKeyIds: new Set(remoteUserDex?.shinyPokemonKeyIds ?? []),
     });
-  }, [caughtSet, grid.cells, grid.colConstraints, grid.rowConstraints, gridSize, isLoggedIn, pokemon, possiblePokemon, remoteUserDex, showMissingOnly]);
+  }, [caughtSet, grid.cells, grid.colConstraints, grid.rowConstraints, gridSize, isLoggedIn, pokemon, remoteUserDex, showMissingOnly]);
 
   const swapOptionCounts = useMemo(() => {
     const result: number[][] = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => 0));

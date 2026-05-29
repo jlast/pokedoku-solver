@@ -109,7 +109,6 @@ export function buildFallbackOwnedCells({
   gridCells,
   rowConstraints,
   colConstraints,
-  possiblePokemon,
   caughtSet,
   shinyPokemonKeyIds,
 }: {
@@ -117,7 +116,6 @@ export function buildFallbackOwnedCells({
   gridCells: (Pokemon | null)[][];
   rowConstraints: (Constraint | null)[];
   colConstraints: (Constraint | null)[];
-  possiblePokemon: Pokemon[][][];
   caughtSet: Set<number>;
   shinyPokemonKeyIds: Set<number>;
 }): (Pokemon | null)[][] {
