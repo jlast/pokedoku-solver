@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { fetchPuzzles } from "./puzzle-fetch-core";
+import type { Pokemon } from "@pokedoku-helper/shared-types";
+import { enrichPuzzlesWithFeaturedPick, fetchPuzzles } from "./puzzle-fetch-core";
 
 const RAW_PUZZLE = {
   type: "AUTOMATIC",
@@ -39,5 +40,58 @@ describe("puzzle-fetch-core", () => {
     );
 
     await expect(fetchPuzzles()).rejects.toThrow("Failed to fetch puzzle: 500 Error");
+  });
+
+  it("excludes move and ability groups from featured pick combination counts", () => {
+    const alpha: Pokemon = {
+      id: 1,
+      name: "Alpha",
+      types: ["Fire"],
+      region: "Kanto",
+      evolutionStage: "Final Stage",
+      categories: ["Legendary"],
+      learnedMoves: ["Surf"],
+      abilities: ["Swift Swim"],
+      dexDifficulty: "Nightmare",
+      dexDifficultyPercentile: 99,
+    };
+    const beta: Pokemon = {
+      id: 2,
+      name: "Beta",
+      types: ["Water"],
+      region: "Kanto",
+      evolutionStage: "Final Stage",
+      categories: ["Legendary"],
+      learnedMoves: ["Surf"],
+      abilities: ["Swift Swim"],
+      dexDifficulty: "Easy",
+      dexDifficultyPercentile: 1,
+    };
+    const gamma: Pokemon = {
+      id: 3,
+      name: "Gamma",
+      types: ["Grass"],
+      region: "Kanto",
+      evolutionStage: "Final Stage",
+      categories: ["Legendary"],
+      learnedMoves: ["Surf"],
+      abilities: ["Swift Swim"],
+      dexDifficulty: "Easy",
+      dexDifficultyPercentile: 1,
+    };
+
+    const puzzles = enrichPuzzlesWithFeaturedPick([
+      {
+        date: "2025-01-01",
+        type: "AUTOMATIC",
+        bonus: false,
+        size: 1,
+        rowConstraints: [{ category: "category", value: "Legendary" }],
+        colConstraints: [{ category: "regions", value: "Kanto" }],
+      },
+    ], [alpha, beta, gamma]);
+
+    expect(puzzles[0].featuredPick?.name).toBe("Alpha");
+    expect(puzzles[0].featuredPick?.globalCategoryCombinationCount).toBe(6);
   });
 });

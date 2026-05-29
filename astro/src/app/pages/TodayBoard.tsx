@@ -12,6 +12,7 @@ import { ActionLink } from '../components/shared/ActionLink';
 import { getSessionUserProfile, getValidSessionIdToken } from '../../lib/cognitoAuth';
 import { getPokemonKeyId } from '../lib/pokemonGrid';
 import {
+  buildPersonalizedRemainingGroupScoreMap,
   buildFallbackOwnedCells,
   buildSuggestedCells,
   buildTextualSuggestionEntries,
@@ -63,6 +64,34 @@ interface LoadedTodayBoardUserState {
   myPokedexFilter: boolean | null;
   spoilerModeEnabled: boolean | null;
 }
+
+const TODAY_BOARD_RECOMMENDATION_FAQ = [
+  {
+    question: 'Why are these not always the highest-difficulty picks?',
+    answer:
+      'For logged-in users with Hide owned Pokemon enabled, these recommendations are optimized for your remaining Pokedex, not just raw rarity. A lower-difficulty Pokemon can be the better pick if it preserves stronger future coverage across the category combinations you still need.',
+  },
+  {
+    question: 'What makes a pick the best one?',
+    answer:
+      'We check the valid category-combination groups each remaining Pokemon belongs to using only types, regions, evolution, and categories. Then we look at how many unowned Pokemon are left in each of those groups and prefer answers whose weakest remaining group is still relatively strong.',
+  },
+  {
+    question: 'Does dex difficulty still matter?',
+    answer:
+      'Yes. Dex difficulty is still used as a tie-breaker when two Pokemon are equally good for your remaining Pokedex coverage. It just is not the main ranking rule in this personalized mode.',
+  },
+  {
+    question: 'Do moves and abilities affect these recommendations?',
+    answer:
+      'No. This scoring only uses types, regions, evolution, and categories. Moves and abilities are intentionally excluded from the personalized coverage score.',
+  },
+  {
+    question: 'Why can recommendations change after I mark Pokemon as owned?',
+    answer:
+      'Because your remaining Pokedex changed. As your owned list changes, the system recalculates which category-combination groups are still deep and which ones are getting thin, so a different answer can become the most strategic pick.',
+  },
+] as const;
 
 function getApiBaseUrl(): string | null {
   const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
@@ -187,10 +216,26 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     return pokemon.filter((entry) => !caughtSet.has(getPokemonKeyId(entry)));
   }, [caughtSet, pokemon, showMissingOnly]);
 
+  const personalizedRemainingGroupScoreByKeyId = useMemo(() => {
+    if (!isLoggedIn || !showMissingOnly || pokemon.length === 0 || pokemonPool.length === 0) {
+      return undefined;
+    }
+
+    return buildPersonalizedRemainingGroupScoreMap({
+      pokemon,
+      remainingPokemon: pokemonPool,
+    });
+  }, [isLoggedIn, pokemon, pokemonPool, showMissingOnly]);
+
   useEffect(() => {
     if (pokemonPool.length === 0) return;
 
-    const { cells, suggestedKeys } = buildSuggestedCells(pokemonPool, puzzle.rowConstraints, puzzle.colConstraints);
+    const { cells, suggestedKeys } = buildSuggestedCells(
+      pokemonPool,
+      puzzle.rowConstraints,
+      puzzle.colConstraints,
+      personalizedRemainingGroupScoreByKeyId,
+    );
     const timer = window.setTimeout(() => {
       setSuggestedPokemonKeys(suggestedKeys);
       setGrid((prev) => ({ ...prev, cells }));
@@ -199,7 +244,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     return () => {
       window.clearTimeout(timer);
     };
-  }, [pokemonPool, puzzle.colConstraints, puzzle.rowConstraints]);
+  }, [personalizedRemainingGroupScoreByKeyId, pokemonPool, puzzle.colConstraints, puzzle.rowConstraints]);
 
   const possiblePokemon = useMemo(() => {
     const result: Pokemon[][][] = Array.from({ length: gridSize }, () =>
@@ -446,8 +491,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
               <p className="m-0 text-xs text-[var(--text)]">Control which answers you see and when you see them.</p>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                <div className="w-[170px] shrink-0">
+              <div className="grid grid-cols-[170px_auto] items-center justify-center gap-3">
+                <div className="text-left">
                   <p className="m-0 text-sm font-medium text-[var(--text-h)]">Hide owned Pokémon</p>
                 </div>
                 <button
@@ -469,8 +514,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                   />
                 </button>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                <div className="w-[170px] shrink-0">
+              <div className="grid grid-cols-[170px_auto] items-center justify-center gap-3">
+                <div className="text-left">
                   <p className="m-0 text-sm font-medium text-[var(--text-h)]">Avoid spoilers</p>
 
                 </div>
@@ -597,8 +642,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                 <p className="m-0 text-sm font-semibold text-[var(--text-h)]">Answer Visibility</p>
                 <p className="m-0 text-xs text-[var(--text)]">Choose whether answers stay hidden until you reveal them.</p>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                <div className="w-[170px] shrink-0">
+              <div className="grid grid-cols-[170px_auto] items-center justify-center gap-3">
+                <div className="text-left">
                   <p className="m-0 text-sm font-medium text-[var(--text-h)]">Avoid spoilers</p>
                 </div>
                 <button
@@ -673,9 +718,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           onSelect={handlePokemonSelect}
         />
       </div>
-      <InfoBox>These are strategic Pokedoku answers that prioritize harder-to-place Pokemon for Pokedex completion. Tap a square for all options.</InfoBox>
-
-      <div className="mt-2 flex flex-wrap justify-center gap-2.5">
+      <div className="mt-2 mb-4 flex flex-wrap justify-center gap-2.5">
         <ActionButton onClick={clearCells} variant="destructiveGhost" disabled={!hasGridData}>
           Clear selected Pokemon
         </ActionButton>
@@ -690,6 +733,35 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           Try another board
         </ActionLink>
       </div>
+
+      { isLoggedIn ? (<section className="mt-4 w-full max-w-[760px]" aria-labelledby="today-board-faq-heading">
+        <h2 id="today-board-faq-heading" className="mb-2 text-lg font-semibold tracking-tight text-[var(--text-h)]">
+          Why these picks?
+        </h2>
+        <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)]">
+          {TODAY_BOARD_RECOMMENDATION_FAQ.map((item, index) => (
+            <details
+              key={item.question}
+              className={index === 0 ? 'group' : 'group border-t border-[var(--border)]'}
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-semibold text-[var(--text-h)] transition-colors hover:bg-[var(--accent-bg)] [&::-webkit-details-marker]:hidden">
+                <span>{item.question}</span>
+                <svg
+                  className="h-4 w-4 shrink-0 text-[var(--text)] transition-transform duration-200 group-open:rotate-180"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 text-sm leading-6 text-[var(--text)]">
+                <p className="m-0 opacity-90">{item.answer}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>): null}
 
       <TodayBoardSuggestions
         textualSuggestions={textualSuggestions}

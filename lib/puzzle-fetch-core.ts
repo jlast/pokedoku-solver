@@ -1,5 +1,6 @@
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { FILTER_CATEGORIES, matchesConstraint } from "./shared/filters";
+import { CATEGORY_COMBINATION_FILTER_KEYS } from "./shared/categoryCombinations";
 
 type ConstraintCategory = "regions" | "types" | "evolution" | "category" | "move";
 
@@ -231,7 +232,7 @@ function buildEvolutionLineResolver(pokemon: Pokemon[]): (id: number) => string 
 }
 
 function countGlobalCategoryCombinationsForPokemon(entry: Pokemon, pokemon: Pokemon[]): number {
-  const options = FILTER_CATEGORIES.flatMap((category) =>
+  const options = FILTER_CATEGORIES.filter((category) => CATEGORY_COMBINATION_FILTER_KEYS.includes(category.key)).flatMap((category) =>
     category.options.map((option) => ({
       constraint: { category: category.key, value: option.name },
     })),

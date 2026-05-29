@@ -1,5 +1,6 @@
 import type { Pokemon } from '@pokedoku-helper/shared-types';
-import { matchesConstraint, type Constraint } from '../../../../lib/shared/filters';
+import { FILTER_CATEGORIES, matchesConstraint, type Constraint } from '../../../../lib/shared/filters';
+import { CATEGORY_COMBINATION_FILTER_KEYS } from '../../../../lib/shared/categoryCombinations';
 import { compareByHardest, getPokemonKey, getPokemonKeyId } from './pokemonGrid';
 
 export interface TextualSuggestionEntry {
@@ -16,6 +17,142 @@ export function createEmptyPokemonGrid(size: number): (Pokemon | null)[][] {
 
 export function createEmptyKeyGrid(size: number): (string | null)[][] {
   return Array.from({ length: size }, () => Array.from({ length: size }, () => null));
+}
+
+function buildEvolutionLineResolver(pokemon: Pokemon[]): (id: number) => string {
+  const nodes = new Map<number, Set<number>>();
+  const byId = new Map<number, Pokemon>();
+
+  for (const entry of pokemon) {
+    byId.set(entry.id, entry);
+    if (!nodes.has(entry.id)) nodes.set(entry.id, new Set<number>());
+  }
+
+  for (const entry of pokemon) {
+    const neighbors = nodes.get(entry.id);
+    if (!neighbors) continue;
+
+    const from = entry.evolution?.from ?? [];
+    const to = entry.evolution?.to ?? [];
+    for (const neighborId of [...from, ...to]) {
+      if (!byId.has(neighborId)) continue;
+      neighbors.add(neighborId);
+      nodes.get(neighborId)?.add(entry.id);
+    }
+  }
+
+  const visited = new Set<number>();
+  const lineById = new Map<number, string>();
+
+  for (const nodeId of nodes.keys()) {
+    if (visited.has(nodeId)) continue;
+
+    const stack = [nodeId];
+    const component: number[] = [];
+    visited.add(nodeId);
+
+    while (stack.length > 0) {
+      const current = stack.pop();
+      if (current === undefined) continue;
+
+      component.push(current);
+      for (const neighbor of nodes.get(current) ?? []) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          stack.push(neighbor);
+        }
+      }
+    }
+
+    const key = String(Math.min(...component));
+    for (const id of component) lineById.set(id, key);
+  }
+
+  return (id: number) => lineById.get(id) ?? String(id);
+}
+
+interface CategoryCombinationOption {
+  constraint: Constraint;
+}
+
+interface CategoryCombinationGroup {
+  key: string;
+  left: CategoryCombinationOption;
+  right: CategoryCombinationOption;
+}
+
+function buildCategoryCombinationGroups(pokemon: Pokemon[]): CategoryCombinationGroup[] {
+  const options = FILTER_CATEGORIES.filter((category) => CATEGORY_COMBINATION_FILTER_KEYS.includes(category.key)).flatMap((category) =>
+    category.options.map((option) => ({
+      constraint: { category: category.key, value: option.name },
+    })),
+  );
+
+  const resolveEvolutionLine = buildEvolutionLineResolver(pokemon);
+  const groups: CategoryCombinationGroup[] = [];
+
+  for (let i = 0; i < options.length; i++) {
+    for (let j = i + 1; j < options.length; j++) {
+      const left = options[i];
+      const right = options[j];
+      const matching = pokemon.filter((candidate) =>
+        matchesConstraint(candidate, left.constraint) && matchesConstraint(candidate, right.constraint),
+      );
+
+      if (matching.length === 0) continue;
+
+      const lineCount = new Set(matching.map((candidate) => resolveEvolutionLine(candidate.id))).size;
+      if (lineCount <= 1) continue;
+
+      groups.push({
+        key: `${left.constraint.category}:${left.constraint.value}|${right.constraint.category}:${right.constraint.value}`,
+        left,
+        right,
+      });
+    }
+  }
+
+  return groups;
+}
+
+export function buildPersonalizedRemainingGroupScoreMap({
+  pokemon,
+  remainingPokemon,
+}: {
+  pokemon: Pokemon[];
+  remainingPokemon: Pokemon[];
+}): Map<number, number> {
+  const groups = buildCategoryCombinationGroups(pokemon);
+  const remainingCountByGroupKey = new Map<string, number>();
+
+  for (const group of groups) {
+    const remainingCount = remainingPokemon.filter((candidate) =>
+      matchesConstraint(candidate, group.left.constraint) && matchesConstraint(candidate, group.right.constraint),
+    ).length;
+    remainingCountByGroupKey.set(group.key, remainingCount);
+  }
+
+  const minRemainingCountByKeyId = new Map<number, number>();
+
+  for (const entry of remainingPokemon) {
+    let minRemainingCount = Number.POSITIVE_INFINITY;
+
+    for (const group of groups) {
+      if (!matchesConstraint(entry, group.left.constraint) || !matchesConstraint(entry, group.right.constraint)) {
+        continue;
+      }
+
+      const remainingCount = remainingCountByGroupKey.get(group.key);
+      if (remainingCount === undefined) continue;
+      minRemainingCount = Math.min(minRemainingCount, remainingCount);
+    }
+
+    if (Number.isFinite(minRemainingCount)) {
+      minRemainingCountByKeyId.set(getPokemonKeyId(entry), minRemainingCount);
+    }
+  }
+
+  return minRemainingCountByKeyId;
 }
 
 export function assignSuggestedCellsFromCandidates(
@@ -82,6 +219,7 @@ export function buildSuggestedCells(
   pokemon: Pokemon[],
   rowConstraints: (Constraint | null)[],
   colConstraints: (Constraint | null)[],
+  personalizedRemainingGroupScoreByKeyId?: Map<number, number>,
 ): { cells: (Pokemon | null)[][]; suggestedKeys: (string | null)[][] } {
   const gridSize = rowConstraints.length;
   const candidatesByCell: Pokemon[][][] = Array.from({ length: gridSize }, () =>
@@ -92,7 +230,12 @@ export function buildSuggestedCells(
     for (let col = 0; col < gridSize; col++) {
       candidatesByCell[row][col] = pokemon
         .filter((entry) => matchesConstraint(entry, rowConstraints[row]) && matchesConstraint(entry, colConstraints[col]))
-        .sort(compareByHardest);
+        .sort((a, b) => {
+          const aScore = personalizedRemainingGroupScoreByKeyId?.get(getPokemonKeyId(a)) ?? Number.NEGATIVE_INFINITY;
+          const bScore = personalizedRemainingGroupScoreByKeyId?.get(getPokemonKeyId(b)) ?? Number.NEGATIVE_INFINITY;
+          if (aScore !== bScore) return bScore - aScore;
+          return compareByHardest(a, b);
+        });
     }
   }
 

@@ -1,7 +1,7 @@
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { describe, expect, it } from 'vitest';
 import type { Constraint } from '../../../../lib/shared/filters';
-import { assignSuggestedCellsFromCandidates, buildFallbackOwnedCells } from './todayBoard';
+import { assignSuggestedCellsFromCandidates, buildFallbackOwnedCells, buildPersonalizedRemainingGroupScoreMap, buildSuggestedCells } from './todayBoard';
 
 function createPokemon(id: number, name: string): Pokemon {
   return {
@@ -148,5 +148,189 @@ describe('buildFallbackOwnedCells', () => {
     expect(names).toContain('Beta');
     expect(names).toContain('Gamma');
     expect(names).toContain('Delta');
+  });
+});
+
+describe('buildPersonalizedRemainingGroupScoreMap', () => {
+  it('scores Pokemon by their highest minimal remaining allowed group count', () => {
+    const alpha = {
+      ...createPokemon(1, 'Alpha'),
+      types: ['Fire'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+    const beta = {
+      ...createPokemon(2, 'Beta'),
+      types: ['Fire'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+    const gamma = {
+      ...createPokemon(3, 'Gamma'),
+      types: ['Fire'],
+      region: 'Johto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+    const delta = {
+      ...createPokemon(4, 'Delta'),
+      types: ['Fire'],
+      region: 'Hoenn',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+    const epsilon = {
+      ...createPokemon(5, 'Epsilon'),
+      types: ['Water'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+
+    const scoreMap = buildPersonalizedRemainingGroupScoreMap({
+      pokemon: [alpha, beta, gamma, delta, epsilon],
+      remainingPokemon: [alpha, beta, gamma, delta, epsilon],
+    });
+
+    expect(scoreMap.get(1)).toBe(2);
+    expect(scoreMap.get(2)).toBe(2);
+    expect(scoreMap.get(3)).toBe(4);
+    expect(scoreMap.get(4)).toBe(4);
+    expect(scoreMap.get(5)).toBe(3);
+  });
+
+  it('ignores move and ability groups when scoring remaining combinations', () => {
+    const alpha = {
+      ...createPokemon(1, 'Alpha'),
+      types: ['Fire'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+      learnedMoves: ['Surf'],
+      abilities: ['Swift Swim'],
+    } satisfies Pokemon;
+    const beta = {
+      ...createPokemon(2, 'Beta'),
+      types: ['Water'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+      learnedMoves: ['Surf'],
+      abilities: ['Swift Swim'],
+    } satisfies Pokemon;
+    const gamma = {
+      ...createPokemon(3, 'Gamma'),
+      types: ['Grass'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+      learnedMoves: ['Surf'],
+      abilities: ['Swift Swim'],
+    } satisfies Pokemon;
+
+    const scoreMap = buildPersonalizedRemainingGroupScoreMap({
+      pokemon: [alpha, beta, gamma],
+      remainingPokemon: [alpha, beta, gamma],
+    });
+
+    expect(scoreMap.get(1)).toBe(3);
+    expect(scoreMap.get(2)).toBe(3);
+    expect(scoreMap.get(3)).toBe(3);
+  });
+});
+
+describe('buildSuggestedCells', () => {
+  it('prefers the candidate with the highest minimal remaining group score', () => {
+    const alpha = {
+      ...createPokemon(1, 'Alpha'),
+      dexDifficulty: 'Easy',
+      dexDifficultyPercentile: 1,
+      types: ['Fire'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+    const beta = {
+      ...createPokemon(2, 'Beta'),
+      dexDifficulty: 'Nightmare',
+      dexDifficultyPercentile: 99,
+      types: ['Fire'],
+      region: 'Johto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+    const gamma = {
+      ...createPokemon(3, 'Gamma'),
+      types: ['Fire'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+    const delta = {
+      ...createPokemon(4, 'Delta'),
+      types: ['Fire'],
+      region: 'Hoenn',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+    const epsilon = {
+      ...createPokemon(5, 'Epsilon'),
+      types: ['Water'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+
+    const pokemon = [alpha, beta, gamma, delta, epsilon];
+    const scoreMap = buildPersonalizedRemainingGroupScoreMap({
+      pokemon,
+      remainingPokemon: pokemon,
+    });
+    const { cells } = buildSuggestedCells(
+      pokemon,
+      [{ category: 'type', value: 'Fire' }],
+      [{ category: 'category', value: 'Legendary' }],
+      scoreMap,
+    );
+
+    expect(cells[0][0]?.name).toBe('Beta');
+  });
+
+  it('falls back to difficulty ordering when personalized scores tie', () => {
+    const alpha = {
+      ...createPokemon(1, 'Alpha'),
+      dexDifficulty: 'Easy',
+      dexDifficultyPercentile: 1,
+      types: ['Fire'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+    const beta = {
+      ...createPokemon(2, 'Beta'),
+      dexDifficulty: 'Nightmare',
+      dexDifficultyPercentile: 99,
+      types: ['Fire'],
+      region: 'Kanto',
+      evolutionStage: 'Final Stage',
+      categories: ['Legendary'],
+    } satisfies Pokemon;
+
+    const pokemon = [alpha, beta];
+    const scoreMap = buildPersonalizedRemainingGroupScoreMap({
+      pokemon,
+      remainingPokemon: pokemon,
+    });
+    const { cells } = buildSuggestedCells(
+      pokemon,
+      [{ category: 'type', value: 'Fire' }],
+      [{ category: 'category', value: 'Legendary' }],
+      scoreMap,
+    );
+
+    expect(scoreMap.get(1)).toBe(scoreMap.get(2));
+    expect(cells[0][0]?.name).toBe('Beta');
   });
 });

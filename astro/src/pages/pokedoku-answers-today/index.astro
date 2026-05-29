@@ -23,30 +23,6 @@ import ContentSection from "../../components/shared/ContentSection.astro";
 
     <TodayPageClient client:load />
 
-    <ContentSection>
-      <h2 class="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[var(--text-h)]">Today&apos;s Pokedoku categories</h2>
-      <p class="mb-3.5 text-base leading-[1.7] text-[var(--text)]">
-        This page automatically loads the current Pokedoku puzzle constraints so you can inspect every square and see
-        which Pokémon fit. It updates each day with the latest puzzle.
-      </p>
-    </ContentSection>
-
-    <ContentSection class="faq">
-      <h2 class="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[var(--text-h)]">FAQ</h2>
-      <h3 class="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[var(--text-h)]">What is shown on this page?</h3>
-      <p class="mb-3.5 text-base leading-[1.7] text-[var(--text)]">This page loads today&apos;s Pokedoku categories and shows possible Pokémon matches for each square.</p>
-      <h3 class="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[var(--text-h)]">Does this update automatically?</h3>
-      <p class="mb-3.5 text-base leading-[1.7] text-[var(--text)]">Yes. It is designed to load the current daily Pokedoku puzzle.</p>
-      <h3 class="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[var(--text-h)]">Can I go back to manual editing?</h3>
-      <p class="mb-3.5 text-base leading-[1.7] text-[var(--text)]">Yes. Use the back button to return to the editor and set your own row and column combinations.</p>
-      <h3 class="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[var(--text-h)]">What is Dex Difficulty?</h3>
-      <p class="mb-3.5 text-base leading-[1.7] text-[var(--text)]">
-          Dex Difficulty shows how hard it is to use a Pokémon in Pokedoku. <strong>Nightmare</strong> = few valid spots,
-          lots of competition. <strong>Easy</strong> = more options or less competition. Helps you see which answers are
-          more logical to prioritize for dex completion.
-        </p>
-    </ContentSection>
-
     <Footer />
   </div>
 </AppPageLayout>
