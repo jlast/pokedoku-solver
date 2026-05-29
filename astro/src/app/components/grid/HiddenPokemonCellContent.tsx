@@ -52,9 +52,6 @@ export function HiddenPokemonCellContent({
                 No extra hint available
               </span>
             )}
-            <span className="text-[0.6rem] text-[var(--text)] max-[768px]:text-[0.55rem]">
-              {validAnswerCount === 1 ? `1 ${singularCountLabel}` : `${validAnswerCount} ${pluralCountLabel}`}
-            </span>
           </>
         ) : (
           <>
