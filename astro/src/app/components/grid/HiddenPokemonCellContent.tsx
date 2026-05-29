@@ -44,7 +44,7 @@ export function HiddenPokemonCellContent({
             {hintBadges.length > 0 ? (
               <div className="flex flex-col max-w-full items-center justify-center gap-0.5 overflow-hidden">
                 {hintBadges.map((badge) => (
-                  <span className="text-[0.7rem]">
+                  <span className="leading-0 text-[0.7rem]">
                     {badge.label}
                   </span>
                 ))}
