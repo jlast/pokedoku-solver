@@ -1,7 +1,7 @@
 import { trackEvent } from "../../../../lib/browser/analytics";
 import { buildLoginUrl } from "../../lib/cognitoAuth";
 import { isAuthFeatureEnabled } from "../../lib/featureFlags";
-import { PokeballIcon } from "../components/shared/PokeballIcon";
+import { PokeballDivider } from "../components/shared/PokeballDivider";
 
 type Provider = {
   id: "Google";
@@ -101,11 +101,7 @@ export function LoginPageClient() {
         </div>
         <p className="mb-0 mt-4 text-center text-xs text-[var(--text)]">More sign-in options coming soon.</p>
 
-        <div className="mt-4 flex items-center gap-3" aria-hidden="true">
-          <span className="h-px flex-1 bg-[var(--code-bg)]" />
-          <PokeballIcon tone="pokeball" className="h-5 w-5" />
-          <span className="h-px flex-1 bg-[var(--code-bg)]" />
-        </div>
+        <PokeballDivider tone="greatball"/>
 
         <div className="mt-5 grid items-center gap-4 md:grid-cols-5">
           <ul className="mb-0 space-y-3 text-lg text-[var(--text)] md:col-span-2 md:self-center">

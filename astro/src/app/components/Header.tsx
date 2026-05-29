@@ -3,6 +3,7 @@ import { trackEvent } from "../../../../lib/browser/analytics";
 import { getRemoteSettings } from "@pokedoku-helper/user-api-client";
 import { buildLogoutUrl, clearSession, getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { isAuthFeatureEnabled } from "../../lib/featureFlags";
+import { PokeballDivider } from "./shared/PokeballDivider";
 
 const UNNAMED_TRAINER_LABEL = "Unnamed trainer";
 const THEME_STORAGE_KEY = "theme-mode";
@@ -650,7 +651,7 @@ export function Header({
           </div>
 
           {showDate && (
-            <div className="inline-flex flex-wrap items-center justify-center gap-2.5">
+            <div className="inline-flex flex-wrap items-center justify-center gap-2.5 mt-6 md:mt-0">
               <div
                 className="inline-flex items-center gap-2 text-[0.8rem] font-medium text-[var(--text)] max-[1100px]:gap-[7px] max-[1100px]:text-[0.76rem]"
                 aria-label="Updates daily"
@@ -1036,10 +1037,7 @@ export function Header({
             </p>
           )}
         </div>
-        <div
-          className="relative left-1/2 mt-4 w-screen -translate-x-1/2 border-t border-[var(--border)]"
-          aria-hidden="true"
-        />
+        <PokeballDivider fullBleed />
       </header>
     </>
   );
