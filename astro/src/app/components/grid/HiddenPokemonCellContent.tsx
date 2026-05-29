@@ -48,7 +48,7 @@ export function HiddenPokemonCellContent({
                 ))}
               </div>
             ) : (
-              <span className="text-[0.72rem] font-semibold leading-tight text-[var(--text-h)] max-[768px]:text-[0.64rem]">
+              <span className="text-[0.42rem] font-semibold leading-tight text-[var(--text-h)] max-[768px]:text-[0.64rem]">
                 No extra hint available
               </span>
             )}
