@@ -44,10 +44,13 @@ export function HiddenPokemonCellContent({
             {hintBadges.length > 0 ? (
               <div className="flex flex-col max-w-full items-center justify-center gap-0.5 overflow-hidden">
                 {hintBadges.map((badge) => (
-                  <span className="text-[0.82rem]">
+                  <span className="text-[0.7rem]">
                     {badge.label}
                   </span>
                 ))}
+               <span className="text-[0.4rem] text-[var(--text)] max-[768px]:text-[0.55rem]">
+                {validAnswerCount === 1 ? `1 ${singularCountLabel}` : `${validAnswerCount} ${pluralCountLabel}`}
+               </span>
               </div>
             ) : (
               <span className="text-[0.82rem] font-semibold leading-tight text-[var(--text-h)] max-[768px]:text-[0.64rem]">
