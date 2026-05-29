@@ -1,0 +1,205 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Pokedoku Helper - Cognito user metrics dashboard"
+
+Parameters:
+  CognitoMetricsCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing the Cognito metrics Lambda zip"
+
+  CognitoMetricsCodeS3Key:
+    Type: String
+    Description: "S3 key for the Cognito metrics Lambda zip"
+
+  CognitoRegion:
+    Type: String
+    Default: "us-east-1"
+    Description: "AWS region for the external Cognito user pool"
+
+  CognitoUserPoolId:
+    Type: String
+    Description: "External Cognito user pool ID"
+
+  MetricNamespace:
+    Type: String
+    Default: "PokedokuHelper/Cognito"
+    Description: "CloudWatch metric namespace"
+
+  DashboardName:
+    Type: String
+    Default: "pokedoku-helper-cognito-users"
+    Description: "CloudWatch dashboard name"
+
+  ScheduleExpression:
+    Type: String
+    Default: "cron(15 1 * * ? *)"
+    Description: "EventBridge schedule for publishing Cognito metrics"
+
+Resources:
+  CognitoMetricsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: CognitoMetricsPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cognito-idp:ListUsers
+                Resource: !Sub "arn:aws:cognito-idp:${CognitoRegion}:${AWS::AccountId}:userpool/${CognitoUserPoolId}"
+              - Effect: Allow
+                Action:
+                  - cloudwatch:PutMetricData
+                  - cloudwatch:GetMetricStatistics
+                Resource: "*"
+
+  CognitoMetricsFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: cognito-user-metrics.handler
+      Role: !GetAtt CognitoMetricsRole.Arn
+      Timeout: 60
+      MemorySize: 256
+      Environment:
+        Variables:
+          COGNITO_REGION: !Ref CognitoRegion
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          METRIC_NAMESPACE: !Ref MetricNamespace
+      Code:
+        S3Bucket: !Ref CognitoMetricsCodeS3Bucket
+        S3Key: !Ref CognitoMetricsCodeS3Key
+
+  CognitoMetricsSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: "Publish daily Cognito user metrics to CloudWatch"
+      ScheduleExpression: !Ref ScheduleExpression
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt CognitoMetricsFunction.Arn
+          Id: CognitoMetricsTarget
+
+  CognitoMetricsScheduleInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref CognitoMetricsFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt CognitoMetricsSchedule.Arn
+
+  CognitoMetricsErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: "Alerts when Cognito metrics Lambda reports errors"
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref CognitoMetricsFunction
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      DatapointsToAlarm: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+
+  CognitoMetricsDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: !Ref DashboardName
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "${AWS::Region}",
+                "title": "Total Registered Users",
+                "stat": "Maximum",
+                "period": 86400,
+                "metrics": [
+                  [ "${MetricNamespace}", "TotalRegisteredUsers", "UserPoolId", "${CognitoUserPoolId}" ]
+                ]
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "${AWS::Region}",
+                "title": "New Users Daily",
+                "stat": "Maximum",
+                "period": 86400,
+                "metrics": [
+                  [ "${MetricNamespace}", "NewUsersDaily", "UserPoolId", "${CognitoUserPoolId}" ]
+                ]
+              }
+            },
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 6,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "view": "singleValue",
+                "region": "${AWS::Region}",
+                "title": "Current Total Registered Users",
+                "stat": "Maximum",
+                "period": 86400,
+                "metrics": [
+                  [ "${MetricNamespace}", "TotalRegisteredUsers", "UserPoolId", "${CognitoUserPoolId}" ]
+                ]
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 6,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "${AWS::Region}",
+                "title": "Cognito Metrics Lambda Errors",
+                "stat": "Sum",
+                "period": 300,
+                "metrics": [
+                  [ "AWS/Lambda", "Errors", "FunctionName", "${CognitoMetricsFunction}" ]
+                ]
+              }
+            }
+          ]
+        }
+
+Outputs:
+  CognitoMetricsFunctionName:
+    Description: "Cognito metrics Lambda function name"
+    Value: !Ref CognitoMetricsFunction
+
+  CognitoMetricsDashboardName:
+    Description: "CloudWatch dashboard name"
+    Value: !Ref DashboardName

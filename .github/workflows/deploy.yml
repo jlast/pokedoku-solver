@@ -20,6 +20,11 @@ on:
         required: false
         default: false
         type: boolean
+      force_dashboard_deploy:
+        description: Force deploy dashboard targets
+        required: false
+        default: false
+        type: boolean
       force_pokedoku_details_publish:
         description: Force publish pokedoku-details app
         required: false
@@ -50,7 +55,9 @@ jobs:
       user_dex_shared_get_lambda_changed: ${{ steps.changes.outputs.user_dex_shared_get_lambda_changed }}
       settings_get_lambda_changed: ${{ steps.changes.outputs.settings_get_lambda_changed }}
       settings_patch_lambda_changed: ${{ steps.changes.outputs.settings_patch_lambda_changed }}
+      cognito_metrics_lambda_changed: ${{ steps.changes.outputs.cognito_metrics_lambda_changed }}
       user_dex_stack_changed: ${{ steps.changes.outputs.user_dex_stack_changed }}
+      cognito_metrics_stack_changed: ${{ steps.changes.outputs.cognito_metrics_stack_changed }}
       pokedoku_details_changed: ${{ steps.changes.outputs.pokedoku_details_changed }}
     steps:
       - name: Checkout
@@ -124,6 +131,16 @@ jobs:
       settings_get_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.settings_get_lambda_changed == 'true') && 'true' || 'false' }}
       settings_patch_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.settings_patch_lambda_changed == 'true') && 'true' || 'false' }}
       user_dex_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.user_dex_stack_changed == 'true') && 'true' || 'false' }}
+
+  cognito-metrics-deploy:
+    needs:
+      - detect-changes
+      - validate-and-pages
+    uses: ./.github/workflows/reusable-cognito-metrics-deploy.yml
+    secrets: inherit
+    with:
+      cognito_metrics_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_dashboard_deploy) || needs.detect-changes.outputs.cognito_metrics_lambda_changed == 'true') && 'true' || 'false' }}
+      cognito_metrics_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_dashboard_deploy) || needs.detect-changes.outputs.cognito_metrics_stack_changed == 'true') && 'true' || 'false' }}
 
   pokedoku-details-publish:
     if: ${{ (github.event_name == 'workflow_dispatch' && inputs.force_pokedoku_details_publish) || needs.detect-changes.outputs.pokedoku_details_changed == 'true' }}

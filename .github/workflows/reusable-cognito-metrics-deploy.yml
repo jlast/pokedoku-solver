@@ -1,0 +1,81 @@
+name: Reusable Cognito Metrics Deploy
+
+on:
+  workflow_call:
+    inputs:
+      cognito_metrics_lambda_changed:
+        required: true
+        type: string
+      cognito_metrics_stack_changed:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  cognito-metrics-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_GITHUB_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_GITHUB_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Package Cognito metrics Lambda
+        if: inputs.cognito_metrics_lambda_changed == 'true'
+        run: pnpm package:cognito-user-metrics-lambda
+
+      - name: Upload Cognito metrics Lambda artifact
+        if: inputs.cognito_metrics_lambda_changed == 'true'
+        env:
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          COGNITO_METRICS_LAMBDA_KEY=lambda/cognito-user-metrics-${{ github.sha }}.zip
+          aws s3 cp dist-lambda/cognito-user-metrics.zip s3://${S3_BUCKET_NAME}/${COGNITO_METRICS_LAMBDA_KEY}
+          echo "COGNITO_METRICS_LAMBDA_KEY=${COGNITO_METRICS_LAMBDA_KEY}" >> "$GITHUB_ENV"
+
+      - name: Validate Cognito metrics CloudFormation template
+        run: aws cloudformation validate-template --template-body file://terraform/cognito-metrics-stack.yaml
+
+      - name: Deploy Cognito metrics CloudFormation stack
+        if: inputs.cognito_metrics_lambda_changed == 'true' || inputs.cognito_metrics_stack_changed == 'true'
+        env:
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+          COGNITO_METRICS_LAMBDA_CHANGED: ${{ inputs.cognito_metrics_lambda_changed }}
+          COGNITO_METRICS_LAMBDA_KEY: ${{ env.COGNITO_METRICS_LAMBDA_KEY }}
+          COGNITO_REGION: ${{ vars.COGNITO_REGION }}
+          PUBLIC_COGNITO_USER_POOL_ID: ${{ vars.PUBLIC_COGNITO_USER_POOL_ID }}
+          COGNITO_METRICS_NAMESPACE: ${{ vars.COGNITO_METRICS_NAMESPACE }}
+          COGNITO_METRICS_DASHBOARD_NAME: ${{ vars.COGNITO_METRICS_DASHBOARD_NAME }}
+          COGNITO_METRICS_SCHEDULE_EXPRESSION: ${{ vars.COGNITO_METRICS_SCHEDULE_EXPRESSION }}
+        run: bash .github/scripts/deploy-cognito-metrics-stack.sh
+
+      - name: Run Cognito metrics Lambda
+        if: inputs.cognito_metrics_lambda_changed == 'true' || inputs.cognito_metrics_stack_changed == 'true'
+        env:
+          CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
+          OUTPUT_KEY: CognitoMetricsFunctionName
+        run: STACK_NAME="${CLOUDFORMATION_STACK_NAME:-pokedoku-helper}-cognito-metrics" bash .github/scripts/invoke-lambda.sh

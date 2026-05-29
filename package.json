@@ -20,6 +20,8 @@
     "package:settings-get-lambda": "pnpm run build:settings-get-lambda && zip -j dist-lambda/settings-get.zip dist-lambda/settings-get.js",
     "build:settings-patch-lambda": "mkdir -p dist-lambda && pnpm exec esbuild terraform/lambda/settings-patch.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist-lambda/settings-patch.js",
     "package:settings-patch-lambda": "pnpm run build:settings-patch-lambda && zip -j dist-lambda/settings-patch.zip dist-lambda/settings-patch.js",
+    "build:cognito-user-metrics-lambda": "mkdir -p dist-lambda && pnpm exec esbuild terraform/lambda/cognito-user-metrics.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist-lambda/cognito-user-metrics.js",
+    "package:cognito-user-metrics-lambda": "pnpm run build:cognito-user-metrics-lambda && zip -j dist-lambda/cognito-user-metrics.zip dist-lambda/cognito-user-metrics.js",
     "package:user-dex-lambdas": "pnpm run package:user-dex-get-lambda && pnpm run package:user-dex-patch-lambda && pnpm run package:user-dex-shared-get-lambda",
     "package:settings-lambdas": "pnpm run package:settings-get-lambda && pnpm run package:settings-patch-lambda",
     "generate:puzzle-stats:local": "tsx scripts/generate-puzzle-statistics.ts",
@@ -33,6 +35,8 @@
     "dev:pokedoku-details": "pnpm sync:pokedoku-details:local-data && pnpm --filter pokedoku-details dev"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.1049.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.1049.0",
     "@pokedoku-helper/shared-types": "workspace:*",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"

@@ -95,6 +95,13 @@ It uses Redis caching and realtime data from `www.pokedoku-helper.com`.
   - `pnpm package:user-dex-patch-lambda`
   - `pnpm package:user-dex-lambdas`
 
+## Cognito metrics dashboard
+- Infra template: `terraform/cognito-metrics-stack.yaml`
+- Lambda source: `terraform/lambda/cognito-user-metrics.ts`
+- Build/package commands (root):
+  - `pnpm build:cognito-user-metrics-lambda`
+  - `pnpm package:cognito-user-metrics-lambda`
+
 ## Required infrastructure inputs
 - CloudFormation parameters expected by `terraform/user-dex-api-stack.yaml`:
   - `DomainName` (default `pokedoku-helper.com`)
@@ -114,12 +121,15 @@ It uses Redis caching and realtime data from `www.pokedoku-helper.com`.
 - Infra deploy workflow: `.github/workflows/reusable-infra-deploy.yml`
 - Site deploy workflow: `.github/workflows/reusable-site-deploy.yml`
 - Deploy entry workflow: `.github/workflows/deploy.yml`
+- Manual dashboard deploy input: `force_dashboard_deploy`
 - Stack deploy script: `.github/scripts/deploy-public-api-stack.sh`
 - Website stack deploy script: `.github/scripts/deploy-website-stack.sh`
 - Change detection script includes website, user dex, and lambda stack changes: `.github/scripts/detect-changes.sh`
 - Required GitHub environment values for infra deploy:
   - Secrets: `S3_BUCKET_NAME`, `CLOUDFORMATION_STACK_NAME`, `HOSTED_ZONE_ID`, `API_CERTIFICATE_ARN`, `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`
   - Vars (with defaults in workflow): `DOMAIN_NAME`, `API_SUBDOMAIN`, `ALLOWED_ORIGIN`, `COGNITO_REGION`
+- Required GitHub environment values for Cognito metrics deploy:
+  - Vars: `PUBLIC_COGNITO_USER_POOL_ID`, `COGNITO_REGION`, `COGNITO_METRICS_NAMESPACE`, `COGNITO_METRICS_DASHBOARD_NAME`, `COGNITO_METRICS_SCHEDULE_EXPRESSION`
 
 # Code styling
 Follow existing repository style and avoid formatting churn.
