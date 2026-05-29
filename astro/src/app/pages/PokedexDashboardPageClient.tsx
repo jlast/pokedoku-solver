@@ -795,7 +795,7 @@ export function PokedexDashboardPageClient() {
               <h2 className="m-0 mt-2 text-xl font-semibold text-[var(--text-h)]">
                 Suggested next catches
               </h2>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <div className="mt-4 grid grid-cols-2 gap-3">
                 {missingPokemonPreview.map((entry) => {
                   const pokemonSlug = entry ? `${slugify(entry.name)}-${entry.formId ?? entry.id}` : null;
                   return (
