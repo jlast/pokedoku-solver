@@ -42,10 +42,9 @@ export function HiddenPokemonCellContent({
         {revealState === 'hint' ? (
           <>
             {hintBadges.length > 0 ? (
-              <div className="flex flex-wrap max-w-full items-center justify-center gap-0.5 overflow-hidden">
-                {hintBadges.map((badge, index) => (
+              <div className="flex flex-col max-w-full items-center justify-center gap-0.5 overflow-hidden">
+                {hintBadges.map((badge) => (
                   <span className="text-[0.82rem]">
-                    {index > 0 && " / "}
                     {badge.label}
                   </span>
                 ))}
