@@ -69,7 +69,7 @@ const TODAY_BOARD_RECOMMENDATION_FAQ = [
   {
     question: 'Why are these not always the highest-difficulty picks?',
     answer:
-      'For logged-in users with Hide owned Pokemon enabled, these recommendations are optimized for your remaining Pokedex, not just raw rarity. A lower-difficulty Pokemon can be the better pick if it preserves stronger future coverage across the category combinations you still need.',
+      'For logged-in users with Suggest new Pokémon enabled, these recommendations are optimized for your remaining Pokedex, not just raw rarity. A lower-difficulty Pokemon can be the better pick if it preserves stronger future coverage across the category combinations you still need.',
   },
   {
     question: 'What makes a pick the best one?',
