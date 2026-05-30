@@ -33,6 +33,20 @@ const tools = [
     iconSize: "h-7 w-7",
   },
   {
+    title: "Custom Puzzle",
+    description: "Build your own Pokedoku grid, set custom row and column constraints, and inspect every valid answer for each square.",
+    href: "/custom/",
+    accent: "from-violet-500 to-fuchsia-600",
+    border: "border-violet-200",
+    glow: "shadow-[0_16px_34px_rgba(139,92,246,0.14)]",
+    iconBg: "bg-violet-700 text-violet-100 [html[data-theme='dark']_&]:bg-violet-100 [html[data-theme='dark']_&]:text-violet-700",
+    button: "bg-violet-700 hover:bg-violet-800",
+    cta: "Build custom puzzle",
+    tag: "Custom board",
+    iconPath: "M4 6h16M4 12h16M4 18h16M8 4v16M16 4v16",
+    iconSize: "h-6 w-6",
+  },
+  {
     title: "Pokedoku Insights",
     description: "Explore puzzle history, rarity signals, and category pair trends across past Pokedoku boards.",
     href: "/tools/pokedoku-insights/",
@@ -51,19 +65,19 @@ const tools = [
 
 <AppPageLayout
   title="Tools | Pokedoku Helper"
-  description="Explore all Pokedoku Helper tools including Category Explorer, Shiny Odds Calculator, and Pokedoku Insights."
+  description="Explore all Pokedoku Helper tools including Category Explorer, Shiny Odds Calculator, Custom Puzzle, and Pokedoku Insights."
   path="/tools/"
 >
   <div class="min-h-screen p-5">
     <Header
       title="Tools"
-      subtitle="Everything you need to analyze categories, shiny odds, and puzzle trends."
+      subtitle="Everything you need to analyze categories, build custom boards, calculate shiny odds, and study puzzle trends."
       currentPage="tools"
       client:load
     />
 
     <main class="mx-auto w-full max-w-6xl px-4 pb-10">
-      <section class="grid gap-5 lg:grid-cols-3">
+      <section class="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
         {tools.map((tool) => (
           <a href={tool.href} class:list={["group rounded-3xl border bg-[var(--bg)] p-6 text-inherit no-underline shadow-sm transition-all hover:-translate-y-1", tool.border, tool.glow]}>
             <div class="mb-4 flex items-start justify-between gap-3">

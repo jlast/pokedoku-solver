@@ -65,6 +65,13 @@ const TOOL_MENU_ITEMS: ToolMenuItem[] = [
     icon: "m12 1.8 2.4 6.2L22.2 10l-7.8 2L12 18.2 9.6 12 1.8 10l7.8-2L12 1.8z",
   },
   {
+    label: "Custom Puzzle",
+    url: "custom/",
+    iconType: "stroke",
+    matchPrefixes: ["custom/"],
+    icon: "M4 6h16M4 12h16M4 18h16M8 4v16M16 4v16",
+  },
+  {
     label: "Pokedoku Insights",
     url: "tools/pokedoku-insights/",
     iconType: "fill",

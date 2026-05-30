@@ -219,7 +219,7 @@ function App() {
       <Header
         title="Custom Puzzle"
         subtitle="Explore all valid Pokémon for any Pokedoku square. Set type, region, move, or ability constraints and click a cell to see matches."
-        currentPage="custom"
+        currentPage="tools"
       />
 
       <div className="flex flex-col items-center gap-1">
