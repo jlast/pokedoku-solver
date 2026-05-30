@@ -493,7 +493,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
             <div className="flex flex-col items-center gap-2">
               <div className="grid grid-cols-[170px_auto] items-center justify-center gap-3">
                 <div className="text-left">
-                  <p className="m-0 text-sm font-medium text-[var(--text-h)]">Hide owned Pokémon</p>
+                  <p className="m-0 text-sm font-medium text-[var(--text-h)]">Suggest new Pokémon</p>
                 </div>
                 <button
                   type="button"
