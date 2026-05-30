@@ -3,6 +3,7 @@ import { Header } from "../app/components/Header";
 import { Footer } from "../app/components/Footer";
 import Badge from "./Badge.astro";
 import Breadcrumb from "./Breadcrumb.astro";
+import { PokemonHeroSpriteToggle } from "./PokemonHeroSpriteToggle";
 import SectionCard from "./SectionCard.astro";
 import { CategoryBadgeLink } from "../app/components/shared/CategoryBadgeLink";
 import { parseCategoryId } from "../app/components/puzzle-stats/categoryUtils";
@@ -17,7 +18,7 @@ import { slugify } from "../lib/slug";
 import { getPokemonList, getPokemonSlug } from "../lib/data";
 
 interface Props {
-  pokemon: Pokemon;
+  pokemon: PokemonWithEvolution;
   slug: string;
   statsKeyId: number;
 }
@@ -29,6 +30,7 @@ type PokemonWithEvolution = Pokemon & {
   };
   learnedMoves?: string[];
   abilities?: string[];
+  shinySprite?: string;
 };
 
 const { pokemon, slug, statsKeyId } = Astro.props as Props;
@@ -98,13 +100,14 @@ const hasEvolutionLine =
     <main class="mx-auto w-full max-w-6xl px-2 pb-10">
       <Breadcrumb items={breadcrumbItems} />
 
-      <section class="mb-4 grid gap-4 rounded-3xl border border-[var(--border)] bg-[var(--bg)] p-5 shadow-[0_16px_36px_rgba(15,23,42,0.08)] md:grid-cols-[190px_1fr]">
-        <div class="flex min-h-[170px] items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--code-bg)]">
-          {pokemon.sprite ? (
-            <img src={pokemon.sprite} alt={pokemon.name} class="h-32 w-32 object-contain" loading="lazy" />
-          ) : (
-            <div class="text-4xl font-bold text-[var(--text-h)]">{pokemon.name.slice(0, 1)}</div>
-          )}
+      <section class="mb-4 grid gap-4 rounded-3xl border border-[var(--border)] bg-[var(--bg)] p-5 shadow-[0_16px_36px_rgba(15,23,42,0.08)] md:grid-cols-[320px_1fr]">
+        <div class="flex min-h-[260px] items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--code-bg)]">
+          <PokemonHeroSpriteToggle
+            name={pokemon.name}
+            sprite={pokemonWithEvolution.sprite}
+            shinySprite={pokemonWithEvolution.shinySprite}
+            client:load
+          />
         </div>
 
         <div>
