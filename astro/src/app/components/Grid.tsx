@@ -15,9 +15,12 @@ interface GridProps {
   shinyPokemonKeyIds?: Set<number>;
   suggestedPokemonKeys?: (string | null)[][];
   swapOptionCounts?: number[][];
+  totalSwapOptionCounts?: number[][];
   selectedCell: [number, number] | null;
   editable?: boolean;
   showSuggestedMeta?: boolean;
+  showOwnedState?: boolean;
+  highlightSwapCount?: boolean;
   singularHintCountLabel?: string;
   pluralHintCountLabel?: string;
   spoilerModeEnabled?: boolean;
@@ -38,9 +41,12 @@ export function Grid({
   shinyPokemonKeyIds,
   suggestedPokemonKeys,
   swapOptionCounts,
+  totalSwapOptionCounts,
   selectedCell,
   editable = true,
   showSuggestedMeta = false,
+  showOwnedState = false,
+  highlightSwapCount = false,
   singularHintCountLabel = 'valid answer',
   pluralHintCountLabel = 'valid answers',
   spoilerModeEnabled = false,
@@ -105,6 +111,7 @@ export function Grid({
                   : false;
                 const isShinyCell = cell ? shinyPokemonKeyIds?.has(getPokemonKeyId(cell)) ?? false : false;
                 const swapOptionCount = swapOptionCounts?.[rowIndex]?.[colIndex] ?? possible.length;
+                const ownedSwapOptionCount = totalSwapOptionCounts?.[rowIndex]?.[colIndex] ?? swapOptionCount;
 
                 return (
                   <GridCell
@@ -117,12 +124,15 @@ export function Grid({
                     colConstraint={colConstraints[colIndex]}
                     fallbackOwned={fallbackOwned}
                     isOwnedCell={isOwnedCell}
-                    isShinyCell={isShinyCell}
+                     isShinyCell={isShinyCell}
                      isSelected={isSelected}
                      showSuggestedMeta={showSuggestedMeta}
+                     showOwnedState={showOwnedState}
+                     highlightSwapCount={highlightSwapCount}
                      suggestedPokemonKey={suggestedPokemonKeys?.[rowIndex]?.[colIndex]}
-                     swapOptionCount={swapOptionCount}
-                     singularHintCountLabel={singularHintCountLabel}
+                      swapOptionCount={swapOptionCount}
+                     ownedSwapOptionCount={ownedSwapOptionCount}
+                      singularHintCountLabel={singularHintCountLabel}
                      pluralHintCountLabel={pluralHintCountLabel}
                      spoilerModeEnabled={spoilerModeEnabled}
                      revealState={revealStates?.[`${rowIndex}-${colIndex}`] ?? 'revealed'}

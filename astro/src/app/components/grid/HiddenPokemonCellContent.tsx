@@ -29,7 +29,6 @@ export function HiddenPokemonCellContent({
     rowConstraint,
     colConstraint,
   });
-
   return (
     <>
       <div 
@@ -47,7 +46,7 @@ export function HiddenPokemonCellContent({
                     {hintBadges[0].label}
                   </span>
                <span className="text-[0.4rem] text-[var(--text)] max-[768px]:text-[0.55rem]">
-                {validAnswerCount === 1 ? `1 ${singularCountLabel}` : `${validAnswerCount} ${pluralCountLabel}`}
+                 {validAnswerCount === 1 ? `1 ${singularCountLabel}` : `${validAnswerCount} ${pluralCountLabel}`}
                </span>
               </div>
             ) : (

@@ -5,11 +5,36 @@ interface EmptyGridCellContentProps {
   possibleCount: number;
   fallbackOwned: Pokemon | null;
   isSelected: boolean;
+  showOwnedState: boolean;
+  swapOptionCount: number;
+  rowIndex: number;
+  colIndex: number;
+  onCellClick: (row: number, col: number, anchorElement?: HTMLDivElement | null) => void;
+  onSwapClick?: (row: number, col: number, anchorElement?: HTMLDivElement | null) => void;
 }
 
-export function EmptyGridCellContent({ possibleCount, fallbackOwned, isSelected }: EmptyGridCellContentProps) {
-  if (fallbackOwned) {
-    return <OwnedPokemonDisplay pokemon={fallbackOwned} isShiny={false} />;
+export function EmptyGridCellContent({
+  possibleCount,
+  fallbackOwned,
+  isSelected,
+  showOwnedState,
+  swapOptionCount,
+  rowIndex,
+  colIndex,
+  onCellClick,
+  onSwapClick,
+}: EmptyGridCellContentProps) {
+  if (showOwnedState && fallbackOwned) {
+    return (
+      <OwnedPokemonDisplay
+        pokemon={fallbackOwned}
+        isShiny={false}
+        swapOptionCount={swapOptionCount}
+        onSwapClick={(anchorElement) => {
+          (onSwapClick ?? onCellClick)(rowIndex, colIndex, anchorElement);
+        }}
+      />
+    );
   }
 
   if (possibleCount === 0) {

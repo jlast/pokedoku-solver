@@ -19,8 +19,11 @@ interface GridCellProps {
   isShinyCell: boolean;
   isSelected: boolean;
   showSuggestedMeta: boolean;
+  showOwnedState: boolean;
+  highlightSwapCount: boolean;
   suggestedPokemonKey?: string | null;
   swapOptionCount: number;
+  ownedSwapOptionCount: number;
   singularHintCountLabel?: string;
   pluralHintCountLabel?: string;
   spoilerModeEnabled?: boolean;
@@ -36,12 +39,14 @@ function getCellStateClasses({
   isOwnedCell,
   fallbackOwned,
   isSpoilerHidden,
+  showOwnedState,
 }: {
   isSelected: boolean;
   isFilled: boolean;
   isOwnedCell: boolean;
   fallbackOwned: Pokemon | null;
   isSpoilerHidden: boolean;
+  showOwnedState: boolean;
 }): string {
   if (isSpoilerHidden) {
     return isSelected
@@ -53,8 +58,8 @@ function getCellStateClasses({
       ? 'bg-[var(--accent-bg)] text-[var(--text-h)] shadow-[0_0_0_2px_var(--accent),inset_0_0_0_1px_var(--border)]'
       : 'bg-[var(--code-bg)] text-[var(--text-h)] shadow-[0_0_0_2px_var(--accent),inset_0_0_0_1px_var(--border)]';
   }
-  if (isOwnedCell) return 'bg-[var(--code-bg)] hover:bg-[var(--accent-bg)]';
-  if (fallbackOwned) return "bg-[var(--code-bg)] [html[data-theme='dark']_&]:bg-[var(--code-bg-dark)]";
+  if (showOwnedState && isOwnedCell) return 'bg-[var(--code-bg)] hover:bg-[var(--accent-bg)]';
+  if (showOwnedState && fallbackOwned) return "bg-[var(--code-bg)] [html[data-theme='dark']_&]:bg-[var(--code-bg-dark)]";
   if (isFilled) return 'bg-[var(--bg)] hover:bg-[var(--accent-bg)]';
   return 'bg-[var(--code-bg)] hover:bg-[var(--accent-bg)]';
 }
@@ -71,8 +76,11 @@ export function GridCell({
   isShinyCell,
   isSelected,
   showSuggestedMeta,
+  showOwnedState,
+  highlightSwapCount,
   suggestedPokemonKey,
   swapOptionCount,
+  ownedSwapOptionCount,
   singularHintCountLabel = 'valid answer',
   pluralHintCountLabel = 'valid answers',
   spoilerModeEnabled = false,
@@ -93,7 +101,7 @@ export function GridCell({
   const isFilled = Boolean(cell);
   const displayPokemon = cell ?? fallbackOwned;
   const isSpoilerHidden = spoilerModeEnabled && revealState !== 'revealed' && Boolean(displayPokemon);
-  const cellStateClasses = getCellStateClasses({ isSelected, isFilled, isOwnedCell, fallbackOwned, isSpoilerHidden });
+  const cellStateClasses = getCellStateClasses({ isSelected, isFilled, isOwnedCell, fallbackOwned, isSpoilerHidden, showOwnedState });
 
   return (
     <div
@@ -126,17 +134,30 @@ export function GridCell({
           cell={cell}
           isOwnedCell={isOwnedCell}
           isShinyCell={isShinyCell}
+          showOwnedState={showOwnedState}
           isSuggested={isSuggested}
           suggestedLabel={suggestedLabel}
           showSuggestedMeta={showSuggestedMeta}
           swapOptionCount={swapOptionCount}
+          ownedSwapOptionCount={ownedSwapOptionCount}
+          highlightSwapCount={highlightSwapCount}
           rowIndex={rowIndex}
           colIndex={colIndex}
           onCellClick={onCellClick}
           onSwapClick={onSwapClick}
         />
       ) : (
-        <EmptyGridCellContent possibleCount={possible.length} fallbackOwned={fallbackOwned} isSelected={isSelected} />
+        <EmptyGridCellContent
+          possibleCount={possible.length}
+          fallbackOwned={fallbackOwned}
+          isSelected={isSelected}
+          showOwnedState={showOwnedState}
+          swapOptionCount={ownedSwapOptionCount}
+          rowIndex={rowIndex}
+          colIndex={colIndex}
+          onCellClick={onCellClick}
+          onSwapClick={onSwapClick}
+        />
       )}
     </div>
   );

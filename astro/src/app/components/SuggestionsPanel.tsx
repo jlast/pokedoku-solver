@@ -52,6 +52,7 @@ interface SuggestionsPanelProps {
   currentPokemon?: Pokemon | null;
   ownedPokemonKeyIds?: Set<number>;
   shinyPokemonKeyIds?: Set<number>;
+  showOwnershipState?: boolean;
   anchorElement?: HTMLElement | null;
   onClose?: () => void;
   onSelect: (pokemon: Pokemon) => void;
@@ -63,7 +64,8 @@ export function SuggestionsPanel({
   currentPokemon = null,
   ownedPokemonKeyIds,
   shinyPokemonKeyIds,
-  anchorElement,
+  showOwnershipState = true,
+  anchorElement: _anchorElement,
   onClose,
   onSelect,
 }: SuggestionsPanelProps) {
@@ -71,8 +73,6 @@ export function SuggestionsPanel({
   const [daysSinceLastUsableByKeyId, setDaysSinceLastUsableByKeyId] = useState<Map<number, number | null>>(
     new Map(),
   );
-  const [positionVersion, setPositionVersion] = useState(0);
-  
   const [sortBy, setSortBy] = useState<SortBy>(() => {
     if (typeof window !== "undefined") {
       const savedSort = localStorage.getItem("pokedoku-sort");
@@ -141,7 +141,7 @@ export function SuggestionsPanel({
   }, [daysSinceLastUsableByKeyId, possiblePokemon, sortBy]);
 
   const displayedPokemon = useMemo(() => {
-    if (!ownedPokemonKeyIds) return sortedPokemon;
+    if (!ownedPokemonKeyIds || !showOwnershipState) return sortedPokemon;
 
     const owned: Pokemon[] = [];
     const unowned: Pokemon[] = [];
@@ -156,10 +156,10 @@ export function SuggestionsPanel({
 
     const isCurrentOwned = currentPokemon ? ownedPokemonKeyIds.has(getPokemonKeyId(currentPokemon)) : false;
     return isCurrentOwned ? owned : [...unowned, ...owned];
-  }, [currentPokemon, ownedPokemonKeyIds, sortedPokemon]);
+  }, [currentPokemon, ownedPokemonKeyIds, showOwnershipState, sortedPokemon]);
 
   const counts = useMemo(() => {
-    if (!ownedPokemonKeyIds) {
+    if (!ownedPokemonKeyIds || !showOwnershipState) {
       return { total: displayedPokemon.length, owned: 0, unowned: displayedPokemon.length };
     }
 
@@ -173,60 +173,19 @@ export function SuggestionsPanel({
       owned,
       unowned: displayedPokemon.length - owned,
     };
-  }, [displayedPokemon, ownedPokemonKeyIds]);
-
-  useEffect(() => {
-    if (!selectedCell || !anchorElement) return;
-
-    const updateAnchorRect = () => {
-      setPositionVersion((value) => value + 1);
-    };
-
-    window.addEventListener("resize", updateAnchorRect);
-    window.addEventListener("scroll", updateAnchorRect, true);
-
-    return () => {
-      window.removeEventListener("resize", updateAnchorRect);
-      window.removeEventListener("scroll", updateAnchorRect, true);
-    };
-  }, [anchorElement, selectedCell]);
-
-  const popoverStyle = (() => {
-    void positionVersion;
-    if (!anchorElement || typeof window === "undefined") return undefined;
-
-    const anchorRect = anchorElement.getBoundingClientRect();
-    const horizontalPadding = 12;
-    const panelWidth = window.innerWidth < 768 ? 332 : 418;
-    const estimatedPanelHeight = window.innerWidth < 768 ? 490 : 660;
-    const centeredLeft = anchorRect.left + (anchorRect.width / 2) - (panelWidth / 2);
-    const left = Math.max(horizontalPadding, Math.min(centeredLeft, window.innerWidth - panelWidth - horizontalPadding));
-    const spaceBelow = window.innerHeight - anchorRect.bottom;
-    const top = spaceBelow > estimatedPanelHeight + 20
-      ? anchorRect.bottom + 10
-      : Math.max(12, anchorRect.top - estimatedPanelHeight - 10);
-
-    return {
-      left,
-      top,
-      width: panelWidth,
-    };
-  })();
+  }, [displayedPokemon, ownedPokemonKeyIds, showOwnershipState]);
 
   if (!selectedCell) return null;
 
   return (
-    <div
-      className="fixed z-30 max-w-[calc(100vw-24px)]"
-      style={popoverStyle}
-    >
-      <div className="relative flex max-h-[720px] w-[418px] max-w-full flex-col overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 shadow-[0_18px_40px_rgba(15,23,42,0.28)] max-[768px]:h-full max-[768px]:max-h-[490px] max-[768px]:w-[332px]" ref={containerRef}>
+    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/10 p-3 backdrop-blur-[2px]" onClick={onClose}>
+      <div className="relative flex h-[660px] w-[418px] max-w-full flex-col overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 shadow-[0_18px_40px_rgba(15,23,42,0.28)] max-[768px]:h-[490px] max-[768px]:w-[332px]" ref={containerRef} onClick={(event) => event.stopPropagation()}>
         <div className="-mx-4 -mt-4 shrink-0 border-b border-[var(--border)] bg-[var(--bg)] px-4 pt-4 pb-3">
           <div className="flex flex-col gap-2">
             <div className="flex items-start justify-between gap-3">
               <span className="inline-flex flex-col text-left">
                 <span className="font-semibold text-[var(--text-h)]">{counts.total} Pokemon</span>
-                {ownedPokemonKeyIds ? (
+                {ownedPokemonKeyIds && showOwnershipState ? (
                   <span className="text-xs font-medium text-[var(--text)]">
                     {counts.unowned} unowned, {counts.owned} owned
                   </span>
@@ -286,8 +245,8 @@ export function SuggestionsPanel({
           {displayedPokemon.length > 0 ? (
             displayedPokemon.map((p) => {
               const pokemonKeyId = getPokemonKeyId(p);
-              const isOwned = ownedPokemonKeyIds?.has(pokemonKeyId) ?? false;
-              const isShiny = shinyPokemonKeyIds?.has(pokemonKeyId) ?? false;
+              const isOwned = showOwnershipState && (ownedPokemonKeyIds?.has(pokemonKeyId) ?? false);
+              const isShiny = showOwnershipState && (shinyPokemonKeyIds?.has(pokemonKeyId) ?? false);
 
               return (
               <button
@@ -368,14 +327,14 @@ export function SuggestionsPanel({
           )}
           </div>
         </div>
+        {displayedPokemon.length >= 5 && (
+          <div className="pointer-events-none absolute bottom-2 left-1/2 z-[1] flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg)]/85 shadow-sm backdrop-blur-sm">
+            <span className="flex h-full w-full items-center justify-center" title="Scroll for more">
+              ▼
+            </span>
+          </div>
+        )}
       </div>
-      {displayedPokemon.length >= 5 && (
-        <div className="sticky left-1/2 -mt-10 h-8 w-8 -translate-x-4 rounded-full border border-[var(--border)] bg-[var(--bg)]/50">
-          <span className="flex h-full w-full items-center justify-center" title="Scroll for more">
-            ▼
-          </span>
-        </div>
-      )}
     </div>
   );
 }

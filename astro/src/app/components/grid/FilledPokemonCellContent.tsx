@@ -5,10 +5,13 @@ interface FilledPokemonCellContentProps {
   cell: Pokemon;
   isOwnedCell: boolean;
   isShinyCell: boolean;
+  showOwnedState: boolean;
   isSuggested: boolean;
   suggestedLabel: string;
   showSuggestedMeta: boolean;
   swapOptionCount: number;
+  ownedSwapOptionCount: number;
+  highlightSwapCount: boolean;
   rowIndex: number;
   colIndex: number;
   onCellClick: (row: number, col: number, anchorElement?: HTMLDivElement | null) => void;
@@ -19,17 +22,28 @@ export function FilledPokemonCellContent({
   cell,
   isOwnedCell,
   isShinyCell,
+  showOwnedState,
   isSuggested,
   suggestedLabel,
   showSuggestedMeta,
   swapOptionCount,
+  ownedSwapOptionCount,
+  highlightSwapCount,
   rowIndex,
   colIndex,
   onCellClick,
   onSwapClick,
 }: FilledPokemonCellContentProps) {
-  if (isOwnedCell) {
-    return <OwnedPokemonDisplay pokemon={cell} isShiny={isShinyCell} />;
+  if (showOwnedState && isOwnedCell) {
+    return (
+        <OwnedPokemonDisplay
+        pokemon={cell}
+        isShiny={isShinyCell}
+        swapOptionCount={showSuggestedMeta ? ownedSwapOptionCount : undefined}
+        highlightSwapCount={highlightSwapCount}
+        onSwapClick={showSuggestedMeta ? (anchorElement) => (onSwapClick ?? onCellClick)(rowIndex, colIndex, anchorElement) : undefined}
+      />
+    );
   }
 
   return (
@@ -54,7 +68,7 @@ export function FilledPokemonCellContent({
             }}
           >
             <span className="text-[18px] leading-none max-[768px]:text-[13px]">⇄</span>
-            <span className="text-sm font-bold leading-none max-[768px]:text-[11px]">{swapOptionCount}</span>
+            <span className={`text-sm font-bold leading-none max-[768px]:text-[11px] ${highlightSwapCount ? "text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400" : ''}`}>{swapOptionCount}</span>
           </button>
         </>
       ) : null}

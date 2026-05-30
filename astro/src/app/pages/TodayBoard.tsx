@@ -296,6 +296,20 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     return result;
   }, [grid.colConstraints, grid.rowConstraints, gridSize, pokemonPool]);
 
+  const totalSwapOptionCounts = useMemo(() => {
+    const result: number[][] = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => 0));
+
+    for (let row = 0; row < gridSize; row++) {
+      for (let col = 0; col < gridSize; col++) {
+        result[row][col] = pokemon.filter(
+          (entry) => matchesConstraint(entry, grid.rowConstraints[row]) && matchesConstraint(entry, grid.colConstraints[col]),
+        ).length;
+      }
+    }
+
+    return result;
+  }, [grid.colConstraints, grid.rowConstraints, gridSize, pokemon]);
+
   function handleCellClick(row: number, col: number, anchorElement?: HTMLDivElement | null) {
     const cellKey = getCellKey(row, col);
     const revealState = revealStates[cellKey] ?? 'revealed';
@@ -491,7 +505,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
               <p className="m-0 text-xs text-[var(--text)]">Control which answers you see and when you see them.</p>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <div className="grid grid-cols-[170px_auto] items-center justify-center gap-3">
+              <div className="grid grid-cols-[190px_auto] items-center justify-center gap-3">
                 <div className="text-left">
                   <p className="m-0 text-sm font-medium text-[var(--text-h)]">Suggest new Pokémon</p>
                 </div>
@@ -514,7 +528,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
                   />
                 </button>
               </div>
-              <div className="grid grid-cols-[170px_auto] items-center justify-center gap-3">
+              <div className="grid grid-cols-[190px_auto] items-center justify-center gap-3">
                 <div className="text-left">
                   <p className="m-0 text-sm font-medium text-[var(--text-h)]">Avoid spoilers</p>
 
@@ -681,9 +695,12 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           shinyPokemonKeyIds={new Set(remoteUserDex?.shinyPokemonKeyIds ?? [])}
           suggestedPokemonKeys={suggestedPokemonKeys}
           swapOptionCounts={swapOptionCounts}
+          totalSwapOptionCounts={totalSwapOptionCounts}
           selectedCell={grid.selectedCell}
           editable={false}
           showSuggestedMeta
+          showOwnedState={showMissingOnly}
+          highlightSwapCount={showMissingOnly}
           singularHintCountLabel={showMissingOnly ? 'new entry' : 'valid answer'}
           pluralHintCountLabel={showMissingOnly ? 'new entries' : 'valid answers'}
           spoilerModeEnabled={spoilerModeEnabled}
@@ -710,6 +727,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           currentPokemon={selectedCellDisplayPokemon}
           ownedPokemonKeyIds={caughtSet}
           shinyPokemonKeyIds={new Set(remoteUserDex?.shinyPokemonKeyIds ?? [])}
+          showOwnershipState={showMissingOnly}
           anchorElement={selectedCellAnchorElement}
           onClose={() => {
             setGrid((prev) => ({ ...prev, selectedCell: null }));
