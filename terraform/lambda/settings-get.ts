@@ -12,6 +12,7 @@ import {
   requestMeta,
 } from './public-api-shared';
 import { readSettings, validateSettingsTableConfigured } from './settings-shared';
+import { touchUserActivity } from './user-activity-shared';
 
 export async function handler(
   event: APIGatewayProxyEventV2
@@ -24,6 +25,16 @@ export async function handler(
     if ('statusCode' in authResult) {
       logInfo('settings_get_auth_failed', meta);
       return authResult;
+    }
+
+    try {
+      await touchUserActivity(authResult.userId);
+    } catch (error) {
+      logError('user_activity_touch_failed', {
+        ...meta,
+        userIdHash: fingerprintUser(authResult.userId),
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
 
     if (!validateSettingsTableConfigured()) {

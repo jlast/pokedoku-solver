@@ -11,6 +11,7 @@ import {
   ok,
   requestMeta,
 } from './public-api-shared';
+import { touchUserActivity } from './user-activity-shared';
 import { readUserDex, validateUserDexTableConfigured } from './user-dex-shared';
 
 export async function handler(
@@ -24,6 +25,16 @@ export async function handler(
     if ('statusCode' in authResult) {
       logInfo('user_dex_get_auth_failed', meta);
       return authResult;
+    }
+
+    try {
+      await touchUserActivity(authResult.userId);
+    } catch (error) {
+      logError('user_activity_touch_failed', {
+        ...meta,
+        userIdHash: fingerprintUser(authResult.userId),
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
 
     if (!validateUserDexTableConfigured()) {

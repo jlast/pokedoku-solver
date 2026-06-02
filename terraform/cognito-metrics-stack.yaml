@@ -19,6 +19,11 @@ Parameters:
     Type: String
     Description: "External Cognito user pool ID"
 
+  UserActivityTableName:
+    Type: String
+    Default: "UserActivity"
+    Description: "DynamoDB table containing per-user last activity timestamps"
+
   MetricNamespace:
     Type: String
     Default: "PokedokuHelper/Cognito"
@@ -58,6 +63,10 @@ Resources:
                 Resource: !Sub "arn:aws:cognito-idp:${CognitoRegion}:${AWS::AccountId}:userpool/${CognitoUserPoolId}"
               - Effect: Allow
                 Action:
+                  - dynamodb:Scan
+                Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${UserActivityTableName}"
+              - Effect: Allow
+                Action:
                   - cloudwatch:PutMetricData
                   - cloudwatch:GetMetricStatistics
                 Resource: "*"
@@ -74,6 +83,7 @@ Resources:
         Variables:
           COGNITO_REGION: !Ref CognitoRegion
           COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          USER_ACTIVITY_TABLE_NAME: !Ref UserActivityTableName
           METRIC_NAMESPACE: !Ref MetricNamespace
       Code:
         S3Bucket: !Ref CognitoMetricsCodeS3Bucket
@@ -120,6 +130,7 @@ Resources:
       DashboardName: !Ref DashboardName
       DashboardBody: !Sub |
         {
+          "start": "-P7D",
           "widgets": [
             {
               "type": "metric",
@@ -134,6 +145,11 @@ Resources:
                 "title": "Total Registered Users",
                 "stat": "Maximum",
                 "period": 86400,
+                "yAxis": {
+                  "left": {
+                    "min": 0
+                  }
+                },
                 "metrics": [
                   [ "${MetricNamespace}", "TotalRegisteredUsers", "UserPoolId", "${CognitoUserPoolId}" ]
                 ]
@@ -152,6 +168,11 @@ Resources:
                 "title": "New Users Daily",
                 "stat": "Maximum",
                 "period": 86400,
+                "yAxis": {
+                  "left": {
+                    "min": 0
+                  }
+                },
                 "metrics": [
                   [ "${MetricNamespace}", "NewUsersDaily", "UserPoolId", "${CognitoUserPoolId}" ]
                 ]
@@ -184,9 +205,37 @@ Resources:
                 "view": "timeSeries",
                 "stacked": false,
                 "region": "${AWS::Region}",
+                "title": "Active Users (24h)",
+                "stat": "Maximum",
+                "period": 86400,
+                "yAxis": {
+                  "left": {
+                    "min": 0
+                  }
+                },
+                "metrics": [
+                  [ "${MetricNamespace}", "ActiveUsers24h", "UserPoolId", "${CognitoUserPoolId}" ]
+                ]
+              }
+            },
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 12,
+              "width": 24,
+              "height": 6,
+              "properties": {
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "${AWS::Region}",
                 "title": "Cognito Metrics Lambda Errors",
                 "stat": "Sum",
                 "period": 300,
+                "yAxis": {
+                  "left": {
+                    "min": 0
+                  }
+                },
                 "metrics": [
                   [ "AWS/Lambda", "Errors", "FunctionName", "${CognitoMetricsFunction}" ]
                 ]

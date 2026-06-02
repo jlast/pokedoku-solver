@@ -88,6 +88,7 @@ It uses Redis caching and realtime data from `www.pokedoku-helper.com`.
 - Placeholder Lambdas:
   - `terraform/lambda/user-dex-get.ts`
   - `terraform/lambda/user-dex-patch.ts`
+- Authenticated API activity is tracked in DynamoDB table `UserActivity` via per-user `lastActivityAt` timestamps for active-user metrics.
 - Build/package commands (root):
   - `pnpm build:user-dex-get-lambda`
   - `pnpm package:user-dex-get-lambda`
@@ -98,6 +99,7 @@ It uses Redis caching and realtime data from `www.pokedoku-helper.com`.
 ## Cognito metrics dashboard
 - Infra template: `terraform/cognito-metrics-stack.yaml`
 - Lambda source: `terraform/lambda/cognito-user-metrics.ts`
+- Active-user metrics are derived from the `UserActivity` table, not directly from Cognito session/refresh-token activity.
 - Build/package commands (root):
   - `pnpm build:cognito-user-metrics-lambda`
   - `pnpm package:cognito-user-metrics-lambda`

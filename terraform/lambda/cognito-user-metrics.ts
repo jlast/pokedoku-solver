@@ -3,6 +3,7 @@ import {
   GetMetricStatisticsCommand,
   PutMetricDataCommand,
 } from "@aws-sdk/client-cloudwatch";
+import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 import {
   CognitoIdentityProviderClient,
   ListUsersCommand,
@@ -10,6 +11,7 @@ import {
 
 const REGION = process.env.COGNITO_REGION;
 const USER_POOL_ID = process.env.COGNITO_USER_POOL_ID;
+const USER_ACTIVITY_TABLE_NAME = process.env.USER_ACTIVITY_TABLE_NAME;
 const METRIC_NAMESPACE = process.env.METRIC_NAMESPACE ?? "PokedokuHelper/Cognito";
 
 function getRequiredEnv(name: string, value: string | undefined): string {
@@ -37,6 +39,39 @@ async function countUsers(userPoolId: string, region: string): Promise<number> {
     totalUsers += response.Users?.length ?? 0;
     paginationToken = response.PaginationToken;
   } while (paginationToken);
+
+  return totalUsers;
+}
+
+async function countActiveUsersInWindow(
+  dynamo: DynamoDBClient,
+  tableName: string,
+  now: Date,
+  windowMs: number,
+): Promise<number> {
+  const cutoffTimestamp = new Date(now.getTime() - windowMs).toISOString();
+  let totalUsers = 0;
+  let exclusiveStartKey: Record<string, unknown> | undefined;
+
+  do {
+    const response = await dynamo.send(
+      new ScanCommand({
+        TableName: tableName,
+        Select: "COUNT",
+        FilterExpression: "#lastActivityAt >= :cutoffTimestamp",
+        ExpressionAttributeNames: {
+          "#lastActivityAt": "lastActivityAt",
+        },
+        ExpressionAttributeValues: {
+          ":cutoffTimestamp": { S: cutoffTimestamp },
+        },
+        ExclusiveStartKey: exclusiveStartKey as Record<string, never> | undefined,
+      }),
+    );
+
+    totalUsers += response.Count ?? 0;
+    exclusiveStartKey = response.LastEvaluatedKey as Record<string, unknown> | undefined;
+  } while (exclusiveStartKey);
 
   return totalUsers;
 }
@@ -71,17 +106,17 @@ async function getPreviousTotalRegisteredUsers(
 export async function handler() {
   const region = getRequiredEnv("COGNITO_REGION", REGION);
   const userPoolId = getRequiredEnv("COGNITO_USER_POOL_ID", USER_POOL_ID);
+  const userActivityTableName = getRequiredEnv("USER_ACTIVITY_TABLE_NAME", USER_ACTIVITY_TABLE_NAME);
   const cloudWatchRegion = process.env.AWS_REGION ?? region;
   const cloudWatch = new CloudWatchClient({ region: cloudWatchRegion });
+  const dynamo = new DynamoDBClient({ region: cloudWatchRegion });
   const timestamp = new Date();
 
-  const totalRegisteredUsers = await countUsers(userPoolId, region);
-  const previousTotalRegisteredUsers = await getPreviousTotalRegisteredUsers(
-    cloudWatch,
-    METRIC_NAMESPACE,
-    userPoolId,
-    timestamp,
-  );
+  const [totalRegisteredUsers, previousTotalRegisteredUsers, activeUsers24h] = await Promise.all([
+    countUsers(userPoolId, region),
+    getPreviousTotalRegisteredUsers(cloudWatch, METRIC_NAMESPACE, userPoolId, timestamp),
+    countActiveUsersInWindow(dynamo, userActivityTableName, timestamp, 24 * 60 * 60 * 1000),
+  ]);
   const newUsersDaily = previousTotalRegisteredUsers === null ? 0 : Math.max(totalRegisteredUsers - previousTotalRegisteredUsers, 0);
 
   await cloudWatch.send(
@@ -102,6 +137,13 @@ export async function handler() {
           Unit: "Count",
           Value: newUsersDaily,
         },
+        {
+          MetricName: "ActiveUsers24h",
+          Dimensions: [{ Name: "UserPoolId", Value: userPoolId }],
+          Timestamp: timestamp,
+          Unit: "Count",
+          Value: activeUsers24h,
+        },
       ],
     }),
   );
@@ -114,6 +156,7 @@ export async function handler() {
       totalRegisteredUsers,
       previousTotalRegisteredUsers,
       newUsersDaily,
+      activeUsers24h,
       timestamp: timestamp.toISOString(),
     }),
   };
