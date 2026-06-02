@@ -269,26 +269,26 @@ function App() {
       </div>
 
       <ContentSection>
-        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">How it works</h2>
+        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[var(--text-h)]">How it works</h2>
 
-        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
+        <p className="mb-3.5 text-base leading-[1.7] text-[var(--text)]">
           Choose a constraint for each row and column, then click a square to
           view matching Pokémon. You can load today’s puzzle or create your own
           combinations to explore different possibilities.
         </p>
 
-        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">Why use this Pokedoku helper?</h2>
+        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[var(--text-h)]">Why use this Pokedoku helper?</h2>
 
-        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
+        <p className="mb-3.5 text-base leading-[1.7] text-[var(--text)]">
           Some squares have lots of possible answers, while others are much more
           restrictive than they look. This helper shows valid Pokémon for each
           combination so you can learn new options, avoid invalid guesses, and
           make better choices in the daily puzzle.
         </p>
 
-        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">Use it with today’s Pokedoku</h2>
+        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[var(--text-h)]">Use it with today’s Pokedoku</h2>
 
-        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
+        <p className="mb-3.5 text-base leading-[1.7] text-[var(--text)]">
           Tap <strong>Today&apos;s puzzle</strong> to load the current grid,
           then inspect each square to see which Pokémon fit. You can use it as a
           hint tool, a learning aid, or a quick way to understand difficult
@@ -297,41 +297,41 @@ function App() {
       </ContentSection>
 
       <ContentSection className="faq">
-        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[#222]">FAQ</h2>
+        <h2 className="mb-3 text-center text-[clamp(1.6rem,4vw,2rem)] font-bold leading-tight text-[var(--text-h)]">FAQ</h2>
 
-        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">What is Pokedoku?</h3>
+        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[var(--text-h)]">What is Pokedoku?</h3>
 
-        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
+        <p className="mb-3.5 text-base leading-[1.7] text-[var(--text)]">
           Pokedoku is a daily puzzle where each square must be filled with a
           Pokémon that matches both the row and column categories.
         </p>
 
-        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">What does this helper do?</h3>
+        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[var(--text-h)]">What does this helper do?</h3>
 
-        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
+        <p className="mb-3.5 text-base leading-[1.7] text-[var(--text)]">
           It shows Pokémon that match the selected row and column constraints
           for a square, making it easier to explore valid options.
         </p>
 
-        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">What is Dex Difficulty?</h3>
+        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[var(--text-h)]">What is Dex Difficulty?</h3>
 
-        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
+        <p className="mb-3.5 text-base leading-[1.7] text-[var(--text)]">
           Dex Difficulty shows how hard it is to use a Pokémon in Pokedoku.
           <strong> Nightmare</strong> = few valid spots, lots of competition.
           <strong> Easy</strong> = more options or less competition. Helps you
           see which answers are.
         </p>
 
-        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">Can I use it for the daily puzzle?</h3>
+        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[var(--text-h)]">Can I use it for the daily puzzle?</h3>
 
-        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
+        <p className="mb-3.5 text-base leading-[1.7] text-[var(--text)]">
           Yes. You can load the current puzzle and view possible matches for
           each square.
         </p>
 
-        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[#222]">What kinds of constraints can I explore?</h3>
+        <h3 className="mb-2 mt-6 text-[1.1rem] font-bold leading-[1.35] text-[var(--text-h)]">What kinds of constraints can I explore?</h3>
 
-        <p className="mb-3.5 text-base leading-[1.7] text-[#6a6477]">
+        <p className="mb-3.5 text-base leading-[1.7] text-[var(--text)]">
           Depending on the puzzle, you can check combinations involving types,
           regions, generations, evolution lines, legendary status, and other
           common Pokedoku categories.
