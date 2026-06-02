@@ -32,11 +32,12 @@ export function TodayBoardSuggestions({
     <section className="mt-6 w-full md:w-auto" aria-labelledby="today-text-suggestions-heading">
       <SectionCard
         className="mt-2 w-full"
+        titleId="today-text-suggestions-heading"
         title={(
-          <h2 id="today-text-suggestions-heading" className="text-xl font-semibold tracking-tight text-[var(--text-h)]">
+          <>
             <span className="hidden md:inline">Today&apos;s Recommended Pokedoku Answers</span>
             <span className="md:hidden">Recommended Answers</span>
-          </h2>
+          </>
         )}
         subtitle="9 optimized picks for today's board"
       >
