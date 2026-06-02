@@ -211,10 +211,7 @@ export function SuggestionsPanel({
     return isCurrentOwned ? owned : [...unowned, ...owned];
   }, [currentPokemon, ownedPokemonKeyIds, showOwnershipState, sortedPokemon]);
 
-  const visiblePokemon = useMemo(
-    () => (currentPokemonKeyId !== null ? displayedPokemon.filter((pokemon) => getPokemonKeyId(pokemon) !== currentPokemonKeyId) : displayedPokemon),
-    [currentPokemonKeyId, displayedPokemon],
-  );
+  const visiblePokemon = useMemo(() => displayedPokemon, [displayedPokemon]);
 
   const optionsCounts = useMemo(() => {
     if (!ownedPokemonKeyIds || !showOwnershipState) {
