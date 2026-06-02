@@ -36,7 +36,7 @@ export function FilledPokemonCellContent({
 }: FilledPokemonCellContentProps) {
   if (showOwnedState && isOwnedCell) {
     return (
-        <OwnedPokemonDisplay
+      <OwnedPokemonDisplay
         pokemon={cell}
         isShiny={isShinyCell}
         swapOptionCount={showSuggestedMeta ? ownedSwapOptionCount : undefined}

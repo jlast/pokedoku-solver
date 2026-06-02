@@ -4,7 +4,6 @@ import { trackEvent } from '../../../../lib/browser/analytics';
 import { matchesConstraint, type Constraint } from '../../../../lib/shared/filters';
 import { getRemoteSettings, getRemoteUserDex, patchRemoteSettings, patchRemoteUserDex, type UserDexPayload } from '@pokedoku-helper/user-api-client';
 import { Grid } from '../components/Grid';
-import { InfoBox } from '../components/InfoBox';
 import { SuggestionsPanel } from '../components/SuggestionsPanel';
 import { TodayBoardSuggestions } from '../components/TodayBoardSuggestions';
 import { ActionButton } from '../components/shared/ActionButton';
@@ -420,6 +419,68 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     }
   }
 
+  async function saveSelectedPokemonDexState(pokemon: Pokemon, options: { owned?: boolean; shiny?: boolean }) {
+    if (!remoteUserDex || isMarkingOwned || isUndoingMarkOwned) return;
+
+    const pokemonKeyId = getPokemonKeyId(pokemon);
+    const nextCaughtSet = new Set(caughtSet);
+    const nextShinySet = new Set(remoteUserDex.shinyPokemonKeyIds);
+
+    if (options.owned === true) {
+      nextCaughtSet.add(pokemonKeyId);
+    }
+
+    if (options.owned === false) {
+      nextCaughtSet.delete(pokemonKeyId);
+      nextShinySet.delete(pokemonKeyId);
+    }
+
+    if (options.shiny) {
+      nextCaughtSet.add(pokemonKeyId);
+      nextShinySet.add(pokemonKeyId);
+    }
+
+    const nextPayload: UserDexPayload = {
+      caughtPokemonKeyIds: Array.from(nextCaughtSet).sort((a, b) => a - b),
+      shinyPokemonKeyIds: Array.from(nextShinySet).sort((a, b) => a - b),
+      unlockedPrestigeLevelIndex: remoteUserDex.unlockedPrestigeLevelIndex,
+      updatedAt: new Date().toISOString(),
+    };
+
+    setCaughtSet(nextCaughtSet);
+    setRemoteUserDex(nextPayload);
+    setUndoMarkOwnedState(null);
+
+    const token = await getValidSessionIdToken();
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) {
+      setCaughtSet(new Set(remoteUserDex.caughtPokemonKeyIds));
+      setRemoteUserDex(remoteUserDex);
+      return;
+    }
+
+    const didSave = await saveCaughtPokemon(token, apiBaseUrl, nextPayload);
+    if (!didSave) {
+      setCaughtSet(new Set(remoteUserDex.caughtPokemonKeyIds));
+      setRemoteUserDex(remoteUserDex);
+      return;
+    }
+
+    trackEvent('update_grid_cell_dex_state', {
+      pokemon_key_id: pokemonKeyId.toString(),
+      caught: nextCaughtSet.has(pokemonKeyId) ? 'true' : 'false',
+      shiny: nextShinySet.has(pokemonKeyId) ? 'true' : 'false',
+    });
+  }
+
+  async function markSelectedPokemonOwned(pokemon: Pokemon) {
+    await saveSelectedPokemonDexState(pokemon, { owned: !caughtSet.has(getPokemonKeyId(pokemon)) });
+  }
+
+  async function markSelectedPokemonShiny(pokemon: Pokemon) {
+    await saveSelectedPokemonDexState(pokemon, { shiny: true });
+  }
+
   const hasGridData = grid.cells.some((row) => row.some((cell) => cell !== null));
 
   async function toggleMyPokedexFilter() {
@@ -474,6 +535,12 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
     const [row, col] = grid.selectedCell;
     return grid.cells[row][col] ?? fallbackOwnedCells[row][col] ?? null;
   }, [fallbackOwnedCells, grid.cells, grid.selectedCell]);
+
+  const selectedCellHasPlacedPokemon = useMemo(() => {
+    if (!grid.selectedCell) return false;
+    const [row, col] = grid.selectedCell;
+    return grid.cells[row][col] !== null;
+  }, [grid.cells, grid.selectedCell]);
 
   const textualSuggestions = useMemo(() => {
     return buildTextualSuggestionEntries({
@@ -722,9 +789,12 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
           />
         ) : null}
         <SuggestionsPanel
+          key={grid.selectedCell ? `${grid.selectedCell[0]}-${grid.selectedCell[1]}-${selectedCellDisplayPokemon ? 'pokemon' : 'open'}-${selectedCellHasPlacedPokemon ? 'placed' : 'fallback'}` : 'closed'}
           selectedCell={canShowSuggestionsPanel ? grid.selectedCell : null}
           possiblePokemon={selectedCellPossible}
           currentPokemon={selectedCellDisplayPokemon}
+          rowConstraint={grid.selectedCell ? grid.rowConstraints[grid.selectedCell[0]] : null}
+          colConstraint={grid.selectedCell ? grid.colConstraints[grid.selectedCell[1]] : null}
           ownedPokemonKeyIds={caughtSet}
           shinyPokemonKeyIds={new Set(remoteUserDex?.shinyPokemonKeyIds ?? [])}
           showOwnershipState={showMissingOnly}
@@ -734,6 +804,8 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
             setSelectedCellAnchorElement(null);
           }}
           onSelect={handlePokemonSelect}
+          onMarkOwned={isLoggedIn && remoteUserDex ? markSelectedPokemonOwned : undefined}
+          onMarkShiny={isLoggedIn && remoteUserDex ? markSelectedPokemonShiny : undefined}
         />
       </div>
       <div className="mt-2 mb-4 flex flex-wrap justify-center gap-2.5">

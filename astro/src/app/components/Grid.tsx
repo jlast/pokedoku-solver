@@ -106,8 +106,9 @@ export function Grid({
                 const fallbackOwned = fallbackCandidate && !isUsedElsewhere(fallbackCandidate, rowIndex, colIndex)
                   ? fallbackCandidate
                   : null;
+                const isCaughtCell = cell ? (ownedPokemonKeyIds?.has(getPokemonKeyId(cell)) ?? false) : false;
                 const isOwnedCell = cell
-                  ? (ownedPokemonKeyIds?.has(getPokemonKeyId(cell)) ?? false) && !isUsedElsewhere(cell, rowIndex, colIndex)
+                  ? isCaughtCell && !isUsedElsewhere(cell, rowIndex, colIndex)
                   : false;
                 const isShinyCell = cell ? shinyPokemonKeyIds?.has(getPokemonKeyId(cell)) ?? false : false;
                 const swapOptionCount = swapOptionCounts?.[rowIndex]?.[colIndex] ?? possible.length;
@@ -124,24 +125,24 @@ export function Grid({
                     colConstraint={colConstraints[colIndex]}
                     fallbackOwned={fallbackOwned}
                     isOwnedCell={isOwnedCell}
-                     isShinyCell={isShinyCell}
-                     isSelected={isSelected}
-                     showSuggestedMeta={showSuggestedMeta}
-                     showOwnedState={showOwnedState}
-                     highlightSwapCount={highlightSwapCount}
-                     suggestedPokemonKey={suggestedPokemonKeys?.[rowIndex]?.[colIndex]}
-                      swapOptionCount={swapOptionCount}
-                     ownedSwapOptionCount={ownedSwapOptionCount}
-                      singularHintCountLabel={singularHintCountLabel}
-                     pluralHintCountLabel={pluralHintCountLabel}
-                     spoilerModeEnabled={spoilerModeEnabled}
-                     revealState={revealStates?.[`${rowIndex}-${colIndex}`] ?? 'revealed'}
-                     onCellClick={onCellClick}
-                     onSwapClick={onSwapClick}
-                     onAdvanceReveal={onAdvanceReveal}
-                   />
-                 );
-               })}
+                    isShinyCell={isShinyCell}
+                    isSelected={isSelected}
+                    showSuggestedMeta={showSuggestedMeta}
+                    showOwnedState={showOwnedState}
+                    highlightSwapCount={highlightSwapCount}
+                    suggestedPokemonKey={suggestedPokemonKeys?.[rowIndex]?.[colIndex]}
+                    swapOptionCount={swapOptionCount}
+                    ownedSwapOptionCount={ownedSwapOptionCount}
+                    singularHintCountLabel={singularHintCountLabel}
+                    pluralHintCountLabel={pluralHintCountLabel}
+                    spoilerModeEnabled={spoilerModeEnabled}
+                    revealState={revealStates?.[`${rowIndex}-${colIndex}`] ?? 'revealed'}
+                    onCellClick={onCellClick}
+                    onSwapClick={onSwapClick}
+                    onAdvanceReveal={onAdvanceReveal}
+                    />
+                  );
+                })}
             </div>
           ))}
         </div>

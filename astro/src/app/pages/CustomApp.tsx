@@ -250,6 +250,8 @@ function App() {
           <SuggestionsPanel
             selectedCell={grid.selectedCell}
             possiblePokemon={selectedCellPossible}
+            rowConstraint={grid.selectedCell ? grid.rowConstraints[grid.selectedCell[0]] : null}
+            colConstraint={grid.selectedCell ? grid.colConstraints[grid.selectedCell[1]] : null}
             anchorElement={selectedCellAnchorElement}
             onClose={() => {
               setGrid((prev) => ({ ...prev, selectedCell: null }));
