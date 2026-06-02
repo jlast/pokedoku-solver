@@ -162,7 +162,7 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
   const [remoteUserDex, setRemoteUserDex] = useState<UserDexPayload | null>(null);
   const [undoMarkOwnedState, setUndoMarkOwnedState] = useState<UndoMarkOwnedState | null>(null);
   const [selectedCellAnchorElement, setSelectedCellAnchorElement] = useState<HTMLDivElement | null>(null);
-  const [spoilerModeEnabled, setSpoilerModeEnabled] = useState(true);
+  const [spoilerModeEnabled, setSpoilerModeEnabled] = useState(false);
   const [revealStates, setRevealStates] = useState<Record<string, RevealState>>(() => createInitialRevealStates(gridSize));
 
   useEffect(() => {
