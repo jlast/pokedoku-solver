@@ -467,7 +467,7 @@ export function MyPokedexPageClient() {
           <p className="mb-0 mt-5 text-sm text-[var(--text)]">Loading your Pokedex...</p>
         ) : (
           <>
-          <div className="relative z-10 mt-5 grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
+          <div className="relative z-10 mt-5 grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
             {visiblePokemon.map((entry) => {
               const pokemonKeyId = getPokemonKeyId(entry);
               const isCaught = isViewingPastPrestige ? true : caughtSet.has(pokemonKeyId);

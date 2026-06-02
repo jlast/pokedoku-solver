@@ -211,7 +211,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
           />
         </div>
 
-        <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-3">
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
           {visiblePokemon.map((entry) => {
             const pokemonKeyId = getPokemonKeyId(entry);
             const isCaught = caughtSet.has(pokemonKeyId);
