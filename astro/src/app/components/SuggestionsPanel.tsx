@@ -233,6 +233,23 @@ export function SuggestionsPanel({
     };
   }, [ownedPokemonKeyIds, showOwnershipState, visiblePokemon]);
 
+  const headerCounts = useMemo(() => {
+    if (!ownedPokemonKeyIds || !showOwnershipState) {
+      return { total: possiblePokemon.length, owned: 0, unowned: possiblePokemon.length };
+    }
+
+    let owned = 0;
+    for (const pokemon of possiblePokemon) {
+      if (ownedPokemonKeyIds.has(getPokemonKeyId(pokemon))) owned += 1;
+    }
+
+    return {
+      total: possiblePokemon.length,
+      owned,
+      unowned: possiblePokemon.length - owned,
+    };
+  }, [ownedPokemonKeyIds, possiblePokemon, showOwnershipState]);
+
   const optionsSummary = useMemo(() => {
     if (!showOwnershipState || !ownedPokemonKeyIds) return null;
 
@@ -245,29 +262,25 @@ export function SuggestionsPanel({
   if (!selectedCell) return null;
 
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/10 p-3 backdrop-blur-[2px]" onClick={onClose}>
+    <div className="fixed inset-0 z-30 flex items-end justify-center bg-black/10 p-3 backdrop-blur-[2px] md:items-center" onClick={onClose}>
       <div
-        className={`relative flex w-full max-w-full flex-col overflow-hidden border border-[var(--border)] bg-[var(--bg)] shadow-[0_18px_40px_rgba(15,23,42,0.28)] md:h-[660px] md:w-[418px] md:rounded-xl md:p-4 ${
+        className={`relative flex w-full max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden border border-[var(--border)] bg-[var(--bg)] shadow-[0_18px_40px_rgba(15,23,42,0.28)] md:h-[660px] md:w-[418px] md:max-w-full md:rounded-xl md:p-4 ${
           isActionsMode
-            ? 'max-w-[22rem] rounded-t-3xl rounded-b-xl px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] md:max-w-full md:max-h-none'
-            : 'max-h-[70svh] max-w-[22rem] rounded-t-3xl rounded-b-xl px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] md:max-w-full md:max-h-none'
+            ? 'rounded-t-3xl rounded-b-xl px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] md:max-h-none'
+            : 'max-h-[72svh] rounded-t-3xl rounded-b-xl px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] md:max-h-none'
         }`}
         ref={containerRef}
         onClick={(event) => event.stopPropagation()}
       >
+        <div className="mx-auto mb-2 h-1.5 w-10 rounded-full bg-[var(--border)] md:hidden" aria-hidden="true" />
         <div className="-mx-4 -mt-3 shrink-0 border-b border-[var(--border)] bg-[var(--bg)] px-4 pt-3 pb-2.5 md:-mx-4 md:-mt-4 md:pt-4 md:pb-3">
           <div className="flex flex-col gap-1.5 md:gap-2">
             <div className="flex items-start justify-between gap-3">
               <span className="inline-flex min-w-0 flex-col text-left">
-                <span className="flex flex-wrap items-center gap-1.5 text-base font-semibold text-[var(--text-h)] md:text-[1.05rem]">
-                  {rowParsed ? <CategoryBadgeLink parsed={rowParsed} href={null} /> : <span>Any</span>}
-                  <span className="text-[var(--text)]">+</span>
-                  {colParsed ? <CategoryBadgeLink parsed={colParsed} href={null} /> : <span>Any</span>}
-                </span>
-                {panelMode === 'options' ? (
-                  <span className="mt-1 text-xs font-medium text-[var(--text)] md:text-xs">
-                    {optionsCounts.total} Pokemon
-                    {showOwnershipState ? `, ${optionsCounts.unowned} unowned, ${optionsCounts.owned} owned` : ''}
+                <span className="text-base font-semibold text-[var(--text-h)] md:text-[1.05rem]">{headerCounts.total} Pokemon</span>
+                {showOwnershipState ? (
+                  <span className="mt-0.5 text-xs font-medium text-[var(--text)] md:text-xs">
+                    {headerCounts.unowned} unowned, {headerCounts.owned} owned
                   </span>
                 ) : null}
               </span>
@@ -280,45 +293,55 @@ export function SuggestionsPanel({
                 <span aria-hidden="true" className="text-sm leading-none md:text-base">×</span>
               </button>
             </div>
-            {panelMode === 'options' ? (
-              <label className="flex max-w-full items-center gap-1 self-start text-[var(--text)] opacity-80">
-                <span className="text-[0.8rem]" aria-hidden="true">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <div className="flex flex-wrap items-center gap-1.5">
+              {rowParsed ? <CategoryBadgeLink parsed={rowParsed} href={null} compact /> : <span className="text-xs text-[var(--text)]">Any</span>}
+              <span className="text-[var(--text)]">+</span>
+              {colParsed ? <CategoryBadgeLink parsed={colParsed} href={null} compact /> : <span className="text-xs text-[var(--text)]">Any</span>}
+            </div>
+            <label className={`flex max-w-full items-center gap-1 self-start text-[var(--text)] opacity-80 ${panelMode === 'actions' ? 'md:hidden' : ''}`}>
+              <span className="text-[0.8rem]" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M7 4v14m0 0-3-3m3 3 3-3M17 20V6m0 0-3 3m3-3 3 3"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <span className="relative inline-flex max-w-full items-center">
+                <select
+                  className="max-w-[230px] cursor-pointer appearance-none rounded-md border border-[var(--border)] bg-[var(--code-bg)] py-1 pl-2 pr-7 text-xs text-[var(--text)] max-[768px]:max-w-[210px]"
+                  aria-label="Sort Pokémon suggestions"
+                  value={sortBy}
+                  onChange={(event) => handleSortChange(event.target.value as SortBy)}
+                >
+                  <option value="number-asc">Pokemon # (low to high)</option>
+                  <option value="number-desc">Pokemon # (high to low)</option>
+                  <option value="difficulty-asc">Dex difficulty (hard to easy)</option>
+                  <option value="difficulty-desc">Dex difficulty (easy to hard)</option>
+                  <option value="recent-appearance">By oldest appearance</option>
+                </select>
+                <span className="pointer-events-none absolute right-2 inline-flex items-center text-[var(--text)]" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                     <path
-                      d="M7 4v14m0 0-3-3m3 3 3-3M17 20V6m0 0-3 3m3-3 3 3"
+                      d="m6 9 6 6 6-6"
                       stroke="currentColor"
-                      strokeWidth="1.8"
+                      strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                   </svg>
                 </span>
-                <span className="relative inline-flex max-w-full items-center">
-                  <select
-                    className="max-w-[230px] cursor-pointer appearance-none rounded-md border border-[var(--border)] bg-[var(--code-bg)] py-1 pl-2 pr-7 text-xs text-[var(--text)] max-[768px]:max-w-[210px]"
-                    aria-label="Sort Pokémon suggestions"
-                    value={sortBy}
-                    onChange={(event) => handleSortChange(event.target.value as SortBy)}
-                  >
-                    <option value="number-asc">Pokemon # (low to high)</option>
-                    <option value="number-desc">Pokemon # (high to low)</option>
-                    <option value="difficulty-asc">Dex difficulty (hard to easy)</option>
-                    <option value="difficulty-desc">Dex difficulty (easy to hard)</option>
-                    <option value="recent-appearance">By oldest appearance</option>
-                  </select>
-                  <span className="pointer-events-none absolute right-2 inline-flex items-center text-[var(--text)]" aria-hidden="true">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="m6 9 6 6 6-6"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
+              </span>
+            </label>
+            {panelMode === 'options' ? (
+              <div className="flex max-w-full items-center gap-1 self-start text-[var(--text)] opacity-80">
+                <span className="text-xs font-medium text-[var(--text)]">
+                  {optionsCounts.total} Pokemon{showOwnershipState ? `, ${optionsCounts.unowned} unowned, ${optionsCounts.owned} owned` : ''}
                 </span>
-              </label>
+              </div>
             ) : null}
           </div>
         </div>
