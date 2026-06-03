@@ -18,4 +18,5 @@ aws cloudformation deploy \
     TargetBucketName="${S3_BUCKET_NAME}" \
     PuzzleStatisticsCodeS3Bucket="${S3_BUCKET_NAME}" \
     PuzzleStatisticsCodeS3Key="${CURRENT_STATS_LAMBDA_KEY}" \
-    PuzzleStatisticsOutputKey=data/runtime/puzzle-stats.json
+    PuzzleStatisticsOutputKey=data/runtime/puzzle-stats.json \
+    PuzzleArchiveIndexOutputKey=data/runtime/puzzle-archive-index.json

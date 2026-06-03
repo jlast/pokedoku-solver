@@ -18,6 +18,11 @@ Parameters:
     Type: String
     Default: "data/runtime/puzzle-stats.json"
     Description: "S3 key where puzzle statistics are written"
+
+  PuzzleArchiveIndexOutputKey:
+    Type: String
+    Default: "data/runtime/puzzle-archive-index.json"
+    Description: "S3 key where the puzzle archive index is written"
   
   PokemonLastUsableOutputKey:
     Type: String
@@ -63,6 +68,7 @@ Resources:
                   - s3:PutObject
                 Resource:
                   - !Sub "arn:aws:s3:::${TargetBucketName}/${PuzzleStatisticsOutputKey}"
+                  - !Sub "arn:aws:s3:::${TargetBucketName}/${PuzzleArchiveIndexOutputKey}"
                   - !Sub "arn:aws:s3:::${TargetBucketName}/${PokemonLastUsableOutputKey}"
                   - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/pokemon/*"
                   - !Sub "arn:aws:s3:::${TargetBucketName}/data/runtime/categories/*"
