@@ -1,0 +1,30 @@
+---
+import AppPageLayout from "../../../layouts/AppPageLayout.astro";
+import { Header } from "../../../app/components/Header";
+import { Footer } from "../../../app/components/Footer";
+import { HistoricAnswersPageClient } from "../../../app/pages/HistoricAnswersPageClient";
+---
+
+<AppPageLayout
+  title="Historic Pokedoku Answers – Browse Past Boards"
+  description="Browse historic Pokedoku answers, revisit past boards, and inspect category combinations from previous puzzles."
+  path="/tools/historic-answers/"
+>
+  <main class="mx-auto min-h-screen w-full max-w-6xl p-5">
+    <Header
+      title="Historic Pokedoku Answers"
+      subtitle="Browse past boards, revisit old category pairings, and open any historic puzzle in the full answer view."
+      currentPage="tools"
+      client:load
+    />
+
+    <section class="mb-4 rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-4 text-left">
+      <p class="m-0 text-sm text-[var(--text)]">
+        This archive is built from stored historic Pokedoku boards. Open any date to inspect the full grid and every valid answer for each square.
+      </p>
+    </section>
+
+    <HistoricAnswersPageClient client:load />
+    <Footer client:load />
+  </main>
+</AppPageLayout>

@@ -4,6 +4,7 @@ import { getRemoteSettings } from "@pokedoku-helper/user-api-client";
 import { buildLogoutUrl, clearSession, getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
 import { isAuthFeatureEnabled } from "../../lib/featureFlags";
 import { PokeballDivider } from "./shared/PokeballDivider";
+import { DateChip } from "./shared/DateChip";
 
 const UNNAMED_TRAINER_LABEL = "Unnamed trainer";
 const THEME_STORAGE_KEY = "theme-mode";
@@ -77,7 +78,14 @@ const TOOL_MENU_ITEMS: ToolMenuItem[] = [
     iconType: "fill",
     icon: "M3 18h18v2H3v-2Zm2-1V9h3v8H5Zm5 0V6h3v11h-3Zm5 0v-5h3v5h-3Z",
   },
-];
+  {
+    label: "Historic Answers",
+    url: "tools/historic-answers/",
+    iconType: "stroke",
+    matchPrefixes: ["historic-answers/"],
+    icon: "M7 2v2M17 2v2M3 8h18M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm3 6h4v4H8v-4Z",
+  },
+].filter((item) => item.label !== "Historic Answers");
 
 const NAV_BUTTONS: NavButton[] = [
   {
@@ -681,17 +689,7 @@ export function Header({
                   Updated daily
                 </span>
               </div>
-              <div className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--code-bg)] px-3 py-1.5 text-[0.85rem] text-[var(--text)]">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" />
-                </svg>
-                <span data-header-date>{showDate}</span>
-              </div>
+              <DateChip date={showDate} />
             </div>
           )}
 

@@ -60,6 +60,20 @@ const tools = [
     iconPath: "M4 18h16M6 16V9m6 7V6m6 10v-4",
     iconSize: "h-6 w-6",
   },
+  {
+    title: "Historic Answers",
+    description: "Browse past Pokedoku boards, reopen full answer grids, and scan archived category combinations by date.",
+    href: "/tools/historic-answers/",
+    accent: "from-amber-500 to-orange-600",
+    border: "border-amber-200",
+    glow: "shadow-[0_16px_34px_rgba(217,119,6,0.14)]",
+    iconBg: "bg-amber-700 text-amber-100 [html[data-theme='dark']_&]:bg-amber-100 [html[data-theme='dark']_&]:text-amber-700",
+    button: "bg-amber-700 hover:bg-amber-800",
+    cta: "Browse historic boards",
+    tag: "Archive & answers",
+    iconPath: "M7 2v2M17 2v2M3 8h18M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm3 6h4v4H8v-4Z",
+    iconSize: "h-6 w-6",
+  },
 ];
 ---
 
@@ -71,13 +85,13 @@ const tools = [
   <div class="min-h-screen p-5">
     <Header
       title="Tools"
-      subtitle="Everything you need to analyze categories, build custom boards, calculate shiny odds, and study puzzle trends."
+      subtitle="Everything you need to analyze categories, browse historic boards, build custom puzzles, calculate shiny odds, and study puzzle trends."
       currentPage="tools"
       client:load
     />
 
     <main class="mx-auto w-full max-w-6xl px-4 pb-10">
-      <section class="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
+      <section class="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
         {tools.map((tool) => (
           <a href={tool.href} class:list={["group rounded-3xl border bg-[var(--bg)] p-6 text-inherit no-underline shadow-sm transition-all hover:-translate-y-1", tool.border, tool.glow]}>
             <div class="mb-4 flex items-start justify-between gap-3">

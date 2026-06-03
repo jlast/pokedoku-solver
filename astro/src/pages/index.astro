@@ -48,6 +48,12 @@ import { HomeFeaturedPick } from "../app/pages/HomeFeaturedPick";
               <span class="mr-2 inline-block h-3 w-3 rounded-full bg-white ring-2 ring-black/20"></span>
               Today’s Pokédoku Answers
             </a>
+            <a
+              href="/tools/historic-answers/"
+              class="inline-flex items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg)] px-5 py-3 text-base font-semibold tracking-tight text-[var(--text-h)] no-underline transition-colors duration-200 hover:bg-[var(--accent-bg)]"
+             >
+              Browse Historic Boards
+            </a>
           </div>
 
           <HomeFeaturedPick client:load />
@@ -119,6 +125,12 @@ import { HomeFeaturedPick } from "../app/pages/HomeFeaturedPick";
             <h3 class="m-0 text-2xl font-bold text-[var(--text-h)]">Usage Insights</h3>
             <p class="mt-2 mb-0 text-[var(--text)]">See what&apos;s hot, what&apos;s not, and what to avoid.</p>
             <a href="/tools/pokedoku-insights/" class="mt-5 inline-flex rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white no-underline">View Insights</a>
+          </article>
+
+          <article class="rounded-3xl border border-[var(--border)] bg-[var(--bg)] p-6 shadow-sm">
+            <h3 class="m-0 text-2xl font-bold text-[var(--text-h)]">Historic Answers</h3>
+            <p class="mt-2 mb-0 text-[var(--text)]">Browse past Pokedoku boards and reopen full historic answer views by date.</p>
+            <a href="/tools/historic-answers/" class="mt-5 inline-flex rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white no-underline">Browse archive</a>
           </article>
         </div>
       </section>

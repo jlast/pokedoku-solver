@@ -1,0 +1,12 @@
+---
+import AppPageLayout from "../../../../layouts/AppPageLayout.astro";
+import { HistoricAnswerBoardPageClient } from "../../../../app/pages/HistoricAnswerBoardPageClient";
+---
+
+<AppPageLayout
+  title="Historic Pokedoku Board | Pokedoku Helper"
+  description="Inspect a historic Pokedoku board and browse every valid answer for each square."
+  path="/tools/historic-answers/board/"
+>
+  <HistoricAnswerBoardPageClient client:load />
+</AppPageLayout>

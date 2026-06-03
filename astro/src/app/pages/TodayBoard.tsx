@@ -141,7 +141,7 @@ async function saveSpoilerModePreference(token: string, apiBaseUrl: string, spoi
   );
 }
 
-export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
+export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: TodayPuzzle; showRecommendations?: boolean }) {
   const isLoggedIn = typeof window !== 'undefined' && Boolean(getSessionUserProfile());
   const gridSize = puzzle.rowConstraints.length;
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
@@ -853,12 +853,14 @@ export function TodayBoard({ puzzle }: { puzzle: TodayPuzzle }) {
         </div>
       </section>): null}
 
-      <TodayBoardSuggestions
-        textualSuggestions={textualSuggestions}
-        spoilerModeEnabled={spoilerModeEnabled}
-        revealStates={revealStates}
-        onAdvanceReveal={advanceReveal}
-      />
+      {showRecommendations ? (
+        <TodayBoardSuggestions
+          textualSuggestions={textualSuggestions}
+          spoilerModeEnabled={spoilerModeEnabled}
+          revealStates={revealStates}
+          onAdvanceReveal={advanceReveal}
+        />
+      ) : null}
     </div>
   );
 }
