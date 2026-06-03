@@ -5,6 +5,7 @@ import type { Pokemon } from "@pokedoku-helper/shared-types";
 import {
   buildCategoryPairStatsFiles,
   buildCategoryStatsFiles,
+  buildPuzzleArchiveIndex,
   buildPokemonRecentAppearanceFile,
   buildPokemonStatsFiles,
   buildStats,
@@ -19,6 +20,7 @@ const pokemonStatsDir = path.join(runtimeDir, "pokemon");
 const categoriesStatsDir = path.join(runtimeDir, "categories");
 const categoryPairsStatsDir = path.join(runtimeDir, "category-pairs");
 const summaryPath = path.join(runtimeDir, "puzzle-stats.json");
+const puzzleArchiveIndexPath = path.join(runtimeDir, "puzzle-archive-index.json");
 const pokemonRecentAppearancePath = path.join(runtimeDir, "pokemon-last-usable.json");
 const pokemonPath = path.join(rootDir, "public", "data", "pokemon.json");
 
@@ -54,6 +56,7 @@ async function main() {
   }
 
   const stats = buildStats(puzzles, pokemon);
+  const puzzleArchiveIndex = buildPuzzleArchiveIndex(puzzles, pokemon);
   const pokemonStats = buildPokemonStatsFiles(puzzles, pokemon);
   const categoryStats = buildCategoryStatsFiles(puzzles);
   const categoryPairStats = buildCategoryPairStatsFiles(puzzles);
@@ -61,6 +64,7 @@ async function main() {
 
   await mkdir(runtimeDir, { recursive: true });
   await writeFile(summaryPath, JSON.stringify(stats, null, 2), "utf8");
+  await writeFile(puzzleArchiveIndexPath, JSON.stringify(puzzleArchiveIndex, null, 2), "utf8");
   await writeFile(pokemonRecentAppearancePath, JSON.stringify(pokemonRecentAppearance, null, 2), "utf8");
 
   await resetDirectory(pokemonStatsDir);
@@ -97,6 +101,8 @@ async function main() {
   console.log("Puzzle statistics generated locally", {
     puzzlesAnalyzed: stats.puzzlesAnalyzed,
     summaryPath,
+    puzzleArchiveIndexPath,
+    puzzleArchiveIndexCount: puzzleArchiveIndex.items.length,
     pokemonStatsDir,
     pokemonStatsCount: pokemonStats.files.length,
     pokemonRecentAppearancePath,

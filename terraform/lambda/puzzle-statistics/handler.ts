@@ -2,6 +2,7 @@ import { S3Client } from "@aws-sdk/client-s3";
 import {
   buildCategoryPairStatsFiles,
   buildCategoryStatsFiles,
+  buildPuzzleArchiveIndex,
   buildPokemonRecentAppearanceFile,
   buildPokemonStatsFiles,
   buildStats,
@@ -22,6 +23,7 @@ const POKEMON_DATA_KEY = "data/pokemon.json";
 const POKEMON_STATS_PREFIX = "data/runtime/pokemon/";
 const CATEGORY_STATS_PREFIX = "data/runtime/categories/";
 const CATEGORY_PAIR_STATS_PREFIX = "data/runtime/category-pairs/";
+const PUZZLE_ARCHIVE_INDEX_KEY = "data/runtime/puzzle-archive-index.json";
 const POKEMON_LAST_USABLE_KEY = "data/runtime/pokemon-last-usable.json";
 const IO_CONCURRENCY = Number(process.env.IO_CONCURRENCY ?? 20);
 const LOG_EVERY_N = Number(process.env.LOG_EVERY_N ?? 100);
@@ -84,6 +86,13 @@ export async function handler() {
   const stats = buildStats(puzzles, pokemon);
   console.log("overall stats built", { puzzlesAnalyzed: stats.puzzlesAnalyzed, elapsedMs: Date.now() - statsStartedAt });
 
+  const archiveIndexStartedAt = Date.now();
+  const puzzleArchiveIndex = buildPuzzleArchiveIndex(puzzles, pokemon);
+  console.log("puzzle archive index built", {
+    itemCount: puzzleArchiveIndex.items.length,
+    elapsedMs: Date.now() - archiveIndexStartedAt,
+  });
+
   const pokemonStatsStartedAt = Date.now();
   const pokemonStats = buildPokemonStatsFiles(puzzles, pokemon);
   console.log("pokemon stats files built", {
@@ -117,6 +126,14 @@ export async function handler() {
     key: POKEMON_LAST_USABLE_KEY,
     itemCount: pokemonRecentAppearance.items.length,
     elapsedMs: Date.now() - pokemonRecentAppearanceStartedAt,
+  });
+
+  const archiveWriteStartedAt = Date.now();
+  await putJsonToS3(s3, BUCKET_NAME, PUZZLE_ARCHIVE_INDEX_KEY, puzzleArchiveIndex);
+  console.log("wrote puzzle archive index", {
+    key: PUZZLE_ARCHIVE_INDEX_KEY,
+    itemCount: puzzleArchiveIndex.items.length,
+    elapsedMs: Date.now() - archiveWriteStartedAt,
   });
 
   await mapWithConcurrency(
@@ -173,6 +190,7 @@ export async function handler() {
       categoryPairStatsPrefix: CATEGORY_PAIR_STATS_PREFIX,
       categoryPairStatsWritten: categoryPairStats.files.length,
       pokemonRecentAppearanceKey: POKEMON_LAST_USABLE_KEY,
+      puzzleArchiveIndexKey: PUZZLE_ARCHIVE_INDEX_KEY,
     }),
   };
 }

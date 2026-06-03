@@ -1,5 +1,6 @@
 import { FILTER_CATEGORIES } from "../../../lib/shared/filters";
 import { PAIR_FREQUENCY_BUCKETS } from "../../../lib/shared/pairFrequencyBuckets";
+import { enrichPuzzlesWithFeaturedPick, type MappedPuzzle } from "../../../lib/puzzle-fetch-core";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { buildCategoryOutputFileNames, parseCategoryId, slugify } from "./category-filenames";
 import type {
@@ -13,6 +14,8 @@ import type {
   ConstraintCategory,
   ConstraintMapping,
   PairFrequencySummary,
+  PuzzleArchiveIndexFile,
+  PuzzleArchiveEntry,
   PokemonLastUsable,
   PokemonRecentAppearanceFile,
   PokemonStatsFile,
@@ -249,6 +252,81 @@ function toPokemonKeyId(entry: Pokemon): number | null {
 function getDateRange(puzzles: Puzzle[]): { from: string; to: string } {
   const dates = puzzles.map((puzzle) => puzzle.date).sort();
   return { from: dates[0] ?? "", to: dates[dates.length - 1] ?? "" };
+}
+
+function toPuzzleArchiveSlug(puzzle: Puzzle): string {
+  return puzzle.type === "BONUS" || puzzle.bonus === true ? `${puzzle.date}-bonus` : puzzle.date;
+}
+
+function toMappedPuzzle(puzzle: Puzzle): MappedPuzzle {
+  return {
+    date: puzzle.date,
+    type: puzzle.type,
+    bonus: puzzle.type === "BONUS" || puzzle.bonus === true,
+    size: puzzle.size ?? puzzle.rowConstraints.length * puzzle.colConstraints.length,
+    rowConstraints: puzzle.rowConstraints as MappedPuzzle["rowConstraints"],
+    colConstraints: puzzle.colConstraints as MappedPuzzle["colConstraints"],
+    featuredPick: puzzle.featuredPick,
+  };
+}
+
+function backfillArchiveFeaturedPicks(puzzles: Puzzle[], pokemon: Pokemon[]): Puzzle[] {
+  const puzzlesMissingFeaturedPick = puzzles.filter((puzzle) => !puzzle.featuredPick);
+  if (puzzlesMissingFeaturedPick.length === 0) return puzzles;
+
+  const featuredPickBySlug = new Map(
+    enrichPuzzlesWithFeaturedPick(puzzlesMissingFeaturedPick.map(toMappedPuzzle), pokemon)
+      .filter((puzzle) => puzzle.featuredPick)
+      .map((puzzle) => [toPuzzleArchiveSlug(puzzle), puzzle.featuredPick] as const),
+  );
+
+  return puzzles.map((puzzle) => {
+    if (puzzle.featuredPick) return puzzle;
+
+    const featuredPick = featuredPickBySlug.get(toPuzzleArchiveSlug(puzzle));
+    if (!featuredPick) return puzzle;
+
+    return {
+      ...puzzle,
+      featuredPick,
+    };
+  });
+}
+
+export function buildPuzzleArchiveIndex(puzzles: Puzzle[], pokemon: Pokemon[]): PuzzleArchiveIndexFile {
+  const generatedAt = new Date().toISOString();
+  const dateRange = getDateRange(puzzles);
+  const itemsBySlug = new Map<string, PuzzleArchiveEntry>();
+  const archivePuzzles = backfillArchiveFeaturedPicks(puzzles, pokemon);
+
+  for (const puzzle of archivePuzzles) {
+    const item = {
+      date: puzzle.date,
+      type: puzzle.type,
+      bonus: puzzle.type === "BONUS" || puzzle.bonus === true,
+      size: puzzle.size,
+      rowConstraints: puzzle.rowConstraints,
+      colConstraints: puzzle.colConstraints,
+      featuredPick: puzzle.featuredPick,
+      slug: toPuzzleArchiveSlug(puzzle),
+    } satisfies PuzzleArchiveEntry;
+
+    if (!itemsBySlug.has(item.slug)) {
+      itemsBySlug.set(item.slug, item);
+    }
+  }
+
+  const items = Array.from(itemsBySlug.values()).sort((a, b) => {
+      if (a.date !== b.date) return b.date.localeCompare(a.date);
+      if (a.bonus === b.bonus) return a.slug.localeCompare(b.slug);
+      return a.bonus ? 1 : -1;
+    });
+
+  return {
+    generatedAt,
+    dateRange,
+    items,
+  };
 }
 
 function roundTo(value: number, decimals: number): number {

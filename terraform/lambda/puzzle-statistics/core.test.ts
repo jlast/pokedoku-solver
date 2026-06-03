@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildCategoryPairStatsFiles,
   buildCategoryStatsFiles,
+  buildPuzzleArchiveIndex,
   buildPokemonRecentAppearanceFile,
   buildStats,
   summarizeFormIdQuality,
@@ -156,6 +157,60 @@ describe("buildStats", () => {
 
     expect(stats.withoutLegacy.oldestPokemonLastUsable.length).toBe(1);
     expect(stats.withoutLegacy.oldestPokemonLastUsable[0]?.formId).toBe(6);
+  });
+});
+
+describe("buildPuzzleArchiveIndex", () => {
+  it("backfills missing featured picks without overwriting existing ones", () => {
+    const archivePuzzles: Puzzle[] = [
+      {
+        date: "2026-04-04",
+        type: "AUTOMATIC",
+        rowConstraints: [{ category: "category", value: "Legendary" }],
+        colConstraints: [{ category: "regions", value: "Kanto" }],
+      },
+      {
+        date: "2026-04-05",
+        type: "AUTOMATIC",
+        rowConstraints: [{ category: "category", value: "Legendary" }],
+        colConstraints: [{ category: "regions", value: "Kanto" }],
+        featuredPick: {
+          id: 999,
+          formId: 999,
+          name: "Existing Pick",
+          sprite: "/images/sprites/999.png",
+          dexDifficulty: "Easy",
+          dexDifficultyPercentile: 0.1,
+          globalCategoryCombinationCount: 1,
+        },
+      },
+    ];
+
+    const archiveIndex = buildPuzzleArchiveIndex(archivePuzzles, [
+      {
+        id: 6,
+        formId: 6,
+        name: "Moltres",
+        types: ["Fire", "Flying"],
+        region: "Kanto",
+        categories: ["Legendary"],
+        dexDifficulty: "Nightmare",
+        dexDifficultyPercentile: 99,
+      },
+      {
+        id: 150,
+        formId: 150,
+        name: "Mewtwo",
+        types: ["Psychic"],
+        region: "Kanto",
+        categories: ["Legendary"],
+        dexDifficulty: "Expert",
+        dexDifficultyPercentile: 80,
+      },
+    ]);
+
+    expect(archiveIndex.items.find((item) => item.slug === "2026-04-04")?.featuredPick?.name).toBe("Moltres");
+    expect(archiveIndex.items.find((item) => item.slug === "2026-04-05")?.featuredPick?.name).toBe("Existing Pick");
   });
 });
 

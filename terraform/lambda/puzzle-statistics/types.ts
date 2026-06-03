@@ -7,11 +7,37 @@ export interface ConstraintMapping {
   value: string;
 }
 
+export interface PuzzleFeaturedPick {
+  id: number;
+  formId?: number;
+  name: string;
+  sprite?: string;
+  dexDifficulty: string;
+  dexDifficultyPercentile: number;
+  globalCategoryCombinationCount: number;
+}
+
 export interface Puzzle {
   date: string;
   type: string;
+  bonus?: boolean;
+  size?: number;
   rowConstraints: ConstraintMapping[];
   colConstraints: ConstraintMapping[];
+  featuredPick?: PuzzleFeaturedPick;
+}
+
+export interface PuzzleArchiveEntry extends Puzzle {
+  slug: string;
+}
+
+export interface PuzzleArchiveIndexFile {
+  generatedAt: string;
+  dateRange: {
+    from: string;
+    to: string;
+  };
+  items: PuzzleArchiveEntry[];
 }
 
 export interface CategoryCount {
@@ -166,6 +192,7 @@ export interface PokemonStatsFile {
 
 export interface RuntimeDataBundle {
   stats: CategoryStats;
+  puzzleArchiveIndex: PuzzleArchiveIndexFile;
   pokemonStats: { files: PokemonStatsFile[]; skipped: number };
   categoryStats: { files: CategoryStatsFile[]; fileNameByCategoryId: Map<string, string> };
   categoryPairStats: { files: CategoryPairStatsFile[]; fileNameByPairSlug: Map<string, string> };
