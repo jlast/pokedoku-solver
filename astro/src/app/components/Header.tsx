@@ -85,7 +85,7 @@ const TOOL_MENU_ITEMS: ToolMenuItem[] = [
     matchPrefixes: ["historic-answers/"],
     icon: "M7 2v2M17 2v2M3 8h18M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm3 6h4v4H8v-4Z",
   },
-].filter((item) => item.label !== "Historic Answers");
+];
 
 const NAV_BUTTONS: NavButton[] = [
   {
