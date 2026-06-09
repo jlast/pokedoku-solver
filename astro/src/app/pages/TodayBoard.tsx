@@ -481,6 +481,11 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
     await saveSelectedPokemonDexState(pokemon, { shiny: true });
   }
 
+  function redirectToLogin() {
+    trackEvent('click_navigate', { url: 'login/', from: 'today_suggestions' });
+    window.location.assign(`${import.meta.env.BASE_URL}login/`);
+  }
+
   const hasGridData = grid.cells.some((row) => row.some((cell) => cell !== null));
 
   async function toggleMyPokedexFilter() {
@@ -804,8 +809,8 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
             setSelectedCellAnchorElement(null);
           }}
           onSelect={handlePokemonSelect}
-          onMarkOwned={isLoggedIn && remoteUserDex ? markSelectedPokemonOwned : undefined}
-          onMarkShiny={isLoggedIn && remoteUserDex ? markSelectedPokemonShiny : undefined}
+          onMarkOwned={isLoggedIn && remoteUserDex ? markSelectedPokemonOwned : redirectToLogin}
+          onMarkShiny={isLoggedIn && remoteUserDex ? markSelectedPokemonShiny : redirectToLogin}
         />
       </div>
       <div className="mt-2 mb-4 flex flex-wrap justify-center gap-2.5">
