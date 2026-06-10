@@ -2,13 +2,22 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
 import { trackEvent } from '../../../../lib/browser/analytics';
 import { matchesConstraint, type Constraint } from '../../../../lib/shared/filters';
-import { getRemoteSettings, getRemoteUserDex, patchRemoteSettings, patchRemoteUserDex, type UserDexPayload } from '@pokedoku-helper/user-api-client';
+import type { UserDexPayload } from '@pokedoku-helper/user-api-client';
 import { Grid } from '../components/Grid';
 import { SuggestionsPanel } from '../components/SuggestionsPanel';
 import { TodayBoardSuggestions } from '../components/TodayBoardSuggestions';
+import { PokedexFilterPanel } from '../components/PokedexFilterPanel';
+import { PokedexPromoCard } from '../components/PokedexPromoCard';
 import { ActionButton } from '../components/shared/ActionButton';
 import { ActionLink } from '../components/shared/ActionLink';
 import { getSessionUserProfile, getValidSessionIdToken } from '../../lib/cognitoAuth';
+import {
+  getApiBaseUrl,
+  loadPokedexSettingsState,
+  saveCaughtPokemonPayload,
+  saveMyPokedexFilterPreference,
+  saveSpoilerModePreference,
+} from '../lib/pokedexSettings';
 import { getPokemonKeyId } from '../lib/pokemonGrid';
 import {
   buildPersonalizedRemainingGroupScoreMap,
@@ -58,12 +67,6 @@ interface UndoMarkOwnedState {
   addedCount: number;
 }
 
-interface LoadedTodayBoardUserState {
-  userDex: UserDexPayload | null;
-  myPokedexFilter: boolean | null;
-  spoilerModeEnabled: boolean | null;
-}
-
 const TODAY_BOARD_RECOMMENDATION_FAQ = [
   {
     question: 'Why are these not always the highest-difficulty picks?',
@@ -91,55 +94,6 @@ const TODAY_BOARD_RECOMMENDATION_FAQ = [
       'Because your remaining Pokedex changed. As your owned list changes, the system recalculates which category-combination groups are still deep and which ones are getting thin, so a different answer can become the most strategic pick.',
   },
 ] as const;
-
-function getApiBaseUrl(): string | null {
-  const baseUrl = import.meta.env.PUBLIC_USER_DEX_API_BASE_URL;
-  if (!baseUrl || typeof baseUrl !== 'string') return null;
-  return baseUrl;
-}
-
-async function loadTodayBoardUserState(token: string, apiBaseUrl: string): Promise<LoadedTodayBoardUserState> {
-  const [userDex, settings] = await Promise.all([
-    getRemoteUserDex({ token, apiBaseUrl }),
-    getRemoteSettings({ token, apiBaseUrl }),
-  ]);
-
-  return {
-    userDex,
-    myPokedexFilter: settings?.myPokedexFilter ?? null,
-    spoilerModeEnabled: settings ? !settings.preventSpoilerMode : null,
-  };
-}
-
-async function saveCaughtPokemon(token: string, apiBaseUrl: string, payload: UserDexPayload): Promise<boolean> {
-  return Boolean(
-    await patchRemoteUserDex({
-      token,
-      apiBaseUrl,
-      payload,
-    }),
-  );
-}
-
-async function saveMyPokedexFilter(token: string, apiBaseUrl: string, myPokedexFilter: boolean): Promise<boolean> {
-  return Boolean(
-    await patchRemoteSettings({
-      token,
-      apiBaseUrl,
-      patch: { myPokedexFilter },
-    }),
-  );
-}
-
-async function saveSpoilerModePreference(token: string, apiBaseUrl: string, spoilerModeEnabled: boolean): Promise<boolean> {
-  return Boolean(
-    await patchRemoteSettings({
-      token,
-      apiBaseUrl,
-      patch: { preventSpoilerMode: !spoilerModeEnabled },
-    }),
-  );
-}
 
 export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: TodayPuzzle; showRecommendations?: boolean }) {
   const isLoggedIn = typeof window !== 'undefined' && Boolean(getSessionUserProfile());
@@ -188,7 +142,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
       if (!token || !apiBaseUrl) return;
 
       try {
-        const { userDex, myPokedexFilter, spoilerModeEnabled } = await loadTodayBoardUserState(token, apiBaseUrl);
+        const { userDex, myPokedexFilter, spoilerModeEnabled } = await loadPokedexSettingsState(token, apiBaseUrl);
         if (isCancelled) return;
 
         if (userDex) {
@@ -383,7 +337,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
         updatedAt: new Date().toISOString(),
       };
 
-      const didSave = await saveCaughtPokemon(token, apiBaseUrl, nextPayload);
+      const didSave = await saveCaughtPokemonPayload(token, apiBaseUrl, nextPayload);
       if (!didSave) return;
 
       setCaughtSet(mergedSet);
@@ -407,7 +361,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
       const apiBaseUrl = getApiBaseUrl();
       if (!token || !apiBaseUrl) return;
 
-      const didSave = await saveCaughtPokemon(token, apiBaseUrl, undoMarkOwnedState.previousUserDex);
+      const didSave = await saveCaughtPokemonPayload(token, apiBaseUrl, undoMarkOwnedState.previousUserDex);
       if (!didSave) return;
 
       setCaughtSet(new Set(undoMarkOwnedState.previousUserDex.caughtPokemonKeyIds));
@@ -459,7 +413,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
       return;
     }
 
-    const didSave = await saveCaughtPokemon(token, apiBaseUrl, nextPayload);
+    const didSave = await saveCaughtPokemonPayload(token, apiBaseUrl, nextPayload);
     if (!didSave) {
       setCaughtSet(new Set(remoteUserDex.caughtPokemonKeyIds));
       setRemoteUserDex(remoteUserDex);
@@ -497,7 +451,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
     if (!token || !apiBaseUrl) return;
 
     setIsSavingFilterPreference(true);
-    const didSave = await saveMyPokedexFilter(token, apiBaseUrl, nextValue);
+    const didSave = await saveMyPokedexFilterPreference(token, apiBaseUrl, nextValue);
     setIsSavingFilterPreference(false);
 
     if (!didSave) {
@@ -568,161 +522,35 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
   }
 
   return (
-    <div className="flex flex-col items-center">
-      {isLoggedIn ? (
-        <section className="mb-3 w-full max-w-[500px] rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-3 text-left">
-          <div className="flex flex-col items-center gap-3 text-center">
-            <div>
-              <p className="m-0 text-sm font-semibold text-[var(--text-h)]">My Pokedex &amp; Answer Filters</p>
-              <p className="m-0 text-xs text-[var(--text)]">Control which answers you see and when you see them.</p>
-            </div>
-            <div className="flex flex-col items-center gap-2">
-              <div className="grid grid-cols-[190px_auto] items-center justify-center gap-3">
-                <div className="text-left">
-                  <p className="m-0 text-sm font-medium text-[var(--text-h)]">Suggest new Pokémon</p>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={showMissingOnly}
-                  onClick={() => {
-                    void toggleMyPokedexFilter();
-                  }}
-                  disabled={isSavingFilterPreference}
-                  className={`relative inline-flex h-7 w-12 items-center rounded-full border transition-colors ${
-                    showMissingOnly ? 'border-emerald-500 bg-emerald-500' : 'border-[var(--border)] bg-slate-300'
-                  } ${isSavingFilterPreference ? 'opacity-70' : ''}`}
-                >
-                  <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-[var(--bg)] shadow transition-transform ${
-                      showMissingOnly ? 'translate-x-6' : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-              <div className="grid grid-cols-[190px_auto] items-center justify-center gap-3">
-                <div className="text-left">
-                  <p className="m-0 text-sm font-medium text-[var(--text-h)]">Avoid spoilers</p>
+      <div className="flex flex-col items-center">
+       {isLoggedIn ? (
+         <PokedexFilterPanel
+           showMissingOnly={showMissingOnly}
+           onToggleMyPokedexFilter={() => {
+             void toggleMyPokedexFilter();
+           }}
+           isSavingFilterPreference={isSavingFilterPreference}
+           showSpoilerToggle
+           spoilerModeEnabled={spoilerModeEnabled}
+           onToggleSpoilerMode={() => {
+             void toggleSpoilerMode();
+           }}
+           isSavingSpoilerPreference={isSavingSpoilerPreference}
+           showSaveActions
+           onMarkOwned={markOwned}
+           onUndoMarkOwned={() => {
+             void undoMarkOwned();
+           }}
+           disableMarkOwned={!hasGridData || !remoteUserDex || isMarkingOwned || isUndoingMarkOwned}
+           disableUndoMarkOwned={!undoMarkOwnedState || isUndoingMarkOwned || isMarkingOwned}
+           isMarkingOwned={isMarkingOwned}
+           isUndoingMarkOwned={isUndoingMarkOwned}
+         />
+       ) : (
+         <>
+           <PokedexPromoCard trackingFrom="today_suggestions" />
 
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={spoilerModeEnabled}
-                  onClick={() => {
-                    void toggleSpoilerMode();
-                  }}
-                  disabled={isSavingSpoilerPreference}
-                  className={`relative inline-flex h-7 w-12 items-center rounded-full border transition-colors ${
-                    spoilerModeEnabled ? 'border-emerald-500 bg-emerald-500' : 'border-[var(--border)] bg-slate-300'
-                  } ${isSavingSpoilerPreference ? 'opacity-70' : ''}`}
-                >
-                  <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-[var(--bg)] shadow transition-transform ${
-                      spoilerModeEnabled ? 'translate-x-6' : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-          {showMissingOnly ? (
-            <div className="mt-4 flex flex-wrap justify-center gap-2">
-              <ActionButton
-                onClick={markOwned}
-                variant="success"
-                disabled={!hasGridData || !remoteUserDex || isMarkingOwned || isUndoingMarkOwned}
-              >
-                {isMarkingOwned ? (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="animate-spin">
-                      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" opacity="0.25" />
-                      <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                    Saving in My Pokedex...
-                  </>
-                ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    Save picks in My Pokedex
-                  </>
-                )}
-              </ActionButton>
-              <ActionButton
-                onClick={() => {
-                  void undoMarkOwned();
-                }}
-                variant="secondary"
-                disabled={!undoMarkOwnedState || isUndoingMarkOwned || isMarkingOwned}
-              >
-                {isUndoingMarkOwned ? 'Undoing...' : 'Undo'}
-              </ActionButton>
-            </div>
-          ) : null}
-        </section>
-      ) : (
-        <>
-          <section className="mb-3 w-full max-w-[700px] rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3 text-left shadow-sm">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-rose-200 bg-rose-50 shadow-sm [html[data-theme='dark']_&]:border-rose-900/60 [html[data-theme='dark']_&]:bg-rose-950/30">
-                    <img
-                      src={`${import.meta.env.BASE_URL}images/content/trainer.png`}
-                      alt=""
-                      className="h-8 w-8 object-contain"
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="m-0 text-sm font-semibold text-[var(--text-h)]">Complete your Pokedex faster</p>
-                    <p className="m-0 mt-1 text-sm leading-5 text-[var(--text)]">
-                      Hide Pokemon you already own and focus on answers that help complete your collection.
-                      <span className="hidden md:inline"> Save today&apos;s picks and track your progress across future puzzles.</span>
-                    </p>
-                    <div className="mt-2.5 flex flex-col gap-1.5 text-xs text-[var(--text)]">
-                      <div className="flex items-center gap-2">
-                        <span className="text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400">✓</span>
-                        <span>Hide owned Pokemon</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400">✓</span>
-                        <span>Highlight missing entries</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400">✓</span>
-                        <span>Save progress across puzzles</span>
-                      </div>
-                    </div>
-                    <div className="mt-3 md:hidden">
-                      <ActionLink
-                        href={`${import.meta.env.BASE_URL}login/`}
-                        variant="secondary"
-                        className="border-rose-600 bg-rose-600 text-white hover:border-rose-500 hover:bg-rose-500 [html[data-theme='dark']_&]:border-rose-500 [html[data-theme='dark']_&]:bg-rose-500 [html[data-theme='dark']_&]:text-white [html[data-theme='dark']_&]:hover:border-rose-400 [html[data-theme='dark']_&]:hover:bg-rose-400"
-                        onClick={() => trackEvent('click_navigate', { url: 'login/', from: 'today_suggestions' })}
-                      >
-                        Connect My Pokedex
-                      </ActionLink>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="hidden shrink-0 flex-col items-start md:flex md:self-center md:items-end">
-                <ActionLink
-                  href={`${import.meta.env.BASE_URL}login/`}
-                  variant="secondary"
-                  className="border-rose-600 bg-rose-600 text-white hover:border-rose-500 hover:bg-rose-500 [html[data-theme='dark']_&]:border-rose-500 [html[data-theme='dark']_&]:bg-rose-500 [html[data-theme='dark']_&]:text-white [html[data-theme='dark']_&]:hover:border-rose-400 [html[data-theme='dark']_&]:hover:bg-rose-400"
-                  onClick={() => trackEvent('click_navigate', { url: 'login/', from: 'today_suggestions' })}
-                >
-                  Connect My Pokedex
-                </ActionLink>
-              </div>
-            </div>
-          </section>
-
-          <section className="mb-2.5 w-full max-w-[600px] rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-3 text-left">
+           <section className="mb-2.5 w-full max-w-[600px] rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-3 text-left">
             <div className="flex flex-col items-center gap-3 text-center">
               <div>
                 <p className="m-0 text-sm font-semibold text-[var(--text-h)]">Answer Visibility</p>

@@ -92,6 +92,7 @@ interface SuggestionsPanelProps {
   ownedPokemonKeyIds?: Set<number>;
   shinyPokemonKeyIds?: Set<number>;
   showOwnershipState?: boolean;
+  hideOwnedOptions?: boolean;
   anchorElement?: HTMLElement | null;
   onClose?: () => void;
   onSelect: (pokemon: Pokemon) => void;
@@ -108,6 +109,7 @@ export function SuggestionsPanel({
   ownedPokemonKeyIds,
   shinyPokemonKeyIds,
   showOwnershipState = true,
+  hideOwnedOptions = false,
   anchorElement: _anchorElement,
   onClose,
   onSelect,
@@ -196,6 +198,10 @@ export function SuggestionsPanel({
   const displayedPokemon = useMemo(() => {
     if (!ownedPokemonKeyIds || !showOwnershipState) return sortedPokemon;
 
+    if (hideOwnedOptions) {
+      return sortedPokemon.filter((pokemon) => !ownedPokemonKeyIds.has(getPokemonKeyId(pokemon)));
+    }
+
     const owned: Pokemon[] = [];
     const unowned: Pokemon[] = [];
 
@@ -209,7 +215,7 @@ export function SuggestionsPanel({
 
     const isCurrentOwned = currentPokemon ? ownedPokemonKeyIds.has(getPokemonKeyId(currentPokemon)) : false;
     return isCurrentOwned ? owned : [...unowned, ...owned];
-  }, [currentPokemon, ownedPokemonKeyIds, showOwnershipState, sortedPokemon]);
+  }, [currentPokemon, hideOwnedOptions, ownedPokemonKeyIds, showOwnershipState, sortedPokemon]);
 
   const visiblePokemon = useMemo(() => displayedPokemon, [displayedPokemon]);
 

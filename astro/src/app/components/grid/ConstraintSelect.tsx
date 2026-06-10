@@ -38,7 +38,7 @@ export function ConstraintSelect({ constraint, index, isRow, onChange }: Constra
       onChange={handleChange}
       style={{ borderColor: getConstraintColor(constraint) }}
     >
-      <option value="">…</option>
+      <option value="">Select...</option>
       {FILTER_CATEGORIES.map((category) => (
         <optgroup key={category.key} label={category.label}>
           {category.options.map((option) => (
