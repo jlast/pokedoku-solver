@@ -75,6 +75,18 @@ const topCategoryIds = applicableCategoryIds.filter((categoryId) => {
 const categoryLabel = pokemon.categories?.length ? pokemon.categories.join(", ") : "-";
 const movesLabel = pokemonWithEvolution.learnedMoves?.length ? pokemonWithEvolution.learnedMoves.join(", ") : "-";
 const abilitiesLabel = pokemonWithEvolution.abilities?.length ? pokemonWithEvolution.abilities.join(", ") : "-";
+const regionLabel = pokemon.region?.length ? pokemon.region.join(", ") : "Unknown";
+const singleRegionColor =
+  pokemon.region?.length === 1 ? (REGION_COLORS[pokemon.region[0]] ?? "var(--text-h)") : "var(--text-h)";
+
+function formatNaturalList(values: string[]): string {
+  if (values.length === 0) return "an unknown region";
+  if (values.length === 1) return values[0];
+  if (values.length === 2) return `${values[0]} and ${values[1]}`;
+  return `${values.slice(0, -1).join(", ")}, and ${values[values.length - 1]}`;
+}
+
+const regionDescription = formatNaturalList(pokemon.region ?? []);
 const pokemonByFormId = new Map<number, Pokemon>(
   getPokemonList().map((entry: Pokemon) => [entry.formId ?? entry.id, entry]),
 );
@@ -252,7 +264,19 @@ const hasEvolutionLine =
         </div>
         <SectionCard title="Core details" class="lg:col-span-2">
           <ul class="grid gap-2">
-            <li class="grid grid-cols-[120px_1fr] items-start gap-3 border-b border-[var(--border)] pb-2"><span class="text-[var(--text)]">Region</span><strong class="text-right" style={`color:${REGION_COLORS[pokemon.region ?? ""] ?? "#0f172a"};`}>{pokemon.region ?? "Unknown"}</strong></li>
+            <li class="grid grid-cols-[120px_1fr] items-start gap-3 border-b border-[var(--border)] pb-2">
+              <span class="text-[var(--text)]">Region</span>
+              <strong class="text-right break-words" style={`color:${singleRegionColor};`}>
+                {pokemon.region?.length ? pokemon.region.map((region, index) => (
+                  <>
+                    {index > 0 ? <span class="text-[var(--text)]"> • </span> : null}
+                    <a href={`/tools/category/${slugify(region)}/`} class="transition hover:text-[var(--text-h)] hover:underline">
+                      {region}
+                    </a>
+                  </>
+                )) : regionLabel}
+              </strong>
+            </li>
             <li class="grid grid-cols-[120px_1fr] items-start gap-3 border-b border-[var(--border)] pb-2"><span class="text-[var(--text)]">Evolution stage</span><strong class="text-right text-[var(--text-h)]">{pokemon.evolutionStage ?? "Unknown"}</strong></li>
             <li class="grid grid-cols-[120px_1fr] items-start gap-3 border-b border-[var(--border)] pb-2"><span class="text-[var(--text)]">Categories</span><strong class="text-right break-words text-[var(--text-h)]">{categoryLabel}</strong></li>
             <li class="grid grid-cols-[120px_1fr] items-start gap-3 border-b border-[var(--border)] pb-2"><span class="text-[var(--text)]">Evolution trigger</span><strong class="text-right break-words text-[var(--text-h)]">{pokemon.evolutionTrigger?.join(", ") ?? "-"}</strong></li>
@@ -263,7 +287,7 @@ const hasEvolutionLine =
 
         <SectionCard title={`About ${pokemon.name}`} class="lg:col-span-2">
           <p class="text-[var(--text)]">
-            {pokemon.name} is a {pokemon.types.join("/")}-type Pokemon from {pokemon.region ?? "an unknown region"}.
+            {pokemon.name} is a {pokemon.types.join("/")}-type Pokemon from {regionDescription}.
             {pokemon.evolutionStage ? ` It is classified as ${pokemon.evolutionStage.toLowerCase()}.` : ""}
             {pokemon.dexDifficulty ? ` In PokeDoku, its difficulty is ${pokemon.dexDifficulty.toLowerCase()}.` : ""}
           </p>

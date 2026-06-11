@@ -7,7 +7,7 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
     types: [
       "Bug"
     ],
-    region: "Kanto",
+    region: ["Kanto"],
     sprite: "/images/sprites/99901.png",
     evolutionStage: "First Stage",
     formId: 99901,
@@ -21,7 +21,7 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
     types: [
       "Ground"
     ],
-    region: "Sinnoh",
+    region: ["Sinnoh"],
     sprite: "/images/sprites/90449.png",
     evolutionStage: "First Stage",
     formId: 90449,
@@ -40,7 +40,7 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
     types: [
       "Ground"
     ],
-    region: "Sinnoh",
+    region: ["Sinnoh"],
     sprite: "/images/sprites/90450.png",
     evolutionStage: "Final Stage",
     evolutionTrigger: [
@@ -63,7 +63,7 @@ export const CUSTOM_POKEMON: InternalPokemon[] = [
       "Normal",
       "Flying"
     ],
-    region: "Unova",
+    region: ["Unova"],
     sprite: "/images/sprites/90521.png",
     evolutionStage: "Final Stage",
     evolutionTrigger: [

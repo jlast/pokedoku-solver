@@ -213,7 +213,7 @@ export const NAME_REPLACEMENTS: Record<string, string> = {
 export interface PokemonOverride {
   formId?: number,
   types?: [PokemonType, PokemonType] | [PokemonType];
-  region?: PokemonRegion;
+  region?: PokemonRegion[];
   evolution?: {
     from?: number[];
     to?: number[];
@@ -454,30 +454,30 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   10414: {
     // palkia origin
-    region: "Hisui",
+    region: ["Hisui"],
   },
   10415: {
     // dialga origin
-    region: "Hisui",
+    region: ["Hisui"],
   },
   10416: {
     // basculin white striped
-    region: "Hisui",
+    region: ["Hisui"],
     evolution: {
       to: [902, 10417],
     },
   },
   10340: {
     // Zygarde 10%
-    region: 'Alola'
+    region: ['Alola']
   },
   10222: {
     // Zygarde complete
-    region: 'Alola'
+    region: ['Alola']
   }, 
   10441: {
     // Ursaluna bloodmoon
-    region: 'Paldea',
+    region: ['Paldea'],
     evolutionStage: 'No Evolution Line',
     evolutionTrigger: [],
     evolution: {

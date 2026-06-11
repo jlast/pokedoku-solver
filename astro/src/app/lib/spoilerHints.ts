@@ -61,8 +61,8 @@ export function buildSpoilerHintBadges({
     pushUniqueBadge(badges, seen, `types:${type}`, blockedLabels);
   }
 
-  if (pokemon.region) {
-    pushUniqueBadge(badges, seen, `regions:${pokemon.region}`, blockedLabels);
+  for (const region of pokemon.region ?? []) {
+    pushUniqueBadge(badges, seen, `regions:${region}`, blockedLabels);
   }
 
   if (typeConstraints.length === 1 && hasRegionConstraint && pokemon.types.length === 1) {

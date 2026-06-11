@@ -119,7 +119,7 @@ export function SharedPokedexPageClient({ userId }: { userId?: string }) {
         return (
           entry.name.toLowerCase().includes(normalizedQuery) ||
           String(entry.id).includes(normalizedQuery) ||
-          (entry.region ?? "").toLowerCase().includes(normalizedQuery) ||
+          (entry.region?.some((region) => region.toLowerCase().includes(normalizedQuery)) ?? false) ||
           entry.types.some((type) => type.toLowerCase().includes(normalizedQuery))
         );
       })

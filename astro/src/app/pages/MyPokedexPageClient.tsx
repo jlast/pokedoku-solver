@@ -159,7 +159,7 @@ export function MyPokedexPageClient() {
         const matchesSearch = !normalizedQuery ||
           entry.name.toLowerCase().includes(normalizedQuery) ||
           String(entry.id).includes(normalizedQuery) ||
-          (entry.region ?? "").toLowerCase().includes(normalizedQuery) ||
+          (entry.region?.some((region) => region.toLowerCase().includes(normalizedQuery)) ?? false) ||
           entry.types.some((type) => type.toLowerCase().includes(normalizedQuery));
 
         if (!matchesSearch) return false;

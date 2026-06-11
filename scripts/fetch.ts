@@ -319,7 +319,7 @@ function getEntry(
     id: species.id,
     name,
     types,
-    ...(REGION_BY_ID[speciesId] ? { region: REGION_BY_ID[speciesId] } : {}),
+    ...(REGION_BY_ID[speciesId] ? { region: [REGION_BY_ID[speciesId]] } : {}),
     sprite: getSpriteImagePath(form.id),
     formId,
   };
@@ -414,10 +414,10 @@ function getEntry(
 
   if (form.is_mega) addPokemonCategory(entry, "Mega Evolution");
   if (form.form_name === "gmax") addPokemonCategory(entry, "Gigantamax");
-  if (form.form_name.includes("alola")) entry.region = "Alola";
-  if (form.form_name.includes("galar")) entry.region = "Galar";
-  if (form.form_name.includes("hisui")) entry.region = "Hisui";
-  if (form.form_name.includes("paldea")) entry.region = "Paldea";
+  if (form.form_name.includes("alola")) entry.region = ["Alola"];
+  if (form.form_name.includes("galar")) entry.region = ["Galar"];
+  if (form.form_name.includes("hisui")) entry.region = ["Hisui"];
+  if (form.form_name.includes("paldea")) entry.region = ["Paldea"];
 
   const formOverride = POKEMON_OVERRIDES[formId];
   if (formOverride) {

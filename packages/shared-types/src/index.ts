@@ -161,7 +161,7 @@ export interface InternalPokemon {
   id: number;
   name: string;
   types: [PokemonType, PokemonType] | [PokemonType];
-  region?: PokemonRegion;
+  region?: PokemonRegion[];
   evolution?: {
     from?: number[];
     to?: number[];
@@ -216,7 +216,7 @@ export const FILTER_CATEGORIES: FilterCategoryDefinition[] = [
     label: 'Regions',
     options: POKEMON_REGIONS.map((name) => ({
       name,
-      matches: (pokemon: Pokemon) => pokemon.region === name,
+      matches: (pokemon: Pokemon) => pokemon.region?.includes(name) ?? false,
     })),
   },
   {

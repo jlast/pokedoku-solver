@@ -29,6 +29,16 @@ const getCategoryGroups = (pokemon: Pokemon): CategoryGroup[] =>
       .filter((value, index, list) => list.indexOf(value) === index),
   })).filter((group) => group.names.length > 0);
 
+const appendRegionLinks = (p: ParagraphContext, regions: string[]): void => {
+  regions.forEach((region) => {
+    p.text({ text: ' • ' });
+    p.link({
+      text: region,
+      url: `${BASE_URL}/tools/category/${slug(region)}`,
+    });
+  });
+};
+
 const appendTypeRegionLine = (p: ParagraphContext, pokemon: Pokemon): void => {
   pokemon.types.forEach((type, index) => {
     if (index > 0) {
@@ -40,12 +50,8 @@ const appendTypeRegionLine = (p: ParagraphContext, pokemon: Pokemon): void => {
     });
   });
 
-  if (pokemon.region) {
-    p.text({ text: ' • ' });
-    p.link({
-      text: pokemon.region,
-      url: `${BASE_URL}/tools/category/${slug(pokemon.region)}`,
-    });
+  if (pokemon.region?.length) {
+    appendRegionLinks(p, pokemon.region);
   }
 };
 
@@ -145,7 +151,7 @@ export function appendPokemonCompactLine(
     p.text({ text: typeWithEmoji(type) });
   });
 
-  if (pokemon.region) {
-    p.text({ text: ` • ${pokemon.region}` });
+  if (pokemon.region?.length) {
+    p.text({ text: ` • ${pokemon.region.join(' • ')}` });
   }
 }

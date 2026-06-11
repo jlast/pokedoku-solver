@@ -43,7 +43,7 @@ const fetchPokemonMap = async (): Promise<Map<string, Pokemon>> => {
     warn('Remote Pokemon fetch failed, falling back to local JSON');
 
     try {
-      const pokemon = localPokemonData as Pokemon[];
+      const pokemon = localPokemonData as unknown as Pokemon[];
       log('Loaded pokemon data from bundled local JSON fallback');
       return buildPokemonMap(pokemon);
     } catch (_fallbackError) {

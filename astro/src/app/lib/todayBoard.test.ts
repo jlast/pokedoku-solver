@@ -56,7 +56,7 @@ describe('buildFallbackOwnedCells', () => {
       ...createPokemon(310, 'Manectric mega'),
       formId: 1001310,
       types: ['Electric'],
-      region: 'Hoenn',
+      region: ['Hoenn'],
       categories: ['Mega Evolution'],
       evolutionTrigger: ['Evolved by Item'],
     } satisfies Pokemon;
@@ -64,7 +64,7 @@ describe('buildFallbackOwnedCells', () => {
       ...createPokemon(181, 'Ampharos mega'),
       formId: 1001181,
       types: ['Electric'],
-      region: 'Johto',
+      region: ['Johto'],
       categories: ['Mega Evolution'],
       evolutionTrigger: ['Evolved by Item'],
     } satisfies Pokemon;
@@ -156,35 +156,35 @@ describe('buildPersonalizedRemainingGroupScoreMap', () => {
     const alpha = {
       ...createPokemon(1, 'Alpha'),
       types: ['Fire'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
     const beta = {
       ...createPokemon(2, 'Beta'),
       types: ['Fire'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
     const gamma = {
       ...createPokemon(3, 'Gamma'),
       types: ['Fire'],
-      region: 'Johto',
+      region: ['Johto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
     const delta = {
       ...createPokemon(4, 'Delta'),
       types: ['Fire'],
-      region: 'Hoenn',
+      region: ['Hoenn'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
     const epsilon = {
       ...createPokemon(5, 'Epsilon'),
       types: ['Water'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
@@ -205,7 +205,7 @@ describe('buildPersonalizedRemainingGroupScoreMap', () => {
     const alpha = {
       ...createPokemon(1, 'Alpha'),
       types: ['Fire'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
       learnedMoves: ['Surf'],
@@ -214,7 +214,7 @@ describe('buildPersonalizedRemainingGroupScoreMap', () => {
     const beta = {
       ...createPokemon(2, 'Beta'),
       types: ['Water'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
       learnedMoves: ['Surf'],
@@ -223,7 +223,7 @@ describe('buildPersonalizedRemainingGroupScoreMap', () => {
     const gamma = {
       ...createPokemon(3, 'Gamma'),
       types: ['Grass'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
       learnedMoves: ['Surf'],
@@ -248,7 +248,7 @@ describe('buildSuggestedCells', () => {
       dexDifficulty: 'Easy',
       dexDifficultyPercentile: 1,
       types: ['Fire'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
@@ -257,28 +257,28 @@ describe('buildSuggestedCells', () => {
       dexDifficulty: 'Nightmare',
       dexDifficultyPercentile: 99,
       types: ['Fire'],
-      region: 'Johto',
+      region: ['Johto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
     const gamma = {
       ...createPokemon(3, 'Gamma'),
       types: ['Fire'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
     const delta = {
       ...createPokemon(4, 'Delta'),
       types: ['Fire'],
-      region: 'Hoenn',
+      region: ['Hoenn'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
     const epsilon = {
       ...createPokemon(5, 'Epsilon'),
       types: ['Water'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
@@ -304,7 +304,7 @@ describe('buildSuggestedCells', () => {
       dexDifficulty: 'Easy',
       dexDifficultyPercentile: 1,
       types: ['Fire'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;
@@ -313,7 +313,7 @@ describe('buildSuggestedCells', () => {
       dexDifficulty: 'Nightmare',
       dexDifficultyPercentile: 99,
       types: ['Fire'],
-      region: 'Kanto',
+      region: ['Kanto'],
       evolutionStage: 'Final Stage',
       categories: ['Legendary'],
     } satisfies Pokemon;

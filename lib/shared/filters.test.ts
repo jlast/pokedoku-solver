@@ -14,7 +14,7 @@ const SQUIRTLE: Pokemon = {
   id: 7,
   name: "Squirtle",
   types: ["Water"],
-  region: "Kanto",
+  region: ["Kanto"],
   evolutionStage: "First Stage",
   learnedMoves: ["Surf"],
   abilities: ["Swift Swim"],
@@ -24,7 +24,7 @@ const GYARADOS: Pokemon = {
   id: 130,
   name: "Gyarados",
   types: ["Water", "Flying"],
-  region: "Kanto",
+  region: ["Kanto"],
   evolutionStage: "Final Stage",
 };
 

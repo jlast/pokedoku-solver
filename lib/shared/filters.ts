@@ -109,7 +109,7 @@ export const FILTER_CATEGORIES: FilterCategory[] = [
     label: 'Regions',
     options: REGION_OPTIONS.map((name) => ({
       name,
-      filter: (pokemon: Pokemon) => pokemon.region === name,
+      filter: (pokemon: Pokemon) => pokemon.region?.includes(name) ?? false,
       color: REGION_COLORS[name],
     })),
   },

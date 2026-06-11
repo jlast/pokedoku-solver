@@ -202,7 +202,7 @@ import { Footer } from "../../app/components/Footer";
         result = result.filter((p) =>
           p.name.toLowerCase().includes(query) ||
           p.types.some((t) => t?.toLowerCase().includes(query)) ||
-          p.region?.toLowerCase().includes(query) ||
+          p.region?.some((region) => region.toLowerCase().includes(query)) ||
           matchesCategorySearch(p, query),
         );
       }
