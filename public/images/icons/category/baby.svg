@@ -1,5 +1,14 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g transform="translate(12 12) scale(1.28) translate(-12 -12)">
-    <circle cx="12" cy="10" r="4.2" fill="white" fill-opacity="0.95"/><circle cx="12" cy="17.5" r="2.5" fill="white" fill-opacity="0.9"/>
-  </g>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="100%" viewBox="0 0 125 161" enable-background="new 0 0 125 161" xml:space="preserve">
+
+<path fill="#FFFFFF" opacity="1.000000" stroke="none" 
+	d="
+M65.887352,3.626422 
+	C74.182602,3.959672 81.151428,6.880254 86.601784,12.230432 
+	C115.284843,40.386322 129.093491,73.987762 120.865906,114.276337 
+	C115.188148,142.079041 90.168221,161.126190 62.898277,160.375931 
+	C34.541851,159.595749 10.594795,139.260284 6.244600,110.729820 
+	C0.379613,72.264648 13.997318,40.207390 41.061314,13.343184 
+	C47.630859,6.822135 55.904091,3.349380 65.887352,3.626422 
+z"/>
 </svg>

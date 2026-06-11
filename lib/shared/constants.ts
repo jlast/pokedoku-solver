@@ -58,7 +58,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
   'Fossil': '#D2691E',
   'First Partner': '#32CD32',
   'Baby': '#FFB6C1',
-  'Gigantamax': '#FF69B4',
+  'Gigantamax': '#E60040',
   'Mega Evolution': '#FF6347',
 };
 
