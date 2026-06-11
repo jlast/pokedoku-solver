@@ -7,8 +7,6 @@ const INTIMIDATE_OVERRIDE_FORM_IDS = new Set<number>([
 
 const LEVITATE_OVERRIDE_FORM_IDS = new Set<number>([
   10063, // Giratina origin
-  10518, // Delphox mega
-  10531, // Chimecho mega
 ]);
 
 const STURDY_OVERRIDE_FORM_IDS = new Set<number>([
