@@ -8,12 +8,14 @@ export type SettingsPayload = {
   preventSpoilerMode: boolean;
   myPokedexFilter: boolean;
   displayName: string;
+  collapsePokedexAnswerFilters: boolean;
 };
 
 const DEFAULT_SETTINGS: SettingsPayload = {
   preventSpoilerMode: false,
   myPokedexFilter: true,
   displayName: '',
+  collapsePokedexAnswerFilters: false,
 };
 
 function sanitizeDisplayName(value: unknown): string {
@@ -27,12 +29,14 @@ function sanitizeSettingsFromItem(value: unknown): SettingsPayload {
     preventSpoilerMode?: unknown;
     myPokedexFilter?: unknown;
     displayName?: unknown;
+    collapsePokedexAnswerFilters?: unknown;
   };
 
   return {
     preventSpoilerMode: payload.preventSpoilerMode === true,
     myPokedexFilter: payload.myPokedexFilter === true,
     displayName: sanitizeDisplayName(payload.displayName),
+    collapsePokedexAnswerFilters: payload.collapsePokedexAnswerFilters === true,
   };
 }
 
@@ -54,6 +58,7 @@ export async function readSettings(userId: string): Promise<SettingsPayload> {
     preventSpoilerMode?: unknown;
     myPokedexFilter?: unknown;
     displayName?: unknown;
+    collapsePokedexAnswerFilters?: unknown;
   };
 
   return sanitizeSettingsFromItem(item);
@@ -68,6 +73,7 @@ export async function writeSettings(userId: string, settings: SettingsPayload): 
         preventSpoilerMode: settings.preventSpoilerMode,
         myPokedexFilter: settings.myPokedexFilter,
         displayName: settings.displayName,
+        collapsePokedexAnswerFilters: settings.collapsePokedexAnswerFilters,
         updatedAt: new Date().toISOString(),
       }),
     })
@@ -86,7 +92,7 @@ export function validatePartialSettingsPayload(bodyText: string | undefined | nu
 
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
   const payload = parsed as Record<string, unknown>;
-  const allowedKeys = new Set(['preventSpoilerMode', 'myPokedexFilter', 'displayName']);
+  const allowedKeys = new Set(['preventSpoilerMode', 'myPokedexFilter', 'displayName', 'collapsePokedexAnswerFilters']);
 
   const keys = Object.keys(payload);
   if (keys.length === 0) return null;
@@ -110,6 +116,11 @@ export function validatePartialSettingsPayload(bodyText: string | undefined | nu
     next.displayName = payload.displayName.trim();
   }
 
+  if ('collapsePokedexAnswerFilters' in payload) {
+    if (typeof payload.collapsePokedexAnswerFilters !== 'boolean') return null;
+    next.collapsePokedexAnswerFilters = payload.collapsePokedexAnswerFilters;
+  }
+
   return next;
 }
 
@@ -118,5 +129,6 @@ export function mergeSettings(current: SettingsPayload, patch: Partial<SettingsP
     preventSpoilerMode: patch.preventSpoilerMode ?? current.preventSpoilerMode,
     myPokedexFilter: patch.myPokedexFilter ?? current.myPokedexFilter,
     displayName: patch.displayName ?? current.displayName,
+    collapsePokedexAnswerFilters: patch.collapsePokedexAnswerFilters ?? current.collapsePokedexAnswerFilters,
   };
 }

@@ -54,7 +54,7 @@ export async function handler(
       logInfo('settings_patch_validation_failed', meta);
       return badRequest(
         event,
-        'Invalid payload. Expected non-empty partial object with keys: preventSpoilerMode, myPokedexFilter, displayName.'
+        'Invalid payload. Expected non-empty partial object with keys: preventSpoilerMode, myPokedexFilter, displayName, collapsePokedexAnswerFilters.'
       );
     }
 
