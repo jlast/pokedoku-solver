@@ -4,6 +4,7 @@ export interface LoadedPokedexSettingsState {
   userDex: UserDexPayload | null;
   myPokedexFilter: boolean | null;
   spoilerModeEnabled: boolean | null;
+  collapsePokedexAnswerFilters: boolean | null;
 }
 
 export function getApiBaseUrl(): string | null {
@@ -22,6 +23,7 @@ export async function loadPokedexSettingsState(token: string, apiBaseUrl: string
     userDex,
     myPokedexFilter: settings?.myPokedexFilter ?? null,
     spoilerModeEnabled: settings ? !settings.preventSpoilerMode : null,
+    collapsePokedexAnswerFilters: settings?.collapsePokedexAnswerFilters ?? null,
   };
 }
 
@@ -55,6 +57,20 @@ export async function saveSpoilerModePreference(token: string, apiBaseUrl: strin
       token,
       apiBaseUrl,
       patch: { preventSpoilerMode: !spoilerModeEnabled },
+    }),
+  );
+}
+
+export async function saveCollapsePokedexAnswerFiltersPreference(
+  token: string,
+  apiBaseUrl: string,
+  collapsePokedexAnswerFilters: boolean,
+): Promise<boolean> {
+  return Boolean(
+    await patchRemoteSettings({
+      token,
+      apiBaseUrl,
+      patch: { collapsePokedexAnswerFilters },
     }),
   );
 }

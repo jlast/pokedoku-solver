@@ -15,6 +15,7 @@ import {
   getApiBaseUrl,
   loadPokedexSettingsState,
   saveCaughtPokemonPayload,
+  saveCollapsePokedexAnswerFiltersPreference,
   saveMyPokedexFilterPreference,
   saveSpoilerModePreference,
 } from '../lib/pokedexSettings';
@@ -115,6 +116,8 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
   const [caughtSet, setCaughtSet] = useState<Set<number>>(new Set<number>());
   const [remoteUserDex, setRemoteUserDex] = useState<UserDexPayload | null>(null);
   const [undoMarkOwnedState, setUndoMarkOwnedState] = useState<UndoMarkOwnedState | null>(null);
+  const [isFilterPanelCollapsed, setIsFilterPanelCollapsed] = useState(false);
+  const [isSavingFilterPanelCollapsedPreference, setIsSavingFilterPanelCollapsedPreference] = useState(false);
   const [selectedCellAnchorElement, setSelectedCellAnchorElement] = useState<HTMLDivElement | null>(null);
   const [spoilerModeEnabled, setSpoilerModeEnabled] = useState(false);
   const [revealStates, setRevealStates] = useState<Record<string, RevealState>>(() => createInitialRevealStates(gridSize));
@@ -142,7 +145,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
       if (!token || !apiBaseUrl) return;
 
       try {
-        const { userDex, myPokedexFilter, spoilerModeEnabled } = await loadPokedexSettingsState(token, apiBaseUrl);
+        const { userDex, myPokedexFilter, spoilerModeEnabled, collapsePokedexAnswerFilters } = await loadPokedexSettingsState(token, apiBaseUrl);
         if (isCancelled) return;
 
         if (userDex) {
@@ -155,6 +158,9 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
         }
         if (spoilerModeEnabled !== null) {
           setSpoilerModeEnabled(spoilerModeEnabled);
+        }
+        if (collapsePokedexAnswerFilters !== null) {
+          setIsFilterPanelCollapsed(collapsePokedexAnswerFilters);
         }
       } catch {}
     })();
@@ -481,6 +487,25 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
     }
   }
 
+  async function toggleFilterPanelCollapsed() {
+    const nextValue = !isFilterPanelCollapsed;
+    setIsFilterPanelCollapsed(nextValue);
+
+    const token = await getValidSessionIdToken();
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) return;
+
+    setIsSavingFilterPanelCollapsedPreference(true);
+    try {
+      const didSave = await saveCollapsePokedexAnswerFiltersPreference(token, apiBaseUrl, nextValue);
+      if (!didSave) {
+        setIsFilterPanelCollapsed(!nextValue);
+      }
+    } finally {
+      setIsSavingFilterPanelCollapsedPreference(false);
+    }
+  }
+
   const selectedCellPossible = useMemo(() => {
     if (!grid.selectedCell) return [];
     const [row, col] = grid.selectedCell;
@@ -545,7 +570,12 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
            disableUndoMarkOwned={!undoMarkOwnedState || isUndoingMarkOwned || isMarkingOwned}
            isMarkingOwned={isMarkingOwned}
            isUndoingMarkOwned={isUndoingMarkOwned}
-         />
+           isCollapsed={isFilterPanelCollapsed}
+           onToggleCollapsed={() => {
+             void toggleFilterPanelCollapsed();
+           }}
+           isSavingCollapsedPreference={isSavingFilterPanelCollapsedPreference}
+          />
        ) : (
          <>
            <PokedexPromoCard trackingFrom="today_suggestions" />

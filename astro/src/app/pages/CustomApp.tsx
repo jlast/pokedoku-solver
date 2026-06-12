@@ -18,6 +18,7 @@ import {
   getApiBaseUrl,
   loadPokedexSettingsState,
   saveCaughtPokemonPayload,
+  saveCollapsePokedexAnswerFiltersPreference,
   saveMyPokedexFilterPreference,
 } from "../lib/pokedexSettings";
 import {
@@ -98,6 +99,8 @@ function App() {
   const [remoteUserDex, setRemoteUserDex] = useState<UserDexPayload | null>(null);
   const [undoMarkOwnedState, setUndoMarkOwnedState] = useState<UndoMarkOwnedState | null>(null);
   const [suggestedPokemonKeys, setSuggestedPokemonKeys] = useState<(string | null)[][]>(() => createEmptyKeyGrid(GRID_SIZE));
+  const [isFilterPanelCollapsed, setIsFilterPanelCollapsed] = useState(false);
+  const [isSavingFilterPanelCollapsedPreference, setIsSavingFilterPanelCollapsedPreference] = useState(false);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`)
@@ -122,7 +125,7 @@ function App() {
       if (!token || !apiBaseUrl) return;
 
       try {
-        const { userDex, myPokedexFilter } = await loadPokedexSettingsState(token, apiBaseUrl);
+        const { userDex, myPokedexFilter, collapsePokedexAnswerFilters } = await loadPokedexSettingsState(token, apiBaseUrl);
         if (isCancelled) return;
 
         if (userDex) {
@@ -132,6 +135,9 @@ function App() {
         }
         if (myPokedexFilter !== null) {
           setShowMissingOnly(myPokedexFilter);
+        }
+        if (collapsePokedexAnswerFilters !== null) {
+          setIsFilterPanelCollapsed(collapsePokedexAnswerFilters);
         }
       } catch {}
     })();
@@ -359,6 +365,25 @@ function App() {
     }
   }
 
+  async function toggleFilterPanelCollapsed() {
+    const nextValue = !isFilterPanelCollapsed;
+    setIsFilterPanelCollapsed(nextValue);
+
+    const token = await getValidSessionIdToken();
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) return;
+
+    setIsSavingFilterPanelCollapsedPreference(true);
+    try {
+      const didSave = await saveCollapsePokedexAnswerFiltersPreference(token, apiBaseUrl, nextValue);
+      if (!didSave) {
+        setIsFilterPanelCollapsed(!nextValue);
+      }
+    } finally {
+      setIsSavingFilterPanelCollapsedPreference(false);
+    }
+  }
+
   async function markOwned() {
     if (isMarkingOwned || isUndoingMarkOwned) return;
 
@@ -521,6 +546,11 @@ function App() {
             disableUndoMarkOwned={!undoMarkOwnedState || isUndoingMarkOwned || isMarkingOwned}
             isMarkingOwned={isMarkingOwned}
             isUndoingMarkOwned={isUndoingMarkOwned}
+            isCollapsed={isFilterPanelCollapsed}
+            onToggleCollapsed={() => {
+              void toggleFilterPanelCollapsed();
+            }}
+            isSavingCollapsedPreference={isSavingFilterPanelCollapsedPreference}
           />
         ) : (
           <PokedexPromoCard trackingFrom="custom_puzzle" />
