@@ -179,8 +179,21 @@ import { Footer } from "../../app/components/Footer";
 
     const OWNERSHIP_OPTIONS = new Set(["all", "unowned", "owned"]);
 
+    const serializeMetadata = (metadata) => {
+      if (!metadata) return undefined;
+
+      const entries = Object.entries(metadata).flatMap(([key, value]) => {
+        if (value == null) return [];
+        if (Array.isArray(value)) return [[key, value.join(",")]];
+        if (typeof value === "boolean") return [[key, value ? "true" : "false"]];
+        return [[key, value]];
+      });
+
+      return entries.length > 0 ? Object.fromEntries(entries) : undefined;
+    };
+
     const trackEvent = (name, metadata) => {
-      if (window.sa_loaded) window.sa_event(name, metadata);
+      if (window.sa_loaded) window.sa_event(name, serializeMetadata(metadata));
     };
 
     const parseDay = (dateString) => new Date(`${dateString}T00:00:00.000Z`).getTime();
@@ -258,12 +271,13 @@ import { Footer } from "../../app/components/Footer";
       card.className = "flex min-h-[180px] cursor-pointer flex-col items-center rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3 no-underline transition-all hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]";
       card.href = `${import.meta.env.BASE_URL}pokemon/${slug}/`;
       card.addEventListener("click", () => {
-        trackEvent("click_pokemon_detail", {
-          name: p.name,
-          id: p.id,
-          form_id: `${p.formId}`,
-          slug,
-          from: "pokemon-list",
+        trackEvent("ui_click", {
+          page_name: "pokemon_list",
+          location: "pokemon_list",
+          source: "link",
+          target: "pokemon_detail",
+          value: slug,
+          pokemon_id: p.id,
         });
       });
 
@@ -432,10 +446,20 @@ import { Footer } from "../../app/components/Footer";
         header.addEventListener("click", () => {
           if (state.expandedFilters.has(cat.key)) {
             state.expandedFilters.delete(cat.key);
-            trackEvent("collapse_filter", { category: cat.key });
+            trackEvent("filter_update", {
+              page_name: "pokemon_list",
+              location: "pokemon_list",
+              target: cat.key,
+              value: "collapsed",
+            });
           } else {
             state.expandedFilters.add(cat.key);
-            trackEvent("expand_filter", { category: cat.key });
+            trackEvent("filter_update", {
+              page_name: "pokemon_list",
+              location: "pokemon_list",
+              target: cat.key,
+              value: "expanded",
+            });
           }
           renderFilters();
         });
@@ -462,11 +486,13 @@ import { Footer } from "../../app/components/Footer";
           const isRemoving = current.includes(opt.name);
           const next = isRemoving ? current.filter((v) => v !== opt.name) : [...current, opt.name];
           state.filters[cat.key] = next;
-          trackEvent("toggle_filter", {
-            category: cat.key,
+          trackEvent("filter_update", {
+            page_name: "pokemon_list",
+            location: "pokemon_list",
+            target: cat.key,
             value: opt.name,
-            action: isRemoving ? "remove" : "add",
-            activeCount: next.length,
+            enabled: !isRemoving,
+            count: next.length,
           });
           applyAndRender();
         });
@@ -489,10 +515,20 @@ import { Footer } from "../../app/components/Footer";
         header.addEventListener("click", () => {
           if (state.expandedFilters.has("difficulty")) {
             state.expandedFilters.delete("difficulty");
-            trackEvent("collapse_filter", { category: "difficulty" });
+            trackEvent("filter_update", {
+              page_name: "pokemon_list",
+              location: "pokemon_list",
+              target: "difficulty",
+              value: "collapsed",
+            });
           } else {
             state.expandedFilters.add("difficulty");
-            trackEvent("expand_filter", { category: "difficulty" });
+            trackEvent("filter_update", {
+              page_name: "pokemon_list",
+              location: "pokemon_list",
+              target: "difficulty",
+              value: "expanded",
+            });
           }
           renderFilters();
         });
@@ -513,9 +549,18 @@ import { Footer } from "../../app/components/Footer";
         if (isActive) btn.style.backgroundColor = DEX_DIFFICULTY_COLORS[diff];
         btn.addEventListener("click", () => {
           state.visibleCount = INITIAL_RENDER_COUNT;
+          const wasActive = state.difficultyFilter.includes(diff);
           state.difficultyFilter = isActive
             ? state.difficultyFilter.filter((d) => d !== diff)
             : [...state.difficultyFilter, diff];
+          trackEvent("filter_update", {
+            page_name: "pokemon_list",
+            location: "pokemon_list",
+            target: "difficulty",
+            value: diff,
+            enabled: !wasActive,
+            count: state.difficultyFilter.length,
+          });
           applyAndRender();
         });
         buttons.appendChild(btn);
@@ -570,13 +615,6 @@ import { Footer } from "../../app/components/Footer";
       renderFilters();
       renderPokemonGrid();
       updateControlState();
-
-      const totalFilters = getActiveFilters(state.filters);
-      if (totalFilters > 0) {
-        const filterCounts = {};
-        FILTER_CATEGORIES.forEach((cat) => { filterCounts[cat.key] = state.filters[cat.key]?.length ?? 0; });
-        trackEvent("filter_change", { ...filterCounts, total: totalFilters });
-      }
     };
 
     const trackSearchQuery = (source) => {
@@ -585,9 +623,12 @@ import { Footer } from "../../app/components/Footer";
         const trimmedQuery = state.searchQuery.trim();
         if (!trimmedQuery) {
           if (state.lastTrackedSearchQuery) {
-            trackEvent("clear_search_query", {
+            trackEvent("search_update", {
+              page_name: "pokemon_list",
+              location: "pokemon_list",
               source,
-              previousQuery: state.lastTrackedSearchQuery,
+              target: "query",
+              value: "",
             });
             state.lastTrackedSearchQuery = "";
           }
@@ -596,11 +637,13 @@ import { Footer } from "../../app/components/Footer";
 
         if (trimmedQuery === state.lastTrackedSearchQuery) return;
         state.lastTrackedSearchQuery = trimmedQuery;
-        trackEvent("search_query", {
+        trackEvent("search_update", {
+          page_name: "pokemon_list",
+          location: "pokemon_list",
           source,
-          query: trimmedQuery,
-          length: trimmedQuery.length,
-          results: getSortedPokemon().length,
+          target: "query",
+          value: trimmedQuery,
+          count: getSortedPokemon().length,
         });
       }, SEARCH_TRACK_DEBOUNCE_MS);
     };
@@ -612,7 +655,13 @@ import { Footer } from "../../app/components/Footer";
       state.difficultyFilter = [];
       state.visibleCount = INITIAL_RENDER_COUNT;
       setDrawerVisible(false);
-      trackEvent("clear_filters", { count: activeFilters });
+      trackEvent("filter_update", {
+        page_name: "pokemon_list",
+        location: "pokemon_list",
+        target: "all",
+        value: "clear",
+        count: activeFilters,
+      });
       applyAndRender();
     };
 
@@ -662,7 +711,12 @@ import { Footer } from "../../app/components/Footer";
           : state.sortBy.startsWith("difficulty")
               ? "difficulty"
               : "recent-appearance";
-        trackEvent("change_sort", { column, sort: state.sortBy });
+        trackEvent("sort_update", {
+          page_name: "pokemon_list",
+          location: "pokemon_list",
+          target: column,
+          value: state.sortBy,
+        });
         applyAndRender();
       });
       els.openDrawer.addEventListener("click", () => setDrawerVisible(true));
@@ -673,16 +727,34 @@ import { Footer } from "../../app/components/Footer";
       els.ownershipAll.addEventListener("click", () => {
         state.ownershipFilter = "all";
         state.visibleCount = INITIAL_RENDER_COUNT;
+        trackEvent("filter_update", {
+          page_name: "pokemon_list",
+          location: "pokemon_list",
+          target: "ownership",
+          value: "all",
+        });
         applyAndRender();
       });
       els.ownershipUnowned.addEventListener("click", () => {
         state.ownershipFilter = "unowned";
         state.visibleCount = INITIAL_RENDER_COUNT;
+        trackEvent("filter_update", {
+          page_name: "pokemon_list",
+          location: "pokemon_list",
+          target: "ownership",
+          value: "unowned",
+        });
         applyAndRender();
       });
       els.ownershipOwned.addEventListener("click", () => {
         state.ownershipFilter = "owned";
         state.visibleCount = INITIAL_RENDER_COUNT;
+        trackEvent("filter_update", {
+          page_name: "pokemon_list",
+          location: "pokemon_list",
+          target: "ownership",
+          value: "owned",
+        });
         applyAndRender();
       });
     };
@@ -722,7 +794,7 @@ import { Footer } from "../../app/components/Footer";
       try {
         const pokemonRes = await fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`);
         state.pokemon = await pokemonRes.json();
-        trackEvent("view_pokemon_list", { count: state.pokemon.length });
+        trackEvent("page_view", { page_name: "pokemon_list", count: state.pokemon.length });
       } catch (error) {
         console.error("Failed to load Pokemon:", error);
       }

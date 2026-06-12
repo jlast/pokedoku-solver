@@ -811,9 +811,22 @@ const faqStructuredData = {
       return selected?.value ?? "at-least";
     };
 
+    const serializeMetadata = (metadata) => {
+      if (!metadata) return undefined;
+
+      const entries = Object.entries(metadata).flatMap(([key, value]) => {
+        if (value == null) return [];
+        if (Array.isArray(value)) return [[key, value.join(",")]];
+        if (typeof value === "boolean") return [[key, value ? "true" : "false"]];
+        return [[key, value]];
+      });
+
+      return entries.length > 0 ? Object.fromEntries(entries) : undefined;
+    };
+
     const trackEvent = (name, metadata) => {
       if (window.sa_loaded) {
-        window.sa_event(name, metadata);
+        window.sa_event(name, serializeMetadata(metadata));
       }
     };
 
@@ -925,6 +938,6 @@ const faqStructuredData = {
     });
 
     calculate();
-    trackEvent("view_shiny_odds_calculator", {});
+    trackEvent("page_view", { page_name: "shiny_odds_calculator" });
   </script>
 </AppPageLayout>

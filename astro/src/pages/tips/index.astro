@@ -220,8 +220,10 @@ const baseUrl = import.meta.env.BASE_URL;
                         detailsClass="rounded-[10px]"
                         summaryClass="px-3.5 py-3 text-left text-[0.98rem] font-semibold text-[var(--text-h)]"
                         contentClass="border-t border-[var(--border)] px-3.5 pt-2.5 pb-3"
-                        analyticsEventName="toggle_tip"
-                        analyticsMetadata={{ id: item.id, level: item.level }}
+                        analyticsEvent="toggle_setting"
+                        analyticsLocation="tips"
+                        analyticsTarget="tip"
+                        analyticsValue={item.id}
                       >
                         <p class="mb-2.5 leading-7 text-[var(--text)]">{item.answer}</p>
                         {item.examples && item.examples.length > 0 && (
@@ -260,24 +262,40 @@ const baseUrl = import.meta.env.BASE_URL;
 
   <script>
     // @ts-nocheck
+    const serializeMetadata = (metadata) => {
+      if (!metadata) return undefined;
+
+      const entries = Object.entries(metadata).flatMap(([key, value]) => {
+        if (value == null) return [];
+        if (Array.isArray(value)) return [[key, value.join(",")]];
+        if (typeof value === "boolean") return [[key, value ? "true" : "false"]];
+        return [[key, value]];
+      });
+
+      return entries.length > 0 ? Object.fromEntries(entries) : undefined;
+    };
+
     const trackEvent = (name, metadata) => {
       if (window.sa_loaded) {
-        window.sa_event(name, metadata);
+        window.sa_event(name, serializeMetadata(metadata));
       }
     };
 
     document.querySelectorAll("[data-tip-link]").forEach((link) => {
       link.addEventListener("click", () => {
-        trackEvent("click_tip_link", {
-          id: link.getAttribute("data-tip-link"),
-          level: link.getAttribute("data-tip-level"),
-          href: link.getAttribute("data-tip-href"),
+        trackEvent("ui_click", {
+          page_name: "tips",
+          location: "tips",
+          source: "link",
+          target: "tip_link",
+          value: link.getAttribute("data-tip-href"),
         });
       });
     });
 
-    trackEvent("view_tips_page", {
-      total_questions: document.querySelectorAll("article[id]").length,
+    trackEvent("page_view", {
+      page_name: "tips",
+      count: document.querySelectorAll("article[id]").length,
     });
   </script>
 </AppPageLayout>
