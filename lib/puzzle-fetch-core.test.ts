@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
-import { enrichPuzzlesWithFeaturedPick, fetchPuzzles } from "./puzzle-fetch-core";
+import { createTodayPuzzleFile, enrichPuzzlesWithFeaturedPick, fetchPuzzles, parseTodayPuzzleFile } from "./puzzle-fetch-core";
 
 const RAW_PUZZLE = {
   type: "AUTOMATIC",
@@ -93,5 +93,49 @@ describe("puzzle-fetch-core", () => {
 
     expect(puzzles[0].featuredPick?.name).toBe("Alpha");
     expect(puzzles[0].featuredPick?.globalCategoryCombinationCount).toBe(6);
+  });
+
+  it("parses the expanded today puzzle payload", () => {
+    const payload = createTodayPuzzleFile(
+      [
+        {
+          date: "2025-01-01",
+          type: "AUTOMATIC",
+          bonus: false,
+          size: 9,
+          rowConstraints: [{ category: "category", value: "Legendary" }],
+          colConstraints: [{ category: "regions", value: "Kanto" }],
+        },
+      ],
+      {
+        date: "2024-12-31",
+        type: "AUTOMATIC",
+        bonus: false,
+        size: 9,
+        rowConstraints: [{ category: "category", value: "Legendary" }],
+        colConstraints: [{ category: "regions", value: "Johto" }],
+      },
+    );
+
+    const parsed = parseTodayPuzzleFile(payload);
+
+    expect(parsed.puzzles).toHaveLength(1);
+    expect(parsed.yesterdayPuzzle?.date).toBe("2024-12-31");
+  });
+
+  it("keeps supporting legacy today puzzle arrays", () => {
+    const parsed = parseTodayPuzzleFile([
+      {
+        date: "2025-01-01",
+        type: "AUTOMATIC",
+        bonus: false,
+        size: 9,
+        rowConstraints: [{ category: "category", value: "Legendary" }],
+        colConstraints: [{ category: "regions", value: "Kanto" }],
+      },
+    ]);
+
+    expect(parsed.puzzles).toHaveLength(1);
+    expect(parsed.yesterdayPuzzle).toBeNull();
   });
 });

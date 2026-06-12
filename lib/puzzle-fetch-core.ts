@@ -36,6 +36,67 @@ export interface MappedPuzzle {
   featuredPick?: FeaturedPick;
 }
 
+export interface TodayPuzzleFile {
+  puzzles: MappedPuzzle[];
+  yesterdayPuzzle: MappedPuzzle | null;
+}
+
+function isConstraintMapping(value: unknown): value is ConstraintMapping {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as ConstraintMapping).category === "string" &&
+    typeof (value as ConstraintMapping).value === "string"
+  );
+}
+
+export function isMappedPuzzle(value: unknown): value is MappedPuzzle {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as MappedPuzzle).date === "string" &&
+    typeof (value as MappedPuzzle).type === "string" &&
+    typeof (value as MappedPuzzle).bonus === "boolean" &&
+    typeof (value as MappedPuzzle).size === "number" &&
+    Array.isArray((value as MappedPuzzle).rowConstraints) &&
+    Array.isArray((value as MappedPuzzle).colConstraints) &&
+    (value as MappedPuzzle).rowConstraints.every(isConstraintMapping) &&
+    (value as MappedPuzzle).colConstraints.every(isConstraintMapping)
+  );
+}
+
+export function createTodayPuzzleFile(puzzles: MappedPuzzle[], yesterdayPuzzle: MappedPuzzle | null): TodayPuzzleFile {
+  return {
+    puzzles,
+    yesterdayPuzzle,
+  };
+}
+
+export function parseTodayPuzzleFile(value: unknown): TodayPuzzleFile {
+  if (Array.isArray(value)) {
+    return createTodayPuzzleFile(value.filter(isMappedPuzzle), null);
+  }
+
+  if (isMappedPuzzle(value)) {
+    return createTodayPuzzleFile([value], null);
+  }
+
+  if (typeof value === "object" && value !== null) {
+    const puzzles = Array.isArray((value as TodayPuzzleFile).puzzles)
+      ? (value as TodayPuzzleFile).puzzles.filter(isMappedPuzzle)
+      : [];
+    const yesterdayPuzzle = isMappedPuzzle((value as TodayPuzzleFile).yesterdayPuzzle)
+      ? (value as TodayPuzzleFile).yesterdayPuzzle
+      : null;
+
+    if (puzzles.length > 0) {
+      return createTodayPuzzleFile(puzzles, yesterdayPuzzle);
+    }
+  }
+
+  throw new Error("Failed to parse today puzzle data");
+}
+
 interface RawPuzzle {
   type: string;
   date: string;
