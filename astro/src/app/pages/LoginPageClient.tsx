@@ -35,7 +35,13 @@ export function LoginPageClient() {
   }
 
   const startSignIn = async (provider: Extract<Provider, { enabled: true }>['id']) => {
-    trackEvent("click_sign_in", { provider: provider.toLowerCase(), from: "login_page" });
+    trackEvent('ui_click', {
+      page_name: 'login',
+      location: 'login_page',
+      source: 'button',
+      target: 'sign_in',
+      provider: provider.toLowerCase(),
+    });
     const loginUrl = await buildLoginUrl(provider);
     window.location.assign(loginUrl);
   };

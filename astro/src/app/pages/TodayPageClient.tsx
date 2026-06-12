@@ -75,7 +75,12 @@ export function TodayPageClient() {
             aria-selected={effectiveTab === "today"}
             className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-2 text-[13px] font-semibold ${effectiveTab === "today" ? "border-[var(--accent)] bg-[color-mix(in_srgb,var(--accent)_14%,var(--bg))] text-[var(--text-h)]" : "border-[var(--border)] bg-[var(--bg)] text-[var(--text-h)]"}`}
             onClick={() => {
-              trackEvent("click_today_toggle", { tab: "today" });
+              trackEvent('ui_click', {
+                page_name: 'today',
+                source: 'button',
+                target: 'today_toggle',
+                value: 'today',
+              });
               setActiveTab("today");
             }}
           >
@@ -87,7 +92,12 @@ export function TodayPageClient() {
             aria-selected={effectiveTab === "bonus"}
             className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-2 text-[13px] font-semibold ${effectiveTab === "bonus" ? "border-[var(--accent)] bg-[color-mix(in_srgb,var(--accent)_14%,var(--bg))] text-[var(--text-h)]" : "border-[var(--border)] bg-[var(--bg)] text-[var(--text-h)]"}`}
             onClick={() => {
-              trackEvent("click_today_toggle", { tab: "bonus" });
+              trackEvent('ui_click', {
+                page_name: 'today',
+                source: 'button',
+                target: 'today_toggle',
+                value: 'bonus',
+              });
               setActiveTab("bonus");
             }}
           >

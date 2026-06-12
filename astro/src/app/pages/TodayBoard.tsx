@@ -309,7 +309,11 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
   }
 
   function clearCells() {
-    trackEvent('click_clear_all');
+    trackEvent('bulk_action', {
+      page_name: 'today',
+      location: 'grid',
+      target: 'clear_all',
+    });
     setGrid((prev) => ({
       ...prev,
       cells: createEmptyPokemonGrid(gridSize),
@@ -352,7 +356,12 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
         previousUserDex: remoteUserDex,
         addedCount: ownedIds.filter((id) => !caughtSet.has(id)).length,
       });
-      trackEvent('click_mark_all_completed', { count: ownedIds.length.toString() });
+      trackEvent('bulk_action', {
+        page_name: 'today',
+        location: 'suggestions',
+        target: 'mark_all_completed',
+        count: ownedIds.length,
+      });
     } finally {
       setIsMarkingOwned(false);
     }
@@ -370,10 +379,17 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
       const didSave = await saveCaughtPokemonPayload(token, apiBaseUrl, undoMarkOwnedState.previousUserDex);
       if (!didSave) return;
 
+      const restoredCount = undoMarkOwnedState.addedCount;
       setCaughtSet(new Set(undoMarkOwnedState.previousUserDex.caughtPokemonKeyIds));
       setRemoteUserDex(undoMarkOwnedState.previousUserDex);
       setUndoMarkOwnedState(null);
-      trackEvent('click_undo_mark_owned', { count: undoMarkOwnedState.addedCount.toString() });
+      trackEvent('dex_state_update', {
+        page_name: 'today',
+        location: 'suggestions',
+        target: 'selection',
+        value: 'undo',
+        count: restoredCount,
+      });
     } finally {
       setIsUndoingMarkOwned(false);
     }
@@ -426,10 +442,14 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
       return;
     }
 
-    trackEvent('update_grid_cell_dex_state', {
-      pokemon_key_id: pokemonKeyId.toString(),
-      caught: nextCaughtSet.has(pokemonKeyId) ? 'true' : 'false',
-      shiny: nextShinySet.has(pokemonKeyId) ? 'true' : 'false',
+    trackEvent('dex_state_update', {
+      page_name: 'today',
+      location: 'suggestions',
+      target: 'pokemon',
+      value: pokemon.name,
+      pokemon_key_id: pokemonKeyId,
+      caught: nextCaughtSet.has(pokemonKeyId),
+      shiny: nextShinySet.has(pokemonKeyId),
     });
   }
 
@@ -442,7 +462,13 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
   }
 
   function redirectToLogin() {
-    trackEvent('click_navigate', { url: 'login/', from: 'today_suggestions' });
+    trackEvent('ui_click', {
+      page_name: 'today',
+      location: 'suggestions',
+      source: 'button',
+      target: 'navigate',
+      value: 'login/',
+    });
     window.location.assign(`${import.meta.env.BASE_URL}login/`);
   }
 
@@ -468,7 +494,12 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
   async function toggleSpoilerMode() {
     const nextValue = !spoilerModeEnabled;
     setSpoilerModeEnabled(nextValue);
-    trackEvent('toggle_spoiler_mode', { enabled: nextValue ? 'true' : 'false' });
+    trackEvent('toggle_setting', {
+      page_name: 'today',
+      location: 'suggestions',
+      target: 'spoiler_mode',
+      enabled: nextValue,
+    });
 
     if (!isLoggedIn) return;
 
@@ -678,7 +709,15 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
         <ActionLink
           href={`${import.meta.env.BASE_URL}custom/`}
           variant="secondary"
-          onClick={() => trackEvent('click_navigate', { url: 'custom/', from: 'today_suggestions' })}
+          onClick={() =>
+            trackEvent('ui_click', {
+              page_name: 'today',
+              location: 'suggestions',
+              source: 'link',
+              target: 'navigate',
+              value: 'custom/',
+            })
+          }
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

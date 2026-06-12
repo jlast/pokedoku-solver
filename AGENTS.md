@@ -30,6 +30,14 @@ Astro-based website for Pokedoku suggestions, statistics, tools, and tips.
 - Use plain helper functions for local extraction only when they are not acting as hidden components.
 - Preserve existing visual and structural patterns when modifying existing pages.
 
+## Analytics
+- Prefer a small, stable event taxonomy over many action-specific event names.
+- Use the shared browser analytics types in `lib/browser/analytics-events.ts` and the typed `trackEvent` helper in `lib/browser/analytics.ts`.
+- Prefer these event names when possible: `page_view`, `ui_click`, `filter_update`, `search_update`, `sort_update`, `constraint_update`, `pokemon_select`, `dex_state_update`, `bulk_action`, `toggle_setting`, `menu_interaction`, `content_open`, `system_event`.
+- Standardize metadata aggressively. Prefer the shared keys `page_name`, `location`, `source`, `target`, `value`, `count`, `enabled`, and `status` before introducing event-specific fields.
+- Do not create new `click_*`, `view_*`, or other one-off event names when `ui_click` or `page_view` plus `target`/`value` can express the same thing.
+- Add event-specific fields only when the standard keys would make the data materially harder to use.
+
 ## Theme mode (light/dark)
 - The website supports both light mode and dark mode; do not ship UI changes that only work in one mode.
 - Prefer existing theme tokens (`--bg`, `--text`, `--text-h`, `--border`, `--code-bg`, `--accent-bg`, `--accent-border`) over hardcoded light/dark color classes.

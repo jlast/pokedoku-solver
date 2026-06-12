@@ -202,23 +202,48 @@ export function Header({
   const closeMobileMenu = (
     source: "overlay" | "button" | "close" | "navigate" | "support",
   ) => {
-    trackEvent("mobile_menu_close", { from: currentPage, source });
+    trackEvent('menu_interaction', {
+      page_name: currentPage,
+      location: 'mobile_menu',
+      source,
+      target: 'mobile',
+      value: 'close',
+    });
     setMobileMenuOpen(false);
+  };
+
+  const trackNavigationClick = (value: string, location: "header" | "desktop_nav" | "mobile_menu" | "profile_menu" | "tools_menu") => {
+    trackEvent('ui_click', {
+      page_name: currentPage,
+      location,
+      source: 'link',
+      target: 'navigate',
+      value,
+    });
   };
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => {
       const next = !prev;
-      trackEvent(next ? "mobile_menu_open" : "mobile_menu_close", {
-        from: currentPage,
-        source: "button",
+      trackEvent('menu_interaction', {
+        page_name: currentPage,
+        location: 'mobile_menu',
+        source: 'button',
+        target: 'mobile',
+        value: next ? 'open' : 'close',
       });
       return next;
     });
   };
 
   const handleSupportClick = (placement: "desktop" | "mobile") => {
-    trackEvent("click_support", { from: currentPage, placement });
+    trackEvent('ui_click', {
+      page_name: currentPage,
+      location: placement === 'desktop' ? 'header' : 'mobile_menu',
+      source: 'link',
+      target: 'support',
+      value: 'buymeacoffee',
+    });
   };
 
   const applyTheme = (nextTheme: ThemeMode) => {
@@ -230,7 +255,13 @@ export function Header({
   const toggleTheme = (placement: "desktop" | "mobile") => {
     const nextTheme: ThemeMode = themeMode === "dark" ? "light" : "dark";
     applyTheme(nextTheme);
-    trackEvent("toggle_theme", { from: currentPage, placement, theme: nextTheme });
+    trackEvent('toggle_setting', {
+      page_name: currentPage,
+      location: placement === 'desktop' ? 'header' : 'mobile_menu',
+      target: 'theme',
+      enabled: nextTheme === 'dark',
+      value: nextTheme,
+    });
   };
 
   useEffect(() => {
@@ -331,8 +362,13 @@ export function Header({
     };
   }, []);
 
-  const signOut = () => {
-    trackEvent("click_sign_out", { from: currentPage });
+  const signOut = (location: 'profile_menu' | 'mobile_menu') => {
+    trackEvent('ui_click', {
+      page_name: currentPage,
+      location,
+      source: 'button',
+      target: 'sign_out',
+    });
     clearSession();
     window.location.assign(buildLogoutUrl());
   };
@@ -345,14 +381,12 @@ export function Header({
         <div className="mx-auto w-full max-w-6xl px-4">
           <div className="flex justify-center items-center gap-3 max-[1100px]:flex max-[1100px]:items-center max-[1100px]:justify-between">
             <div className="flex min-w-0 items-center justify-self-start gap-2.5">
-              <a
-                href={`${import.meta.env.BASE_URL}`}
-                aria-label="Go to home page"
-                onClick={() =>
-                  trackEvent("click_navigate", { url: "", from: currentPage })
-                }
-                className="shrink-0"
-              >
+                <a
+                  href={`${import.meta.env.BASE_URL}`}
+                  aria-label="Go to home page"
+                  onClick={() => trackNavigationClick('', 'header')}
+                  className="shrink-0"
+                >
                 <img
                   src={import.meta.env.BASE_URL + "logo.svg"}
                   alt="Pokedoku Helper"
@@ -429,12 +463,7 @@ export function Header({
                             <a
                               key={tool.url}
                               href={`${import.meta.env.BASE_URL}${tool.url}`}
-                              onClick={() =>
-                                trackEvent("click_navigate", {
-                                  url: tool.url,
-                                  from: currentPage,
-                                })
-                              }
+                              onClick={() => trackNavigationClick(tool.url, 'tools_menu')}
                               className={`flex items-center gap-2 px-3 py-2.5 text-sm no-underline hover:bg-[var(--code-bg)] ${
                                 tool.isPrimary
                                   ? "border-b border-[var(--border)] font-semibold"
@@ -473,12 +502,7 @@ export function Header({
                   <a
                     key={btn.label}
                     href={`${import.meta.env.BASE_URL}${btn.url}`}
-                    onClick={() =>
-                      trackEvent("click_navigate", {
-                        url: btn.url,
-                        from: currentPage,
-                      })
-                    }
+                    onClick={() => trackNavigationClick(btn.url, 'desktop_nav')}
                     className={desktopNavButtonClass(isActive)}
                     aria-current={isActive ? "page" : undefined}
                   >
@@ -543,43 +567,28 @@ export function Header({
                   <div className="absolute right-0 z-20 mt-2 w-52 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg)] shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
                     <a
                       href={`${import.meta.env.BASE_URL}user/`}
-                      onClick={() =>
-                        trackEvent("click_navigate", {
-                          url: "user/",
-                          from: currentPage,
-                        })
-                      }
+                      onClick={() => trackNavigationClick('user/', 'profile_menu')}
                       className="flex items-center gap-2 border-b border-[var(--border)] px-3 py-2.5 text-sm text-[var(--text)] no-underline hover:bg-[var(--code-bg)]"
                     >
                       Dashboard
                     </a>
                     <a
                       href={`${import.meta.env.BASE_URL}user/pokedex`}
-                      onClick={() =>
-                        trackEvent("click_navigate", {
-                          url: "user/pokedex",
-                          from: currentPage,
-                        })
-                      }
+                      onClick={() => trackNavigationClick('user/pokedex', 'profile_menu')}
                       className="flex items-center gap-2 border-b border-[var(--border)] px-3 py-2.5 text-sm text-[var(--text)] no-underline hover:bg-[var(--code-bg)]"
                     >
                       My Pokedex
                     </a>
                     <a
                       href={`${import.meta.env.BASE_URL}user/settings/`}
-                      onClick={() =>
-                        trackEvent("click_navigate", {
-                          url: "user/settings/",
-                          from: currentPage,
-                        })
-                      }
+                      onClick={() => trackNavigationClick('user/settings/', 'profile_menu')}
                       className="flex items-center gap-2 border-b border-[var(--border)] px-3 py-2.5 text-sm text-[var(--text)] no-underline hover:bg-[var(--code-bg)]"
                     >
                       Settings
                     </a>
                     <button
                       type="button"
-                      onClick={signOut}
+                      onClick={() => signOut('profile_menu')}
                       className="w-full cursor-pointer px-3 py-2.5 text-left text-sm text-[var(--text)] transition-colors hover:bg-[var(--code-bg)]"
                     >
                       Sign out
@@ -589,7 +598,7 @@ export function Header({
               ) : (
                 <a
                   href={`${import.meta.env.BASE_URL}login/`}
-                  onClick={() => trackEvent("click_navigate", { url: "login/", from: currentPage })}
+                  onClick={() => trackNavigationClick('login/', 'header')}
                   className="inline-flex h-10 items-center rounded-[10px] border border-[var(--border)] bg-[var(--code-bg)] px-3 text-sm font-semibold text-[var(--text-h)] no-underline transition-colors hover:bg-[var(--accent-bg)]"
                 >
                   Login
@@ -805,10 +814,7 @@ export function Header({
                                     key={`mobile-${tool.url}`}
                                     href={`${import.meta.env.BASE_URL}${tool.url}`}
                                     onClick={() => {
-                                      trackEvent("click_navigate", {
-                                        url: tool.url,
-                                        from: currentPage,
-                                      });
+                                      trackNavigationClick(tool.url, 'mobile_menu');
                                       closeMobileMenu("navigate");
                                     }}
                                     className={`mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm no-underline transition-colors ${
@@ -855,10 +861,7 @@ export function Header({
                           key={`mobile-${btn.label}`}
                           href={`${import.meta.env.BASE_URL}${btn.url}`}
                           onClick={() => {
-                            trackEvent("click_navigate", {
-                              url: btn.url,
-                              from: currentPage,
-                            });
+                            trackNavigationClick(btn.url, 'mobile_menu');
                             closeMobileMenu("navigate");
                           }}
                           className={mobileNavButtonClass(isActive)}
@@ -951,7 +954,7 @@ export function Header({
                               <a
                                 href={`${import.meta.env.BASE_URL}user/`}
                                 onClick={() => {
-                                  trackEvent("click_navigate", { url: "user/", from: currentPage });
+                                  trackNavigationClick('user/', 'mobile_menu');
                                   closeMobileMenu("navigate");
                                 }}
                                 className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--text)] no-underline transition-colors hover:bg-[var(--code-bg)]"
@@ -961,7 +964,7 @@ export function Header({
                               <a
                                 href={`${import.meta.env.BASE_URL}user/pokedex/`}
                                 onClick={() => {
-                                  trackEvent("click_navigate", { url: "user/pokedex/", from: currentPage });
+                                  trackNavigationClick('user/pokedex/', 'mobile_menu');
                                   closeMobileMenu("navigate");
                                 }}
                                 className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--text)] no-underline transition-colors hover:bg-[var(--code-bg)]"
@@ -971,7 +974,7 @@ export function Header({
                               <a
                                 href={`${import.meta.env.BASE_URL}user/settings/`}
                                 onClick={() => {
-                                  trackEvent("click_navigate", { url: "user/settings/", from: currentPage });
+                                  trackNavigationClick('user/settings/', 'mobile_menu');
                                   closeMobileMenu("navigate");
                                 }}
                                 className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--text)] no-underline transition-colors hover:bg-[var(--code-bg)]"
@@ -982,7 +985,7 @@ export function Header({
                                 type="button"
                                 onClick={() => {
                                   closeMobileMenu("navigate");
-                                  signOut();
+                                  signOut('mobile_menu');
                                 }}
                                 className="mt-0.5 flex w-full cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-[var(--text)] transition-colors hover:bg-[var(--code-bg)]"
                               >
@@ -993,7 +996,7 @@ export function Header({
                             <a
                               href={`${import.meta.env.BASE_URL}login/`}
                               onClick={() => {
-                                trackEvent("click_navigate", { url: "login/", from: currentPage });
+                                trackNavigationClick('login/', 'mobile_menu');
                                 closeMobileMenu("navigate");
                               }}
                               className="mt-0.5 flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--text)] no-underline transition-colors hover:bg-[var(--code-bg)]"

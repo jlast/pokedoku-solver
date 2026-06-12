@@ -107,10 +107,13 @@ export function GridCell({
     <div
       className={`relative flex h-[154px] w-[140px] cursor-pointer flex-col items-center justify-end overflow-hidden rounded border-2 border-transparent transition-all max-[768px]:h-[110px] max-[768px]:w-[90px] ${cellStateClasses}`}
       onClick={(event) => {
-        trackEvent('click_cell', {
-          position: `${rowIndex}_${colIndex}`,
-          has_constraint: hasConstraint ? 'true' : 'false',
-          has_pokemon: cell ? 'true' : 'false',
+        trackEvent('ui_click', {
+          location: 'grid',
+          source: 'button',
+          target: 'grid_cell',
+          value: `${rowIndex}_${colIndex}`,
+          has_constraint: hasConstraint,
+          has_pokemon: Boolean(cell),
         });
         onCellClick(rowIndex, colIndex, event.currentTarget);
       }}

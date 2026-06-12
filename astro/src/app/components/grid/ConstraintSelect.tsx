@@ -23,10 +23,11 @@ export function ConstraintSelect({ constraint, index, isRow, onChange }: Constra
     onChange(index, isRow, option);
 
     if (option) {
-      trackEvent(isRow ? 'change_row_constraint' : 'change_col_constraint', {
-        position: `${isRow ? 'row' : 'col'}_${index}`,
-        category: option.category,
-        value: option.value,
+      trackEvent('constraint_update', {
+        location: 'grid',
+        target: isRow ? 'row' : 'col',
+        value: `${option.category}:${option.value}`,
+        count: index,
       });
     }
   }

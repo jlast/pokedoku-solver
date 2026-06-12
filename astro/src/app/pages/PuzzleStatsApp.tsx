@@ -92,7 +92,7 @@ export default function PuzzleStatsApp() {
   }
 
   useEffect(() => {
-    trackEvent("view_puzzle_stats_page");
+    trackEvent('page_view', { page_name: 'puzzle_stats' });
 
     fetch("/data/runtime/puzzle-stats.json?t=" + Date.now())
       .then(async (statsRes) => {
@@ -101,16 +101,24 @@ export default function PuzzleStatsApp() {
         }
 
         const statsData = (await statsRes.json()) as PuzzleStatsResponse;
-        trackEvent("puzzle_stats_loaded", {
-          puzzlesAnalyzed: statsData.puzzlesAnalyzed,
-          dateFrom: statsData.dateRange.from,
-          dateTo: statsData.dateRange.to,
+        trackEvent('system_event', {
+          page_name: 'puzzle_stats',
+          location: 'puzzle_stats',
+          target: 'puzzle_stats_load',
+          status: 'success',
+          count: statsData.puzzlesAnalyzed,
         });
         setStats(statsData);
       })
       .catch((err: unknown) => {
         const message = err instanceof Error ? err.message : "Unknown error";
-        trackEvent("puzzle_stats_load_error", { message });
+        trackEvent('system_event', {
+          page_name: 'puzzle_stats',
+          location: 'puzzle_stats',
+          target: 'puzzle_stats_load',
+          status: 'error',
+          message,
+        });
         setError(message);
       });
 
@@ -130,7 +138,13 @@ export default function PuzzleStatsApp() {
       })
       .catch((err: unknown) => {
         const message = err instanceof Error ? err.message : "Unknown error";
-        trackEvent("puzzle_stats_pokemon_load_error", { message });
+        trackEvent('system_event', {
+          page_name: 'puzzle_stats',
+          location: 'puzzle_stats',
+          target: 'puzzle_stats_pokemon_load',
+          status: 'error',
+          message,
+        });
       })
       .finally(() => setPokemonLoading(false));
   }, []);
@@ -234,22 +248,32 @@ export default function PuzzleStatsApp() {
             <p className="m-0 text-xs text-[var(--text)]">Moves and abilities</p>
           </div>
           <div className="inline-flex rounded-lg border border-[var(--border)] bg-[var(--bg)] p-1">
-            <button
-              type="button"
-              onClick={() => {
-                setShowLegacyFilters(false);
-                trackEvent("toggle_legacy_filters", { enabled: "off" });
-              }}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLegacyFilters(false);
+                  trackEvent('toggle_setting', {
+                    page_name: 'puzzle_stats',
+                    location: 'puzzle_stats',
+                    target: 'legacy_filters',
+                    enabled: false,
+                  });
+                }}
               className={`rounded-md px-3 py-1 text-sm ${!showLegacyFilters ? "bg-slate-700 text-white" : "text-[var(--text)]"}`}
             >
               Off
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                setShowLegacyFilters(true);
-                trackEvent("toggle_legacy_filters", { enabled: "on" });
-              }}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLegacyFilters(true);
+                  trackEvent('toggle_setting', {
+                    page_name: 'puzzle_stats',
+                    location: 'puzzle_stats',
+                    target: 'legacy_filters',
+                    enabled: true,
+                  });
+                }}
               className={`rounded-md px-3 py-1 text-sm ${showLegacyFilters ? "bg-slate-700 text-white" : "text-[var(--text)]"}`}
             >
               On

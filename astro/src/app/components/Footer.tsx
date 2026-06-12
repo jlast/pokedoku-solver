@@ -9,7 +9,12 @@ export function Footer() {
         target="_blank"
         rel="noopener noreferrer"
         onClick={() =>
-          trackEvent("click_pokedoku", { url: "https://pokedoku.com" })
+          trackEvent('ui_click', {
+            location: 'footer',
+            source: 'link',
+            target: 'pokedoku',
+            value: 'https://pokedoku.com',
+          })
         }
       >
         Play Pokedoku
@@ -21,8 +26,11 @@ export function Footer() {
         target="_blank"
         rel="noopener noreferrer"
         onClick={() =>
-          trackEvent("click_report_issues", {
-            url: "https://github.com/jlast/pokedoku-solver/issues",
+          trackEvent('ui_click', {
+            location: 'footer',
+            source: 'link',
+            target: 'report_issues',
+            value: 'https://github.com/jlast/pokedoku-solver/issues',
           })
         }
       >
@@ -38,8 +46,11 @@ export function Footer() {
         target="_blank"
         rel="noopener noreferrer"
         onClick={() =>
-          trackEvent("click_reddit", {
-            url: "https://www.reddit.com/user/pokedoku-solver/",
+          trackEvent('ui_click', {
+            location: 'footer',
+            source: 'link',
+            target: 'reddit',
+            value: 'https://www.reddit.com/user/pokedoku-solver/',
           })
         }
       >
@@ -52,7 +63,14 @@ export function Footer() {
       <a
         className="inline-flex items-center gap-1.5 text-[#4ECDC4] no-underline hover:underline"
         href="/terms-and-conditions/"
-        onClick={() => trackEvent("click_terms", { url: "/terms-and-conditions/" })}
+        onClick={() =>
+          trackEvent('ui_click', {
+            location: 'footer',
+            source: 'link',
+            target: 'terms',
+            value: '/terms-and-conditions/',
+          })
+        }
       >
         Terms &amp; Conditions
       </a>
@@ -60,7 +78,14 @@ export function Footer() {
       <a
         className="inline-flex items-center gap-1.5 text-[#4ECDC4] no-underline hover:underline"
         href="/privacy-policy/"
-        onClick={() => trackEvent("click_privacy", { url: "/privacy-policy/" })}
+        onClick={() =>
+          trackEvent('ui_click', {
+            location: 'footer',
+            source: 'link',
+            target: 'privacy',
+            value: '/privacy-policy/',
+          })
+        }
       >
         Privacy Policy
       </a>

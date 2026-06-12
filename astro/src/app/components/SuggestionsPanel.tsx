@@ -143,7 +143,12 @@ export function SuggestionsPanel({
       : newSort.startsWith('difficulty')
         ? 'difficulty'
         : 'recent-appearance';
-    trackEvent('change_sort', { column, sort: newSort, source: 'suggestions' });
+    trackEvent('sort_update', {
+      location: 'suggestions',
+      source: 'suggestions',
+      target: column,
+      value: newSort,
+    });
   }
 
   useEffect(() => {
@@ -428,10 +433,12 @@ export function SuggestionsPanel({
                 key={`${p.id}-${p.name}`}
                 className={`flex cursor-pointer flex-row gap-0 rounded-lg border p-0 text-left transition-all hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)] ${isShiny ? "border-amber-300 bg-amber-200 [html[data-theme='dark']_&]:border-amber-700 [html[data-theme='dark']_&]:bg-amber-900/35" : isOwned ? "border-[var(--border)] bg-[var(--code-bg)]" : "border-[var(--border)] bg-[var(--bg)]"}`}
                 onClick={() => {
-                  trackEvent("select_pokemon", {
-                    name: p.name,
-                    id: p.id,
-                    types: p.types.join(","),
+                  trackEvent('pokemon_select', {
+                    location: 'suggestions',
+                    source: 'suggestions',
+                    target: 'pokemon',
+                    value: p.name,
+                    pokemon_id: p.id,
                   });
                   onSelect(p);
                 }}

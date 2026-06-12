@@ -70,7 +70,7 @@ export function HistoricAnswersPageClient() {
   useEffect(() => {
     let active = true;
 
-    trackEvent("view_historic_answers_page");
+    trackEvent('page_view', { page_name: 'historic_answers' });
 
     fetch(`${import.meta.env.BASE_URL}data/runtime/puzzle-archive-index.json?t=${Date.now()}`)
       .then(async (response) => {
@@ -223,7 +223,15 @@ export function HistoricAnswersPageClient() {
                 <a
                   href={getPuzzleArchiveHref(puzzle)}
                   aria-label={`View board from ${formatDate(puzzle.date)}`}
-                  onClick={() => trackEvent("open_historic_answer", { slug: puzzle.slug, type: puzzle.type })}
+                  onClick={() =>
+                    trackEvent('content_open', {
+                      page_name: 'historic_answers',
+                      location: 'historic_answers',
+                      source: 'link',
+                      target: 'historic_answer',
+                      value: puzzle.slug,
+                    })
+                  }
                   className="inline-flex items-center rounded-lg border border-red-700 bg-red-600 px-2.5 py-1 text-xs font-semibold text-white no-underline transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/50"
                 >
                   <svg className="mr-1 h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true">

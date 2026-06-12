@@ -80,7 +80,12 @@ export function HistoricAnswerBoardPageClient() {
 
   useEffect(() => {
     if (!puzzle) return;
-    trackEvent("open_historic_answer", { slug: puzzle.slug, type: puzzle.type });
+    trackEvent('content_open', {
+      page_name: 'historic_answers',
+      location: 'historic_answers',
+      target: 'historic_answer',
+      value: puzzle.slug,
+    });
   }, [puzzle]);
 
   return (

@@ -43,7 +43,15 @@ export function PokedexPromoCard({ trackingFrom }: PokedexPromoCardProps) {
                   href={`${import.meta.env.BASE_URL}login/`}
                   variant="secondary"
                   className="border-rose-600 bg-rose-600 text-white hover:border-rose-500 hover:bg-rose-500 [html[data-theme='dark']_&]:border-rose-500 [html[data-theme='dark']_&]:bg-rose-500 [html[data-theme='dark']_&]:text-white [html[data-theme='dark']_&]:hover:border-rose-400 [html[data-theme='dark']_&]:hover:bg-rose-400"
-                  onClick={() => trackEvent('click_navigate', { url: 'login/', from: trackingFrom })}
+                  onClick={() =>
+                    trackEvent('ui_click', {
+                      page_name: trackingFrom,
+                      location: 'promo_card',
+                      source: 'link',
+                      target: 'navigate',
+                      value: 'login/',
+                    })
+                  }
                 >
                   Connect My Pokedex
                 </ActionLink>
@@ -57,7 +65,15 @@ export function PokedexPromoCard({ trackingFrom }: PokedexPromoCardProps) {
             href={`${import.meta.env.BASE_URL}login/`}
             variant="secondary"
             className="border-rose-600 bg-rose-600 text-white hover:border-rose-500 hover:bg-rose-500 [html[data-theme='dark']_&]:border-rose-500 [html[data-theme='dark']_&]:bg-rose-500 [html[data-theme='dark']_&]:text-white [html[data-theme='dark']_&]:hover:border-rose-400 [html[data-theme='dark']_&]:hover:bg-rose-400"
-            onClick={() => trackEvent('click_navigate', { url: 'login/', from: trackingFrom })}
+            onClick={() =>
+              trackEvent('ui_click', {
+                page_name: trackingFrom,
+                location: 'promo_card',
+                source: 'link',
+                target: 'navigate',
+                value: 'login/',
+              })
+            }
           >
             Connect My Pokedex
           </ActionLink>
