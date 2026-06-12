@@ -16,6 +16,7 @@ interface HeaderProps {
   subtitle?: string;
   introText?: string;
   showDate?: string;
+  showUpdatedDaily?: boolean;
   alwaysShowSubheader?: boolean;
   currentPage: string;
 }
@@ -128,6 +129,7 @@ export function Header({
   subtitle,
   introText,
   showDate,
+  showUpdatedDaily = false,
   alwaysShowSubheader,
   currentPage,
 }: HeaderProps) {
@@ -665,7 +667,7 @@ export function Header({
             </h1>
           </div>
 
-          {showDate && (
+          {(showDate || showUpdatedDaily) && (
             <div className="inline-flex flex-wrap items-center justify-center gap-2.5 mt-6 md:mt-0">
               <div
                 className="inline-flex items-center gap-2 text-[0.8rem] font-medium text-[var(--text)] max-[1100px]:gap-[7px] max-[1100px]:text-[0.76rem]"
@@ -689,7 +691,7 @@ export function Header({
                   Updated daily
                 </span>
               </div>
-              <DateChip date={showDate} />
+              {showDate ? <DateChip date={showDate} /> : null}
             </div>
           )}
 

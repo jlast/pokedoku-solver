@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
+import { parseTodayPuzzleFile } from "../../../../lib/puzzle-fetch-core";
 import { matchesConstraint, type Constraint } from "../../../../lib/shared/filters";
 import { Grid } from "../components/Grid";
 
@@ -28,7 +29,8 @@ export function HomeTodayGridPreview() {
         return res.json();
       })
       .then((data) => {
-        const puzzleList = (Array.isArray(data) ? data : [data]) as TodayPuzzle[];
+        const { puzzles } = parseTodayPuzzleFile(data);
+        const puzzleList = puzzles as TodayPuzzle[];
         const [firstPuzzle] = [...puzzleList].sort((a, b) => rankPuzzleType(a.type) - rankPuzzleType(b.type));
         if (firstPuzzle) setPuzzle(firstPuzzle);
       })

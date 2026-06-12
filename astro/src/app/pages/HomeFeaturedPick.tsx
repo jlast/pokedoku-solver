@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Constraint } from "../../../../lib/shared/filters";
-import type { FeaturedPick } from "../../../../lib/puzzle-fetch-core";
+import { parseTodayPuzzleFile, type FeaturedPick } from "../../../../lib/puzzle-fetch-core";
 
 interface TodayPuzzle {
   type: string;
@@ -65,7 +65,8 @@ export function HomeFeaturedPick() {
         return res.json();
       })
       .then((data) => {
-        const puzzleList = (Array.isArray(data) ? data : [data]) as TodayPuzzle[];
+        const { puzzles } = parseTodayPuzzleFile(data);
+        const puzzleList = puzzles as TodayPuzzle[];
         const [firstPuzzle] = [...puzzleList].sort((a, b) => rankPuzzleType(a.type) - rankPuzzleType(b.type));
         if (firstPuzzle) setPuzzle(firstPuzzle);
       })

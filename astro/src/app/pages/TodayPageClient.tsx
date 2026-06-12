@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
+import { parseTodayPuzzleFile } from "../../../../lib/puzzle-fetch-core";
 import { formatDate } from "../../../../lib/shared/utils";
 import { trackEvent } from "../../../../lib/browser/analytics";
+import { getPuzzleArchiveHref } from "../../lib/puzzleArchive";
+import { PuzzleDateSwitcher } from "../components/shared/PuzzleDateSwitcher";
 import { TodayBoard, type TodayPuzzle } from "./TodayBoard";
 
 export function TodayPageClient() {
   const [puzzles, setPuzzles] = useState<TodayPuzzle[] | null>(null);
+  const [yesterdayPuzzle, setYesterdayPuzzle] = useState<TodayPuzzle | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"today" | "bonus">("today");
 
@@ -15,13 +19,14 @@ export function TodayPageClient() {
         return res.json();
       })
       .then((data) => {
-        const puzzleList = Array.isArray(data) ? data : [data];
+        const { puzzles: puzzleList, yesterdayPuzzle } = parseTodayPuzzleFile(data);
         const ordered = [...puzzleList].sort((a, b) => {
           if (a.type === "BONUS" && b.type !== "BONUS") return 1;
           if (a.type !== "BONUS" && b.type === "BONUS") return -1;
           return 0;
         });
-        setPuzzles(ordered);
+        setPuzzles(ordered as TodayPuzzle[]);
+        setYesterdayPuzzle((yesterdayPuzzle as TodayPuzzle | null) ?? null);
       })
       .catch((err) => setError(err.message));
   }, []);
@@ -34,16 +39,6 @@ export function TodayPageClient() {
     () => puzzles?.find((p) => p.type === "BONUS" || p.bonus === true),
     [puzzles],
   );
-
-  useEffect(() => {
-    if (!puzzles || !regularPuzzle) return;
-    const effectiveTab = activeTab === "bonus" && bonusPuzzle ? "bonus" : "today";
-    const activePuzzle = effectiveTab === "bonus" ? bonusPuzzle! : regularPuzzle;
-    const formattedDate = formatDate(activePuzzle.date);
-    document.querySelectorAll<HTMLElement>("[data-header-date]").forEach((el) => {
-      el.textContent = formattedDate;
-    });
-  }, [activeTab, bonusPuzzle, puzzles, regularPuzzle]);
 
   if (error) {
     return (
@@ -66,6 +61,12 @@ export function TodayPageClient() {
 
   return (
     <>
+      <PuzzleDateSwitcher
+        date={formatDate(regularPuzzle.date)}
+        previousHref={yesterdayPuzzle ? getPuzzleArchiveHref(yesterdayPuzzle) : null}
+        previousLabel={yesterdayPuzzle ? "Go to yesterday's puzzle" : undefined}
+      />
+
       {bonusPuzzle && (
         <div className="my-3 flex justify-center gap-2" role="tablist" aria-label="Choose puzzle">
           <button
