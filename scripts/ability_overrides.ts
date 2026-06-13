@@ -48,8 +48,6 @@ const KEEN_EYE_REMOVAL_FORM_IDS = new Set<number>([
 
 const LEVITATE_REMOVAL_FORM_IDS = new Set<number>([
   10515, // Eelektross mega
-  10518, // Delphox mega
-  10531, // Chimecho mega
 ]);
 
 const STURDY_REMOVAL_FORM_IDS = new Set<number>([
