@@ -18,7 +18,6 @@ const SURF_OVERRIDE_FORM_IDS = new Set<number>([
 ]);
 
 const ACROBATICS_OVERRIDE_FORM_IDS = new Set<number>([
-  10534, // Garchomp mega z
   10544, // Zeraora mega
 ]);
 
@@ -61,7 +60,6 @@ const CALM_MIND_OVERRIDE_FORM_IDS = new Set<number>([
   10530, // Raichu mega y
   10531, // Chimecho mega
   10532, // Absol mega z
-  10534, // Garchomp mega z
   10535, // Lucario mega z
   10537, // Darkrai mega
   10539, // Meowstic mega
@@ -83,7 +81,6 @@ const CLOSE_COMBAT_OVERRIDE_FORM_IDS = new Set<number>([
   10528, // Falinks mega
   10532, // Absol mega z
   10533, // Staraptor mega
-  10534, // Garchomp mega z
   10535, // Lucario mega z
   10538, // Golurk mega
   10540, // Crabominable mega
@@ -114,7 +111,6 @@ const DAZZLING_GLEAM_OVERRIDE_FORM_IDS = new Set<number>([
   10518, // Delphox mega
   10521, // Floette mega
   10531, // Chimecho mega
-  10534, // Garchomp mega z
   10542, // Magearna mega
   10543, // Magearna original mega
   10546, // Glimmora mega
@@ -163,7 +159,6 @@ const FLY_OVERRIDE_FORM_IDS = new Set<number>([
   10525, // Hawlucha mega
   10527, // Drampa mega
   10533, // Staraptor mega
-  10534, // Garchomp mega z
   10538, // Golurk mega
   90521, // Unfezant female
 ]);
@@ -178,7 +173,6 @@ const HYDRO_PUMP_OVERRIDE_FORM_IDS = new Set<number>([
   10519, // Greninja mega
   10524, // Dragalge mega
   10527, // Drampa mega
-  10534, // Garchomp mega z
   10547, // Tatsugiri curly mega
   10548, // Tatsugiri droopy mega
   10549, // Tatsugiri stretchy mega
@@ -200,7 +194,6 @@ const ICE_BEAM_OVERRIDE_FORM_IDS = new Set<number>([
   10523, // Barbaracle mega
   10527, // Drampa mega
   10532, // Absol mega z
-  10534, // Garchomp mega z
   10537, // Darkrai mega
   10538, // Golurk mega
   10540, // Crabominable mega
@@ -219,7 +212,6 @@ const ICE_PUNCH_OVERRIDE_FORM_IDS = new Set<number>([
   10510, // Froslass mega
   10514, // Scrafty mega
   10519, // Greninja mega
-  10534, // Garchomp mega z
   10535, // Lucario mega z
   10538, // Golurk mega
   10540, // Crabominable mega
@@ -235,7 +227,6 @@ const METRONOME_OVERRIDE_FORM_IDS = new Set<number>([
   10514, // Scrafty mega
   10518, // Delphox mega
   10521, // Floette mega
-  10534, // Garchomp mega z
   10535, // Lucario mega z
 ]);
 
@@ -304,7 +295,6 @@ const PSYCHIC_OVERRIDE_FORM_IDS = new Set<number>([
   10521, // Floette mega
   10522, // Malamar mega
   10531, // Chimecho mega
-  10534, // Garchomp mega z
   10535, // Lucario mega z
   10537, // Darkrai mega
   10538, // Golurk mega
@@ -332,7 +322,6 @@ const SHADOW_BALL_OVERRIDE_FORM_IDS = new Set<number>([
   10527, // Drampa mega
   10531, // Chimecho mega
   10532, // Absol mega z
-  10534, // Garchomp mega z
   10535, // Lucario mega z
   10537, // Darkrai mega
   10538, // Golurk mega
@@ -348,7 +337,6 @@ const SLUDGE_BOMB_OVERRIDE_FORM_IDS = new Set<number>([
   10514, // Scrafty mega
   10523, // Barbaracle mega
   10524, // Dragalge mega
-  10534, // Garchomp mega z
   10537, // Darkrai mega
   10541, // Golisopod mega
   10546, // Glimmora mega
@@ -357,7 +345,6 @@ const SLUDGE_BOMB_OVERRIDE_FORM_IDS = new Set<number>([
 const TAIL_SLAP_OVERRIDE_FORM_IDS = new Set<number>([
   419, // Floatzel
   424, // Ambipom
-  10534, // Garchomp mega z
 ]);
 
 const THUNDERBOLT_OVERRIDE_FORM_IDS = new Set<number>([
@@ -372,7 +359,6 @@ const THUNDERBOLT_OVERRIDE_FORM_IDS = new Set<number>([
   10529, // Raichu mega x
   10530, // Raichu mega y
   10532, // Absol mega z
-  10534, // Garchomp mega z
   10537, // Darkrai mega
   10538, // Golurk mega
   10539, // Meowstic mega
