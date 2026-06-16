@@ -1,8 +1,22 @@
+export type SavedBoardConstraint = {
+  category: string;
+  value: string;
+};
+
+export type SavedBoardPayload = {
+  boardKey: string;
+  rowConstraints: SavedBoardConstraint[];
+  colConstraints: SavedBoardConstraint[];
+  cells: (number | null)[][];
+  savedAt: string;
+};
+
 export type UserDexPayload = {
   caughtPokemonKeyIds: number[];
   shinyPokemonKeyIds: number[];
   unlockedPrestigeLevelIndex: number;
   updatedAt: string | null;
+  savedBoard?: SavedBoardPayload | null;
 };
 
 export type SettingsPayload = {
@@ -31,6 +45,7 @@ export function parseUserDexFromApi(
     shinyPokemonKeyIds?: unknown;
     unlockedPrestigeLevelIndex?: unknown;
     updatedAt?: unknown;
+    savedBoard?: unknown;
   };
   if (!Array.isArray(payload.caughtPokemonKeyIds)) return null;
 
@@ -53,7 +68,76 @@ export function parseUserDexFromApi(
     ? payload.updatedAt
     : null;
 
-  return { caughtPokemonKeyIds, shinyPokemonKeyIds, unlockedPrestigeLevelIndex, updatedAt };
+  const savedBoard = parseSavedBoardFromApi(payload.savedBoard);
+
+  return { caughtPokemonKeyIds, shinyPokemonKeyIds, unlockedPrestigeLevelIndex, updatedAt, savedBoard };
+}
+
+function parseSavedBoardConstraintFromApi(data: unknown): SavedBoardConstraint | null {
+  if (!data || typeof data !== 'object') return null;
+
+  const constraint = data as {
+    category?: unknown;
+    value?: unknown;
+  };
+
+  if (typeof constraint.category !== 'string' || constraint.category.trim().length === 0) return null;
+  if (typeof constraint.value !== 'string' || constraint.value.trim().length === 0) return null;
+
+  return {
+    category: constraint.category,
+    value: constraint.value,
+  };
+}
+
+export function parseSavedBoardFromApi(data: unknown): SavedBoardPayload | null {
+  if (!data || typeof data !== 'object') return null;
+
+  const payload = data as {
+    boardKey?: unknown;
+    rowConstraints?: unknown;
+    colConstraints?: unknown;
+    cells?: unknown;
+    savedAt?: unknown;
+  };
+
+  if (typeof payload.boardKey !== 'string' || payload.boardKey.trim().length === 0) return null;
+  if (!Array.isArray(payload.rowConstraints) || !Array.isArray(payload.colConstraints) || !Array.isArray(payload.cells)) {
+    return null;
+  }
+
+  const rowConstraints = payload.rowConstraints.map(parseSavedBoardConstraintFromApi);
+  const colConstraints = payload.colConstraints.map(parseSavedBoardConstraintFromApi);
+  if (rowConstraints.some((constraint) => constraint === null) || colConstraints.some((constraint) => constraint === null)) {
+    return null;
+  }
+
+  const gridHeight = rowConstraints.length;
+  const gridWidth = colConstraints.length;
+  if (gridHeight === 0 || gridWidth === 0 || gridHeight > 9 || gridWidth > 9) return null;
+  if (payload.cells.length !== gridHeight) return null;
+
+  const cells = payload.cells.map((row) => {
+    if (!Array.isArray(row) || row.length !== gridWidth) return null;
+    return row.map((cell) => {
+      if (cell === null) return null;
+      const parsed = Number(cell);
+      return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+    });
+  });
+
+  if (cells.some((row) => row === null)) return null;
+  if (typeof payload.savedAt !== 'string' || payload.savedAt.trim().length === 0 || Number.isNaN(Date.parse(payload.savedAt))) {
+    return null;
+  }
+
+  return {
+    boardKey: payload.boardKey,
+    rowConstraints: rowConstraints as SavedBoardConstraint[],
+    colConstraints: colConstraints as SavedBoardConstraint[],
+    cells: cells as (number | null)[][],
+    savedAt: payload.savedAt,
+  };
 }
 
 export async function getRemoteUserDex({

@@ -7,9 +7,47 @@ import type {
 
 declare global {
   interface Window {
-    sa_event: (event: string, metadata?: Record<string, string | number>) => void;
-    sa_loaded: boolean;
+    dataLayer: unknown[];
+    gtag?: (command: 'event' | 'js' | 'config', ...args: unknown[]) => void;
   }
+}
+
+function getNormalizedPath(path: string): string {
+  if (path.startsWith('/pokemon/')) {
+    return '/pokemon/***';
+  }
+
+  if (path.startsWith('/tools/category/')) {
+    const parts = path.split('/').filter(Boolean);
+
+    if (parts.length === 3) return '/tools/category/*';
+    if (parts.length === 4) return '/tools/category/*/*';
+
+    return '/tools/category/***';
+  }
+
+  return path;
+}
+
+function getRouteMetadata(path: string): Record<string, string | undefined> {
+  const parts = path.split('/').filter(Boolean);
+
+  if (parts[0] === 'pokemon' && parts[1]) {
+    return {
+      route_type: 'pokemon',
+      pokemon_slug: parts.slice(1).join('/'),
+    };
+  }
+
+  if (parts[0] === 'tools' && parts[1] === 'category' && parts[2]) {
+    return {
+      route_type: 'category',
+      category_slug: parts[2],
+      subcategory_slug: parts[3] || undefined,
+    };
+  }
+
+  return {};
 }
 
 function serializeMetadata(
@@ -32,8 +70,20 @@ export function trackEvent<T extends AnalyticsEventName>(
   metadata?: AnalyticsEventMap[T],
   callback?: () => void,
 ) {
-  if (window.sa_loaded) {
-    window.sa_event(name, serializeMetadata(metadata));
+  if (typeof window.gtag === 'function') {
+    const serializedMetadata = serializeMetadata(metadata) ?? {};
+
+    if (name === 'page_view') {
+      Object.assign(serializedMetadata, {
+        page_path: getNormalizedPath(window.location.pathname),
+        page_location: window.location.href,
+        page_title: document.title,
+        raw_path: window.location.pathname,
+        ...getRouteMetadata(window.location.pathname),
+      });
+    }
+
+    window.gtag('event', name, serializedMetadata);
     if (callback) callback();
   } else if (callback) {
     callback();

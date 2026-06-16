@@ -10,6 +10,8 @@ interface Props {
 
 const { title, description, path } = Astro.props;
 const canonical = absoluteUrl(path);
+const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
+const hasGoogleAnalytics = Boolean(googleAnalyticsId);
 ---
 
 <!doctype html>
@@ -41,60 +43,105 @@ const canonical = absoluteUrl(path);
         // Ignore storage access errors.
       }
     </script>
-    <script>window.sa_event=window.sa_event||function(){var a=[].slice.call(arguments);window.sa_event.q?window.sa_event.q.push(a):window.sa_event.q=[a]};</script>
+    {
+      googleAnalyticsId ? (
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+        ></script>
+      ) : null
+    }
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || function(){window.dataLayer.push(arguments);};
+      window.pokedokuAnalytics = window.pokedokuAnalytics || {};
+
+      window.pokedokuAnalytics.serializeMetadata = function (metadata) {
+        if (!metadata) return undefined;
+
+        const entries = Object.entries(metadata).flatMap(([key, value]) => {
+          if (value == null) return [];
+          if (Array.isArray(value)) return [[key, value.join(",")]];
+          if (typeof value === "boolean") return [[key, value ? "true" : "false"]];
+          return [[key, value]];
+        });
+
+        return entries.length > 0 ? Object.fromEntries(entries) : undefined;
+      };
+
+      window.pokedokuAnalytics.getNormalizedPath = function (path) {
+        if (path.startsWith("/pokemon/")) {
+          return "/pokemon/***";
+        }
+
+        if (path.startsWith("/tools/category/")) {
+          const parts = path.split("/").filter(Boolean);
+
+          if (parts.length === 3) return "/tools/category/*";
+          if (parts.length === 4) return "/tools/category/*/*";
+
+          return "/tools/category/***";
+        }
+
+        return path;
+      };
+
+      window.pokedokuAnalytics.getRouteMetadata = function (path) {
+        const parts = path.split("/").filter(Boolean);
+
+        if (parts[0] === "pokemon" && parts[1]) {
+          return {
+            route_type: "pokemon",
+            pokemon_slug: parts.slice(1).join("/")
+          };
+        }
+
+        if (parts[0] === "tools" && parts[1] === "category" && parts[2]) {
+          return {
+            route_type: "category",
+            category_slug: parts[2],
+            subcategory_slug: parts[3] || undefined
+          };
+        }
+
+        return {};
+      };
+
+      window.pokedokuAnalytics.trackEvent = function (name, metadata, callback) {
+        if (typeof window.gtag !== "function") {
+          if (callback) callback();
+          return;
+        }
+
+        const serializedMetadata = window.pokedokuAnalytics.serializeMetadata(metadata) || {};
+        const pathname = window.location.pathname;
+
+        if (name === "page_view") {
+          Object.assign(serializedMetadata, {
+            page_path: window.pokedokuAnalytics.getNormalizedPath(pathname),
+            page_location: window.location.href,
+            page_title: document.title,
+            raw_path: pathname,
+            ...window.pokedokuAnalytics.getRouteMetadata(pathname),
+          });
+        }
+
+        window.gtag("event", name, serializedMetadata);
+        if (callback) callback();
+      };
+    </script>
+    {
+      hasGoogleAnalytics ? (
+        <script is:inline define:vars={{ googleAnalyticsId }}>
+          window.gtag("js", new Date());
+          window.gtag("config", googleAnalyticsId, {
+            send_page_view: false,
+          });
+        </script>
+      ) : null
+    }
   </head>
   <body>
     <slot />
-<script is:inline>
-  window.myPathOverwriter = function ({ path }) {
-    if (path.startsWith("/pokemon/")) {
-      return "/pokemon/***";
-    }
-
-    if (path.startsWith("/tools/category/")) {
-      const parts = path.split("/").filter(Boolean);
-
-      if (parts.length === 2) return "/tools/category/*";
-      if (parts.length === 3) return "/tools/category/*/*";
-
-      return "/tools/category/***";
-    }
-
-    return path;
-  };
-
-  window.myMetadataCollector = function ({ type, path }) {
-    if (type !== "pageview") return {};
-
-    const originalPath = window.location.pathname;
-    const parts = originalPath.split("/").filter(Boolean);
-
-    if (parts[0] === "pokemon" && parts[1]) {
-      return {
-        route_type: "pokemon",
-        pokemon_slug: parts.slice(1).join("/")
-      };
-    }
-
-    if (parts[0] === "category" && parts[1]) {
-      return {
-        route_type: "category",
-        category_slug: parts[1],
-        subcategory_slug: parts[2] || undefined
-      };
-    }
-
-    return {};
-  };
-</script>
-
-<script
-  is:inline
-  async
-  data-collect-dnt="true"
-  data-path-overwriter="myPathOverwriter"
-  data-metadata-collector="myMetadataCollector"
-  src="https://scripts.simpleanalyticscdn.com/latest.js"
-></script>
   </body>
 </html>

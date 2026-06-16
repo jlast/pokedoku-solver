@@ -55,22 +55,9 @@ const {
 
 <script>
   // @ts-nocheck
-  const serializeMetadata = (metadata) => {
-    if (!metadata) return undefined;
-
-    const entries = Object.entries(metadata).flatMap(([key, value]) => {
-      if (value == null) return [];
-      if (Array.isArray(value)) return [[key, value.join(",")]];
-      if (typeof value === "boolean") return [[key, value ? "true" : "false"]];
-      return [[key, value]];
-    });
-
-    return entries.length > 0 ? Object.fromEntries(entries) : undefined;
-  };
-
   const trackEvent = (name, metadata) => {
-    if (window.sa_loaded) {
-      window.sa_event(name, serializeMetadata(metadata));
+    if (window.pokedokuAnalytics?.trackEvent) {
+      window.pokedokuAnalytics.trackEvent(name, metadata);
     }
   };
 
