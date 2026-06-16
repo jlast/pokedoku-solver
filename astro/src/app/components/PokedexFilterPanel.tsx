@@ -77,6 +77,7 @@ export function PokedexFilterPanel({
   isSavingCollapsedPreference = false,
 }: PokedexFilterPanelProps) {
   const panelContentId = useId();
+  const shouldShowSaveActions = showSaveActions && showMissingOnly;
 
   return (
     <section className="mb-3 w-full max-w-[500px] rounded-xl border border-[var(--border)] bg-[var(--code-bg)] p-3 text-left">
@@ -128,31 +129,32 @@ export function PokedexFilterPanel({
               ) : null}
             </div>
           </div>
-          {showSaveActions && showMissingOnly ? (
-            <div className="mt-4 flex flex-wrap justify-center gap-2">
-              <ActionButton onClick={onMarkOwned} variant="success" disabled={disableMarkOwned}>
-                {isMarkingOwned ? (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="animate-spin">
-                      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" opacity="0.25" />
-                      <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                    Saving in My Pokedex...
-                  </>
-                ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    Save picks in My Pokedex
-                  </>
-                )}
-              </ActionButton>
-              <ActionButton onClick={onUndoMarkOwned} variant="secondary" disabled={disableUndoMarkOwned}>
-                {isUndoingMarkOwned ? 'Undoing...' : 'Undo'}
-              </ActionButton>
-            </div>
-          ) : null}
+        </div>
+      ) : null}
+
+      {shouldShowSaveActions ? (
+        <div className={`${isCollapsed ? 'mt-3' : 'mt-4'} flex flex-wrap justify-center gap-2`}>
+          <ActionButton onClick={onMarkOwned} variant="success" disabled={disableMarkOwned}>
+            {isMarkingOwned ? (
+              <>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="animate-spin">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" opacity="0.25" />
+                  <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                Saving in My Pokedex...
+              </>
+            ) : (
+              <>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Save picks in My Pokedex
+              </>
+            )}
+          </ActionButton>
+          <ActionButton onClick={onUndoMarkOwned} variant="secondary" disabled={disableUndoMarkOwned}>
+            {isUndoingMarkOwned ? 'Undoing...' : 'Undo'}
+          </ActionButton>
         </div>
       ) : null}
     </section>

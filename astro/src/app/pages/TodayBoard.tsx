@@ -599,12 +599,12 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
            }}
            disableMarkOwned={!hasGridData || !remoteUserDex || isMarkingOwned || isUndoingMarkOwned}
            disableUndoMarkOwned={!undoMarkOwnedState || isUndoingMarkOwned || isMarkingOwned}
-           isMarkingOwned={isMarkingOwned}
-           isUndoingMarkOwned={isUndoingMarkOwned}
-           isCollapsed={isFilterPanelCollapsed}
-           onToggleCollapsed={() => {
-             void toggleFilterPanelCollapsed();
-           }}
+            isMarkingOwned={isMarkingOwned}
+            isUndoingMarkOwned={isUndoingMarkOwned}
+            isCollapsed={isFilterPanelCollapsed}
+            onToggleCollapsed={() => {
+              void toggleFilterPanelCollapsed();
+            }}
            isSavingCollapsedPreference={isSavingFilterPanelCollapsedPreference}
           />
        ) : (
