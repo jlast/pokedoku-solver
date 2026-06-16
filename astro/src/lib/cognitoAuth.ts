@@ -9,6 +9,10 @@ type ProviderName = "Google";
 const REFRESH_BUFFER_MS = 60 * 1000;
 let refreshInFlight: Promise<string | null> | null = null;
 
+type TokenEndpointError = {
+  error?: string;
+};
+
 function getRequiredEnv(name: keyof ImportMetaEnv): string {
   const value = import.meta.env[name];
   if (!value) {
@@ -152,6 +156,24 @@ function isTokenFresh(expiresAt: number, bufferMs = 0): boolean {
   return Number.isFinite(expiresAt) && Date.now() + bufferMs < expiresAt;
 }
 
+function isInvalidRefreshTokenError(error: string | undefined): boolean {
+  return error === "invalid_grant" || error === "invalid_request" || error === "unauthorized_client";
+}
+
+async function readTokenEndpointError(response: Response): Promise<string | undefined> {
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.toLowerCase().includes("application/json")) {
+    return undefined;
+  }
+
+  try {
+    const data = (await response.json()) as TokenEndpointError;
+    return typeof data.error === "string" ? data.error : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function finishLoginFromHash(hash: string): boolean {
   const hashParams = hash.startsWith("#") ? hash.slice(1) : hash;
   const params = new URLSearchParams(hashParams);
@@ -229,8 +251,13 @@ async function finishLoginFromCode(code: string, state: string): Promise<boolean
 
 async function refreshSessionToken(): Promise<string | null> {
   const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+  const idToken = localStorage.getItem(TOKEN_KEY);
+  const expiresAt = Number(localStorage.getItem(EXPIRES_AT_KEY) || "0");
+
   if (!refreshToken) {
-    clearSession();
+    if (idToken && isTokenFresh(expiresAt)) {
+      return idToken;
+    }
     return null;
   }
 
@@ -251,7 +278,14 @@ async function refreshSessionToken(): Promise<string | null> {
     });
 
     if (!response.ok) {
-      clearSession();
+      const error = await readTokenEndpointError(response);
+      if (isInvalidRefreshTokenError(error)) {
+        clearSession();
+      }
+
+      if (idToken && isTokenFresh(expiresAt)) {
+        return idToken;
+      }
       return null;
     }
 
@@ -265,7 +299,9 @@ async function refreshSessionToken(): Promise<string | null> {
     const expiresIn = Number(data.expires_in || 0);
 
     if (!idToken || !Number.isFinite(expiresIn) || expiresIn <= 0) {
-      clearSession();
+      if (localStorage.getItem(TOKEN_KEY) && isTokenFresh(expiresAt)) {
+        return localStorage.getItem(TOKEN_KEY);
+      }
       return null;
     }
 
@@ -277,7 +313,9 @@ async function refreshSessionToken(): Promise<string | null> {
     });
     return idToken;
   } catch {
-    clearSession();
+    if (idToken && isTokenFresh(expiresAt)) {
+      return idToken;
+    }
     return null;
   }
 }
