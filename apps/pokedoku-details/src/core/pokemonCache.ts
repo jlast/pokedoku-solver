@@ -159,7 +159,7 @@ type PokemonMatchResult = {
 
 const FUZZY_SCORE_THRESHOLD = 0.84;
 const FUZZY_MARGIN_THRESHOLD = 0.06;
-const SHORT_TOKEN_SCORE_THRESHOLD = 0.93;
+const SHORT_TOKEN_SCORE_THRESHOLD = 0.83;
 const SHORT_TOKEN_MARGIN_THRESHOLD = 0.1;
 
 const getFuzzyThresholds = (token: string) => {
