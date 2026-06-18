@@ -1,5 +1,4 @@
 import type { Pokemon } from '@pokedoku-helper/shared-types';
-import localPokemonData from '../generated/pokemon.local.json';
 import { error as logError, log, warn } from './logger';
 
 const POKEMON_DATA_URL = 'https://www.pokedoku-helper.com/data/pokemon.json';
@@ -241,7 +240,8 @@ const fetchPokemonMap = async (): Promise<Map<string, Pokemon>> => {
     warn('Remote Pokemon fetch failed, falling back to local JSON');
 
     try {
-      const pokemon = localPokemonData as unknown as Pokemon[];
+      const localPokemonModule = await import('../generated/pokemon.local.json');
+      const pokemon = localPokemonModule.default as unknown as Pokemon[];
       log('Loaded pokemon data from bundled local JSON fallback');
       return buildPokemonMap(pokemon);
     } catch (_fallbackError) {
