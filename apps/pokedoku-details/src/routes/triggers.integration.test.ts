@@ -38,12 +38,58 @@ const pokemonData: Pokemon[] = [
     dexDifficultyPercentile: 0.8,
     formId: 136,
   },
+  {
+    id: 52,
+    name: 'Meowth gmax',
+    types: ['Normal'],
+    region: ['Kanto'],
+    categories: ['Gigantamax'],
+    dexDifficulty: 'Hard',
+    dexDifficultyPercentile: 0.72,
+    formId: 10369,
+  },
+  {
+    id: 92,
+    name: 'Gastly',
+    types: ['Ghost', 'Poison'],
+    region: ['Kanto'],
+    evolutionStage: 'First Stage',
+    categories: [],
+    dexDifficulty: 'Normal',
+    dexDifficultyPercentile: 0.41,
+    formId: 92,
+  },
+  {
+    id: 6,
+    name: 'Charizard mega x',
+    types: ['Fire', 'Dragon'],
+    region: ['Kanto'],
+    categories: ['Mega Evolution'],
+    dexDifficulty: 'Expert',
+    dexDifficultyPercentile: 0.86,
+    formId: 10134,
+  },
+  {
+    id: 6,
+    name: 'Charizard mega y',
+    types: ['Fire', 'Flying'],
+    region: ['Kanto'],
+    categories: ['Mega Evolution'],
+    dexDifficulty: 'Expert',
+    dexDifficultyPercentile: 0.87,
+    formId: 10135,
+  },
 ];
 
-vi.mock('../core/pokemonCache', () => ({
-  getPokemonMap: async () =>
-    new Map(pokemonData.map((pokemon) => [pokemon.name.toLowerCase(), pokemon])),
-}));
+vi.mock('../core/pokemonCache', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../core/pokemonCache')>();
+
+  return {
+    ...actual,
+    getPokemonMap: async () =>
+      new Map(pokemonData.map((pokemon) => [pokemon.name.toLowerCase(), pokemon])),
+  };
+});
 
 describe('triggers integration parsing', () => {
   it('parses mixed pokemon, category, and category+category tokens', async () => {
@@ -74,5 +120,22 @@ describe('triggers integration parsing', () => {
     ]);
     expect(lookup.filters[0]?.runtimeTypePair).toEqual({ left: 'Flying', right: 'Fire' });
     expect(lookup.filters[1]?.runtimeTypePair).toEqual({ left: 'Fire', right: 'Flying' });
+  });
+
+  it('fuzzy matches Pokemon names and form wording', async () => {
+    const { __test__ } = await import('./triggers');
+
+    const lookup = await __test__.getMatchedLookup('[[Meowth gigantamax]], [[ghastly]]');
+
+    expect(lookup.pokemon.map((pokemon) => pokemon.name)).toEqual(['Meowth gmax', 'Gastly']);
+  });
+
+  it('does not guess when a fuzzy match is ambiguous', async () => {
+    const { __test__ } = await import('./triggers');
+
+    const lookup = await __test__.getMatchedLookup('[[charizard mega]]');
+
+    expect(lookup.pokemon).toEqual([]);
+    expect(lookup.filters).toEqual([]);
   });
 });

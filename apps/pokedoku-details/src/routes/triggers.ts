@@ -13,7 +13,7 @@ import {
 import { reddit, RichTextBuilder } from '@devvit/web/server';
 import { FILTER_CATEGORIES, getCategoryOptionSlug } from '@pokedoku-helper/shared-types';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
-import { getPokemonMap } from '../core/pokemonCache';
+import { getPokemonMap, resolvePokemonToken } from '../core/pokemonCache';
 import { log } from '../core/logger';
 import {
   appendPokemonCompactLine,
@@ -142,7 +142,7 @@ const getMatchedLookup = async (input: string): Promise<MatchedLookup> => {
   const matchedFilterTokens: string[] = [];
 
   for (const token of tokens) {
-    const pokemon = pokemonMap.get(token);
+    const pokemon = resolvePokemonToken(token, pokemonMap);
     if (pokemon) {
       pokemonMatches.push(pokemon);
       ordered.push({ kind: 'pokemon', value: pokemon });
