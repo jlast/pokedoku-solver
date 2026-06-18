@@ -25,6 +25,17 @@ const pokemonData: Pokemon[] = [
     formId: 92,
   },
   {
+    id: 399,
+    name: 'Bidoof',
+    types: ['Normal'],
+    region: ['Sinnoh'],
+    evolutionStage: 'First Stage',
+    categories: [],
+    dexDifficulty: 'Easy',
+    dexDifficultyPercentile: 0.19,
+    formId: 399,
+  },
+  {
     id: 6,
     name: 'Charizard mega x',
     types: ['Fire', 'Dragon'],
@@ -58,6 +69,7 @@ describe('resolvePokemonToken', () => {
   it('matches common typos and form wording through fuzzy scoring', () => {
     expect(resolvePokemonToken('ghastly', pokemonMap)?.name).toBe('Gastly');
     expect(resolvePokemonToken('meowth gigantamax', pokemonMap)?.name).toBe('Meowth gmax');
+    expect(resolvePokemonToken('bdoof', pokemonMap)?.name).toBe('Bidoof');
   });
 
   it('rejects ambiguous fuzzy matches', () => {
