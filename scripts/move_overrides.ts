@@ -50,6 +50,7 @@ const BRICK_BREAK_OVERRIDE_FORM_IDS = new Set<number>([
 
 const CALM_MIND_OVERRIDE_FORM_IDS = new Set<number>([
   357, // Tropius
+  350, // Milotic
   10503, // Clefable mega
   10516, // Chandelure mega
   10518, // Delphox mega
@@ -218,6 +219,10 @@ const ICE_PUNCH_OVERRIDE_FORM_IDS = new Set<number>([
 ]);
 
 const METRONOME_OVERRIDE_FORM_IDS = new Set<number>([
+  52, // Meowth
+  53, // Persian
+  10209, // Alolan Meowth
+  10210, // Alolan Persian
   475, // Gallade
   10137, // Alakazam mega
   10156, // Banette mega
