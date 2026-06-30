@@ -38,6 +38,8 @@ const hasGoogleAnalytics = Boolean(googleAnalyticsId);
         const storedTheme = window.localStorage.getItem("theme-mode");
         if (storedTheme === "light" || storedTheme === "dark") {
           document.documentElement.setAttribute("data-theme", storedTheme);
+        } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.setAttribute("data-theme", "dark");
         }
       } catch {
         // Ignore storage access errors.
