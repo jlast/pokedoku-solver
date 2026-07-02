@@ -57,8 +57,6 @@ const CALM_MIND_OVERRIDE_FORM_IDS = new Set<number>([
   10521, // Floette mega
   10522, // Malamar mega
   10527, // Drampa mega
-  10529, // Raichu mega x
-  10530, // Raichu mega y
   10531, // Chimecho mega
   10532, // Absol mega z
   10535, // Lucario mega z
