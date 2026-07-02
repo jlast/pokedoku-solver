@@ -160,6 +160,7 @@ jobs:
           API_SUBDOMAIN: ${{ vars.API_SUBDOMAIN }}
           HOSTED_ZONE_ID: ${{ secrets.HOSTED_ZONE_ID }}
           API_CERTIFICATE_ARN: ${{ secrets.API_CERTIFICATE_ARN }}
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
           ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}
           COGNITO_REGION: ${{ vars.COGNITO_REGION }}
           COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}

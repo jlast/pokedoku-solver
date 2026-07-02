@@ -21,6 +21,7 @@ for required_var in \
   API_SUBDOMAIN \
   HOSTED_ZONE_ID \
   API_CERTIFICATE_ARN \
+  CLOUDFRONT_DISTRIBUTION_ID \
   ALLOWED_ORIGINS \
   COGNITO_REGION \
   COGNITO_USER_POOL_ID \
@@ -186,6 +187,7 @@ aws cloudformation deploy \
     AdminBonusPuzzlePostCodeS3Bucket="${S3_BUCKET_NAME}" \
     AdminBonusPuzzlePostCodeS3Key="${CURRENT_ADMIN_BONUS_PUZZLE_POST_KEY}" \
     RuntimeBucketName="${S3_BUCKET_NAME}" \
+    CloudFrontDistributionId="${CLOUDFRONT_DISTRIBUTION_ID}" \
     AllowedOrigins="${ALLOWED_ORIGINS}" \
     CognitoRegion="${COGNITO_REGION}" \
     CognitoUserPoolId="${COGNITO_USER_POOL_ID}" \

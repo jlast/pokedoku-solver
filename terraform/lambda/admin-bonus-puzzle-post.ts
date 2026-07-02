@@ -1,3 +1,4 @@
+import { CloudFrontClient, CreateInvalidationCommand } from '@aws-sdk/client-cloudfront';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import type {
   APIGatewayProxyEventV2,
@@ -39,6 +40,7 @@ const RUNTIME_BUCKET_NAME = process.env.RUNTIME_BUCKET_NAME ?? '';
 const TODAY_PUZZLE_KEY = process.env.TODAY_PUZZLE_KEY ?? 'data/runtime/today-puzzle.json';
 const POKEMON_DATA_KEY = process.env.POKEMON_DATA_KEY ?? 'data/pokemon.json';
 const PUZZLES_PREFIX = process.env.PUZZLES_PREFIX ?? 'data/runtime/puzzles/';
+const CLOUDFRONT_DISTRIBUTION_ID = process.env.CLOUDFRONT_DISTRIBUTION_ID ?? '';
 const GRID_AXIS_SIZE = 3;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -186,6 +188,22 @@ async function readTodayPuzzleFileFromS3(s3: S3Client, bucketName: string) {
   return parseTodayPuzzleFile(JSON.parse(body) as unknown);
 }
 
+async function invalidateTodayPuzzleCache(distributionId: string): Promise<void> {
+  const cloudFront = new CloudFrontClient({});
+  await cloudFront.send(
+    new CreateInvalidationCommand({
+      DistributionId: distributionId,
+      InvalidationBatch: {
+        CallerReference: `today-puzzle-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        Paths: {
+          Quantity: 1,
+          Items: ['/data/runtime/today-puzzle.json'],
+        },
+      },
+    })
+  );
+}
+
 function validateRuntimeConfigured(): boolean {
   return Boolean(RUNTIME_BUCKET_NAME && TODAY_PUZZLE_KEY && POKEMON_DATA_KEY && PUZZLES_PREFIX);
 }
@@ -243,6 +261,10 @@ export async function handler(
     await putJsonToS3(s3, RUNTIME_BUCKET_NAME, getBonusPuzzleKey(payload.date), bonusPuzzle);
     if (updatedTodayPuzzle) {
       await putJsonToS3(s3, RUNTIME_BUCKET_NAME, TODAY_PUZZLE_KEY, nextFile);
+
+      if (CLOUDFRONT_DISTRIBUTION_ID) {
+        await invalidateTodayPuzzleCache(CLOUDFRONT_DISTRIBUTION_ID);
+      }
     }
 
     logInfo('admin_bonus_puzzle_post_success', {

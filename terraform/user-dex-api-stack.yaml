@@ -72,6 +72,10 @@ Parameters:
     Type: String
     Description: "Website bucket containing runtime puzzle data"
 
+  CloudFrontDistributionId:
+    Type: String
+    Description: "Website CloudFront distribution ID for runtime puzzle invalidations"
+
   AllowedOrigins:
     Type: String
     Default: "https://www.pokedoku-helper.com,http://localhost:4321,http://127.0.0.1:4321"
@@ -160,6 +164,11 @@ Resources:
                   - !Sub "arn:aws:s3:::${RuntimeBucketName}/data/runtime/today-puzzle.json"
                   - !Sub "arn:aws:s3:::${RuntimeBucketName}/data/runtime/puzzles/*"
                   - !Sub "arn:aws:s3:::${RuntimeBucketName}/data/pokemon.json"
+              - Effect: Allow
+                Action:
+                  - cloudfront:CreateInvalidation
+                Resource:
+                  - !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistributionId}"
 
   UserDexGetFunction:
     Type: AWS::Lambda::Function
@@ -279,6 +288,7 @@ Resources:
           COGNITO_CLIENT_ID: !Ref CognitoClientId
           ALLOWED_ORIGINS: !Ref AllowedOrigins
           RUNTIME_BUCKET_NAME: !Ref RuntimeBucketName
+          CLOUDFRONT_DISTRIBUTION_ID: !Ref CloudFrontDistributionId
           TODAY_PUZZLE_KEY: data/runtime/today-puzzle.json
           POKEMON_DATA_KEY: data/pokemon.json
           PUZZLES_PREFIX: data/runtime/puzzles/
