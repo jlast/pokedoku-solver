@@ -2,7 +2,7 @@ import type { Pokemon } from "@pokedoku-helper/shared-types";
 import { FILTER_CATEGORIES, matchesConstraint } from "./shared/filters";
 import { CATEGORY_COMBINATION_FILTER_KEYS } from "./shared/categoryCombinations";
 
-type ConstraintCategory = "regions" | "types" | "evolution" | "category" | "move";
+type ConstraintCategory = "regions" | "types" | "evolution" | "category" | "move" | "ability";
 
 interface ConstraintMapping {
   category: ConstraintCategory;

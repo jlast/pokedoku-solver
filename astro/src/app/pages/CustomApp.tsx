@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import type { Pokemon } from "@pokedoku-helper/shared-types";
-import type { UserDexPayload } from "@pokedoku-helper/user-api-client";
+import { saveAdminBonusPuzzle, type UserDexPayload } from "@pokedoku-helper/user-api-client";
 import { GRID_SIZE } from "../../../../lib/shared/constants";
 import { matchesConstraint, findConstraintOption, type Constraint } from "../../../../lib/shared/filters";
 import { trackEvent } from "../../../../lib/browser/analytics";
@@ -86,7 +86,9 @@ function createInitialGridState(): GridState {
 }
 
 function App() {
-  const isLoggedIn = typeof window !== "undefined" && Boolean(getSessionUserProfile());
+  const sessionProfile = typeof window !== "undefined" ? getSessionUserProfile() : null;
+  const isLoggedIn = Boolean(sessionProfile);
+  const isAdmin = sessionProfile?.isAdmin === true;
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [grid, setGrid] = useState<GridState>(createInitialGridState);
@@ -101,6 +103,8 @@ function App() {
   const [suggestedPokemonKeys, setSuggestedPokemonKeys] = useState<(string | null)[][]>(() => createEmptyKeyGrid(GRID_SIZE));
   const [isFilterPanelCollapsed, setIsFilterPanelCollapsed] = useState(false);
   const [isSavingFilterPanelCollapsedPreference, setIsSavingFilterPanelCollapsedPreference] = useState(false);
+  const [isSavingBonusPuzzle, setIsSavingBonusPuzzle] = useState(false);
+  const [bonusPuzzleStatus, setBonusPuzzleStatus] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/pokemon.json?t=${Date.now()}`)
@@ -328,6 +332,11 @@ function App() {
     setGrid(createEmptyGridState());
   };
 
+  const hasCompletePuzzleShape = useMemo(
+    () => grid.rowConstraints.every(Boolean) && grid.colConstraints.every(Boolean),
+    [grid.colConstraints, grid.rowConstraints],
+  );
+
   const hasGridData = grid.cells.some((row) =>
     row.some((cell) => cell !== null),
   );
@@ -366,6 +375,60 @@ function App() {
 
     if (!didSave) {
       setShowMissingOnly(!nextValue);
+    }
+  }
+
+  async function saveBonusPuzzle() {
+    if (!isAdmin || isSavingBonusPuzzle || !hasCompletePuzzleShape) return;
+
+    const defaultDate = new Date().toISOString().slice(0, 10);
+    const inputDate = window.prompt("Save bonus puzzle for date (YYYY-MM-DD)", defaultDate)?.trim();
+    if (!inputDate) return;
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(inputDate)) {
+      setBonusPuzzleStatus("Enter a valid date in YYYY-MM-DD format.");
+      return;
+    }
+
+    const token = await getValidSessionIdToken();
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) {
+      setBonusPuzzleStatus("You need to be signed in to save a bonus puzzle.");
+      return;
+    }
+
+    setIsSavingBonusPuzzle(true);
+    setBonusPuzzleStatus(null);
+
+    try {
+      const result = await saveAdminBonusPuzzle({
+        token,
+        apiBaseUrl,
+        date: inputDate,
+        rowConstraints: grid.rowConstraints.filter((constraint): constraint is Constraint => constraint !== null),
+        colConstraints: grid.colConstraints.filter((constraint): constraint is Constraint => constraint !== null),
+      });
+
+      if (!result) {
+        setBonusPuzzleStatus("Failed to save the bonus puzzle.");
+        return;
+      }
+
+      trackEvent('bulk_action', {
+        page_name: 'custom',
+        location: 'grid',
+        target: 'save_bonus_puzzle',
+        value: result.date,
+        status: result.updatedTodayPuzzle ? 'updated_today_puzzle' : 'saved_archive_only',
+      });
+
+      setBonusPuzzleStatus(
+        result.updatedTodayPuzzle
+          ? `Saved bonus puzzle for ${result.date} and updated today's bonus slot.`
+          : `Saved bonus puzzle for ${result.date}. Today's puzzle was not changed because the live date differs.`,
+      );
+    } finally {
+      setIsSavingBonusPuzzle(false);
     }
   }
 
@@ -641,13 +704,29 @@ function App() {
           />
         </div>
         <InfoBox>Numbers show how many Pokémon match each combination.</InfoBox>
-        <ActionButton
-          onClick={clearGrid}
-          variant="destructiveGhost"
-          disabled={!hasGridData}
-        >
-          Clear All
-        </ActionButton>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {isAdmin ? (
+            <ActionButton
+              onClick={() => {
+                void saveBonusPuzzle();
+              }}
+              variant="secondary"
+              disabled={!hasCompletePuzzleShape || isSavingBonusPuzzle}
+            >
+              {isSavingBonusPuzzle ? "Saving..." : "Save Bonus Puzzle"}
+            </ActionButton>
+          ) : null}
+          <ActionButton
+            onClick={clearGrid}
+            variant="destructiveGhost"
+            disabled={!hasGridData}
+          >
+            Clear All
+          </ActionButton>
+        </div>
+        {bonusPuzzleStatus ? (
+          <p className="mt-1 text-center text-sm text-[var(--text)]/80">{bonusPuzzleStatus}</p>
+        ) : null}
       </div>
 
       <ContentSection>

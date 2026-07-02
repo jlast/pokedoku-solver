@@ -1,5 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { parseSettingsFromApi, parseUserDexFromApi } from './index';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { parseSettingsFromApi, parseUserDexFromApi, saveAdminBonusPuzzle } from './index';
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe('parseUserDexFromApi', () => {
   it('parses a valid updatedAt timestamp', () => {
@@ -76,5 +80,45 @@ describe('parseSettingsFromApi', () => {
         collapsePokedexAnswerFilters: false,
       }),
     ).toBeNull();
+  });
+});
+
+describe('saveAdminBonusPuzzle', () => {
+  it('posts the admin bonus puzzle payload', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        date: '2026-07-02',
+        updatedTodayPuzzle: true,
+      }),
+    });
+
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(
+      saveAdminBonusPuzzle({
+        token: 'token-123',
+        apiBaseUrl: 'https://api.example.com/',
+        date: '2026-07-02',
+        rowConstraints: [{ category: 'type', value: 'Fire' }],
+        colConstraints: [{ category: 'region', value: 'Kanto' }],
+      }),
+    ).resolves.toEqual({
+      date: '2026-07-02',
+      updatedTodayPuzzle: true,
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith('https://api.example.com/admin/bonus-puzzle', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token-123',
+      },
+      body: JSON.stringify({
+        date: '2026-07-02',
+        rowConstraints: [{ category: 'type', value: 'Fire' }],
+        colConstraints: [{ category: 'region', value: 'Kanto' }],
+      }),
+    });
   });
 });

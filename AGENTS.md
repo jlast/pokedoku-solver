@@ -103,6 +103,8 @@ It uses Redis caching and realtime data from `www.pokedoku-helper.com`.
   - `pnpm package:user-dex-get-lambda`
   - `pnpm build:user-dex-patch-lambda`
   - `pnpm package:user-dex-patch-lambda`
+  - `pnpm build:admin-bonus-puzzle-post-lambda`
+  - `pnpm package:admin-bonus-puzzle-post-lambda`
   - `pnpm package:user-dex-lambdas`
 
 ## Cognito metrics dashboard

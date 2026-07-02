@@ -18,6 +18,16 @@ export type SharedUserDexPayload = UserDexPayload & {
   displayName: string;
 };
 
+export type PuzzleConstraintPayload = {
+  category: string;
+  value: string;
+};
+
+export type SaveBonusPuzzleResult = {
+  date: string;
+  updatedTodayPuzzle: boolean;
+};
+
 function normalizeApiBaseUrl(apiBaseUrl: string): string {
   return apiBaseUrl.replace(/\/+$/, '');
 }
@@ -164,6 +174,54 @@ export async function patchRemoteSettings({
   if (!response.ok) return null;
   const data = (await response.json()) as unknown;
   return parseSettingsFromApi(data);
+}
+
+function parseSaveBonusPuzzleResult(data: unknown): SaveBonusPuzzleResult | null {
+  if (!data || typeof data !== 'object') return null;
+
+  const payload = data as {
+    date?: unknown;
+    updatedTodayPuzzle?: unknown;
+  };
+
+  if (typeof payload.date !== 'string') return null;
+  if (typeof payload.updatedTodayPuzzle !== 'boolean') return null;
+
+  return {
+    date: payload.date,
+    updatedTodayPuzzle: payload.updatedTodayPuzzle,
+  };
+}
+
+export async function saveAdminBonusPuzzle({
+  token,
+  apiBaseUrl,
+  date,
+  rowConstraints,
+  colConstraints,
+}: {
+  token: string;
+  apiBaseUrl: string;
+  date: string;
+  rowConstraints: PuzzleConstraintPayload[];
+  colConstraints: PuzzleConstraintPayload[];
+}): Promise<SaveBonusPuzzleResult | null> {
+  const response = await fetch(`${normalizeApiBaseUrl(apiBaseUrl)}/admin/bonus-puzzle`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      date,
+      rowConstraints,
+      colConstraints,
+    }),
+  });
+
+  if (!response.ok) return null;
+  const data = (await response.json()) as unknown;
+  return parseSaveBonusPuzzleResult(data);
 }
 
 export function parseSharedUserDexFromApi(

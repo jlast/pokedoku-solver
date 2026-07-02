@@ -81,7 +81,7 @@ function buildCorsHeaders(requestOrigin: string | null): Record<string, string> 
     'content-type': 'application/json',
     'access-control-allow-origin': responseOrigin,
     'access-control-allow-headers': 'authorization,content-type',
-    'access-control-allow-methods': 'GET,PATCH,OPTIONS',
+    'access-control-allow-methods': 'GET,PATCH,POST,OPTIONS',
     vary: 'Origin',
   };
 }
@@ -230,6 +230,10 @@ export function ok(event: APIGatewayProxyEventV2, body: Record<string, unknown>)
 
 export function badRequest(event: APIGatewayProxyEventV2, error: string): APIGatewayProxyStructuredResultV2 {
   return jsonResponse(400, { error }, getRequestOrigin(event));
+}
+
+export function forbidden(event: APIGatewayProxyEventV2, error: string): APIGatewayProxyStructuredResultV2 {
+  return jsonResponse(403, { error }, getRequestOrigin(event));
 }
 
 export function notFound(event: APIGatewayProxyEventV2, error: string): APIGatewayProxyStructuredResultV2 {
