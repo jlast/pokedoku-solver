@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseUserDexFromApi } from './index';
+import { parseSettingsFromApi, parseUserDexFromApi } from './index';
 
 describe('parseUserDexFromApi', () => {
   it('parses a valid updatedAt timestamp', () => {
@@ -45,5 +45,36 @@ describe('parseUserDexFromApi', () => {
       unlockedPrestigeLevelIndex: 0,
       updatedAt: null,
     });
+  });
+});
+
+describe('parseSettingsFromApi', () => {
+  it('parses an admin flag from the API response', () => {
+    expect(
+      parseSettingsFromApi({
+        preventSpoilerMode: false,
+        myPokedexFilter: true,
+        displayName: 'Ash',
+        collapsePokedexAnswerFilters: false,
+        isAdmin: true,
+      }),
+    ).toEqual({
+      preventSpoilerMode: false,
+      myPokedexFilter: true,
+      displayName: 'Ash',
+      collapsePokedexAnswerFilters: false,
+      isAdmin: true,
+    });
+  });
+
+  it('rejects settings responses without a boolean admin flag', () => {
+    expect(
+      parseSettingsFromApi({
+        preventSpoilerMode: false,
+        myPokedexFilter: true,
+        displayName: 'Ash',
+        collapsePokedexAnswerFilters: false,
+      }),
+    ).toBeNull();
   });
 });

@@ -48,7 +48,10 @@ export async function handler(
       userIdHash: fingerprintUser(authResult.userId),
     });
 
-    return ok(event, settings);
+    return ok(event, {
+      ...settings,
+      isAdmin: authResult.isAdmin,
+    });
   } catch (error) {
     logError('settings_get_error', {
       ...meta,

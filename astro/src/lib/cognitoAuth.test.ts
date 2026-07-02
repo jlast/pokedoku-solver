@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { clearSession, getValidSessionIdToken } from "./cognitoAuth";
+import { clearSession, getSessionUserProfile, getValidSessionIdToken } from "./cognitoAuth";
 
 const TOKEN_KEY = "cognito_id_token";
 const REFRESH_TOKEN_KEY = "cognito_refresh_token";
@@ -20,6 +20,14 @@ function createLocalStorage() {
       store.clear();
     }),
   } satisfies Storage;
+}
+
+function createUnsignedJwt(payload: Record<string, unknown>): string {
+  const encode = (value: unknown) =>
+    Buffer.from(JSON.stringify(value), "utf8")
+      .toString("base64url");
+
+  return `${encode({ alg: "none", typ: "JWT" })}.${encode(payload)}.`;
 }
 
 describe("cognitoAuth refresh handling", () => {
@@ -87,5 +95,18 @@ describe("cognitoAuth refresh handling", () => {
     await expect(getValidSessionIdToken()).resolves.toBeNull();
     expect(localStorage.getItem(TOKEN_KEY)).toBeNull();
     expect(localStorage.getItem(REFRESH_TOKEN_KEY)).toBeNull();
+  });
+
+  it("reads the admin flag from Cognito group claims", () => {
+    localStorage.setItem(
+      TOKEN_KEY,
+      createUnsignedJwt({
+        sub: "user-123",
+        "cognito:groups": ["admin"],
+      }),
+    );
+    localStorage.setItem(EXPIRES_AT_KEY, String(Date.now() + 60_000));
+
+    expect(getSessionUserProfile()).toMatchObject({ isAdmin: true });
   });
 });

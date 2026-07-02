@@ -68,6 +68,9 @@ type SessionTokenPayload = {
   given_name?: string;
   family_name?: string;
   sub?: string;
+  "cognito:groups"?: unknown;
+  "custom:isAdmin"?: unknown;
+  isAdmin?: unknown;
   [key: string]: unknown;
 };
 
@@ -94,6 +97,26 @@ function getBestSessionImageUrl(payload: SessionTokenPayload): string | null {
   );
 
   return firstValid ?? null;
+}
+
+function hasAdminGroup(value: unknown): boolean {
+  if (!Array.isArray(value)) return false;
+  return value.some(
+    (entry) => typeof entry === "string" && entry.trim().toLowerCase() === "admin",
+  );
+}
+
+function isTruthyAdminClaim(value: unknown): boolean {
+  if (value === true) return true;
+  if (typeof value !== "string") return false;
+  const normalized = value.trim().toLowerCase();
+  return normalized === "true" || normalized === "1";
+}
+
+function getIsAdmin(payload: SessionTokenPayload): boolean {
+  return hasAdminGroup(payload["cognito:groups"])
+    || isTruthyAdminClaim(payload["custom:isAdmin"])
+    || isTruthyAdminClaim(payload.isAdmin);
 }
 
 export async function buildLoginUrl(provider: ProviderName): Promise<string> {
@@ -410,6 +433,7 @@ export interface SessionUserProfile {
   label: string;
   imageUrl: string | null;
   fallbackInitial: string;
+  isAdmin: boolean;
 }
 
 export function getSessionUserProfile(): SessionUserProfile | null {
@@ -419,17 +443,18 @@ export function getSessionUserProfile(): SessionUserProfile | null {
   try {
     const payloadPart = token.split(".")[1];
     if (!payloadPart) {
-      return { label: UNKNOWN_TRAINER_LABEL, imageUrl: null, fallbackInitial: "U" };
+      return { label: UNKNOWN_TRAINER_LABEL, imageUrl: null, fallbackInitial: "U", isAdmin: false };
     }
 
     const payload = JSON.parse(decodeBase64Url(payloadPart)) as SessionTokenPayload;
 
-    return {
-      label: getBestSessionLabel(payload),
-      imageUrl: getBestSessionImageUrl(payload),
-      fallbackInitial: getFallbackInitial(payload),
-    };
+      return {
+        label: getBestSessionLabel(payload),
+        imageUrl: getBestSessionImageUrl(payload),
+        fallbackInitial: getFallbackInitial(payload),
+        isAdmin: getIsAdmin(payload),
+      };
   } catch {
-    return { label: UNKNOWN_TRAINER_LABEL, imageUrl: null, fallbackInitial: "U" };
+    return { label: UNKNOWN_TRAINER_LABEL, imageUrl: null, fallbackInitial: "U", isAdmin: false };
   }
 }

@@ -19,7 +19,30 @@ type JwtPayload = {
   iss?: string;
   aud?: string;
   client_id?: string;
+  'cognito:groups'?: unknown;
+  'custom:isAdmin'?: unknown;
+  isAdmin?: unknown;
 };
+
+function hasAdminGroup(value: unknown): boolean {
+  if (!Array.isArray(value)) return false;
+  return value.some(
+    (entry) => typeof entry === 'string' && entry.trim().toLowerCase() === 'admin'
+  );
+}
+
+function isTruthyAdminClaim(value: unknown): boolean {
+  if (value === true) return true;
+  if (typeof value !== 'string') return false;
+  const normalized = value.trim().toLowerCase();
+  return normalized === 'true' || normalized === '1';
+}
+
+function isAdminUser(payload: JwtPayload): boolean {
+  return hasAdminGroup(payload['cognito:groups'])
+    || isTruthyAdminClaim(payload['custom:isAdmin'])
+    || isTruthyAdminClaim(payload.isAdmin);
+}
 
 type Jwk = {
   kty: string;
@@ -153,7 +176,9 @@ async function verifyJwt(token: string): Promise<{ ok: true; payload: JwtPayload
   return { ok: true, payload };
 }
 
-export async function authenticate(event: APIGatewayProxyEventV2): Promise<{ userId: string } | APIGatewayProxyStructuredResultV2> {
+export async function authenticate(
+  event: APIGatewayProxyEventV2
+): Promise<{ userId: string; isAdmin: boolean } | APIGatewayProxyStructuredResultV2> {
   const requestOrigin = getRequestOrigin(event);
 
   if (!REGION || !USER_POOL_ID || !CLIENT_ID) {
@@ -175,7 +200,10 @@ export async function authenticate(event: APIGatewayProxyEventV2): Promise<{ use
     return jsonResponse(401, { error: 'Invalid token.' }, requestOrigin);
   }
 
-  return { userId: verification.payload.sub as string };
+  return {
+    userId: verification.payload.sub as string,
+    isAdmin: isAdminUser(verification.payload),
+  };
 }
 
 export function requestMeta(event: APIGatewayProxyEventV2): Record<string, unknown> {

@@ -10,6 +10,7 @@ export type SettingsPayload = {
   myPokedexFilter: boolean;
   displayName: string;
   collapsePokedexAnswerFilters: boolean;
+  isAdmin: boolean;
 };
 
 export type SharedUserDexPayload = UserDexPayload & {
@@ -105,18 +106,21 @@ export function parseSettingsFromApi(data: unknown): SettingsPayload | null {
     myPokedexFilter?: unknown;
     displayName?: unknown;
     collapsePokedexAnswerFilters?: unknown;
+    isAdmin?: unknown;
   };
 
   if (typeof payload.preventSpoilerMode !== 'boolean') return null;
   if (typeof payload.myPokedexFilter !== 'boolean') return null;
   if (typeof payload.displayName !== 'string') return null;
   if (typeof payload.collapsePokedexAnswerFilters !== 'boolean') return null;
+  if (typeof payload.isAdmin !== 'boolean') return null;
 
   return {
     preventSpoilerMode: payload.preventSpoilerMode,
     myPokedexFilter: payload.myPokedexFilter,
     displayName: payload.displayName,
     collapsePokedexAnswerFilters: payload.collapsePokedexAnswerFilters,
+    isAdmin: payload.isAdmin,
   };
 }
 

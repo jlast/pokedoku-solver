@@ -54,7 +54,7 @@ export async function handler(
       logInfo('settings_patch_validation_failed', meta);
       return badRequest(
         event,
-        'Invalid payload. Expected non-empty partial object with keys: preventSpoilerMode, myPokedexFilter, displayName, collapsePokedexAnswerFilters.'
+        'Invalid payload. Expected non-empty partial object with keys: preventSpoilerMode, myPokedexFilter, displayName, collapsePokedexAnswerFilters. isAdmin is read-only.'
       );
     }
 
@@ -68,7 +68,10 @@ export async function handler(
       changedKeys: Object.keys(patch),
     });
 
-    return ok(event, next);
+    return ok(event, {
+      ...next,
+      isAdmin: authResult.isAdmin,
+    });
   } catch (error) {
     logError('settings_patch_error', {
       ...meta,
