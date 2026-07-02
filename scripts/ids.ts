@@ -493,7 +493,7 @@ export const POKEMON_OVERRIDES: Record<string, PokemonOverride> = {
   },
   10441: {
     // Ursaluna bloodmoon
-    region: ['Paldea'],
+    region: ['Paldea', 'Hisui'],
     evolutionStage: 'No Evolution Line',
     evolutionTrigger: [],
     evolution: {
