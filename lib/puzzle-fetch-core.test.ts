@@ -16,21 +16,48 @@ const RAW_PUZZLE = {
 
 describe("puzzle-fetch-core", () => {
   it("maps puzzle constraints from API response", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
         ok: true,
         json: async () => RAW_PUZZLE,
-      }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        headers: new Headers({
+          "set-cookie": "__Host-next-auth.csrf-token=test-csrf-cookie; Path=/; HttpOnly; Secure; SameSite=Lax",
+        }),
+        json: async () => ({ csrfToken: "csrf-token" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        headers: new Headers({
+          "set-cookie": "__Secure-next-auth.session-token=test-session; Path=/; HttpOnly; Secure; SameSite=Lax",
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: async () =>
+          JSON.stringify({
+            ...RAW_PUZZLE,
+            type: "BONUS",
+            bonus: true,
+          }),
+      });
+
+    vi.stubGlobal(
+      "fetch",
+      fetchMock,
     );
 
     const puzzles = await fetchPuzzles();
-    expect(puzzles).toHaveLength(1);
+    expect(puzzles).toHaveLength(2);
     expect(puzzles[0].size).toBe(9);
     expect(puzzles[0].colConstraints[0]).toEqual({ category: "types", value: "Water" });
     expect(puzzles[0].colConstraints[1]).toEqual({ category: "types", value: "Monotype" });
     expect(puzzles[0].colConstraints[2]).toEqual({ category: "regions", value: "Kanto" });
     expect(puzzles[0].rowConstraints[0]).toEqual({ category: "evolution", value: "Final Stage" });
+    expect(puzzles[1].bonus).toBe(true);
   });
 
   it("throws when fetch fails", async () => {
@@ -40,6 +67,40 @@ describe("puzzle-fetch-core", () => {
     );
 
     await expect(fetchPuzzles()).rejects.toThrow("Failed to fetch puzzle: 500 Error");
+  });
+
+  it("keeps the regular puzzle when authenticated bonus fetch returns an empty body", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => RAW_PUZZLE,
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          headers: new Headers({
+            "set-cookie": "__Host-next-auth.csrf-token=test-csrf-cookie; Path=/; HttpOnly; Secure; SameSite=Lax",
+          }),
+          json: async () => ({ csrfToken: "csrf-token" }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          headers: new Headers({
+            "set-cookie": "__Secure-next-auth.session-token=test-session; Path=/; HttpOnly; Secure; SameSite=Lax",
+          }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: async () => "",
+        }),
+    );
+
+    const puzzles = await fetchPuzzles();
+
+    expect(puzzles).toHaveLength(1);
+    expect(puzzles[0].bonus).toBe(false);
   });
 
   it("excludes move and ability groups from featured pick combination counts", () => {

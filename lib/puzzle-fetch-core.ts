@@ -355,15 +355,124 @@ export function enrichPuzzlesWithFeaturedPick(puzzles: MappedPuzzle[], pokemon: 
   });
 }
 
+class CookieJar {
+  private readonly cookies = new Map<string, string>();
+
+  addSetCookieHeaders(headers: Headers) {
+    const getSetCookie = headers.getSetCookie?.bind(headers);
+    const setCookies = getSetCookie ? getSetCookie() : this.getFallbackSetCookies(headers);
+
+    for (const setCookie of setCookies) {
+      const [cookiePair] = setCookie.split(";", 1);
+      const separatorIndex = cookiePair.indexOf("=");
+      if (separatorIndex <= 0) continue;
+
+      const name = cookiePair.slice(0, separatorIndex).trim();
+      const value = cookiePair.slice(separatorIndex + 1).trim();
+      if (!name) continue;
+
+      this.cookies.set(name, value);
+    }
+  }
+
+  has(name: string): boolean {
+    return this.cookies.has(name);
+  }
+
+  toHeader(): string {
+    return Array.from(this.cookies.entries())
+      .map(([name, value]) => `${name}=${value}`)
+      .join("; ");
+  }
+
+  private getFallbackSetCookies(headers: Headers): string[] {
+    const raw = headers.get("set-cookie");
+    return raw ? [raw] : [];
+  }
+}
+
+async function fetchBonusPuzzle(date: string): Promise<RawPuzzle | null> {
+  const cookieJar = new CookieJar();
+
+  const csrfResponse = await fetch("https://pokedoku.com/api/auth/csrf");
+  cookieJar.addSetCookieHeaders(csrfResponse.headers);
+  if (!csrfResponse.ok) {
+    throw new Error(`Failed to fetch Pokedoku CSRF token: ${csrfResponse.status} ${csrfResponse.statusText}`);
+  }
+
+  const csrfData = (await csrfResponse.json()) as { csrfToken?: string };
+  if (!csrfData.csrfToken) {
+    throw new Error("Pokedoku CSRF response did not include a csrfToken");
+  }
+
+  const authResponse = await fetch("https://pokedoku.com/api/auth/callback/anon", {
+    method: "POST",
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      cookie: cookieJar.toHeader(),
+    },
+    body: new URLSearchParams({
+      csrfToken: csrfData.csrfToken,
+      callbackUrl: "https://pokedoku.com/",
+      json: "true",
+    }),
+  });
+
+  cookieJar.addSetCookieHeaders(authResponse.headers);
+  if (!authResponse.ok) {
+    throw new Error(`Failed to authenticate Pokedoku anon session: ${authResponse.status} ${authResponse.statusText}`);
+  }
+
+  if (!cookieJar.has("__Secure-next-auth.session-token")) {
+    throw new Error("Pokedoku anon auth did not return a session token");
+  }
+
+  const bonusResponse = await fetch(`https://api.pokedoku.com/api/puzzle/bonus/${date}`, {
+    headers: {
+      cookie: cookieJar.toHeader(),
+    },
+  });
+
+  if (!bonusResponse.ok) {
+    if (bonusResponse.status === 404) {
+      return null;
+    }
+    throw new Error(`Failed to fetch bonus puzzle: ${bonusResponse.status} ${bonusResponse.statusText}`);
+  }
+
+  const rawText = await bonusResponse.text();
+  if (!rawText.trim()) {
+    return null;
+  }
+
+  return JSON.parse(rawText) as RawPuzzle;
+}
+
 export async function fetchPuzzles(): Promise<MappedPuzzle[]> {
   const response = await fetch("https://api.pokedoku.com/api/puzzle/current");
   if (!response.ok) {
     throw new Error(`Failed to fetch puzzle: ${response.status} ${response.statusText}`);
   }
+
   const data = (await response.json()) as RawPuzzle | RawPuzzle[];
   const rawPuzzles = Array.isArray(data) ? data : [data];
   if (rawPuzzles.length === 0) {
     throw new Error("Failed to parse puzzle data from API response");
   }
+
+  const liveDate = rawPuzzles[0]?.date;
+  const hasBonusPuzzle = rawPuzzles.some((puzzle) => puzzle.type === "BONUS" || puzzle.bonus === true);
+
+  if (!hasBonusPuzzle && liveDate) {
+    try {
+      const bonusPuzzle = await fetchBonusPuzzle(liveDate);
+      if (bonusPuzzle) {
+        rawPuzzles.push(bonusPuzzle);
+      }
+    } catch (error) {
+      console.warn("Failed to fetch bonus puzzle via authenticated flow:", error);
+    }
+  }
+
   return rawPuzzles.map(mapPuzzle);
 }
