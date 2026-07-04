@@ -127,7 +127,7 @@ const EVOLUTION_MAP: Record<string, string> = {
 
 const EVOLVED_BY_MAP: Record<string, string> = {
   item: "Evolved by Item",
-  level: "Evolved by Level",
+  "level-up": "Evolved by Level",
   trade: "Evolved by Trade",
   friendship: "Evolved by Friendship",
 };
