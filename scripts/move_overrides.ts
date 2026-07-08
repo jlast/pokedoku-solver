@@ -51,6 +51,8 @@ const BRICK_BREAK_OVERRIDE_FORM_IDS = new Set<number>([
 const CALM_MIND_OVERRIDE_FORM_IDS = new Set<number>([
   357, // Tropius
   350, // Milotic
+  492, // Shaymin
+  10064, // Shaymin sky
   10503, // Clefable mega
   10516, // Chandelure mega
   10518, // Delphox mega
