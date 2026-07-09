@@ -120,6 +120,7 @@ export function SuggestionsPanel({
   const [daysSinceLastUsableByKeyId, setDaysSinceLastUsableByKeyId] = useState<Map<number, number | null>>(
     new Map(),
   );
+  const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortBy>(() => {
     if (typeof window !== 'undefined') {
       const savedSort = localStorage.getItem('pokedoku-sort');
@@ -222,24 +223,21 @@ export function SuggestionsPanel({
     return isCurrentOwned ? owned : [...unowned, ...owned];
   }, [currentPokemon, hideOwnedOptions, ownedPokemonKeyIds, showOwnershipState, sortedPokemon]);
 
-  const visiblePokemon = useMemo(() => displayedPokemon, [displayedPokemon]);
+  const visiblePokemon = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
-  const optionsCounts = useMemo(() => {
-    if (!ownedPokemonKeyIds || !showOwnershipState) {
-      return { total: visiblePokemon.length, owned: 0, unowned: visiblePokemon.length };
-    }
+    if (!normalizedQuery) return displayedPokemon;
 
-    let owned = 0;
-    for (const pokemon of visiblePokemon) {
-      if (ownedPokemonKeyIds.has(getPokemonKeyId(pokemon))) owned += 1;
-    }
+    return displayedPokemon.filter((pokemon) => {
+      const id = String(pokemon.id);
 
-    return {
-      total: visiblePokemon.length,
-      owned,
-      unowned: visiblePokemon.length - owned,
-    };
-  }, [ownedPokemonKeyIds, showOwnershipState, visiblePokemon]);
+      return (
+        pokemon.name.toLowerCase().includes(normalizedQuery)
+        || id.includes(normalizedQuery.replace(/^#/, ''))
+        || pokemon.types.some((type) => type.toLowerCase().includes(normalizedQuery))
+      );
+    });
+  }, [displayedPokemon, searchQuery]);
 
   const headerCounts = useMemo(() => {
     if (!ownedPokemonKeyIds || !showOwnershipState) {
@@ -306,51 +304,59 @@ export function SuggestionsPanel({
               <span className="text-[var(--text)]">+</span>
               {colParsed ? <CategoryBadgeLink parsed={colParsed} href={null} compact /> : <span className="text-xs text-[var(--text)]">Any</span>}
             </div>
-            <label className={`flex max-w-full items-center gap-1 self-start text-[var(--text)] opacity-80 ${panelMode === 'actions' ? 'md:hidden' : ''}`}>
-              <span className="text-[0.8rem]" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M7 4v14m0 0-3-3m3 3 3-3M17 20V6m0 0-3 3m3-3 3 3"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-              <span className="relative inline-flex max-w-full items-center">
+            {currentPokemon && panelMode === 'options' ? (
+              <button
+                type="button"
+                className="inline-flex cursor-pointer items-center gap-0.5 self-start text-xs font-medium text-[var(--text)] opacity-80 underline transition hover:opacity-100"
+                onClick={() => setPanelMode('actions')}
+              >
+                <span aria-hidden="true" className="text-xs leading-none">←</span>
+                <span>{rowParsed?.label ?? 'Any'} + {colParsed?.label ?? 'Any'}</span>
+              </button>
+            ) : null}
+            <div className={`flex flex-wrap items-center gap-2 ${panelMode === 'actions' ? 'md:hidden' : ''}`}>
+              <span className="relative inline-flex">
                 <select
-                  className="max-w-[230px] cursor-pointer appearance-none rounded-md border border-[var(--border)] bg-[var(--code-bg)] py-1 pl-2 pr-7 text-xs text-[var(--text)] max-[768px]:max-w-[210px]"
+                  className="cursor-pointer appearance-none rounded-md border border-[var(--border)] bg-[var(--code-bg)] py-1 pl-2 pr-6 text-xs text-[var(--text)]"
                   aria-label="Sort Pokémon suggestions"
                   value={sortBy}
                   onChange={(event) => handleSortChange(event.target.value as SortBy)}
                 >
-                  <option value="number-asc">Pokemon # (low to high)</option>
-                  <option value="number-desc">Pokemon # (high to low)</option>
-                  <option value="difficulty-asc">Dex difficulty (hard to easy)</option>
-                  <option value="difficulty-desc">Dex difficulty (easy to hard)</option>
-                  <option value="recent-appearance">By oldest appearance</option>
+                  <option value="number-asc">Pokemon # ↑</option>
+                  <option value="number-desc">Pokemon # ↓</option>
+                  <option value="difficulty-asc">Dex difficulty ↑</option>
+                  <option value="difficulty-desc">Dex difficulty ↓</option>
+                  <option value="recent-appearance">Oldest ↑</option>
                 </select>
-                <span className="pointer-events-none absolute right-2 inline-flex items-center text-[var(--text)]" aria-hidden="true">
+                <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 inline-flex items-center text-[var(--text)]" aria-hidden="true">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="m6 9 6 6 6-6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                    <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>
               </span>
-            </label>
-            {panelMode === 'options' ? (
-              <div className="flex max-w-full items-center gap-1 self-start text-[var(--text)] opacity-80">
-                <span className="text-xs font-medium text-[var(--text)]">
-                  {optionsCounts.total} Pokemon{showOwnershipState ? `, ${optionsCounts.unowned} unowned, ${optionsCounts.owned} owned` : ''}
-                </span>
-              </div>
-            ) : null}
+              {panelMode === 'options' ? (
+                <div className="relative flex flex-1 items-center">
+                  <span className="pointer-events-none absolute left-2.5 flex items-center text-[var(--text)] opacity-50" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="M21 21l-4.35-4.35" />
+                    </svg>
+                  </span>
+                  <input
+                    type="text"
+                    className="w-full rounded-md border border-[var(--border)] bg-[var(--code-bg)] py-1.5 pl-8 pr-2.5 text-xs text-[var(--text)] placeholder:text-[var(--text)]/40 focus:outline-none focus:border-[var(--accent-border)]"
+                    placeholder={`Search ${displayedPokemon.length} Pokémon...`}
+                    aria-label="Search Pokémon"
+                    value={searchQuery}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setSearchQuery(value);
+                      trackEvent('search_update', { location: 'suggestions', source: 'suggestions', target: 'search', value });
+                    }}
+                  />
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
         <div className={`min-h-0 pt-2.5 md:flex-1 md:overflow-y-auto md:pt-3 ${panelMode === 'options' ? 'flex-1 overflow-y-auto' : 'overflow-visible'}`}>
@@ -412,16 +418,6 @@ export function SuggestionsPanel({
 
           {panelMode === 'options' ? (
           <div className="flex flex-col gap-2">
-          {currentPokemon ? (
-            <button
-              type="button"
-              className="inline-flex min-h-12 items-center gap-2 self-start rounded-full border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm font-semibold text-[var(--text-h)] transition hover:border-[var(--accent-border)] hover:bg-[var(--accent-bg)]"
-              onClick={() => setPanelMode('actions')}
-            >
-              <span aria-hidden="true" className="text-base leading-none">←</span>
-              <span>Back</span>
-            </button>
-          ) : null}
           {visiblePokemon.length > 0 ? (
             visiblePokemon.map((p) => {
               const pokemonKeyId = getPokemonKeyId(p);
@@ -505,7 +501,9 @@ export function SuggestionsPanel({
               </button>
             );})
           ) : (
-            <p className="p-5 text-center text-red-500">No Pokémon matches the constraints.</p>
+            <p className="p-5 text-center text-red-500">
+              {searchQuery.trim() ? 'No Pokémon matches your search.' : 'No Pokémon matches the constraints.'}
+            </p>
           )}
           </div>
           ) : null}
