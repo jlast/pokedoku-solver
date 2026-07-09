@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Pokemon } from '@pokedoku-helper/shared-types';
+import { getRemoteUserPuzzle, putRemoteUserPuzzle, type UserDexPayload, type UserPuzzleAnswerPayload } from '@pokedoku-helper/user-api-client';
 import { trackEvent } from '../../../../lib/browser/analytics';
 import { matchesConstraint, type Constraint } from '../../../../lib/shared/filters';
-import type { UserDexPayload } from '@pokedoku-helper/user-api-client';
+import { getPuzzleArchiveSlug } from '../../lib/puzzleArchive';
 import { Grid } from '../components/Grid';
 import { SuggestionsPanel } from '../components/SuggestionsPanel';
 import { TodayBoardSuggestions } from '../components/TodayBoardSuggestions';
@@ -45,6 +46,37 @@ function createInitialRevealStates(size: number): Record<string, RevealState> {
   }
 
   return states;
+}
+
+function createEmptySavedAnswerGrid(size: number): (number | null)[][] {
+  return Array.from({ length: size }, () => Array.from({ length: size }, () => null));
+}
+
+function toSavedAnswers(savedAnswerKeyIds: (number | null)[][]): UserPuzzleAnswerPayload[] {
+  return savedAnswerKeyIds.flatMap((row, rowIndex) =>
+    row.flatMap((pokemonKeyId, colIndex) => (
+      pokemonKeyId ? [{ row: rowIndex, col: colIndex, pokemonKeyId }] : []
+    )),
+  );
+}
+
+function countSavedAnswers(savedAnswerKeyIds: (number | null)[][]): number {
+  return savedAnswerKeyIds.reduce((total, row) => total + row.filter((entry) => entry !== null).length, 0);
+}
+
+function overlaySavedAnswers(cells: (Pokemon | null)[][], savedAnswerKeyIds: (number | null)[][], pokemon: Pokemon[]): (Pokemon | null)[][] {
+  const pokemonByKeyId = new Map(pokemon.map((entry) => [getPokemonKeyId(entry), entry]));
+
+  return cells.map((row, rowIndex) =>
+    row.map((cell, colIndex) => {
+      const pokemonKeyId = savedAnswerKeyIds[rowIndex]?.[colIndex] ?? null;
+      return pokemonKeyId ? pokemonByKeyId.get(pokemonKeyId) ?? cell : cell;
+    }),
+  );
+}
+
+function getSavedAnswerKeyIdsFromCells(cells: (Pokemon | null)[][]): (number | null)[][] {
+  return cells.map((row) => row.map((cell) => (cell ? getPokemonKeyId(cell) : null)));
 }
 
 export interface TodayPuzzle {
@@ -121,6 +153,11 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
   const [selectedCellAnchorElement, setSelectedCellAnchorElement] = useState<HTMLDivElement | null>(null);
   const [spoilerModeEnabled, setSpoilerModeEnabled] = useState(false);
   const [revealStates, setRevealStates] = useState<Record<string, RevealState>>(() => createInitialRevealStates(gridSize));
+  const [savedAnswerKeyIds, setSavedAnswerKeyIds] = useState<(number | null)[][]>(() => createEmptySavedAnswerGrid(gridSize));
+  const [savedPuzzleCompletedAt, setSavedPuzzleCompletedAt] = useState<string | null>(null);
+  const [puzzleSaveStatus, setPuzzleSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [hasClearedCells, setHasClearedCells] = useState(false);
+  const puzzleKey = getPuzzleArchiveSlug(puzzle);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/pokemon.json`)
@@ -145,22 +182,41 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
       if (!token || !apiBaseUrl) return;
 
       try {
-        const { userDex, myPokedexFilter, spoilerModeEnabled, collapsePokedexAnswerFilters } = await loadPokedexSettingsState(token, apiBaseUrl);
+        const [pokedexSettingsResult, savedPuzzleResult] = await Promise.allSettled([
+          loadPokedexSettingsState(token, apiBaseUrl),
+          getRemoteUserPuzzle({ token, apiBaseUrl, puzzleKey }),
+        ]);
         if (isCancelled) return;
 
-        if (userDex) {
-          setCaughtSet(new Set(userDex.caughtPokemonKeyIds));
-          setRemoteUserDex(userDex);
-          setUndoMarkOwnedState(null);
+        if (pokedexSettingsResult.status === 'fulfilled') {
+          const { userDex, myPokedexFilter, spoilerModeEnabled, collapsePokedexAnswerFilters } = pokedexSettingsResult.value;
+          if (userDex) {
+            setCaughtSet(new Set(userDex.caughtPokemonKeyIds));
+            setRemoteUserDex(userDex);
+            setUndoMarkOwnedState(null);
+          }
+          if (myPokedexFilter !== null) {
+            setShowMissingOnly(myPokedexFilter);
+          }
+          if (spoilerModeEnabled !== null) {
+            setSpoilerModeEnabled(spoilerModeEnabled);
+          }
+          if (collapsePokedexAnswerFilters !== null) {
+            setIsFilterPanelCollapsed(collapsePokedexAnswerFilters);
+          }
         }
-        if (myPokedexFilter !== null) {
-          setShowMissingOnly(myPokedexFilter);
-        }
-        if (spoilerModeEnabled !== null) {
-          setSpoilerModeEnabled(spoilerModeEnabled);
-        }
-        if (collapsePokedexAnswerFilters !== null) {
-          setIsFilterPanelCollapsed(collapsePokedexAnswerFilters);
+
+        const savedPuzzle = savedPuzzleResult.status === 'fulfilled' ? savedPuzzleResult.value : null;
+        if (savedPuzzle) {
+          const nextSavedAnswerKeyIds = createEmptySavedAnswerGrid(gridSize);
+          for (const answer of savedPuzzle.answers) {
+            if (answer.row < gridSize && answer.col < gridSize) {
+              nextSavedAnswerKeyIds[answer.row][answer.col] = answer.pokemonKeyId;
+            }
+          }
+          setSavedAnswerKeyIds(nextSavedAnswerKeyIds);
+          setSavedPuzzleCompletedAt(savedPuzzle.completedAt);
+          setPuzzleSaveStatus('saved');
         }
       } catch {}
     })();
@@ -168,7 +224,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
     return () => {
       isCancelled = true;
     };
-  }, [isLoggedIn]);
+  }, [gridSize, isLoggedIn, puzzleKey]);
 
   const pokemonPool = useMemo(() => {
     if (!showMissingOnly) return pokemon;
@@ -187,23 +243,63 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
   }, [isLoggedIn, pokemon, pokemonPool, showMissingOnly]);
 
   useEffect(() => {
-    if (pokemonPool.length === 0) return;
+    if (pokemon.length === 0) return;
 
-    const { cells, suggestedKeys } = buildSuggestedCells(
-      pokemonPool,
-      puzzle.rowConstraints,
-      puzzle.colConstraints,
-      personalizedRemainingGroupScoreByKeyId,
-    );
+    const { cells, suggestedKeys } = pokemonPool.length > 0
+      ? buildSuggestedCells(
+        pokemonPool,
+        puzzle.rowConstraints,
+        puzzle.colConstraints,
+        personalizedRemainingGroupScoreByKeyId,
+      )
+      : { cells: createEmptyPokemonGrid(gridSize), suggestedKeys: createEmptyKeyGrid(gridSize) };
+    const baseCells = hasClearedCells ? createEmptyPokemonGrid(gridSize) : cells;
+    const displayCells = overlaySavedAnswers(baseCells, savedAnswerKeyIds, pokemon);
     const timer = window.setTimeout(() => {
       setSuggestedPokemonKeys(suggestedKeys);
-      setGrid((prev) => ({ ...prev, cells }));
+      setGrid((prev) => ({ ...prev, cells: displayCells }));
     }, 0);
 
     return () => {
       window.clearTimeout(timer);
     };
-  }, [personalizedRemainingGroupScoreByKeyId, pokemonPool, puzzle.colConstraints, puzzle.rowConstraints]);
+  }, [gridSize, hasClearedCells, personalizedRemainingGroupScoreByKeyId, pokemon, pokemonPool, puzzle.colConstraints, puzzle.rowConstraints, savedAnswerKeyIds]);
+
+  async function savePuzzleAnswers(nextSavedAnswerKeyIds: (number | null)[][]) {
+    if (!isLoggedIn) return;
+
+    const token = await getValidSessionIdToken();
+    const apiBaseUrl = getApiBaseUrl();
+    if (!token || !apiBaseUrl) return;
+
+    const answers = toSavedAnswers(nextSavedAnswerKeyIds);
+    const completedAt = savedPuzzleCompletedAt ?? (countSavedAnswers(nextSavedAnswerKeyIds) === gridSize * gridSize ? new Date().toISOString() : null);
+    setPuzzleSaveStatus('saving');
+
+    const savedPuzzle = await putRemoteUserPuzzle({
+      token,
+      apiBaseUrl,
+      puzzleKey,
+      payload: {
+        answers,
+        completedAt,
+      },
+    });
+
+    if (!savedPuzzle) {
+      setPuzzleSaveStatus('error');
+      return;
+    }
+
+    setSavedPuzzleCompletedAt(savedPuzzle.completedAt);
+    setPuzzleSaveStatus('saved');
+  }
+
+  function saveCurrentGridPuzzleAnswers(cells: (Pokemon | null)[][]) {
+    const nextSavedAnswerKeyIds = getSavedAnswerKeyIdsFromCells(cells);
+    setSavedAnswerKeyIds(nextSavedAnswerKeyIds);
+    void savePuzzleAnswers(nextSavedAnswerKeyIds);
+  }
 
   const possiblePokemon = useMemo(() => {
     const result: Pokemon[][][] = Array.from({ length: gridSize }, () =>
@@ -297,6 +393,13 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
     if (!grid.selectedCell) return;
 
     const [row, col] = grid.selectedCell;
+    const pokemonKeyId = getPokemonKeyId(selectedPokemon);
+    const nextSavedAnswerKeyIds = savedAnswerKeyIds.map((currentRow, currentRowIndex) =>
+      currentRowIndex === row
+        ? currentRow.map((currentValue, currentColIndex) => (currentColIndex === col ? pokemonKeyId : currentValue))
+        : currentRow,
+    );
+    setSavedAnswerKeyIds(nextSavedAnswerKeyIds);
     setGrid((prev) => ({
       ...prev,
       cells: prev.cells.map((currentRow, currentRowIndex) =>
@@ -306,6 +409,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
       ),
       selectedCell: null,
     }));
+    void savePuzzleAnswers(nextSavedAnswerKeyIds);
   }
 
   function clearCells() {
@@ -319,6 +423,10 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
       cells: createEmptyPokemonGrid(gridSize),
       selectedCell: null,
     }));
+    const nextSavedAnswerKeyIds = createEmptySavedAnswerGrid(gridSize);
+    setSavedAnswerKeyIds(nextSavedAnswerKeyIds);
+    setHasClearedCells(true);
+    void savePuzzleAnswers(nextSavedAnswerKeyIds);
   }
 
   async function markOwned() {
@@ -352,6 +460,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
 
       setCaughtSet(mergedSet);
       setRemoteUserDex(nextPayload);
+      saveCurrentGridPuzzleAnswers(grid.cells);
       setUndoMarkOwnedState({
         previousUserDex: remoteUserDex,
         addedCount: ownedIds.filter((id) => !caughtSet.has(id)).length,
@@ -451,6 +560,17 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
       caught: nextCaughtSet.has(pokemonKeyId),
       shiny: nextShinySet.has(pokemonKeyId),
     });
+
+    if (grid.selectedCell) {
+      const [row, col] = grid.selectedCell;
+      const nextSavedAnswerKeyIds = savedAnswerKeyIds.map((currentRow, currentRowIndex) =>
+        currentRowIndex === row
+          ? currentRow.map((currentValue, currentColIndex) => (currentColIndex === col ? pokemonKeyId : currentValue))
+          : currentRow,
+      );
+      setSavedAnswerKeyIds(nextSavedAnswerKeyIds);
+      void savePuzzleAnswers(nextSavedAnswerKeyIds);
+    }
   }
 
   async function markSelectedPokemonOwned(pokemon: Pokemon) {
@@ -573,6 +693,8 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
     return (revealStates[getCellKey(row, col)] ?? 'revealed') === 'revealed';
   }, [grid.selectedCell, revealStates, spoilerModeEnabled]);
 
+  const hasSavedAnswers = countSavedAnswers(savedAnswerKeyIds) > 0;
+
   if (loading) {
     return <div className="min-h-screen p-5 text-center"><p>Loading Pokemon data...</p></div>;
   }
@@ -607,7 +729,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
             }}
            isSavingCollapsedPreference={isSavingFilterPanelCollapsedPreference}
           />
-       ) : (
+        ) : (
          <>
            <PokedexPromoCard trackingFrom="today_suggestions" />
 
@@ -645,6 +767,14 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
         </>
       )}
 
+      {isLoggedIn && (hasSavedAnswers || puzzleSaveStatus !== 'idle') ? (
+        <p className={`mb-2 mt-0 text-xs ${puzzleSaveStatus === 'error' ? 'text-red-600 [html[data-theme=\'dark\']_&]:text-red-300' : 'text-[var(--text)]'}`}>
+          {puzzleSaveStatus === 'saving' ? 'Saving puzzle picks...' : null}
+          {puzzleSaveStatus === 'saved' ? `Puzzle picks saved${savedPuzzleCompletedAt ? ' and completion recorded' : ''}.` : null}
+          {puzzleSaveStatus === 'error' ? 'Could not save puzzle picks. Your board still works locally.' : null}
+        </p>
+      ) : null}
+
       <div className="relative">
         <Grid
           cells={grid.cells}
@@ -654,6 +784,7 @@ export function TodayBoard({ puzzle, showRecommendations = true }: { puzzle: Tod
           fallbackOwnedCells={fallbackOwnedCells}
           ownedPokemonKeyIds={caughtSet}
           shinyPokemonKeyIds={new Set(remoteUserDex?.shinyPokemonKeyIds ?? [])}
+          lockedAnswerKeyIds={savedAnswerKeyIds}
           suggestedPokemonKeys={suggestedPokemonKeys}
           swapOptionCounts={swapOptionCounts}
           totalSwapOptionCounts={totalSwapOptionCounts}

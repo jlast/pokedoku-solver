@@ -17,6 +17,7 @@ interface GridCellProps {
   fallbackOwned: Pokemon | null;
   isOwnedCell: boolean;
   isShinyCell: boolean;
+  isLockedEntry: boolean;
   isSelected: boolean;
   showSuggestedMeta: boolean;
   showOwnedState: boolean;
@@ -37,6 +38,7 @@ function getCellStateClasses({
   isSelected,
   isFilled,
   isOwnedCell,
+  isLockedEntry,
   fallbackOwned,
   isSpoilerHidden,
   showOwnedState,
@@ -44,6 +46,7 @@ function getCellStateClasses({
   isSelected: boolean;
   isFilled: boolean;
   isOwnedCell: boolean;
+  isLockedEntry: boolean;
   fallbackOwned: Pokemon | null;
   isSpoilerHidden: boolean;
   showOwnedState: boolean;
@@ -58,6 +61,7 @@ function getCellStateClasses({
       ? 'bg-[var(--accent-bg)] text-[var(--text-h)] shadow-[0_0_0_2px_var(--accent),inset_0_0_0_1px_var(--border)]'
       : 'bg-[var(--code-bg)] text-[var(--text-h)] shadow-[0_0_0_2px_var(--accent),inset_0_0_0_1px_var(--border)]';
   }
+  if (isLockedEntry) return "bg-emerald-50 hover:bg-emerald-100 [html[data-theme='dark']_&]:bg-emerald-950/30 [html[data-theme='dark']_&]:hover:bg-emerald-900/40";
   if (showOwnedState && isOwnedCell) return 'bg-[var(--code-bg)] hover:bg-[var(--accent-bg)]';
   if (showOwnedState && fallbackOwned) return "bg-[var(--code-bg)] [html[data-theme='dark']_&]:bg-[var(--code-bg-dark)]";
   if (isFilled) return 'bg-[var(--bg)] hover:bg-[var(--accent-bg)]';
@@ -74,6 +78,7 @@ export function GridCell({
   fallbackOwned,
   isOwnedCell,
   isShinyCell,
+  isLockedEntry,
   isSelected,
   showSuggestedMeta,
   showOwnedState,
@@ -101,7 +106,7 @@ export function GridCell({
   const isFilled = Boolean(cell);
   const displayPokemon = cell ?? fallbackOwned;
   const isSpoilerHidden = spoilerModeEnabled && revealState !== 'revealed' && Boolean(displayPokemon);
-  const cellStateClasses = getCellStateClasses({ isSelected, isFilled, isOwnedCell, fallbackOwned, isSpoilerHidden, showOwnedState });
+  const cellStateClasses = getCellStateClasses({ isSelected, isFilled, isOwnedCell, isLockedEntry, fallbackOwned, isSpoilerHidden, showOwnedState });
 
   return (
     <div
@@ -137,6 +142,7 @@ export function GridCell({
           cell={cell}
           isOwnedCell={isOwnedCell}
           isShinyCell={isShinyCell}
+          isLockedEntry={isLockedEntry}
           showOwnedState={showOwnedState}
           isSuggested={isSuggested}
           suggestedLabel={suggestedLabel}

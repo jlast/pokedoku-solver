@@ -13,6 +13,7 @@ interface GridProps {
   fallbackOwnedCells?: (Pokemon | null)[][];
   ownedPokemonKeyIds?: Set<number>;
   shinyPokemonKeyIds?: Set<number>;
+  lockedAnswerKeyIds?: (number | null)[][];
   suggestedPokemonKeys?: (string | null)[][];
   swapOptionCounts?: number[][];
   totalSwapOptionCounts?: number[][];
@@ -39,6 +40,7 @@ export function Grid({
   fallbackOwnedCells,
   ownedPokemonKeyIds,
   shinyPokemonKeyIds,
+  lockedAnswerKeyIds,
   suggestedPokemonKeys,
   swapOptionCounts,
   totalSwapOptionCounts,
@@ -107,6 +109,7 @@ export function Grid({
                   ? fallbackCandidate
                   : null;
                 const isCaughtCell = cell ? (ownedPokemonKeyIds?.has(getPokemonKeyId(cell)) ?? false) : false;
+                const isLockedEntry = cell ? lockedAnswerKeyIds?.[rowIndex]?.[colIndex] === getPokemonKeyId(cell) : false;
                 const isOwnedCell = cell
                   ? isCaughtCell && !isUsedElsewhere(cell, rowIndex, colIndex)
                   : false;
@@ -126,6 +129,7 @@ export function Grid({
                     fallbackOwned={fallbackOwned}
                     isOwnedCell={isOwnedCell}
                     isShinyCell={isShinyCell}
+                    isLockedEntry={isLockedEntry}
                     isSelected={isSelected}
                     showSuggestedMeta={showSuggestedMeta}
                     showOwnedState={showOwnedState}

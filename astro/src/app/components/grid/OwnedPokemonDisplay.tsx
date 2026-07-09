@@ -3,6 +3,8 @@ import type { Pokemon } from '@pokedoku-helper/shared-types';
 interface OwnedPokemonDisplayProps {
   pokemon: Pokemon;
   isShiny: boolean;
+  badgeLabel?: string;
+  badgeVariant?: 'owned' | 'new-entry';
   opacityClass?: string;
   hideIdentity?: boolean;
   swapOptionCount?: number;
@@ -13,17 +15,24 @@ interface OwnedPokemonDisplayProps {
 export function OwnedPokemonDisplay({
   pokemon,
   isShiny,
+  badgeLabel,
+  badgeVariant = 'owned',
   opacityClass = 'opacity-35',
   hideIdentity = false,
   swapOptionCount,
   onSwapClick,
   highlightSwapCount = false,
 }: OwnedPokemonDisplayProps) {
+  const label = badgeLabel ?? (isShiny ? 'Shiny' : 'Owned');
+  const badgeClasses = badgeVariant === 'new-entry'
+    ? "border-emerald-300 bg-emerald-200 text-emerald-950 [html[data-theme='dark']_&]:border-emerald-500 [html[data-theme='dark']_&]:bg-emerald-900/40 [html[data-theme='dark']_&]:text-emerald-100"
+    : "border-amber-300 bg-amber-200 text-amber-950 [html[data-theme='dark']_&]:border-amber-600 [html[data-theme='dark']_&]:bg-amber-900/20 [html[data-theme='dark']_&]:text-amber-100";
+
   return (
     <>
-      <span className="absolute left-0 top-0 z-[2] inline-flex items-center gap-1 rounded-br-lg rounded-tl-sm border border-amber-300 bg-amber-200 px-[6px] py-px text-[8px] font-bold uppercase leading-[14px] text-amber-950 shadow-[0_1px_3px_rgba(15,23,42,0.14)] [html[data-theme='dark']_&]:border-amber-600 [html[data-theme='dark']_&]:bg-amber-900/20 [html[data-theme='dark']_&]:text-amber-100">
+      <span className={`absolute left-0 top-0 z-[2] inline-flex items-center gap-1 rounded-br-lg rounded-tl-sm border px-[6px] py-px text-[8px] font-bold uppercase leading-[14px] shadow-[0_1px_3px_rgba(15,23,42,0.14)] ${badgeClasses}`}>
         <span aria-hidden="true" className="text-[9px] leading-none">✓</span>
-        <span>{isShiny ? 'Shiny' : 'Owned'}</span>
+        <span>{label}</span>
       </span>
       {typeof swapOptionCount === 'number' && onSwapClick ? (
         <button

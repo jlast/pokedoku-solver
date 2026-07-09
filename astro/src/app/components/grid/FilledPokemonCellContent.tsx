@@ -5,6 +5,7 @@ interface FilledPokemonCellContentProps {
   cell: Pokemon;
   isOwnedCell: boolean;
   isShinyCell: boolean;
+  isLockedEntry: boolean;
   showOwnedState: boolean;
   isSuggested: boolean;
   suggestedLabel: string;
@@ -22,6 +23,7 @@ export function FilledPokemonCellContent({
   cell,
   isOwnedCell,
   isShinyCell,
+  isLockedEntry,
   showOwnedState,
   isSuggested,
   suggestedLabel,
@@ -34,6 +36,21 @@ export function FilledPokemonCellContent({
   onCellClick,
   onSwapClick,
 }: FilledPokemonCellContentProps) {
+  if (isLockedEntry) {
+    return (
+      <OwnedPokemonDisplay
+        pokemon={cell}
+        isShiny={isShinyCell}
+        badgeLabel="New entry"
+        badgeVariant="new-entry"
+        opacityClass="opacity-100"
+        swapOptionCount={showSuggestedMeta ? swapOptionCount : undefined}
+        highlightSwapCount={highlightSwapCount}
+        onSwapClick={showSuggestedMeta ? (anchorElement) => (onSwapClick ?? onCellClick)(rowIndex, colIndex, anchorElement) : undefined}
+      />
+    );
+  }
+
   if (showOwnedState && isOwnedCell) {
     return (
       <OwnedPokemonDisplay
