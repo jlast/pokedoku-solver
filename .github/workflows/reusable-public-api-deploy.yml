@@ -18,6 +18,15 @@ on:
       settings_patch_lambda_changed:
         required: true
         type: string
+      user_puzzles_get_lambda_changed:
+        required: true
+        type: string
+      user_puzzle_get_lambda_changed:
+        required: true
+        type: string
+      user_puzzle_put_lambda_changed:
+        required: true
+        type: string
       admin_bonus_puzzle_post_lambda_changed:
         required: true
         type: string
@@ -126,6 +135,45 @@ jobs:
           aws s3 cp dist-lambda/settings-patch.zip s3://${S3_BUCKET_NAME}/${SETTINGS_PATCH_LAMBDA_KEY}
           echo "SETTINGS_PATCH_LAMBDA_KEY=${SETTINGS_PATCH_LAMBDA_KEY}" >> "$GITHUB_ENV"
 
+      - name: Package user puzzles get Lambda
+        if: inputs.user_puzzles_get_lambda_changed == 'true'
+        run: pnpm package:user-puzzles-get-lambda
+
+      - name: Upload user puzzles get Lambda artifact
+        if: inputs.user_puzzles_get_lambda_changed == 'true'
+        env:
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          USER_PUZZLES_GET_LAMBDA_KEY=lambda/user-puzzles-get-${{ github.sha }}.zip
+          aws s3 cp dist-lambda/user-puzzles-get.zip s3://${S3_BUCKET_NAME}/${USER_PUZZLES_GET_LAMBDA_KEY}
+          echo "USER_PUZZLES_GET_LAMBDA_KEY=${USER_PUZZLES_GET_LAMBDA_KEY}" >> "$GITHUB_ENV"
+
+      - name: Package user puzzle get Lambda
+        if: inputs.user_puzzle_get_lambda_changed == 'true'
+        run: pnpm package:user-puzzle-get-lambda
+
+      - name: Upload user puzzle get Lambda artifact
+        if: inputs.user_puzzle_get_lambda_changed == 'true'
+        env:
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          USER_PUZZLE_GET_LAMBDA_KEY=lambda/user-puzzle-get-${{ github.sha }}.zip
+          aws s3 cp dist-lambda/user-puzzle-get.zip s3://${S3_BUCKET_NAME}/${USER_PUZZLE_GET_LAMBDA_KEY}
+          echo "USER_PUZZLE_GET_LAMBDA_KEY=${USER_PUZZLE_GET_LAMBDA_KEY}" >> "$GITHUB_ENV"
+
+      - name: Package user puzzle put Lambda
+        if: inputs.user_puzzle_put_lambda_changed == 'true'
+        run: pnpm package:user-puzzle-put-lambda
+
+      - name: Upload user puzzle put Lambda artifact
+        if: inputs.user_puzzle_put_lambda_changed == 'true'
+        env:
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          USER_PUZZLE_PUT_LAMBDA_KEY=lambda/user-puzzle-put-${{ github.sha }}.zip
+          aws s3 cp dist-lambda/user-puzzle-put.zip s3://${S3_BUCKET_NAME}/${USER_PUZZLE_PUT_LAMBDA_KEY}
+          echo "USER_PUZZLE_PUT_LAMBDA_KEY=${USER_PUZZLE_PUT_LAMBDA_KEY}" >> "$GITHUB_ENV"
+
       - name: Package admin bonus puzzle Lambda
         if: inputs.admin_bonus_puzzle_post_lambda_changed == 'true'
         run: pnpm package:admin-bonus-puzzle-post-lambda
@@ -140,7 +188,7 @@ jobs:
           echo "ADMIN_BONUS_PUZZLE_POST_LAMBDA_KEY=${ADMIN_BONUS_PUZZLE_POST_LAMBDA_KEY}" >> "$GITHUB_ENV"
 
       - name: Deploy public API CloudFormation stack
-        if: inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_shared_get_lambda_changed == 'true' || inputs.settings_get_lambda_changed == 'true' || inputs.settings_patch_lambda_changed == 'true' || inputs.admin_bonus_puzzle_post_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true'
+        if: inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_shared_get_lambda_changed == 'true' || inputs.settings_get_lambda_changed == 'true' || inputs.settings_patch_lambda_changed == 'true' || inputs.user_puzzles_get_lambda_changed == 'true' || inputs.user_puzzle_get_lambda_changed == 'true' || inputs.user_puzzle_put_lambda_changed == 'true' || inputs.admin_bonus_puzzle_post_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true'
         env:
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
@@ -149,12 +197,18 @@ jobs:
           USER_DEX_SHARED_GET_LAMBDA_CHANGED: ${{ inputs.user_dex_shared_get_lambda_changed }}
           SETTINGS_GET_LAMBDA_CHANGED: ${{ inputs.settings_get_lambda_changed }}
           SETTINGS_PATCH_LAMBDA_CHANGED: ${{ inputs.settings_patch_lambda_changed }}
+          USER_PUZZLES_GET_LAMBDA_CHANGED: ${{ inputs.user_puzzles_get_lambda_changed }}
+          USER_PUZZLE_GET_LAMBDA_CHANGED: ${{ inputs.user_puzzle_get_lambda_changed }}
+          USER_PUZZLE_PUT_LAMBDA_CHANGED: ${{ inputs.user_puzzle_put_lambda_changed }}
           ADMIN_BONUS_PUZZLE_POST_LAMBDA_CHANGED: ${{ inputs.admin_bonus_puzzle_post_lambda_changed }}
           USER_DEX_GET_LAMBDA_KEY: ${{ env.USER_DEX_GET_LAMBDA_KEY }}
           USER_DEX_PATCH_LAMBDA_KEY: ${{ env.USER_DEX_PATCH_LAMBDA_KEY }}
           USER_DEX_SHARED_GET_LAMBDA_KEY: ${{ env.USER_DEX_SHARED_GET_LAMBDA_KEY }}
           SETTINGS_GET_LAMBDA_KEY: ${{ env.SETTINGS_GET_LAMBDA_KEY }}
           SETTINGS_PATCH_LAMBDA_KEY: ${{ env.SETTINGS_PATCH_LAMBDA_KEY }}
+          USER_PUZZLES_GET_LAMBDA_KEY: ${{ env.USER_PUZZLES_GET_LAMBDA_KEY }}
+          USER_PUZZLE_GET_LAMBDA_KEY: ${{ env.USER_PUZZLE_GET_LAMBDA_KEY }}
+          USER_PUZZLE_PUT_LAMBDA_KEY: ${{ env.USER_PUZZLE_PUT_LAMBDA_KEY }}
           ADMIN_BONUS_PUZZLE_POST_LAMBDA_KEY: ${{ env.ADMIN_BONUS_PUZZLE_POST_LAMBDA_KEY }}
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
           API_SUBDOMAIN: ${{ vars.API_SUBDOMAIN }}
@@ -181,7 +235,7 @@ jobs:
           bash .github/scripts/deploy-public-api-stack.sh
 
       - name: Debug public API CloudFormation failure
-        if: failure() && (inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_shared_get_lambda_changed == 'true' || inputs.settings_get_lambda_changed == 'true' || inputs.settings_patch_lambda_changed == 'true' || inputs.admin_bonus_puzzle_post_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true')
+        if: failure() && (inputs.user_dex_get_lambda_changed == 'true' || inputs.user_dex_patch_lambda_changed == 'true' || inputs.user_dex_shared_get_lambda_changed == 'true' || inputs.settings_get_lambda_changed == 'true' || inputs.settings_patch_lambda_changed == 'true' || inputs.user_puzzles_get_lambda_changed == 'true' || inputs.user_puzzle_get_lambda_changed == 'true' || inputs.user_puzzle_put_lambda_changed == 'true' || inputs.admin_bonus_puzzle_post_lambda_changed == 'true' || inputs.user_dex_stack_changed == 'true')
         env:
           CLOUDFORMATION_STACK_NAME: ${{ secrets.CLOUDFORMATION_STACK_NAME }}
         run: |

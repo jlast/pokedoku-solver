@@ -60,6 +60,30 @@ Parameters:
     Type: String
     Description: "S3 key for settings-patch Lambda zip"
 
+  UserPuzzlesGetCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing user-puzzles-get Lambda zip"
+
+  UserPuzzlesGetCodeS3Key:
+    Type: String
+    Description: "S3 key for user-puzzles-get Lambda zip"
+
+  UserPuzzleGetCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing user-puzzle-get Lambda zip"
+
+  UserPuzzleGetCodeS3Key:
+    Type: String
+    Description: "S3 key for user-puzzle-get Lambda zip"
+
+  UserPuzzlePutCodeS3Bucket:
+    Type: String
+    Description: "S3 bucket containing user-puzzle-put Lambda zip"
+
+  UserPuzzlePutCodeS3Key:
+    Type: String
+    Description: "S3 key for user-puzzle-put Lambda zip"
+
   AdminBonusPuzzlePostCodeS3Bucket:
     Type: String
     Description: "S3 bucket containing admin-bonus-puzzle-post Lambda zip"
@@ -130,6 +154,22 @@ Resources:
         - AttributeName: userId
           KeyType: HASH
 
+  UserPuzzleHistoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: UserPuzzleHistory
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: puzzleKey
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: puzzleKey
+          KeyType: RANGE
+
   UserDexLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -151,11 +191,13 @@ Resources:
                 Action:
                   - dynamodb:GetItem
                   - dynamodb:PutItem
+                  - dynamodb:Query
                   - dynamodb:UpdateItem
                 Resource:
                   - !GetAtt UserDexProfilesTable.Arn
                   - !GetAtt UserSettingsTable.Arn
                   - !GetAtt UserActivityTable.Arn
+                  - !GetAtt UserPuzzleHistoryTable.Arn
               - Effect: Allow
                 Action:
                   - s3:GetObject
@@ -273,6 +315,66 @@ Resources:
         S3Bucket: !Ref SettingsPatchCodeS3Bucket
         S3Key: !Ref SettingsPatchCodeS3Key
 
+  UserPuzzlesGetFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: user-puzzles-get.handler
+      Role: !GetAtt UserDexLambdaRole.Arn
+      Timeout: 15
+      MemorySize: 256
+      Environment:
+        Variables:
+          USER_PUZZLE_HISTORY_TABLE_NAME: !Ref UserPuzzleHistoryTable
+          USER_ACTIVITY_TABLE_NAME: !Ref UserActivityTable
+          COGNITO_REGION: !Ref CognitoRegion
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+          ALLOWED_ORIGINS: !Ref AllowedOrigins
+      Code:
+        S3Bucket: !Ref UserPuzzlesGetCodeS3Bucket
+        S3Key: !Ref UserPuzzlesGetCodeS3Key
+
+  UserPuzzleGetFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: user-puzzle-get.handler
+      Role: !GetAtt UserDexLambdaRole.Arn
+      Timeout: 15
+      MemorySize: 256
+      Environment:
+        Variables:
+          USER_PUZZLE_HISTORY_TABLE_NAME: !Ref UserPuzzleHistoryTable
+          USER_ACTIVITY_TABLE_NAME: !Ref UserActivityTable
+          COGNITO_REGION: !Ref CognitoRegion
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+          ALLOWED_ORIGINS: !Ref AllowedOrigins
+      Code:
+        S3Bucket: !Ref UserPuzzleGetCodeS3Bucket
+        S3Key: !Ref UserPuzzleGetCodeS3Key
+
+  UserPuzzlePutFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs20.x
+      Handler: user-puzzle-put.handler
+      Role: !GetAtt UserDexLambdaRole.Arn
+      Timeout: 15
+      MemorySize: 256
+      Environment:
+        Variables:
+          USER_PUZZLE_HISTORY_TABLE_NAME: !Ref UserPuzzleHistoryTable
+          USER_ACTIVITY_TABLE_NAME: !Ref UserActivityTable
+          COGNITO_REGION: !Ref CognitoRegion
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+          ALLOWED_ORIGINS: !Ref AllowedOrigins
+      Code:
+        S3Bucket: !Ref UserPuzzlePutCodeS3Bucket
+        S3Key: !Ref UserPuzzlePutCodeS3Key
+
   AdminBonusPuzzlePostFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -307,6 +409,7 @@ Resources:
           - GET
           - PATCH
           - POST
+          - PUT
           - OPTIONS
         AllowHeaders:
           - authorization
@@ -352,6 +455,30 @@ Resources:
       IntegrationUri: !GetAtt SettingsPatchFunction.Arn
       PayloadFormatVersion: "2.0"
 
+  UserPuzzlesGetIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UserDexApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt UserPuzzlesGetFunction.Arn
+      PayloadFormatVersion: "2.0"
+
+  UserPuzzleGetIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UserDexApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt UserPuzzleGetFunction.Arn
+      PayloadFormatVersion: "2.0"
+
+  UserPuzzlePutIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref UserDexApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt UserPuzzlePutFunction.Arn
+      PayloadFormatVersion: "2.0"
+
   AdminBonusPuzzlePostIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -394,6 +521,27 @@ Resources:
       ApiId: !Ref UserDexApi
       RouteKey: "PATCH /settings"
       Target: !Sub "integrations/${SettingsPatchIntegration}"
+
+  UserPuzzlesGetRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UserDexApi
+      RouteKey: "GET /user-puzzles"
+      Target: !Sub "integrations/${UserPuzzlesGetIntegration}"
+
+  UserPuzzleGetRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UserDexApi
+      RouteKey: "GET /user-puzzles/{puzzleKey}"
+      Target: !Sub "integrations/${UserPuzzleGetIntegration}"
+
+  UserPuzzlePutRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref UserDexApi
+      RouteKey: "PUT /user-puzzles/{puzzleKey}"
+      Target: !Sub "integrations/${UserPuzzlePutIntegration}"
 
   AdminBonusPuzzlePostRoute:
     Type: AWS::ApiGatewayV2::Route
@@ -449,6 +597,30 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${UserDexApi}/*/*/settings"
 
+  UserPuzzlesGetPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref UserPuzzlesGetFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${UserDexApi}/*/*/user-puzzles"
+
+  UserPuzzleGetPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref UserPuzzleGetFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${UserDexApi}/*/*/user-puzzles/*"
+
+  UserPuzzlePutPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref UserPuzzlePutFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${UserDexApi}/*/*/user-puzzles/*"
+
   AdminBonusPuzzlePostPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -503,3 +675,7 @@ Outputs:
   UserSettingsTableName:
     Description: User Settings DynamoDB table name
     Value: !Ref UserSettingsTable
+
+  UserPuzzleHistoryTableName:
+    Description: User Puzzle History DynamoDB table name
+    Value: !Ref UserPuzzleHistoryTable

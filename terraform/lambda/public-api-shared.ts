@@ -81,7 +81,7 @@ function buildCorsHeaders(requestOrigin: string | null): Record<string, string> 
     'content-type': 'application/json',
     'access-control-allow-origin': responseOrigin,
     'access-control-allow-headers': 'authorization,content-type',
-    'access-control-allow-methods': 'GET,PATCH,POST,OPTIONS',
+    'access-control-allow-methods': 'GET,PATCH,POST,PUT,OPTIONS',
     vary: 'Origin',
   };
 }

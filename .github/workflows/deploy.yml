@@ -55,6 +55,9 @@ jobs:
       user_dex_shared_get_lambda_changed: ${{ steps.changes.outputs.user_dex_shared_get_lambda_changed }}
       settings_get_lambda_changed: ${{ steps.changes.outputs.settings_get_lambda_changed }}
       settings_patch_lambda_changed: ${{ steps.changes.outputs.settings_patch_lambda_changed }}
+      user_puzzles_get_lambda_changed: ${{ steps.changes.outputs.user_puzzles_get_lambda_changed }}
+      user_puzzle_get_lambda_changed: ${{ steps.changes.outputs.user_puzzle_get_lambda_changed }}
+      user_puzzle_put_lambda_changed: ${{ steps.changes.outputs.user_puzzle_put_lambda_changed }}
       admin_bonus_puzzle_post_lambda_changed: ${{ steps.changes.outputs.admin_bonus_puzzle_post_lambda_changed }}
       cognito_metrics_lambda_changed: ${{ steps.changes.outputs.cognito_metrics_lambda_changed }}
       user_dex_stack_changed: ${{ steps.changes.outputs.user_dex_stack_changed }}
@@ -131,6 +134,9 @@ jobs:
       user_dex_shared_get_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.user_dex_shared_get_lambda_changed == 'true') && 'true' || 'false' }}
       settings_get_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.settings_get_lambda_changed == 'true') && 'true' || 'false' }}
       settings_patch_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.settings_patch_lambda_changed == 'true') && 'true' || 'false' }}
+      user_puzzles_get_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.user_puzzles_get_lambda_changed == 'true') && 'true' || 'false' }}
+      user_puzzle_get_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.user_puzzle_get_lambda_changed == 'true') && 'true' || 'false' }}
+      user_puzzle_put_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.user_puzzle_put_lambda_changed == 'true') && 'true' || 'false' }}
       admin_bonus_puzzle_post_lambda_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.admin_bonus_puzzle_post_lambda_changed == 'true') && 'true' || 'false' }}
       user_dex_stack_changed: ${{ ((github.event_name == 'workflow_dispatch' && inputs.force_public_api_deploy) || needs.detect-changes.outputs.user_dex_stack_changed == 'true') && 'true' || 'false' }}
 

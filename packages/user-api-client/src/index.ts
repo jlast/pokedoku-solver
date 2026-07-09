@@ -28,6 +28,19 @@ export type SaveBonusPuzzleResult = {
   updatedTodayPuzzle: boolean;
 };
 
+export type UserPuzzleAnswerPayload = {
+  row: number;
+  col: number;
+  pokemonKeyId: number;
+};
+
+export type UserPuzzlePayload = {
+  puzzleKey: string;
+  answers: UserPuzzleAnswerPayload[];
+  completedAt: string | null;
+  updatedAt: string | null;
+};
+
 function normalizeApiBaseUrl(apiBaseUrl: string): string {
   return apiBaseUrl.replace(/\/+$/, '');
 }
@@ -174,6 +187,127 @@ export async function patchRemoteSettings({
   if (!response.ok) return null;
   const data = (await response.json()) as unknown;
   return parseSettingsFromApi(data);
+}
+
+function parsePuzzleAnswerFromApi(data: unknown): UserPuzzleAnswerPayload | null {
+  if (!data || typeof data !== 'object') return null;
+  const payload = data as {
+    row?: unknown;
+    col?: unknown;
+    pokemonKeyId?: unknown;
+  };
+
+  const row = Number(payload.row);
+  const col = Number(payload.col);
+  const pokemonKeyId = Number(payload.pokemonKeyId);
+
+  if (!Number.isInteger(row) || row < 0) return null;
+  if (!Number.isInteger(col) || col < 0) return null;
+  if (!Number.isInteger(pokemonKeyId) || pokemonKeyId <= 0) return null;
+
+  return { row, col, pokemonKeyId };
+}
+
+export function parseUserPuzzleFromApi(data: unknown): UserPuzzlePayload | null {
+  if (!data || typeof data !== 'object') return null;
+  const payload = data as {
+    puzzleKey?: unknown;
+    answers?: unknown;
+    completedAt?: unknown;
+    updatedAt?: unknown;
+  };
+
+  if (typeof payload.puzzleKey !== 'string' || payload.puzzleKey.trim().length === 0) return null;
+  if (!Array.isArray(payload.answers)) return null;
+
+  const answers = payload.answers
+    .map((entry) => parsePuzzleAnswerFromApi(entry))
+    .filter((entry): entry is UserPuzzleAnswerPayload => Boolean(entry));
+
+  const completedAt = typeof payload.completedAt === 'string' && !Number.isNaN(Date.parse(payload.completedAt))
+    ? payload.completedAt
+    : null;
+  const updatedAt = typeof payload.updatedAt === 'string' && !Number.isNaN(Date.parse(payload.updatedAt))
+    ? payload.updatedAt
+    : null;
+
+  return {
+    puzzleKey: payload.puzzleKey,
+    answers,
+    completedAt,
+    updatedAt,
+  };
+}
+
+export async function getRemoteUserPuzzle({
+  token,
+  apiBaseUrl,
+  puzzleKey,
+}: {
+  token: string;
+  apiBaseUrl: string;
+  puzzleKey: string;
+}): Promise<UserPuzzlePayload | null> {
+  const encodedPuzzleKey = encodeURIComponent(puzzleKey);
+  const response = await fetch(`${normalizeApiBaseUrl(apiBaseUrl)}/user-puzzles/${encodedPuzzleKey}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) return null;
+  const data = (await response.json()) as unknown;
+  return parseUserPuzzleFromApi(data);
+}
+
+export async function getRemoteUserPuzzles({
+  token,
+  apiBaseUrl,
+}: {
+  token: string;
+  apiBaseUrl: string;
+}): Promise<UserPuzzlePayload[] | null> {
+  const response = await fetch(`${normalizeApiBaseUrl(apiBaseUrl)}/user-puzzles`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) return null;
+  const data = (await response.json()) as unknown;
+  if (!data || typeof data !== 'object' || !Array.isArray((data as { puzzles?: unknown }).puzzles)) return null;
+
+  return (data as { puzzles: unknown[] }).puzzles
+    .map((entry) => parseUserPuzzleFromApi(entry))
+    .filter((entry): entry is UserPuzzlePayload => Boolean(entry));
+}
+
+export async function putRemoteUserPuzzle({
+  token,
+  apiBaseUrl,
+  puzzleKey,
+  payload,
+}: {
+  token: string;
+  apiBaseUrl: string;
+  puzzleKey: string;
+  payload: Pick<UserPuzzlePayload, 'answers' | 'completedAt'>;
+}): Promise<UserPuzzlePayload | null> {
+  const encodedPuzzleKey = encodeURIComponent(puzzleKey);
+  const response = await fetch(`${normalizeApiBaseUrl(apiBaseUrl)}/user-puzzles/${encodedPuzzleKey}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) return null;
+  const data = (await response.json()) as unknown;
+  return parseUserPuzzleFromApi(data);
 }
 
 function parseSaveBonusPuzzleResult(data: unknown): SaveBonusPuzzleResult | null {

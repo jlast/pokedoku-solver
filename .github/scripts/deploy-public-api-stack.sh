@@ -31,6 +31,9 @@ for required_var in \
   USER_DEX_SHARED_GET_LAMBDA_CHANGED \
   SETTINGS_GET_LAMBDA_CHANGED \
   SETTINGS_PATCH_LAMBDA_CHANGED \
+  USER_PUZZLES_GET_LAMBDA_CHANGED \
+  USER_PUZZLE_GET_LAMBDA_CHANGED \
+  USER_PUZZLE_PUT_LAMBDA_CHANGED \
   ADMIN_BONUS_PUZZLE_POST_LAMBDA_CHANGED
 do
   require_var "${required_var}"
@@ -156,6 +159,30 @@ else
   CURRENT_SETTINGS_PATCH_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='SettingsPatchCodeS3Key'].ParameterValue" --output text)
 fi
 
+if [ "${USER_PUZZLES_GET_LAMBDA_CHANGED}" = "true" ]; then
+  CURRENT_USER_PUZZLES_GET_KEY="${USER_PUZZLES_GET_LAMBDA_KEY}"
+  require_var USER_PUZZLES_GET_LAMBDA_KEY
+  aws s3api head-object --bucket "${S3_BUCKET_NAME}" --key "${CURRENT_USER_PUZZLES_GET_KEY}" >/dev/null
+else
+  CURRENT_USER_PUZZLES_GET_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='UserPuzzlesGetCodeS3Key'].ParameterValue" --output text)
+fi
+
+if [ "${USER_PUZZLE_GET_LAMBDA_CHANGED}" = "true" ]; then
+  CURRENT_USER_PUZZLE_GET_KEY="${USER_PUZZLE_GET_LAMBDA_KEY}"
+  require_var USER_PUZZLE_GET_LAMBDA_KEY
+  aws s3api head-object --bucket "${S3_BUCKET_NAME}" --key "${CURRENT_USER_PUZZLE_GET_KEY}" >/dev/null
+else
+  CURRENT_USER_PUZZLE_GET_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='UserPuzzleGetCodeS3Key'].ParameterValue" --output text)
+fi
+
+if [ "${USER_PUZZLE_PUT_LAMBDA_CHANGED}" = "true" ]; then
+  CURRENT_USER_PUZZLE_PUT_KEY="${USER_PUZZLE_PUT_LAMBDA_KEY}"
+  require_var USER_PUZZLE_PUT_LAMBDA_KEY
+  aws s3api head-object --bucket "${S3_BUCKET_NAME}" --key "${CURRENT_USER_PUZZLE_PUT_KEY}" >/dev/null
+else
+  CURRENT_USER_PUZZLE_PUT_KEY=$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --query "Stacks[0].Parameters[?ParameterKey=='UserPuzzlePutCodeS3Key'].ParameterValue" --output text)
+fi
+
 if [ "${ADMIN_BONUS_PUZZLE_POST_LAMBDA_CHANGED}" = "true" ]; then
   CURRENT_ADMIN_BONUS_PUZZLE_POST_KEY="${ADMIN_BONUS_PUZZLE_POST_LAMBDA_KEY}"
   require_var ADMIN_BONUS_PUZZLE_POST_LAMBDA_KEY
@@ -184,6 +211,12 @@ aws cloudformation deploy \
     SettingsGetCodeS3Key="${CURRENT_SETTINGS_GET_KEY}" \
     SettingsPatchCodeS3Bucket="${S3_BUCKET_NAME}" \
     SettingsPatchCodeS3Key="${CURRENT_SETTINGS_PATCH_KEY}" \
+    UserPuzzlesGetCodeS3Bucket="${S3_BUCKET_NAME}" \
+    UserPuzzlesGetCodeS3Key="${CURRENT_USER_PUZZLES_GET_KEY}" \
+    UserPuzzleGetCodeS3Bucket="${S3_BUCKET_NAME}" \
+    UserPuzzleGetCodeS3Key="${CURRENT_USER_PUZZLE_GET_KEY}" \
+    UserPuzzlePutCodeS3Bucket="${S3_BUCKET_NAME}" \
+    UserPuzzlePutCodeS3Key="${CURRENT_USER_PUZZLE_PUT_KEY}" \
     AdminBonusPuzzlePostCodeS3Bucket="${S3_BUCKET_NAME}" \
     AdminBonusPuzzlePostCodeS3Key="${CURRENT_ADMIN_BONUS_PUZZLE_POST_KEY}" \
     RuntimeBucketName="${S3_BUCKET_NAME}" \
