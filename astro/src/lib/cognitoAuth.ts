@@ -2,11 +2,13 @@ const TOKEN_KEY = "cognito_id_token";
 const ACCESS_TOKEN_KEY = "cognito_access_token";
 const REFRESH_TOKEN_KEY = "cognito_refresh_token";
 const EXPIRES_AT_KEY = "cognito_token_expires_at";
+const LAST_REFRESH_AT_KEY = "cognito_last_refresh_at";
 const STATE_KEY = "cognito_oauth_state";
 const PKCE_VERIFIER_KEY = "cognito_pkce_verifier";
 
 type ProviderName = "Google";
 const REFRESH_BUFFER_MS = 60 * 1000;
+const PROACTIVE_REFRESH_INTERVAL_MS = 12 * 60 * 60 * 1000;
 let refreshInFlight: Promise<string | null> | null = null;
 
 type TokenEndpointError = {
@@ -155,6 +157,7 @@ export function clearSession(): void {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(EXPIRES_AT_KEY);
+  localStorage.removeItem(LAST_REFRESH_AT_KEY);
   localStorage.removeItem(STATE_KEY);
   localStorage.removeItem(PKCE_VERIFIER_KEY);
 }
@@ -173,10 +176,17 @@ function persistSessionTokens(tokens: {
     localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
   }
   localStorage.setItem(EXPIRES_AT_KEY, String(Date.now() + tokens.expiresIn * 1000));
+  localStorage.setItem(LAST_REFRESH_AT_KEY, String(Date.now()));
 }
 
 function isTokenFresh(expiresAt: number, bufferMs = 0): boolean {
   return Number.isFinite(expiresAt) && Date.now() + bufferMs < expiresAt;
+}
+
+function shouldRefreshSessionProactively(): boolean {
+  const lastRefreshAt = Number(localStorage.getItem(LAST_REFRESH_AT_KEY) || "0");
+  return !Number.isFinite(lastRefreshAt)
+    || Date.now() - lastRefreshAt >= PROACTIVE_REFRESH_INTERVAL_MS;
 }
 
 function isInvalidRefreshTokenError(error: string | undefined): boolean {
@@ -304,6 +314,7 @@ async function refreshSessionToken(): Promise<string | null> {
       const error = await readTokenEndpointError(response);
       if (isInvalidRefreshTokenError(error)) {
         clearSession();
+        return null;
       }
 
       if (idToken && isTokenFresh(expiresAt)) {
@@ -387,8 +398,13 @@ export function getSessionIdToken(): string | null {
 export async function getValidSessionIdToken(): Promise<string | null> {
   const idToken = localStorage.getItem(TOKEN_KEY);
   const expiresAt = Number(localStorage.getItem(EXPIRES_AT_KEY) || "0");
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
 
-  if (idToken && isTokenFresh(expiresAt, REFRESH_BUFFER_MS)) {
+  if (
+    idToken
+    && isTokenFresh(expiresAt, REFRESH_BUFFER_MS)
+    && (!refreshToken || !shouldRefreshSessionProactively())
+  ) {
     return idToken;
   }
 

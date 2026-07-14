@@ -1,4 +1,5 @@
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { getRemoteUserPuzzles } from "@pokedoku-helper/user-api-client";
 import { trackEvent } from "../../../../lib/browser/analytics";
 import { formatDate } from "../../../../lib/shared/utils";
 import { getCategoryOptionSlug } from "@pokedoku-helper/shared-types";
@@ -9,6 +10,8 @@ import { SectionCard } from "../components/shared/SectionCard";
 import { DifficultyBadge } from "../components/today-board-suggestions/DifficultyBadge";
 import type { ArchivePuzzle } from "../../lib/puzzleArchive";
 import { getPuzzleArchiveHref, isBonusPuzzle } from "../../lib/puzzleArchive";
+import { getSessionUserProfile, getValidSessionIdToken } from "../../lib/cognitoAuth";
+import { getApiBaseUrl } from "../lib/pokedexSettings";
 
 type PuzzleFilter = "all" | "regular" | "bonus";
 const INITIAL_VISIBLE_COUNT = 24;
@@ -48,11 +51,13 @@ function getResultSummary(filteredCount: number, totalCount: number, hasActiveFi
 }
 
 export function HistoricAnswersPageClient() {
+  const isLoggedIn = typeof window !== "undefined" && Boolean(getSessionUserProfile());
   const [items, setItems] = useState<ArchivePuzzle[]>([]);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<PuzzleFilter>("all");
   const [isArchiveLoading, setIsArchiveLoading] = useState(true);
   const [archiveError, setArchiveError] = useState<string | null>(null);
+  const [savedPuzzleKeys, setSavedPuzzleKeys] = useState<Set<string>>(new Set());
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
   const deferredQuery = useDeferredValue(query);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
@@ -97,6 +102,26 @@ export function HistoricAnswersPageClient() {
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    let active = true;
+    void (async () => {
+      const token = await getValidSessionIdToken();
+      const apiBaseUrl = getApiBaseUrl();
+      if (!token || !apiBaseUrl) return;
+
+      const savedPuzzles = await getRemoteUserPuzzles({ token, apiBaseUrl });
+      if (!active || !savedPuzzles) return;
+
+      setSavedPuzzleKeys(new Set(savedPuzzles.filter((puzzle) => puzzle.answers.length > 0).map((puzzle) => puzzle.puzzleKey)));
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [isLoggedIn]);
 
   const filteredItems = useMemo(() => {
     const normalizedQuery = deferredQuery.trim().toLowerCase();
@@ -207,14 +232,23 @@ export function HistoricAnswersPageClient() {
           </article>
         ) : null}
 
-        {visibleItems.map((puzzle) => (
-          <article key={puzzle.slug} className="rounded-[22px] border border-[var(--border)] bg-[var(--bg)] p-3.5 shadow-[0_10px_22px_rgba(15,23,42,0.05)]">
+        {visibleItems.map((puzzle) => {
+          const hasSavedPuzzle = savedPuzzleKeys.has(puzzle.slug);
+
+          return (
+          <article key={puzzle.slug} className={`rounded-[22px] border p-3.5 shadow-[0_10px_22px_rgba(15,23,42,0.05)] ${hasSavedPuzzle ? "border-emerald-300 bg-emerald-50 [html[data-theme='dark']_&]:border-emerald-500/70 [html[data-theme='dark']_&]:bg-emerald-950/20" : "border-[var(--border)] bg-[var(--bg)]"}`}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <DateChip date={formatDate(puzzle.date)} className="px-2.5 py-1 text-xs" />
                 <p className="m-0 mt-1.5 text-sm text-[var(--text)]">{getPuzzleLabel(puzzle)}</p>
               </div>
               <div className="flex shrink-0 items-center gap-2 self-start">
+                {hasSavedPuzzle ? (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-200 px-2 py-0.5 text-[11px] font-bold uppercase leading-4 text-emerald-950 [html[data-theme='dark']_&]:border-emerald-500 [html[data-theme='dark']_&]:bg-emerald-900/40 [html[data-theme='dark']_&]:text-emerald-100">
+                    <span aria-hidden="true">✓</span>
+                    <span>New entry</span>
+                  </span>
+                ) : null}
                 {isBonusPuzzle(puzzle) ? (
                   <span className="rounded-full px-2 py-0.5 text-[11px] font-semibold bg-violet-100 text-violet-700 [html[data-theme='dark']_&]:bg-violet-950/40 [html[data-theme='dark']_&]:text-violet-200">
                     Bonus
@@ -293,7 +327,8 @@ export function HistoricAnswersPageClient() {
               </div>
             ) : null}
           </article>
-        ))}
+          );
+        })}
       </section>
 
       {hasMoreItems ? <div ref={loadMoreRef} className="h-8" aria-hidden="true" /> : null}

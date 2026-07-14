@@ -4,6 +4,7 @@ import { clearSession, getSessionUserProfile, getValidSessionIdToken } from "./c
 const TOKEN_KEY = "cognito_id_token";
 const REFRESH_TOKEN_KEY = "cognito_refresh_token";
 const EXPIRES_AT_KEY = "cognito_token_expires_at";
+const LAST_REFRESH_AT_KEY = "cognito_last_refresh_at";
 
 function createLocalStorage() {
   const store = new Map<string, string>();
@@ -95,6 +96,73 @@ describe("cognitoAuth refresh handling", () => {
     await expect(getValidSessionIdToken()).resolves.toBeNull();
     expect(localStorage.getItem(TOKEN_KEY)).toBeNull();
     expect(localStorage.getItem(REFRESH_TOKEN_KEY)).toBeNull();
+  });
+
+  it("persists replacement refresh tokens from refresh-token rotation", async () => {
+    localStorage.setItem(TOKEN_KEY, "expired-id-token");
+    localStorage.setItem(REFRESH_TOKEN_KEY, "old-refresh-token");
+    localStorage.setItem(EXPIRES_AT_KEY, String(Date.now() - 5_000));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            id_token: "new-id-token",
+            access_token: "new-access-token",
+            refresh_token: "new-refresh-token",
+            expires_in: 3600,
+          }),
+          {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          },
+        ),
+      ),
+    );
+
+    await expect(getValidSessionIdToken()).resolves.toBe("new-id-token");
+    expect(localStorage.getItem(TOKEN_KEY)).toBe("new-id-token");
+    expect(localStorage.getItem(REFRESH_TOKEN_KEY)).toBe("new-refresh-token");
+    expect(Number(localStorage.getItem(EXPIRES_AT_KEY))).toBeGreaterThan(Date.now());
+  });
+
+  it("proactively refreshes active sessions so refresh-token rotation can slide", async () => {
+    localStorage.setItem(TOKEN_KEY, "fresh-id-token");
+    localStorage.setItem(REFRESH_TOKEN_KEY, "old-refresh-token");
+    localStorage.setItem(EXPIRES_AT_KEY, String(Date.now() + 60 * 60 * 1000));
+    localStorage.setItem(LAST_REFRESH_AT_KEY, String(Date.now() - 13 * 60 * 60 * 1000));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            id_token: "rotated-id-token",
+            access_token: "rotated-access-token",
+            refresh_token: "rotated-refresh-token",
+            expires_in: 3600,
+          }),
+          {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          },
+        ),
+      ),
+    );
+
+    await expect(getValidSessionIdToken()).resolves.toBe("rotated-id-token");
+    expect(localStorage.getItem(REFRESH_TOKEN_KEY)).toBe("rotated-refresh-token");
+  });
+
+  it("does not proactively refresh sessions refreshed recently", async () => {
+    const fetchMock = vi.fn();
+    localStorage.setItem(TOKEN_KEY, "fresh-id-token");
+    localStorage.setItem(REFRESH_TOKEN_KEY, "refresh-token");
+    localStorage.setItem(EXPIRES_AT_KEY, String(Date.now() + 60 * 60 * 1000));
+    localStorage.setItem(LAST_REFRESH_AT_KEY, String(Date.now()));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(getValidSessionIdToken()).resolves.toBe("fresh-id-token");
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("reads the admin flag from Cognito group claims", () => {
