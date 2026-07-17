@@ -219,9 +219,8 @@ export function SuggestionsPanel({
       }
     }
 
-    const isCurrentOwned = currentPokemon ? ownedPokemonKeyIds.has(getPokemonKeyId(currentPokemon)) : false;
-    return isCurrentOwned ? owned : [...unowned, ...owned];
-  }, [currentPokemon, hideOwnedOptions, ownedPokemonKeyIds, showOwnershipState, sortedPokemon]);
+    return [...unowned, ...owned];
+  }, [hideOwnedOptions, ownedPokemonKeyIds, showOwnershipState, sortedPokemon]);
 
   const visiblePokemon = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
