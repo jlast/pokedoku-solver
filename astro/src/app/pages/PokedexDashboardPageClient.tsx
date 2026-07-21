@@ -380,7 +380,7 @@ export function PokedexDashboardPageClient() {
       ),
     [categoryProgress],
   );
-  const leastLeft = useMemo(
+  const mostOpenCategories = useMemo(
     () =>
       flattened
         .filter(
@@ -390,7 +390,7 @@ export function PokedexDashboardPageClient() {
             entry.groupKey !== "ability",
         )
         .sort(
-          (a, b) => a.remaining - b.remaining || a.name.localeCompare(b.name),
+          (a, b) => b.remaining - a.remaining || a.name.localeCompare(b.name),
         )
         .slice(0, 8),
     [flattened],
@@ -833,10 +833,10 @@ export function PokedexDashboardPageClient() {
                 Closest milestones
               </p>
               <h2 className="m-0 mt-2 text-xl font-semibold text-[var(--text-h)]">
-                Closest complete categories
+                Most open categories
               </h2>
               <div className="mt-4 space-y-1.5">
-                {leastLeft.map((entry) => (
+                {mostOpenCategories.map((entry) => (
                   <div
                     key={`${entry.groupKey}:${entry.name}`}
                     className="rounded-xl bg-white/80 px-3 py-2 [html[data-theme='dark']_&]:bg-slate-900/70"
