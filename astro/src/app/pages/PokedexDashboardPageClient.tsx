@@ -1097,57 +1097,139 @@ export function PokedexDashboardPageClient() {
           stages, moves, and abilities.
         </p>
         <div className="mt-5 grid gap-4 lg:grid-cols-4">
-          {categoryProgress.map((group) => (
-            <div
-              key={group.key}
-              className={`rounded-2xl bg-[var(--code-bg)]/85 p-3 shadow-sm ${group.key === "move" || group.key === "types" ? "lg:col-span-2" : ""}`}
-            >
-              <h3 className="m-0 text-sm font-semibold text-[var(--text-h)]">
-                {group.label}
-              </h3>
-              <div
-                className={
-                  group.key === "move" || group.key === "types"
-                    ? "mt-2 grid gap-1.5 sm:grid-cols-2"
-                    : "mt-2 space-y-1.5"
-                }
-              >
-                {group.options.map((option) => {
-                  const completed = option.total - option.remaining;
-                  const completionPercent =
-                    option.total > 0
-                      ? Math.round((completed / option.total) * 100)
-                      : 0;
+          {categoryProgress.map((group) => {
+            const incompleteOptions = group.options.filter(
+              (option) => option.remaining > 0,
+            );
+            const completedOptions = group.options.filter(
+              (option) => option.remaining === 0,
+            );
+            const optionGridClass =
+              group.key === "move" || group.key === "types"
+                ? "grid gap-1.5 sm:grid-cols-2"
+                : "space-y-1.5";
 
-                  return (
-                    <div
-                      key={`${group.key}:${option.name}`}
-                      className="rounded-lg bg-[var(--bg)]/75 px-2.5 py-2"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <CategoryBadgeLink
-                          parsed={{
-                            raw: `${group.key}:${option.name}`,
-                            type: group.key,
-                            label: option.name,
-                          }}
-                          href={getCategoryHref(group.key, option.name)}
+            return (
+              <div
+                key={group.key}
+                className={`rounded-2xl bg-[var(--code-bg)]/85 p-3 shadow-sm ${group.key === "move" || group.key === "types" ? "lg:col-span-2" : ""}`}
+              >
+                <h3 className="m-0 text-sm font-semibold text-[var(--text-h)]">
+                  {group.label}
+                </h3>
+                <div className={`mt-2 ${optionGridClass}`}>
+                  {incompleteOptions.map((option) => {
+                    const completed = option.total - option.remaining;
+                    const completionPercent =
+                      option.total > 0
+                        ? Math.round((completed / option.total) * 100)
+                        : 0;
+
+                    return (
+                      <div
+                        key={`${group.key}:${option.name}`}
+                        className="rounded-lg bg-[var(--bg)]/75 px-2.5 py-2"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <CategoryBadgeLink
+                            parsed={{
+                              raw: `${group.key}:${option.name}`,
+                              type: group.key,
+                              label: option.name,
+                            }}
+                            href={getCategoryHref(group.key, option.name)}
+                          />
+                          <p className="m-0 text-[11px] font-semibold text-[var(--text)]">
+                            {option.remaining} left / {option.total}
+                          </p>
+                        </div>
+                        <progress
+                          value={completionPercent}
+                          max={100}
+                          className={`mt-1 h-1 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-[var(--code-bg)]/80 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${getProgressColorClass(completionPercent)}`}
                         />
-                        <p className="m-0 text-[11px] font-semibold text-[var(--text)]">
-                          {option.remaining} left / {option.total}
-                        </p>
                       </div>
-                      <progress
-                        value={completionPercent}
-                        max={100}
-                        className={`mt-1 h-1 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-[var(--code-bg)]/80 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${getProgressColorClass(completionPercent)}`}
-                      />
+                    );
+                  })}
+                </div>
+                {completedOptions.length > 0 ? (
+                  <details className="group mt-2">
+                    <summary className="flex cursor-pointer list-none items-center justify-between rounded-lg px-2.5 py-2 text-xs font-semibold text-[var(--text)] transition-colors hover:bg-[var(--bg)]/50 [&::-webkit-details-marker]:hidden">
+                      <span>{completedOptions.length} complete</span>
+                      <svg
+                        viewBox="0 0 20 20"
+                        className="h-4 w-4 transition-transform group-open:rotate-180"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="m5 8 5 5 5-5"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </summary>
+                    <div className={`mt-1.5 ${optionGridClass}`}>
+                      {completedOptions.map((option) => {
+                        const completed = option.total - option.remaining;
+                        const completionPercent =
+                          option.total > 0
+                            ? Math.round((completed / option.total) * 100)
+                            : 0;
+
+                        return (
+                          <div
+                            key={`${group.key}:${option.name}`}
+                            className="rounded-lg bg-slate-100/80 px-2.5 py-2 opacity-70 [html[data-theme='dark']_&]:bg-slate-800/55"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="grayscale">
+                                <CategoryBadgeLink
+                                  parsed={{
+                                    raw: `${group.key}:${option.name}`,
+                                    type: group.key,
+                                    label: option.name,
+                                  }}
+                                  href={getCategoryHref(group.key, option.name)}
+                                />
+                              </span>
+                              <span
+                                className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 [html[data-theme='dark']_&]:bg-emerald-900/60 [html[data-theme='dark']_&]:text-emerald-300"
+                                aria-label={`${option.name} complete`}
+                                title="Complete"
+                              >
+                                <svg
+                                  viewBox="0 0 20 20"
+                                  className="h-3.5 w-3.5"
+                                  fill="none"
+                                  aria-hidden="true"
+                                >
+                                  <path
+                                    d="m5 10 3 3 7-7"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                            <progress
+                              value={completionPercent}
+                              max={100}
+                              className={`mt-1 h-1 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-[var(--code-bg)]/80 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full ${getProgressColorClass(completionPercent)}`}
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
+                  </details>
+                ) : null}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </main>
