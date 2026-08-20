@@ -3,6 +3,9 @@
 interface ImportMetaEnv {
   readonly PUBLIC_ENABLE_AUTH?: string;
   readonly PUBLIC_ALLOW_AUTH_QUERY_OVERRIDE?: string;
+  readonly PUBLIC_GOOGLE_ANALYTICS_ID?: string;
+  readonly PUBLIC_GOOGLE_ADSENSE_CLIENT_ID?: string;
+  readonly PUBLIC_GOOGLE_ADSENSE_SLOT_ID?: string;
   readonly PUBLIC_COGNITO_REGION: string;
   readonly PUBLIC_COGNITO_USER_POOL_ID: string;
   readonly PUBLIC_COGNITO_CLIENT_ID: string;

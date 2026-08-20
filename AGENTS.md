@@ -55,8 +55,10 @@ Astro-based website for Pokedoku suggestions, statistics, tools, and tips.
 - Login UI is feature-flagged.
   - `PUBLIC_ENABLE_AUTH` controls default visibility.
   - `PUBLIC_ALLOW_AUTH_QUERY_OVERRIDE` controls `?auth=1` / `?auth=0` override behavior.
-- Cognito-related public env vars used by website build:
+- Website public env vars used by website build:
   - `PUBLIC_GOOGLE_ANALYTICS_ID`
+  - `PUBLIC_GOOGLE_ADSENSE_CLIENT_ID` (Google AdSense publisher client, e.g. `ca-pub-...`)
+  - `PUBLIC_GOOGLE_ADSENSE_SLOT_ID` (responsive display ad slot id)
   - `PUBLIC_COGNITO_REGION`
   - `PUBLIC_COGNITO_USER_POOL_ID`
   - `PUBLIC_COGNITO_CLIENT_ID` (must be a public/SPA app client)

@@ -1,5 +1,6 @@
 ---
 import { DEFAULT_OG_IMAGE, SITE_NAME, absoluteUrl } from "../lib/site";
+import GoogleAd from "../components/GoogleAd.astro";
 import "../styles/index.css";
 
 interface Props {
@@ -12,6 +13,9 @@ const { title, description, path } = Astro.props;
 const canonical = absoluteUrl(path);
 const googleAnalyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
 const hasGoogleAnalytics = Boolean(googleAnalyticsId);
+const googleAdSenseClientId = import.meta.env.PUBLIC_GOOGLE_ADSENSE_CLIENT_ID;
+const googleAdSenseSlotId = import.meta.env.PUBLIC_GOOGLE_ADSENSE_SLOT_ID;
+const hasGoogleAds = Boolean(googleAdSenseClientId && googleAdSenseSlotId);
 ---
 
 <!doctype html>
@@ -50,6 +54,15 @@ const hasGoogleAnalytics = Boolean(googleAnalyticsId);
         <script
           async
           src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+        ></script>
+      ) : null
+    }
+    {
+      hasGoogleAds ? (
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${googleAdSenseClientId}`}
+          crossorigin="anonymous"
         ></script>
       ) : null
     }
@@ -145,5 +158,6 @@ const hasGoogleAnalytics = Boolean(googleAnalyticsId);
   </head>
   <body>
     <slot />
+    <GoogleAd />
   </body>
 </html>

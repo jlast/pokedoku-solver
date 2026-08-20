@@ -1,0 +1,35 @@
+---
+interface Props {
+  slot?: string;
+  label?: string;
+}
+
+const googleAdSenseClientId = import.meta.env.PUBLIC_GOOGLE_ADSENSE_CLIENT_ID;
+const slot = Astro.props.slot ?? import.meta.env.PUBLIC_GOOGLE_ADSENSE_SLOT_ID;
+const label = Astro.props.label ?? "Advertisement";
+const shouldRenderAd = Boolean(googleAdSenseClientId && slot);
+---
+
+{
+  shouldRenderAd ? (
+    <aside class="mx-auto my-6 w-full max-w-6xl px-4" aria-label={label}>
+      <div class="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg)] p-2 shadow-sm">
+        <ins
+          class="adsbygoogle block min-h-[90px] w-full"
+          data-ad-client={googleAdSenseClientId}
+          data-ad-slot={slot}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+      </div>
+      <script is:inline>
+        try {
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({});
+        } catch {
+          // Ignore ad blocker or third-party script failures.
+        }
+      </script>
+    </aside>
+  ) : null
+}
