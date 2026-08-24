@@ -156,7 +156,7 @@ const hasGoogleAds = Boolean(googleAdSenseClientId && googleAdSenseSlotId);
       ) : null
     }
   </head>
-  <body class={hasGoogleAds ? "pb-20 md:pb-28" : undefined}>
+  <body class={hasGoogleAds ? "pb-[90px]" : undefined}>
     <slot />
     <GoogleAd />
   </body>
