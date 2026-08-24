@@ -13,16 +13,16 @@ const shouldRenderAd = Boolean(googleAdSenseClientId && slot);
 {
   shouldRenderAd ? (
     <aside
-      class="fixed inset-x-0 bottom-0 z-40 flex h-[90px] justify-center border-t border-[var(--border)] bg-[var(--bg)] px-3 shadow-[0_-8px_24px_rgba(15,23,42,0.12)]"
+      class="fixed inset-x-0 bottom-0 z-40 flex h-[90px] max-h-[90px] justify-center overflow-hidden border-t border-[var(--border)] bg-[var(--bg)] px-3 shadow-[0_-8px_24px_rgba(15,23,42,0.12)]"
       aria-label={label}
     >
-      <div class="w-full max-w-[728px]">
+      <div class="h-[90px] max-h-[90px] w-full max-w-[728px] overflow-hidden">
         <ins
-          class="adsbygoogle block h-[90px] w-full"
+          class="adsbygoogle block h-[90px] max-h-[90px] w-full overflow-hidden"
           data-ad-client={googleAdSenseClientId}
           data-ad-slot={slot}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
+          data-ad-format="horizontal"
+          data-full-width-responsive="false"
         ></ins>
       </div>
       <script is:inline>
