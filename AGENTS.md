@@ -58,7 +58,6 @@ Astro-based website for Pokedoku suggestions, statistics, tools, and tips.
 - Website public env vars used by website build:
   - `PUBLIC_GOOGLE_ANALYTICS_ID`
   - `PUBLIC_GOOGLE_ADSENSE_CLIENT_ID` (Google AdSense publisher client, e.g. `ca-pub-...`; read from GitHub production environment secrets)
-  - `PUBLIC_GOOGLE_ADSENSE_SLOT_ID` (responsive display ad slot id; read from GitHub production environment secrets)
   - `PUBLIC_COGNITO_REGION`
   - `PUBLIC_COGNITO_USER_POOL_ID`
   - `PUBLIC_COGNITO_CLIENT_ID` (must be a public/SPA app client)
