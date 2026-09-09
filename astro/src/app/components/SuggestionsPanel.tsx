@@ -422,6 +422,7 @@ export function SuggestionsPanel({
               const pokemonKeyId = getPokemonKeyId(p);
               const isOwned = showOwnershipState && (ownedPokemonKeyIds?.has(pokemonKeyId) ?? false);
               const isShiny = showOwnershipState && (shinyPokemonKeyIds?.has(pokemonKeyId) ?? false);
+              const displaySprite = isShiny ? p.shinySprite ?? p.sprite : p.sprite;
 
               return (
               <button
@@ -438,8 +439,8 @@ export function SuggestionsPanel({
                   onSelect(p);
                 }}
               >
-                {p.sprite ? (
-                  <img src={p.sprite} alt="" className={`m-3 mr-1 h-[50px] w-[50px] shrink-0 object-contain ${isOwned ? 'opacity-65' : ''}`} />
+                {displaySprite ? (
+                  <img src={displaySprite} alt="" className={`m-3 mr-1 h-[50px] w-[50px] shrink-0 object-contain ${isOwned ? 'opacity-65' : ''}`} />
                 ) : (
                   <div className="m-3 mr-1 h-[50px] w-[50px] shrink-0 rounded-full bg-[var(--code-bg)]" />
                 )}

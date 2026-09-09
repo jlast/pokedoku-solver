@@ -36,6 +36,8 @@ export function FilledPokemonCellContent({
   onCellClick,
   onSwapClick,
 }: FilledPokemonCellContentProps) {
+  const displaySprite = isShinyCell ? cell.shinySprite ?? cell.sprite : cell.sprite;
+
   if (isLockedEntry) {
     return (
       <OwnedPokemonDisplay
@@ -89,9 +91,9 @@ export function FilledPokemonCellContent({
           </button>
         </>
       ) : null}
-      {cell.sprite ? (
+      {displaySprite ? (
         <img
-          src={cell.sprite}
+          src={displaySprite}
           alt=""
           className="absolute left-[22px] top-5 z-0 h-[95px] w-[95px] object-contain max-[768px]:left-2 max-[768px]:top-[14px] max-[768px]:h-[68px] max-[768px]:w-[68px]"
         />

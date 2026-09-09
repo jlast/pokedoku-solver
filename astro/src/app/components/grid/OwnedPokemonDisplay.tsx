@@ -24,6 +24,7 @@ export function OwnedPokemonDisplay({
   highlightSwapCount = false,
 }: OwnedPokemonDisplayProps) {
   const label = badgeLabel ?? (isShiny ? 'Shiny' : 'Owned');
+  const displaySprite = isShiny ? pokemon.shinySprite ?? pokemon.sprite : pokemon.sprite;
   const badgeClasses = badgeVariant === 'new-entry'
     ? "border-emerald-300 bg-emerald-200 text-emerald-950 [html[data-theme='dark']_&]:border-emerald-500 [html[data-theme='dark']_&]:bg-emerald-900/40 [html[data-theme='dark']_&]:text-emerald-100"
     : "border-amber-300 bg-amber-200 text-amber-950 [html[data-theme='dark']_&]:border-amber-600 [html[data-theme='dark']_&]:bg-amber-900/20 [html[data-theme='dark']_&]:text-amber-100";
@@ -48,9 +49,9 @@ export function OwnedPokemonDisplay({
           <span className={`text-sm font-bold leading-none max-[768px]:text-[11px] ${highlightSwapCount ? "text-emerald-600 [html[data-theme='dark']_&]:text-emerald-400" : ''}`}>{swapOptionCount}</span>
         </button>
       ) : null}
-      {!hideIdentity && pokemon.sprite ? (
+      {!hideIdentity && displaySprite ? (
         <img
-          src={pokemon.sprite}
+          src={displaySprite}
           alt=""
           className={`absolute left-[22px] top-5 z-0 h-[95px] w-[95px] object-contain max-[768px]:left-2 max-[768px]:top-[14px] max-[768px]:h-[68px] max-[768px]:w-[68px] ${opacityClass}`}
         />
