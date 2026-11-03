@@ -13,6 +13,20 @@ describe('getLatestPokedokuRolloverTimestamp', () => {
       Date.parse('2026-05-26T04:00:00.000Z'),
     );
   });
+
+  it.each([
+    ['2026-11-03T04:01:43.000Z', '2026-11-02T05:00:00.000Z'],
+    ['2026-11-03T05:00:00.000Z', '2026-11-03T05:00:00.000Z'],
+    ['2026-11-03T12:00:00.000Z', '2026-11-03T05:00:00.000Z'],
+    ['2026-03-08T06:59:59.000Z', '2026-03-08T05:00:00.000Z'],
+    ['2026-03-08T07:00:00.000Z', '2026-03-08T05:00:00.000Z'],
+    ['2026-03-09T04:00:00.000Z', '2026-03-09T04:00:00.000Z'],
+    ['2026-11-01T05:59:59.000Z', '2026-11-01T04:00:00.000Z'],
+    ['2026-11-01T06:00:00.000Z', '2026-11-01T04:00:00.000Z'],
+    ['2027-01-01T04:59:59.000Z', '2026-12-31T05:00:00.000Z'],
+  ])('uses Eastern midnight for %s', (now, rollover) => {
+    expect(getLatestPokedokuRolloverTimestamp(Date.parse(now))).toBe(Date.parse(rollover));
+  });
 });
 
 describe('isUserDexStaleForLatestPuzzle', () => {
@@ -29,5 +43,12 @@ describe('isUserDexStaleForLatestPuzzle', () => {
     expect(isUserDexStaleForLatestPuzzle('2026-05-27T03:59:59.000Z', now)).toBe(true);
     expect(isUserDexStaleForLatestPuzzle('2026-05-27T04:00:00.000Z', now)).toBe(false);
     expect(isUserDexStaleForLatestPuzzle('2026-05-27T08:00:00.000Z', now)).toBe(false);
+  });
+
+  it('uses the standard-time rollover when checking freshness', () => {
+    const now = Date.parse('2026-11-03T12:00:00.000Z');
+
+    expect(isUserDexStaleForLatestPuzzle('2026-11-03T04:01:43.000Z', now)).toBe(true);
+    expect(isUserDexStaleForLatestPuzzle('2026-11-03T05:00:00.000Z', now)).toBe(false);
   });
 });

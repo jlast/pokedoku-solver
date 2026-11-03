@@ -68,23 +68,46 @@ Resources:
         S3Bucket: !Ref DailyPuzzleFetcherCodeS3Bucket
         S3Key: !Ref DailyPuzzleFetcherCodeS3Key
 
-  DailyPuzzleSchedule:
-    Type: AWS::Events::Rule
-    Properties:
-      Description: "Fetch and store the daily puzzle in S3"
-      ScheduleExpression: cron(1 4 * * ? *)
-      State: ENABLED
-      Targets:
-        - Arn: !GetAtt DailyPuzzleFetcherFunction.Arn
-          Id: DailyPuzzleFetcherTarget
+  DailyPuzzleScheduleGroup:
+    Type: AWS::Scheduler::ScheduleGroup
 
-  DailyPuzzleScheduleInvokePermission:
-    Type: AWS::Lambda::Permission
+  DailyPuzzleScheduleRole:
+    Type: AWS::IAM::Role
     Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !Ref DailyPuzzleFetcherFunction
-      Principal: events.amazonaws.com
-      SourceArn: !GetAtt DailyPuzzleSchedule.Arn
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: scheduler.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
+              ArnEquals:
+                aws:SourceArn: !GetAtt DailyPuzzleScheduleGroup.Arn
+      Policies:
+        - PolicyName: InvokeDailyPuzzleFetcher
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource: !GetAtt DailyPuzzleFetcherFunction.Arn
+
+  DailyPuzzleSchedule:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      Description: "Fetch and store the daily puzzle one minute after Eastern midnight"
+      GroupName: !Ref DailyPuzzleScheduleGroup
+      ScheduleExpression: cron(1 0 * * ? *)
+      ScheduleExpressionTimezone: America/New_York
+      FlexibleTimeWindow:
+        Mode: "OFF"
+      State: ENABLED
+      Target:
+        Arn: !GetAtt DailyPuzzleFetcherFunction.Arn
+        RoleArn: !GetAtt DailyPuzzleScheduleRole.Arn
 
   DailyPuzzleAlertsTopic:
     Type: AWS::SNS::Topic

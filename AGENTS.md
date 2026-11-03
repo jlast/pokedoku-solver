@@ -93,6 +93,11 @@ It uses Redis caching and realtime data from `www.pokedoku-helper.com`.
 
 # Infra and API
 
+## Daily puzzle fetcher
+- Infra template: `terraform/daily-puzzle-stack.yaml`
+- Uses EventBridge Scheduler at 00:01 in `America/New_York` to follow daylight saving time.
+- Website dex freshness checks use the same Eastern-midnight puzzle rollover.
+
 ## User Dex API (`api.pokedoku-helper.com`)
 - Infra template: `terraform/user-dex-api-stack.yaml`
 - Placeholder Lambdas:
