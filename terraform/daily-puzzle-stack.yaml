@@ -95,7 +95,7 @@ Resources:
                 Action: lambda:InvokeFunction
                 Resource: !GetAtt DailyPuzzleFetcherFunction.Arn
 
-  DailyPuzzleSchedule:
+  DailyPuzzleTimezoneSchedule:
     Type: AWS::Scheduler::Schedule
     Properties:
       Description: "Fetch and store the daily puzzle one minute after Eastern midnight"
